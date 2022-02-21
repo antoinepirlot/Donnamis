@@ -99,6 +99,10 @@ public class Member {
     this.phoneNumber = phoneNumber;
   }
 
+  public boolean checkPassword(String password) {
+    return this.password.equals(password);
+  }
+  
   @Override
   public boolean equals(Object o) {
     if (this == o) {
