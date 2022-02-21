@@ -15,7 +15,7 @@ public class Main {
   // Base URI the Grizzly HTTP server will listen on
   public static final String BASE_URI = "http://localhost:8080/";
 
-  final ResourceConfig rc = new ResourceConfig().packages("be.vinci.pae.main")
+  final ResourceConfig rc = new ResourceConfig().packages("be.vinci.pae.api")
       .register(JacksonFeature.class);
 
   /**
