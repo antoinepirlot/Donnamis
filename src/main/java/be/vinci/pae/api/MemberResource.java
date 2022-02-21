@@ -1,7 +1,7 @@
-package be.vinci.pae.main.api;
+package be.vinci.pae.api;
 
-import be.vinci.pae.main.domain.Member;
-import be.vinci.pae.main.services.MemberDAO;
+import be.vinci.pae.domain.Member;
+import be.vinci.pae.services.MemberDAO;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;

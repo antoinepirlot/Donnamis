@@ -1,7 +1,7 @@
-package be.vinci.pae.main.services;
+package be.vinci.pae.services;
 
-import be.vinci.pae.main.domain.Member;
-import be.vinci.pae.main.services.utils.Json;
+import be.vinci.pae.domain.Member;
+import be.vinci.pae.services.utils.Json;
 import java.util.List;
 import org.apache.commons.text.StringEscapeUtils;
 

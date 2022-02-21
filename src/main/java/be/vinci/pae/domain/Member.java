@@ -1,4 +1,4 @@
-package be.vinci.pae.main.domain;
+package be.vinci.pae.domain;
 
 import java.util.Objects;
 

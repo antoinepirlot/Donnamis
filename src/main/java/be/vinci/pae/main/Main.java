@@ -1,4 +1,4 @@
-package be.vinci.pae.main.main;
+package be.vinci.pae.main;
 
 import java.io.IOException;
 import java.net.URI;

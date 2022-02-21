@@ -1,6 +1,6 @@
-package be.vinci.pae.main.services.utils;
+package be.vinci.pae.services.utils;
 
-import be.vinci.pae.main.domain.Member;
+import be.vinci.pae.domain.Member;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
