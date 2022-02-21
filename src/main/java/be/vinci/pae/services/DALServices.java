@@ -1,12 +1,15 @@
 package be.vinci.pae.services;
 
+import jakarta.inject.Singleton;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class DALServices {
+@Singleton
+class DALServices {
 
-  private final Connection conn = dbConnection();
+  private final Connection connection = dbConnection();
 
   private Connection dbConnection() {
     try {
@@ -25,5 +28,9 @@ public class DALServices {
     }
     System.out.println("Réussis");
     return connection;
+  }
+
+  public PreparedStatement getPreparedStatement(String query) throws SQLException {
+    return connection.prepareStatement(query);
   }
 }
