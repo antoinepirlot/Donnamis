@@ -11,6 +11,7 @@ class DALServices {
 
   private final Connection connection = dbConnection();
 
+  
   private Connection dbConnection() {
     try {
       Class.forName("org.postgresql.Driver");

@@ -13,6 +13,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public class MemberResource {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public List<Member> getAll() {
+  public List<Member> getAll() throws SQLException {
     return myMemberDAO.getAll();
   }
 

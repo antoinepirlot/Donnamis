@@ -7,6 +7,10 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -16,11 +20,32 @@ public class MemberDAO {
   private static Json<Member> jsonDB = new Json<>();
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
   private final ObjectMapper jsonMapper = new ObjectMapper();
+  private final DALServices dalServices = new DALServices();
 
 
-  public List<Member> getAll() {
+  public List<Member> getAll() throws SQLException {
     List<Member> members = jsonDB.parse(COLLECTION_NAME);
-    return members;
+    List<Member> membersToReturn = new ArrayList<Member>();
+
+    try {
+      PreparedStatement preparedStatement = dalServices.getPreparedStatement(
+          "SELECT * FROM project_pae.members");
+      System.out.println("Préparation du statement");
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        while (rs.next()) {
+          System.out.println("Création du membre : " + rs.getInt(1));
+          Member member = new Member(rs.getInt(1), rs.getString(2), rs.getString(3),
+              rs.getString(4), rs.getString(5), rs.getBoolean(6), rs.getString(7), rs.getString(8));
+          System.out.println("Ajout du membre dans la liste des membres");
+          membersToReturn.add(member);
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    System.out.println("Création des membres réussie");
+
+    return membersToReturn;
   }
 
 
