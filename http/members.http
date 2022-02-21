@@ -23,3 +23,17 @@ Content-Type: application/json
   "username": "LePirelot",
   "password": "pswdPasOuf"
 }
+
+### Register john
+POST {{baseUrl}}/members/register
+Content-Type: application/json
+
+{
+  "username": "JohnZara00",
+  "password": "pswdLOL",
+  "lastName": "Lefevre",
+  "firstName": "John",
+  "actualState": "confirmed",
+  "phoneNumber": "0472 99 24 15",
+  "admin": false
+}

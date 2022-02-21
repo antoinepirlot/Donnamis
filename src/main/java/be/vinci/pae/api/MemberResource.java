@@ -60,6 +60,40 @@ public class MemberResource {
     return publicUser;
   }
 
+
+  @POST
+  @Path("register")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public ObjectNode register(JsonNode json) {
+    // Get and check credentials
+    if (!json.hasNonNull("username") || !json.hasNonNull("password") ||
+        !json.hasNonNull("lastName") || !json.hasNonNull("firstName") ||
+        !json.hasNonNull("actualState") || !json.hasNonNull("phoneNumber") ||
+        !json.hasNonNull("admin")) {
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+          .entity("username or password required").type("text/plain").build());
+    }
+    String username = json.get("username").asText();
+    String password = json.get("password").asText();
+    String lastName = json.get("lastName").asText();
+    String firstName = json.get("firstName").asText();
+    String actualState = json.get("actualState").asText();
+    String phoneNumber = json.get("phoneNumber").asText();
+    boolean admin = json.get("admin").asBoolean();
+
+    // Try to login
+    ObjectNode publicUser = myMemberDAO.register(username, password, lastName, firstName,
+        actualState, phoneNumber, admin);
+    if (publicUser == null) {
+      throw new WebApplicationException(Response.status(Response.Status.CONFLICT)
+          .entity("this resource already exists").type(MediaType.TEXT_PLAIN)
+          .build());
+    }
+    return publicUser;
+
+  }
+
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)

@@ -71,9 +71,46 @@ public class MemberDAO {
     }
   }
 
+
+  public ObjectNode register(String username, String password, String lastName, String firstName,
+      String actualState, String phoneNumber, boolean admin) {
+    Member tempMember = getOne(username);
+    if (tempMember != null) // the user already exists !
+    {
+      return null;
+    }
+    tempMember = new Member();
+    tempMember.setUsername(username);
+    tempMember.setPassword(password);
+    tempMember.setLastName(lastName);
+    tempMember.setFirstName(firstName);
+    tempMember.setActualState(actualState);
+    tempMember.setPhoneNumber(phoneNumber);
+    tempMember.setAdmin(admin);
+
+    Member member = createOne(tempMember);
+    if (member == null) {
+      return null;
+    }
+    String token;
+    try {
+      token = JWT.create().withIssuer("auth0")
+          .withClaim("member", member.getId()).sign(this.jwtAlgorithm);
+      ObjectNode publicUser = jsonMapper.createObjectNode()
+          .put("token", token)
+          .put("id", member.getId())
+          .put("username", member.getUsername());
+      return publicUser;
+
+    } catch (Exception e) {
+      System.out.println("Unable to create token");
+      return null;
+    }
+  }
+
   public int nextMemberId() {
     List<Member> members = jsonDB.parse(COLLECTION_NAME);
-    
+
     if (members.size() == 0) {
       return 1;
     }
