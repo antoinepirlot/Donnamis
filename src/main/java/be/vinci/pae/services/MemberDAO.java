@@ -166,7 +166,7 @@ public class MemberDAO {
         .put("username", member.getUsername());
   }
 
-  public int nextMemberId() {
+  private int nextMemberId() {
     List<Member> members = jsonDB.parse(COLLECTION_NAME);
 
     if (members.size() == 0) {
