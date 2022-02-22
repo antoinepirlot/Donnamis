@@ -1,6 +1,9 @@
 ### get all
 GET {{baseUrl}}/members
 
+### get one by id
+GET {{baseUrl}}/members/1
+
 ### Create One member
 POST {{baseUrl}}/members
 Content-Type: application/json

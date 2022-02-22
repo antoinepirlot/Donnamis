@@ -24,7 +24,7 @@ public class MemberDAO {
 
 
   public List<Member> getAll() throws SQLException {
-    List<Member> members = jsonDB.parse(COLLECTION_NAME);
+    //List<Member> members = jsonDB.parse(COLLECTION_NAME);
     List<Member> membersToReturn = new ArrayList<Member>();
 
     try {
@@ -36,7 +36,7 @@ public class MemberDAO {
           System.out.println("Création du membre : " + rs.getInt(1));
           Member member = new Member(rs.getInt(1), rs.getString(2), rs.getString(3),
               rs.getString(4), rs.getString(5), rs.getBoolean(6), rs.getString(7), rs.getString(8));
-          System.out.println("Ajout du membre dans la liste des membres");
+          System.out.println("Ajout du membre dans la liste des membres : " + member);
           membersToReturn.add(member);
         }
       }
@@ -50,14 +50,52 @@ public class MemberDAO {
 
 
   public Member getOne(int id) {
-    var items = jsonDB.parse(COLLECTION_NAME);
-    return items.stream().filter(item -> item.getId() == id).findAny().orElse(null);
+    try {
+      PreparedStatement preparedStatement = dalServices.getPreparedStatement(
+          "SELECT * FROM project_pae.members WHERE id_member = ?");
+      System.out.println("Préparation du statement");
+      preparedStatement.setInt(1, id);
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        while (rs.next()) {
+          System.out.println("Création du membre : " + rs.getInt(1));
+          Member member = new Member(rs.getInt(1), rs.getString(2), rs.getString(3),
+              rs.getString(4), rs.getString(5), rs.getBoolean(6), rs.getString(7), rs.getString(8));
+          System.out.println("Ajout du membre dans la liste des membres : " + member);
+          return member;
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    //List<Member> items = jsonDB.parse(COLLECTION_NAME);
+    //return items.stream().filter(item -> item.getId() == id).findAny().orElse(null);
+    return null;
   }
 
   public Member getOne(String membername) {
+    try {
+      PreparedStatement preparedStatement = dalServices.getPreparedStatement(
+          "SELECT * FROM project_pae.members WHERE username = ?");
+      System.out.println("Préparation du statement");
+      preparedStatement.setString(1, membername);
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        while (rs.next()) {
+          System.out.println("Création du membre : " + rs.getInt(1));
+          Member member = new Member(rs.getInt(1), rs.getString(2), rs.getString(3),
+              rs.getString(4), rs.getString(5), rs.getBoolean(6), rs.getString(7), rs.getString(8));
+          System.out.println("Ajout du membre dans la liste des membres : " + member);
+          //membersToReturn.add(member);
+          return member;
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return null;
+    /*
     var items = jsonDB.parse(COLLECTION_NAME);
     return items.stream().filter(item -> item.getUsername().equals(membername)).findAny()
-        .orElse(null);
+        .orElse(null);*/
   }
 
   public Member createOne(Member member) {

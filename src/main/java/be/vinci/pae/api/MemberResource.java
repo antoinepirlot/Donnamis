@@ -9,6 +9,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
@@ -37,6 +38,12 @@ public class MemberResource {
     return myMemberDAO.getAll();
   }
 
+  @GET
+  @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Member getOne(@PathParam("id") int id) {
+    return myMemberDAO.getOne(id);
+  }
 
   @POST
   @Path("login")
