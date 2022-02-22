@@ -11,14 +11,13 @@ class DALServices {
 
   private final Connection connection = dbConnection();
 
-  
+
+  /**
+   * Try to connect to the db
+   * @return the db connection
+   */
   private Connection dbConnection() {
-    try {
-      Class.forName("org.postgresql.Driver");
-    } catch (ClassNotFoundException e) {
-      System.out.println("Driver PostgreSQL manquant");
-      System.exit(1);
-    }
+    driverLoading();
     String url = "jdbc:postgresql://localhost:5432/postgres";
     Connection connection = null;
     try {
@@ -29,6 +28,18 @@ class DALServices {
     }
     System.out.println("Réussis");
     return connection;
+  }
+
+  /**
+   * Load the driver for PostgreSQL.
+   */
+  private void driverLoading() {
+    try {
+      Class.forName("org.postgresql.Driver");
+    } catch (ClassNotFoundException e) {
+      System.out.println("Driver PostgreSQL manquant");
+      System.exit(1);
+    }
   }
 
   public PreparedStatement getPreparedStatement(String query) throws SQLException {
