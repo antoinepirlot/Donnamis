@@ -72,12 +72,12 @@ public class MemberDAO {
     return null;
   }
 
-  public Member getOne(String membername) {
+  public Member getOne(String username) {
     try {
       PreparedStatement preparedStatement = dalServices.getPreparedStatement(
           "SELECT * FROM project_pae.members WHERE username = ?");
       System.out.println("Préparation du statement");
-      preparedStatement.setString(1, membername);
+      preparedStatement.setString(1, username);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         while (rs.next()) {
           System.out.println("Création du membre : " + rs.getInt(1));
@@ -94,7 +94,7 @@ public class MemberDAO {
     return null;
     /*
     var items = jsonDB.parse(COLLECTION_NAME);
-    return items.stream().filter(item -> item.getUsername().equals(membername)).findAny()
+    return items.stream().filter(item -> item.getUsername().equals(username)).findAny()
         .orElse(null);*/
   }
 
