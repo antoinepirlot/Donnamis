@@ -22,6 +22,10 @@ public class MemberDAO {
   private final ObjectMapper jsonMapper = new ObjectMapper();
   private final DALServices dalServices = new DALServices();
 
+  /**
+   * Get all members from the db.
+   * @return a list of members
+   */
   public List<Member> getAll() {
     //List<Member> members = jsonDB.parse(COLLECTION_NAME);
     List<Member> membersToReturn = new ArrayList<>();
@@ -48,6 +52,11 @@ public class MemberDAO {
     return membersToReturn;
   }
 
+  /**
+   * Get a specific member identified by its id
+   * @param id the member's id (it is identified in the db with its id)
+   * @return the member got in from the db
+   */
   public Member getOne(int id) {
     try {
       String query = "SELECT * FROM project_pae.members WHERE id_member = ?";
@@ -72,6 +81,11 @@ public class MemberDAO {
     return null;
   }
 
+  /**
+   * Get a specific member identified by its username.
+   * @param username the member's username
+   * @return the member got from the db
+   */
   public Member getOne(String username) {
     try {
       String query = "SELECT * FROM project_pae.members WHERE username = ?";
@@ -99,6 +113,11 @@ public class MemberDAO {
         .orElse(null);*/
   }
 
+  /**
+   * Create one member and add it to the json file.
+   * @param member the member to add into the json file
+   * @return the added member
+   */
   public Member createOne(Member member) {
     List<Member> members = jsonDB.parse(COLLECTION_NAME);
     member.setId(nextMemberId());
@@ -114,6 +133,13 @@ public class MemberDAO {
     return member;
   }
 
+  /**
+   * Verify if the member is present into the db and its username and password are correct
+   * then it created the token associated with this member if login credentials are correct.
+   * @param username the member's username
+   * @param password the member's password
+   * @return the match member otherwise null
+   */
   public ObjectNode login(String username, String password) {
     Member member = getOne(username);
     if (member == null || !member.checkPassword(password)) {
@@ -127,6 +153,17 @@ public class MemberDAO {
     }
   }
 
+  /**
+   * Add a new member to the db if it's not already in the db.
+   * @param username the member's username
+   * @param password the member's password
+   * @param lastName the member's lastname
+   * @param firstName the member's firstname
+   * @param actualState the member's actualState ("registered" while registering)
+   * @param phoneNumber the member's phone number
+   * @param admin the member's admin status (false by default)
+   * @return the new created member if it's not already into the db otherwise null
+   */
   public ObjectNode register(String username, String password, String lastName, String firstName,
       String actualState, String phoneNumber, boolean admin) {
     Member tempMember = getOne(username);
@@ -154,6 +191,12 @@ public class MemberDAO {
     }
   }
 
+  /**
+   * Create a connection token for a member
+   * @param member the member who need a token
+   * @return the member's token
+   * @throws Exception
+   */
   private ObjectNode createToken(Member member) throws Exception {
     String token;
     token = JWT.create().withIssuer("auth0")
@@ -164,6 +207,10 @@ public class MemberDAO {
         .put("username", member.getUsername());
   }
 
+  /**
+   * Look for the next member id based on the last added member.
+   * @return 1 if there's no member otherwise the id for the new member
+   */
   private int nextMemberId() {
     List<Member> members = jsonDB.parse(COLLECTION_NAME);
 

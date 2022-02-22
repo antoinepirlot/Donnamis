@@ -42,6 +42,12 @@ class DALServices {
     }
   }
 
+  /**
+   * Create a new preparedStatement with the query.
+   * @param query the query for the preparedStatement
+   * @return the new preparedStatement
+   * @throws SQLException
+   */
   public PreparedStatement getPreparedStatement(String query) throws SQLException {
     return connection.prepareStatement(query);
   }
