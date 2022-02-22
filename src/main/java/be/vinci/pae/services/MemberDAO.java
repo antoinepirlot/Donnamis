@@ -23,9 +23,9 @@ public class MemberDAO {
   private final DALServices dalServices = new DALServices();
 
 
-  public List<Member> getAll() throws SQLException {
+  public List<Member> getAll() {
     //List<Member> members = jsonDB.parse(COLLECTION_NAME);
-    List<Member> membersToReturn = new ArrayList<Member>();
+    List<Member> membersToReturn = new ArrayList<>();
 
     try {
       PreparedStatement preparedStatement = dalServices.getPreparedStatement(
@@ -56,10 +56,11 @@ public class MemberDAO {
       System.out.println("Préparation du statement");
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
-        while (rs.next()) {
+        if (rs.next()) { //We know only one is returned by the db
           System.out.println("Création du membre : " + rs.getInt(1));
-          Member member = new Member(rs.getInt(1), rs.getString(2), rs.getString(3),
-              rs.getString(4), rs.getString(5), rs.getBoolean(6), rs.getString(7), rs.getString(8));
+          Member member = new Member(rs.getInt(1), rs.getString(2),
+              rs.getString(3), rs.getString(4), rs.getString(5),
+              rs.getBoolean(6), rs.getString(7), rs.getString(8));
           System.out.println("Ajout du membre dans la liste des membres : " + member);
           return member;
         }
@@ -79,7 +80,7 @@ public class MemberDAO {
       System.out.println("Préparation du statement");
       preparedStatement.setString(1, username);
       try (ResultSet rs = preparedStatement.executeQuery()) {
-        while (rs.next()) {
+        if (rs.next()) { //We know only one is returned by the db
           System.out.println("Création du membre : " + rs.getInt(1));
           Member member = new Member(rs.getInt(1), rs.getString(2), rs.getString(3),
               rs.getString(4), rs.getString(5), rs.getBoolean(6), rs.getString(7), rs.getString(8));
@@ -123,11 +124,10 @@ public class MemberDAO {
     try {
       token = JWT.create().withIssuer("auth0")
           .withClaim("member", member.getId()).sign(this.jwtAlgorithm);
-      ObjectNode publicMember = jsonMapper.createObjectNode()
+      return jsonMapper.createObjectNode()
           .put("token", token)
           .put("id", member.getId())
           .put("username", member.getUsername());
-      return publicMember;
     } catch (Exception e) {
       System.out.println("Unable to create token");
       return null;
@@ -159,11 +159,10 @@ public class MemberDAO {
     try {
       token = JWT.create().withIssuer("auth0")
           .withClaim("member", member.getId()).sign(this.jwtAlgorithm);
-      ObjectNode publicUser = jsonMapper.createObjectNode()
+      return jsonMapper.createObjectNode()
           .put("token", token)
           .put("id", member.getId())
           .put("username", member.getUsername());
-      return publicUser;
 
     } catch (Exception e) {
       System.out.println("Unable to create token");
