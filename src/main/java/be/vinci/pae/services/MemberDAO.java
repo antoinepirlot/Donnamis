@@ -22,7 +22,6 @@ public class MemberDAO {
   private final ObjectMapper jsonMapper = new ObjectMapper();
   private final DALServices dalServices = new DALServices();
 
-
   public List<Member> getAll() {
     //List<Member> members = jsonDB.parse(COLLECTION_NAME);
     List<Member> membersToReturn = new ArrayList<>();
@@ -34,8 +33,9 @@ public class MemberDAO {
       try (ResultSet rs = preparedStatement.executeQuery()) {
         while (rs.next()) {
           System.out.println("Création du membre : " + rs.getInt(1));
-          Member member = new Member(rs.getInt(1), rs.getString(2), rs.getString(3),
-              rs.getString(4), rs.getString(5), rs.getBoolean(6), rs.getString(7), rs.getString(8));
+          Member member = new Member(rs.getInt(1), rs.getString(2),
+              rs.getString(3), rs.getString(4), rs.getString(5),
+              rs.getBoolean(6), rs.getString(7), rs.getString(8));
           System.out.println("Ajout du membre dans la liste des membres : " + member);
           membersToReturn.add(member);
         }
@@ -47,7 +47,6 @@ public class MemberDAO {
 
     return membersToReturn;
   }
-
 
   public Member getOne(int id) {
     try {
@@ -82,8 +81,9 @@ public class MemberDAO {
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) { //We know only one is returned by the db
           System.out.println("Création du membre : " + rs.getInt(1));
-          Member member = new Member(rs.getInt(1), rs.getString(2), rs.getString(3),
-              rs.getString(4), rs.getString(5), rs.getBoolean(6), rs.getString(7), rs.getString(8));
+          Member member = new Member(rs.getInt(1), rs.getString(2),
+              rs.getString(3), rs.getString(4), rs.getString(5),
+              rs.getBoolean(6), rs.getString(7), rs.getString(8));
           System.out.println("Ajout du membre dans la liste des membres : " + member);
           //membersToReturn.add(member);
           return member;
@@ -113,7 +113,6 @@ public class MemberDAO {
     jsonDB.serialize(members, COLLECTION_NAME);
     return member;
   }
-
 
   public ObjectNode login(String username, String password) {
     Member member = getOne(username);
