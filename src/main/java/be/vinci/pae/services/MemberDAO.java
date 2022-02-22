@@ -120,20 +120,13 @@ public class MemberDAO {
     if (member == null || !member.checkPassword(password)) {
       return null;
     }
-    String token;
     try {
-      token = JWT.create().withIssuer("auth0")
-          .withClaim("member", member.getId()).sign(this.jwtAlgorithm);
-      return jsonMapper.createObjectNode()
-          .put("token", token)
-          .put("id", member.getId())
-          .put("username", member.getUsername());
+      return createToken(member);
     } catch (Exception e) {
       System.out.println("Unable to create token");
       return null;
     }
   }
-
 
   public ObjectNode register(String username, String password, String lastName, String firstName,
       String actualState, String phoneNumber, boolean admin) {
@@ -155,19 +148,22 @@ public class MemberDAO {
     if (member == null) {
       return null;
     }
-    String token;
     try {
-      token = JWT.create().withIssuer("auth0")
-          .withClaim("member", member.getId()).sign(this.jwtAlgorithm);
-      return jsonMapper.createObjectNode()
-          .put("token", token)
-          .put("id", member.getId())
-          .put("username", member.getUsername());
-
+      return createToken(member);
     } catch (Exception e) {
       System.out.println("Unable to create token");
       return null;
     }
+  }
+
+  private ObjectNode createToken(Member member) throws Exception {
+    String token;
+    token = JWT.create().withIssuer("auth0")
+        .withClaim("member", member.getId()).sign(this.jwtAlgorithm);
+    return jsonMapper.createObjectNode()
+        .put("token", token)
+        .put("id", member.getId())
+        .put("username", member.getUsername());
   }
 
   public int nextMemberId() {
