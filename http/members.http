@@ -23,8 +23,8 @@ POST {{baseUrl}}/members/login
 Content-Type: application/json
 
 {
-  "username": "LePirelot",
-  "password": "pswdPasOuf"
+  "username": "lepirelot",
+  "password": "K72FdDqcLMZwq9dq37NQ6ysyvADtKZbWZuUMDeEcGNqrrnau8JKMbLBdSSkQ"
 }
 
 ### Register john
