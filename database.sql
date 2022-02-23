@@ -1,4 +1,4 @@
-DROP SCHEMA IF EXISTS project_pae;
+DROP SCHEMA IF EXISTS project_pae CASCADE;
 CREATE SCHEMA project_pae;
 
 -------------------CREATE TABLES--------------------------
@@ -33,5 +33,3 @@ VALUES ('Swapiz', 'K72FdDqcLMZwq9dq37NQ6ysyvADtKZbWZuUMDeEcGNqrrnau8JKMbLBdSSkQ'
 INSERT INTO project_pae.members (username, password, last_name, first_name, is_admin, state, phone)
 VALUES ('username', 'K72FdDqcLMZwq9dq37NQ6ysyvADtKZbWZuUMDeEcGNqrrnau8JKMbLBdSSkQ', 'Lastname',
         'Firstname', false, 'denied', NULL);
-
-SELECT * FROM project_pae.members;
