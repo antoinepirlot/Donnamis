@@ -27,9 +27,9 @@ public class MemberDAO {
    * @return a list of members
    */
   public List<Member> getAll() {
+    System.out.println("getAll");
     //List<Member> members = jsonDB.parse(COLLECTION_NAME);
     List<Member> membersToReturn = new ArrayList<>();
-
     try {
       String query = "SELECT * FROM project_pae.members";
       PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
@@ -105,7 +105,7 @@ public class MemberDAO {
    * @throws SQLException if there's an issue while getting data from the result set
    */
   private Member createMemberInstance(ResultSet rs) throws SQLException {
-    int id = rs.getInt("id");
+    int id = rs.getInt("id_member");
     System.out.println("Création du membre : " + id);
     Member member = new Member(
         id, rs.getString("username"),
@@ -118,23 +118,33 @@ public class MemberDAO {
   }
 
   /**
-   * Create one member and add it to the json file.
-   * @param member the member to add into the json file
+   * Add the member to the db.
+   * @param member the member to add into the db
    * @return the added member
    */
   public Member createOne(Member member) {
-    List<Member> members = jsonDB.parse(COLLECTION_NAME);
-    member.setId(nextMemberId());
-    member.setUsername(StringEscapeUtils.escapeHtml4(member.getUsername()));
-    member.setPassword(StringEscapeUtils.escapeHtml4(member.getPassword()));
-    member.setLastName(StringEscapeUtils.escapeHtml4(member.getLastName()));
-    member.setFirstName(StringEscapeUtils.escapeHtml4(member.getFirstName()));
-    member.setActualState(StringEscapeUtils.escapeHtml4(member.getActualState()));
-    member.setPhoneNumber(StringEscapeUtils.escapeHtml4(member.getPhoneNumber()));
-
-    members.add(member);
-    jsonDB.serialize(members, COLLECTION_NAME);
-    return member;
+    String query = "INSERT INTO project_pae.members (username, password, last_name, first_name, "
+        + "is_admin, state, phone) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    try {
+      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
+      preparedStatement.setString(1, member.getUsername());
+      preparedStatement.setString(2, member.getPassword());
+      preparedStatement.setString(3, member.getLastName());
+      preparedStatement.setString(4, member.getFirstName());
+      preparedStatement.setBoolean(5, member.isAdmin());
+      preparedStatement.setString(6, member.getActualState());
+      preparedStatement.setString(7, member.getPhoneNumber());
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        //TODO it adds into the db BUT can't execute getOne(), it returns null
+        if (rs.next()){
+          System.out.println("Ajout du membre réussi.");
+          return this.getOne(member.getUsername());
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return null;
   }
 
   /**
@@ -170,25 +180,29 @@ public class MemberDAO {
    */
   public ObjectNode register(String username, String password, String lastName, String firstName,
       String actualState, String phoneNumber, boolean admin) {
-    Member tempMember = getOne(username);
+    Member tempMember= getOne(username);
     if (tempMember != null) { // the user already exists !
       return null;
     }
-    tempMember = new Member();
-    tempMember.setUsername(username);
-    tempMember.setPassword(password);
-    tempMember.setLastName(lastName);
-    tempMember.setFirstName(firstName);
-    tempMember.setActualState(actualState);
-    tempMember.setPhoneNumber(phoneNumber);
-    tempMember.setAdmin(admin);
-
-    Member member = createOne(tempMember);
-    if (member == null) {
+    tempMember = new Member(
+        0,
+        StringEscapeUtils.escapeHtml4(username),
+        StringEscapeUtils.escapeHtml4(password),
+        StringEscapeUtils.escapeHtml4(lastName),
+        StringEscapeUtils.escapeHtml4(firstName),
+        admin,
+        StringEscapeUtils.escapeHtml4(actualState),
+        StringEscapeUtils.escapeHtml4(phoneNumber)
+    );
+    System.out.println("!!!!!!!!!");
+    System.out.println(tempMember);
+    Member addedMember = this.createOne(tempMember);
+    if(addedMember == null) {
+      System.out.println("addedMember is null.");
       return null;
     }
     try {
-      return createToken(member);
+      return createToken(addedMember);
     } catch (Exception e) {
       System.out.println("Unable to create token");
       return null;
