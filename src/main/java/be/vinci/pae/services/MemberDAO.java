@@ -36,11 +36,7 @@ public class MemberDAO {
       System.out.println("Préparation du statement");
       try (ResultSet rs = preparedStatement.executeQuery()) {
         while (rs.next()) {
-          System.out.println("Création du membre : " + rs.getInt(1));
-          Member member = new Member(rs.getInt(1), rs.getString(2),
-              rs.getString(3), rs.getString(4), rs.getString(5),
-              rs.getBoolean(6), rs.getString(7), rs.getString(8));
-          System.out.println("Ajout du membre dans la liste des membres : " + member);
+          Member member = createMemberInstance(rs);
           membersToReturn.add(member);
         }
       }
@@ -65,12 +61,7 @@ public class MemberDAO {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) { //We know only one is returned by the db
-          System.out.println("Création du membre : " + rs.getInt(1));
-          Member member = new Member(rs.getInt(1), rs.getString(2),
-              rs.getString(3), rs.getString(4), rs.getString(5),
-              rs.getBoolean(6), rs.getString(7), rs.getString(8));
-          System.out.println("Ajout du membre dans la liste des membres : " + member);
-          return member;
+          return createMemberInstance(rs);
         }
       }
     } catch (SQLException e) {
@@ -94,13 +85,7 @@ public class MemberDAO {
       preparedStatement.setString(1, username);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) { //We know only one is returned by the db
-          System.out.println("Création du membre : " + rs.getInt(1));
-          Member member = new Member(rs.getInt(1), rs.getString(2),
-              rs.getString(3), rs.getString(4), rs.getString(5),
-              rs.getBoolean(6), rs.getString(7), rs.getString(8));
-          System.out.println("Ajout du membre dans la liste des membres : " + member);
-          //membersToReturn.add(member);
-          return member;
+          return createMemberInstance(rs);
         }
       }
     } catch (SQLException e) {
@@ -111,6 +96,25 @@ public class MemberDAO {
     var items = jsonDB.parse(COLLECTION_NAME);
     return items.stream().filter(item -> item.getUsername().equals(username)).findAny()
         .orElse(null);*/
+  }
+
+  /**
+   * Create a Member instance
+   * @param rs the result set that contains sql result
+   * @return a new instance of member based on what rs contains
+   * @throws SQLException if there's an issue while getting data from the result set
+   */
+  private Member createMemberInstance(ResultSet rs) throws SQLException {
+    int id = rs.getInt("id");
+    System.out.println("Création du membre : " + id);
+    Member member = new Member(
+        id, rs.getString("username"),
+        rs.getString("password"), rs.getString("last_name"),
+        rs.getString("first_name"), rs.getBoolean("is_admin"),
+        rs.getString("state"), rs.getString("phone")
+    );
+    System.out.println("Ajout du membre dans la liste des membres : " + member);
+    return member;
   }
 
   /**
