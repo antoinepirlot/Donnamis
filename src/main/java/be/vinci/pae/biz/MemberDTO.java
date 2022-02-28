@@ -13,6 +13,9 @@ public class MemberDTO {
   private String actualState;
   private String phoneNumber;
 
+  public MemberDTO() {
+  }
+
   public MemberDTO(int id, String username, String password, String lastName, String firstName,
       boolean isAdmin, String actualState, String phoneNumber) {
     this.id = id;

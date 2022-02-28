@@ -1,8 +1,16 @@
 ### get all
 GET {{baseUrl}}/members
 
-### get one by id
-GET {{baseUrl}}/members/1
+### Login with default user credentials
+POST {{baseUrl}}/members/login
+Content-Type: application/json
+
+{
+  "username": "lepirelot",
+  "password": "K72FdDqcLMZwq9dq37NQ6ysyvADtKZbWZuUMDeEcGNqrrnau8JKMbLBdSSkQ"
+}
+
+###
 
 ### Create One memberDTO
 POST {{baseUrl}}/members
@@ -16,15 +24,6 @@ Content-Type: application/json
   "actualState": "confirmed",
   "phoneNumber": "0478 85 22 64",
   "admin": false
-}
-
-### Login with default user credentials
-POST {{baseUrl}}/members/login
-Content-Type: application/json
-
-{
-  "username": "lepirelot",
-  "password": "K72FdDqcLMZwq9dq37NQ6ysyvADtKZbWZuUMDeEcGNqrrnau8JKMbLBdSSkQ"
 }
 
 ### Register john
