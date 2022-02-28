@@ -37,6 +37,11 @@ public class MemberResource {
     return memberUCC.getAll();
   }
 
+  /**
+   * Method that login the member. It verify if the user can be connected by calling ucc.
+   * @param json the member login informations
+   * @return the token created for the member
+   */
   @POST
   @Path("login")
   @Consumes(MediaType.APPLICATION_JSON)
