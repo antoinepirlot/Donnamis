@@ -195,7 +195,6 @@ public class MemberDAO {
         .withClaim("member", memberDTO.getId()).sign(this.jwtAlgorithm);
     return jsonMapper.createObjectNode()
         .put("token", token)
-        .put("id", memberDTO.getId())
         .put("username", memberDTO.getUsername());
   }
 
