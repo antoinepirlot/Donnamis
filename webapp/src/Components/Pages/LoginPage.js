@@ -1,6 +1,3 @@
-import HomePage from "./HomePage";
-import { Redirect } from "../Router/Router";
-
 const loginFormHtml = `
   <div>
     <form id="loginForm">
@@ -15,7 +12,6 @@ const loginFormHtml = `
     <div id="loginFormNotification"></div>
   </div>
 `;
-
 
 /**
  * Render the LoginPage :
@@ -47,10 +43,12 @@ async function login(e) {
       })
     };
     const response = await fetch("api/members/login", request);
-    if(!response.ok)
+    if (!response.ok) {
       throw new Error("Problème lors du fetch");
+    }
     const notification = document.querySelector("#loginFormNotification");
-    notification.innerHTML = response.body.username;
+    const member = await response.json();
+    notification.innerHTML = member.username;
   } catch (err) {
     console.error(err);
   }
