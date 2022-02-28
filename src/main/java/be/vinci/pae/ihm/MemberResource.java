@@ -1,7 +1,7 @@
-package be.vinci.pae.api;
+package be.vinci.pae.ihm;
 
-import be.vinci.pae.domain.Member;
-import be.vinci.pae.services.MemberDAO;
+import be.vinci.pae.biz.Member;
+import be.vinci.pae.dal.MemberDAO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Singleton;

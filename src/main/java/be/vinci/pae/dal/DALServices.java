@@ -1,4 +1,4 @@
-package be.vinci.pae.services;
+package be.vinci.pae.dal;
 
 import jakarta.inject.Singleton;
 import java.sql.Connection;

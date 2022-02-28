@@ -1,6 +1,6 @@
-package be.vinci.pae.services;
+package be.vinci.pae.dal;
 
-import be.vinci.pae.domain.Member;
+import be.vinci.pae.biz.Member;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
