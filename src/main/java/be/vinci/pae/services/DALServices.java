@@ -14,6 +14,7 @@ class DALServices {
 
   /**
    * Try to connect to the db
+   *
    * @return the db connection
    */
   private Connection dbConnection() {
@@ -21,7 +22,8 @@ class DALServices {
     String url = "jdbc:postgresql://localhost:5432/postgres";
     Connection connection = null;
     try {
-      connection = DriverManager.getConnection(url, "postgres", "nikesakou11"); //postgres password
+      connection = DriverManager.getConnection(url, "postgres",
+          "Postgresql001"); //postgres password
     } catch (SQLException e) {
       System.out.println("Impossible de joindre le serveur");
       System.exit(1);
@@ -44,9 +46,10 @@ class DALServices {
 
   /**
    * Create a new preparedStatement with the query.
+   *
    * @param query the query for the preparedStatement
    * @return the new preparedStatement
-   * @throws SQLException
+   * @throws SQLException if SQL error
    */
   public PreparedStatement getPreparedStatement(String query) throws SQLException {
     return connection.prepareStatement(query);
