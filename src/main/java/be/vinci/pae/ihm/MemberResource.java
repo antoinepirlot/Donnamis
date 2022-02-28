@@ -31,18 +31,11 @@ public class MemberResource {
    *
    * @return String that will be returned as a text/plain response.
    */
-//  @GET
-//  @Produces(MediaType.APPLICATION_JSON)
-//  public List<MemberDTO> getAll() {
-//    return memberUCC.getAll();
-//  }
-
-//  @GET
-//  @Path("/{id}")
-//  @Produces(MediaType.APPLICATION_JSON)
-//  public MemberDTO getOne(@PathParam("id") int id) {
-//    return memberUCC.getOne(id);
-//  }
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<MemberDTO> getAll() {
+    return memberUCC.getAll();
+  }
 
   @POST
   @Path("login")
