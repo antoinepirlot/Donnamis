@@ -1,7 +1,6 @@
 package be.vinci.pae.services;
 
 import be.vinci.pae.domain.Member;
-import be.vinci.pae.services.utils.Json;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -16,19 +15,17 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public class MemberDAO {
 
-  private static final String COLLECTION_NAME = "members";
-  private static Json<Member> jsonDB = new Json<>();
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
   private final ObjectMapper jsonMapper = new ObjectMapper();
   private final DALServices dalServices = new DALServices();
 
   /**
    * Get all members from the db.
+   *
    * @return a list of members
    */
   public List<Member> getAll() {
     System.out.println("getAll");
-    //List<Member> members = jsonDB.parse(COLLECTION_NAME);
     List<Member> membersToReturn = new ArrayList<>();
     try {
       String query = "SELECT * FROM project_pae.members";
@@ -50,6 +47,7 @@ public class MemberDAO {
 
   /**
    * Get a specific member identified by its id
+   *
    * @param id the member's id (it is identified in the db with its id)
    * @return the member got in from the db
    */
@@ -67,13 +65,12 @@ public class MemberDAO {
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
-    //List<Member> items = jsonDB.parse(COLLECTION_NAME);
-    //return items.stream().filter(item -> item.getId() == id).findAny().orElse(null);
     return null;
   }
 
   /**
    * Get a specific member identified by its username.
+   *
    * @param username the member's username
    * @return the member got from the db
    */
@@ -92,14 +89,11 @@ public class MemberDAO {
       System.out.println(e.getMessage());
     }
     return null;
-    /*
-    var items = jsonDB.parse(COLLECTION_NAME);
-    return items.stream().filter(item -> item.getUsername().equals(username)).findAny()
-        .orElse(null);*/
   }
 
   /**
    * Create a Member instance
+   *
    * @param rs the result set that contains sql result
    * @return a new instance of member based on what rs contains
    * @throws SQLException if there's an issue while getting data from the result set
@@ -119,6 +113,7 @@ public class MemberDAO {
 
   /**
    * Add the member to the db.
+   *
    * @param member the member to add into the db
    * @return the added member
    */
@@ -135,8 +130,8 @@ public class MemberDAO {
       preparedStatement.setString(6, member.getActualState());
       preparedStatement.setString(7, member.getPhoneNumber());
       try (ResultSet rs = preparedStatement.executeQuery()) {
-        //TODO it adds into the db BUT can't execute getOne(), it returns null
-        if (rs.next()){
+        //it adds into the db BUT can't execute getOne(), it returns null
+        if (rs.next()) {
           System.out.println("Ajout du membre réussi.");
           return this.getOne(member.getUsername());
         }
@@ -148,8 +143,9 @@ public class MemberDAO {
   }
 
   /**
-   * Verify if the member is present into the db and its username and password are correct
-   * then it created the token associated with this member if login credentials are correct.
+   * Verify if the member is present into the db and its username and password are correct then it
+   * created the token associated with this member if login credentials are correct.
+   *
    * @param username the member's username
    * @param password the member's password
    * @return the match member otherwise null
@@ -169,18 +165,19 @@ public class MemberDAO {
 
   /**
    * Add a new member to the db if it's not already in the db.
-   * @param username the member's username
-   * @param password the member's password
-   * @param lastName the member's lastname
-   * @param firstName the member's firstname
+   *
+   * @param username    the member's username
+   * @param password    the member's password
+   * @param lastName    the member's lastname
+   * @param firstName   the member's firstname
    * @param actualState the member's actualState ("registered" while registering)
    * @param phoneNumber the member's phone number
-   * @param admin the member's admin status (false by default)
+   * @param admin       the member's admin status (false by default)
    * @return the new created member if it's not already into the db otherwise null
    */
   public ObjectNode register(String username, String password, String lastName, String firstName,
       String actualState, String phoneNumber, boolean admin) {
-    Member tempMember= getOne(username);
+    Member tempMember = getOne(username);
     if (tempMember != null) { // the user already exists !
       return null;
     }
@@ -197,7 +194,7 @@ public class MemberDAO {
     System.out.println("!!!!!!!!!");
     System.out.println(tempMember);
     Member addedMember = this.createOne(tempMember);
-    if(addedMember == null) {
+    if (addedMember == null) {
       System.out.println("addedMember is null.");
       return null;
     }
@@ -211,11 +208,11 @@ public class MemberDAO {
 
   /**
    * Create a connection token for a member
+   *
    * @param member the member who need a token
    * @return the member's token
-   * @throws Exception
    */
-  private ObjectNode createToken(Member member) throws Exception {
+  private ObjectNode createToken(Member member) {
     String token;
     token = JWT.create().withIssuer("auth0")
         .withClaim("member", member.getId()).sign(this.jwtAlgorithm);
@@ -225,17 +222,5 @@ public class MemberDAO {
         .put("username", member.getUsername());
   }
 
-  /**
-   * Look for the next member id based on the last added member.
-   * @return 1 if there's no member otherwise the id for the new member
-   */
-  private int nextMemberId() {
-    List<Member> members = jsonDB.parse(COLLECTION_NAME);
-
-    if (members.size() == 0) {
-      return 1;
-    }
-    return members.get(members.size() - 1).getId() + 1;
-  }
 }
 

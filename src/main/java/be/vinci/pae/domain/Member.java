@@ -4,7 +4,6 @@ import java.util.Objects;
 
 public class Member {
 
-  private static final String[] POSSIBLE_STATES = {"registered", "confirmed", "denied"};
   private int id;
   private String username;
   private String password;
@@ -13,9 +12,6 @@ public class Member {
   private boolean isAdmin;
   private String actualState;
   private String phoneNumber;
-
-  public Member() {
-  }
 
   public Member(int id, String username, String password, String lastName, String firstName,
       boolean isAdmin, String actualState, String phoneNumber) {
@@ -102,7 +98,7 @@ public class Member {
   public boolean checkPassword(String password) {
     return this.password.equals(password);
   }
-  
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

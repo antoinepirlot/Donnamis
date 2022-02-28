@@ -23,8 +23,8 @@ POST {{baseUrl}}/members/login
 Content-Type: application/json
 
 {
-  "username": "lepirelot",
-  "password": "K72FdDqcLMZwq9dq37NQ6ysyvADtKZbWZuUMDeEcGNqrrnau8JKMbLBdSSkQ"
+  "username": "Michel02",
+  "password": "Securitas                                                   "
 }
 
 ### Register john
@@ -32,11 +32,11 @@ POST {{baseUrl}}/members/register
 Content-Type: application/json
 
 {
-  "username": "JohnZara00",
-  "password": "pswdLOL",
-  "lastName": "Lefevre",
-  "firstName": "John",
+  "username": "Michel03",
+  "password": "Securitas",
+  "lastName": "DuMoulin",
+  "firstName": "Michel",
   "actualState": "confirmed",
-  "phoneNumber": "0472 99 24 15",
+  "phoneNumber": "0478 79 69 32",
   "admin": false
 }

@@ -14,7 +14,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -24,7 +23,7 @@ import java.util.List;
 @Path("members")
 public class MemberResource {
 
-  private MemberDAO myMemberDAO = new MemberDAO();
+  private final MemberDAO myMemberDAO = new MemberDAO();
 
   /**
    * Method handling HTTP GET requests. The returned object will be sent to the client as
@@ -34,7 +33,7 @@ public class MemberResource {
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public List<Member> getAll() throws SQLException {
+  public List<Member> getAll() {
     return myMemberDAO.getAll();
   }
 
