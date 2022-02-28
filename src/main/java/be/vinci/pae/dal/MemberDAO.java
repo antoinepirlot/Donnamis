@@ -46,29 +46,6 @@ public class MemberDAO {
   }
 
   /**
-   * Get a specific member identified by its id
-   *
-   * @param id the member's id (it is identified in the db with its id)
-   * @return the member got in from the db
-   */
-  public MemberDTO getOne(int id) {
-    try {
-      String query = "SELECT * FROM project_pae.members WHERE id_member = ?";
-      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
-      System.out.println("Préparation du statement");
-      preparedStatement.setInt(1, id);
-      try (ResultSet rs = preparedStatement.executeQuery()) {
-        if (rs.next()) { //We know only one is returned by the db
-          return createMemberInstance(rs);
-        }
-      }
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
-    }
-    return null;
-  }
-
-  /**
    * Get a specific member identified by its username.
    *
    * @param username the member's username
