@@ -102,6 +102,3 @@ hs_err_pid*
 target/
 
 # End of https://www.toptal.com/developers/gitignore/api/java,eclipse,java-web
-
-#data
-*.json
