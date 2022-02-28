@@ -4,7 +4,7 @@ GET {{baseUrl}}/members
 ### get one by id
 GET {{baseUrl}}/members/1
 
-### Create One member
+### Create One memberDTO
 POST {{baseUrl}}/members
 Content-Type: application/json
 
@@ -23,8 +23,8 @@ POST {{baseUrl}}/members/login
 Content-Type: application/json
 
 {
-  "username": "Michel02",
-  "password": "Securitas                                                   "
+  "username": "lepirelot",
+  "password": "K72FdDqcLMZwq9dq37NQ6ysyvADtKZbWZuUMDeEcGNqrrnau8JKMbLBdSSkQ"
 }
 
 ### Register john

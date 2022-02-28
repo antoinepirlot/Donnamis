@@ -1,6 +1,6 @@
 package be.vinci.pae.dal;
 
-import be.vinci.pae.biz.Member;
+import be.vinci.pae.biz.MemberDTO;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -24,17 +24,17 @@ public class MemberDAO {
    *
    * @return a list of members
    */
-  public List<Member> getAll() {
+  public List<MemberDTO> getAll() {
     System.out.println("getAll");
-    List<Member> membersToReturn = new ArrayList<>();
+    List<MemberDTO> membersToReturn = new ArrayList<>();
     try {
       String query = "SELECT * FROM project_pae.members";
       PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
       System.out.println("Préparation du statement");
       try (ResultSet rs = preparedStatement.executeQuery()) {
         while (rs.next()) {
-          Member member = createMemberInstance(rs);
-          membersToReturn.add(member);
+          MemberDTO memberDTO = createMemberInstance(rs);
+          membersToReturn.add(memberDTO);
         }
       }
     } catch (SQLException e) {
@@ -51,7 +51,7 @@ public class MemberDAO {
    * @param id the member's id (it is identified in the db with its id)
    * @return the member got in from the db
    */
-  public Member getOne(int id) {
+  public MemberDTO getOne(int id) {
     try {
       String query = "SELECT * FROM project_pae.members WHERE id_member = ?";
       PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
@@ -74,7 +74,7 @@ public class MemberDAO {
    * @param username the member's username
    * @return the member got from the db
    */
-  public Member getOne(String username) {
+  public MemberDTO getOne(String username) {
     try {
       String query = "SELECT * FROM project_pae.members WHERE username = ?";
       PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
@@ -98,42 +98,42 @@ public class MemberDAO {
    * @return a new instance of member based on what rs contains
    * @throws SQLException if there's an issue while getting data from the result set
    */
-  private Member createMemberInstance(ResultSet rs) throws SQLException {
+  private MemberDTO createMemberInstance(ResultSet rs) throws SQLException {
     int id = rs.getInt("id_member");
     System.out.println("Création du membre : " + id);
-    Member member = new Member(
+    MemberDTO memberDTO = new MemberDTO(
         id, rs.getString("username"),
         rs.getString("password"), rs.getString("last_name"),
         rs.getString("first_name"), rs.getBoolean("is_admin"),
         rs.getString("state"), rs.getString("phone")
     );
-    System.out.println("Ajout du membre dans la liste des membres : " + member);
-    return member;
+    System.out.println("Ajout du membre dans la liste des membres : " + memberDTO);
+    return memberDTO;
   }
 
   /**
    * Add the member to the db.
    *
-   * @param member the member to add into the db
+   * @param memberDTO the member to add into the db
    * @return the added member
    */
-  public Member createOne(Member member) {
+  public MemberDTO createOne(MemberDTO memberDTO) {
     String query = "INSERT INTO project_pae.members (username, password, last_name, first_name, "
         + "is_admin, state, phone) VALUES (?, ?, ?, ?, ?, ?, ?)";
     try {
       PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
-      preparedStatement.setString(1, member.getUsername());
-      preparedStatement.setString(2, member.getPassword());
-      preparedStatement.setString(3, member.getLastName());
-      preparedStatement.setString(4, member.getFirstName());
-      preparedStatement.setBoolean(5, member.isAdmin());
-      preparedStatement.setString(6, member.getActualState());
-      preparedStatement.setString(7, member.getPhoneNumber());
+      preparedStatement.setString(1, memberDTO.getUsername());
+      preparedStatement.setString(2, memberDTO.getPassword());
+      preparedStatement.setString(3, memberDTO.getLastName());
+      preparedStatement.setString(4, memberDTO.getFirstName());
+      preparedStatement.setBoolean(5, memberDTO.isAdmin());
+      preparedStatement.setString(6, memberDTO.getActualState());
+      preparedStatement.setString(7, memberDTO.getPhoneNumber());
       try (ResultSet rs = preparedStatement.executeQuery()) {
         //it adds into the db BUT can't execute getOne(), it returns null
         if (rs.next()) {
           System.out.println("Ajout du membre réussi.");
-          return this.getOne(member.getUsername());
+          return this.getOne(memberDTO.getUsername());
         }
       }
     } catch (SQLException e) {
@@ -151,12 +151,12 @@ public class MemberDAO {
    * @return the match member otherwise null
    */
   public ObjectNode login(String username, String password) {
-    Member member = getOne(username);
-    if (member == null || !member.checkPassword(password)) {
+    MemberDTO memberDTO = getOne(username);
+    if (memberDTO == null || !memberDTO.checkPassword(password)) {
       return null;
     }
     try {
-      return createToken(member);
+      return createToken(memberDTO);
     } catch (Exception e) {
       System.out.println("Unable to create token");
       return null;
@@ -177,11 +177,11 @@ public class MemberDAO {
    */
   public ObjectNode register(String username, String password, String lastName, String firstName,
       String actualState, String phoneNumber, boolean admin) {
-    Member tempMember = getOne(username);
-    if (tempMember != null) { // the user already exists !
+    MemberDTO tempMemberDTO = getOne(username);
+    if (tempMemberDTO != null) { // the user already exists !
       return null;
     }
-    tempMember = new Member(
+    tempMemberDTO = new MemberDTO(
         0,
         StringEscapeUtils.escapeHtml4(username),
         StringEscapeUtils.escapeHtml4(password),
@@ -192,14 +192,14 @@ public class MemberDAO {
         StringEscapeUtils.escapeHtml4(phoneNumber)
     );
     System.out.println("!!!!!!!!!");
-    System.out.println(tempMember);
-    Member addedMember = this.createOne(tempMember);
-    if (addedMember == null) {
+    System.out.println(tempMemberDTO);
+    MemberDTO addedMemberDTO = this.createOne(tempMemberDTO);
+    if (addedMemberDTO == null) {
       System.out.println("addedMember is null.");
       return null;
     }
     try {
-      return createToken(addedMember);
+      return createToken(addedMemberDTO);
     } catch (Exception e) {
       System.out.println("Unable to create token");
       return null;
@@ -209,17 +209,17 @@ public class MemberDAO {
   /**
    * Create a connection token for a member
    *
-   * @param member the member who need a token
+   * @param memberDTO the member who need a token
    * @return the member's token
    */
-  private ObjectNode createToken(Member member) {
+  private ObjectNode createToken(MemberDTO memberDTO) {
     String token;
     token = JWT.create().withIssuer("auth0")
-        .withClaim("member", member.getId()).sign(this.jwtAlgorithm);
+        .withClaim("member", memberDTO.getId()).sign(this.jwtAlgorithm);
     return jsonMapper.createObjectNode()
         .put("token", token)
-        .put("id", member.getId())
-        .put("username", member.getUsername());
+        .put("id", memberDTO.getId())
+        .put("username", memberDTO.getUsername());
   }
 
 }

@@ -2,7 +2,7 @@ package be.vinci.pae.biz;
 
 import java.util.Objects;
 
-public class Member {
+public class MemberDTO {
 
   private int id;
   private String username;
@@ -13,7 +13,7 @@ public class Member {
   private String actualState;
   private String phoneNumber;
 
-  public Member(int id, String username, String password, String lastName, String firstName,
+  public MemberDTO(int id, String username, String password, String lastName, String firstName,
       boolean isAdmin, String actualState, String phoneNumber) {
     this.id = id;
     this.username = username;
@@ -25,11 +25,6 @@ public class Member {
     this.phoneNumber = phoneNumber;
   }
 
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id);
-  }
 
   public int getId() {
     return id;
@@ -107,8 +102,13 @@ public class Member {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Member member = (Member) o;
-    return id == member.id;
+    MemberDTO memberDTO = (MemberDTO) o;
+    return id == memberDTO.id;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 
   @Override

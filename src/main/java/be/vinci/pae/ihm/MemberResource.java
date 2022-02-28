@@ -1,7 +1,7 @@
 package be.vinci.pae.ihm;
 
-import be.vinci.pae.biz.Member;
-import be.vinci.pae.dal.MemberDAO;
+import be.vinci.pae.biz.MemberDTO;
+import be.vinci.pae.biz.MemberUCC;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Singleton;
@@ -23,7 +23,7 @@ import java.util.List;
 @Path("members")
 public class MemberResource {
 
-  private final MemberDAO myMemberDAO = new MemberDAO();
+  private final MemberUCC memberUCC = new MemberUCC();
 
   /**
    * Method handling HTTP GET requests. The returned object will be sent to the client as
@@ -31,18 +31,18 @@ public class MemberResource {
    *
    * @return String that will be returned as a text/plain response.
    */
-  @GET
-  @Produces(MediaType.APPLICATION_JSON)
-  public List<Member> getAll() {
-    return myMemberDAO.getAll();
-  }
+//  @GET
+//  @Produces(MediaType.APPLICATION_JSON)
+//  public List<MemberDTO> getAll() {
+//    return memberUCC.getAll();
+//  }
 
-  @GET
-  @Path("/{id}")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Member getOne(@PathParam("id") int id) {
-    return myMemberDAO.getOne(id);
-  }
+//  @GET
+//  @Path("/{id}")
+//  @Produces(MediaType.APPLICATION_JSON)
+//  public MemberDTO getOne(@PathParam("id") int id) {
+//    return memberUCC.getOne(id);
+//  }
 
   @POST
   @Path("login")
@@ -58,7 +58,7 @@ public class MemberResource {
     String password = json.get("password").asText();
 
     // Try to login
-    ObjectNode publicUser = myMemberDAO.login(username, password);
+    ObjectNode publicUser = memberUCC.login(username, password);
     if (publicUser == null) {
       throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED)
           .entity("username or password incorrect").type(MediaType.TEXT_PLAIN)
@@ -68,44 +68,44 @@ public class MemberResource {
   }
 
 
-  @POST
-  @Path("register")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public ObjectNode register(JsonNode json) {
-    // Get and check credentials
-    if (!json.hasNonNull("username") || !json.hasNonNull("password") ||
-        !json.hasNonNull("lastName") || !json.hasNonNull("firstName") ||
-        !json.hasNonNull("actualState") || !json.hasNonNull("phoneNumber") ||
-        !json.hasNonNull("admin")) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("username or password required").type("text/plain").build());
-    }
-    String username = json.get("username").asText();
-    String password = json.get("password").asText();
-    String lastName = json.get("lastName").asText();
-    String firstName = json.get("firstName").asText();
-    String actualState = json.get("actualState").asText();
-    String phoneNumber = json.get("phoneNumber").asText();
-    boolean admin = json.get("admin").asBoolean();
-
-    // Try to login
-    ObjectNode publicUser = myMemberDAO.register(username, password, lastName, firstName,
-        actualState, phoneNumber, admin);
-    if (publicUser == null) {
-      throw new WebApplicationException(Response.status(Response.Status.CONFLICT)
-          .entity("this resource already exists").type(MediaType.TEXT_PLAIN)
-          .build());
-    }
-    return publicUser;
-
-  }
-
-  @POST
-  @Produces(MediaType.APPLICATION_JSON)
-  @Consumes(MediaType.APPLICATION_JSON)
-  public Member createOne(Member member) {
-    return myMemberDAO.createOne(member);
-  }
+//  @POST
+//  @Path("register")
+//  @Consumes(MediaType.APPLICATION_JSON)
+//  @Produces(MediaType.APPLICATION_JSON)
+//  public ObjectNode register(JsonNode json) {
+//    // Get and check credentials
+//    if (!json.hasNonNull("username") || !json.hasNonNull("password") ||
+//        !json.hasNonNull("lastName") || !json.hasNonNull("firstName") ||
+//        !json.hasNonNull("actualState") || !json.hasNonNull("phoneNumber") ||
+//        !json.hasNonNull("admin")) {
+//      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+//          .entity("username or password required").type("text/plain").build());
+//    }
+//    String username = json.get("username").asText();
+//    String password = json.get("password").asText();
+//    String lastName = json.get("lastName").asText();
+//    String firstName = json.get("firstName").asText();
+//    String actualState = json.get("actualState").asText();
+//    String phoneNumber = json.get("phoneNumber").asText();
+//    boolean admin = json.get("admin").asBoolean();
+//
+//    // Try to login
+//    ObjectNode publicUser = memberUCC.register(username, password, lastName, firstName,
+//        actualState, phoneNumber, admin);
+//    if (publicUser == null) {
+//      throw new WebApplicationException(Response.status(Response.Status.CONFLICT)
+//          .entity("this resource already exists").type(MediaType.TEXT_PLAIN)
+//          .build());
+//    }
+//    return publicUser;
+//
+//  }
+//
+//  @POST
+//  @Produces(MediaType.APPLICATION_JSON)
+//  @Consumes(MediaType.APPLICATION_JSON)
+//  public MemberDTO createOne(MemberDTO memberDTO) {
+//    return memberUCC.createOne(memberDTO);
+//  }
 
 }
