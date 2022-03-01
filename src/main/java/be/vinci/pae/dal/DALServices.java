@@ -25,9 +25,6 @@ class DALServices {
     String url = Config.getProperty("url");
     String user = Config.getProperty("user");
     String dbPassword = Config.getProperty("dbpassword");
-    System.out.println(url);
-    System.out.println(user);
-    System.out.println(dbPassword);
     try {
       connection = DriverManager.getConnection(url, user, dbPassword); //postgres password
     } catch (SQLException e) {

@@ -1,5 +1,5 @@
 package be.vinci.pae.biz;
 
-public interface Member {
-
+public interface Member extends MemberDTO {
+  String createToken();
 }
