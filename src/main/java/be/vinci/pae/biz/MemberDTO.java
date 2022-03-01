@@ -1,6 +1,7 @@
 package be.vinci.pae.biz;
 
 import java.util.Objects;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class MemberDTO {
 
@@ -93,8 +94,8 @@ public class MemberDTO {
     this.phoneNumber = phoneNumber;
   }
 
-  public boolean checkPassword(String password) {
-    return this.password.equals(password);
+  public boolean checkPassword(String passwordToCheck) {
+    return BCrypt.checkpw(passwordToCheck, this.password);
   }
 
   @Override
