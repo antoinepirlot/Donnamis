@@ -53,10 +53,11 @@ async function login(e) {
     }
     const notification = document.querySelector("#loginFormNotification");
     const member = await response.json();
-    if(rememberMe)
+    if (rememberMe) {
       setLocalObject("member", member);
-    else
+    } else {
       setSessionObject("member", member);
+    }
     notification.innerHTML = member.username;
   } catch (err) {
     console.error(err);

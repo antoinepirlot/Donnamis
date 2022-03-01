@@ -2,7 +2,6 @@
 // However, the JS has still to be loaded for each Bootstrap's component that needs it.
 // Here, because our JS component 'Navbar' has the same name as Navbar Bootstrap's component
 // we change the name of the imported Bootstrap's 'Navbar' component
-import { Navbar as BootstrapNavbar} from "bootstrap";
 
 /**
  * Render the Navbar which is styled by using Bootstrap
@@ -11,8 +10,11 @@ import { Navbar as BootstrapNavbar} from "bootstrap";
  * - the router will show the Page associated to this URI when the user click on a nav-link
  */
 
+import {getObject} from "../../utils/session";
+
 const Navbar = () => {
   const navbarWrapper = document.querySelector("#navbarWrapper");
+  let member = getObject("member");
   let navbar = `
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
@@ -32,15 +34,25 @@ const Navbar = () => {
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
                 <a class="nav-link" aria-current="page" href="#" data-uri="/">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#" data-uri="/login">Login</a>
-              </li>                        
+              </li>`;
+  if (!member) {
+    navbar +=
+        `<li class="nav-item">
+                      <a class="nav-link" href="#" data-uri="/login">Login</a>
+                    </li>`;
+  } else {
+    navbar +=
+        `<li class="nav-item">
+                      <a class="nav-link" href="#" data-uri="/login">Logout</a>
+                    </li>`;
+  }
+  navbar +=
+      `
             </ul>
           </div>
         </div>
       </nav>
-  `;  
+  `;
   navbarWrapper.innerHTML = navbar;
 };
 

@@ -5,10 +5,11 @@ const STORE_NAME = "member";
  * @param {string} storeName
  * @returns
  */
-const getSessionObject = (storeName) => {
+const getObject = (storeName) => {
   const retrievedObject = localStorage.getItem(storeName);
-  if (!retrievedObject)
+  if (!retrievedObject) {
     return;
+  }
   return JSON.parse(retrievedObject);
 };
 
@@ -42,4 +43,4 @@ const removeSessionObject = (storeName) => {
   localStorage.removeItem(storeName);
 };
 
-export { getSessionObject, setSessionObject, setLocalObject, removeSessionObject };
+export {getObject, setSessionObject, setLocalObject, removeSessionObject};
