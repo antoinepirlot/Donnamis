@@ -43,7 +43,7 @@ const Navbar = () => {
   } else {
     navbar +=
         `<li class="nav-item">
-                      <a class="nav-link" href="#" data-uri="/login">Logout</a>
+                      <a class="nav-link" href="#" data-uri="/logout">Logout</a>
                     </li>`;
   }
   navbar +=
