@@ -1,9 +1,13 @@
+import {setLocalObject, setSessionObject} from "../../utils/session";
+
 const loginFormHtml = `
   <div>
     <form id="loginForm">
-      Pseudo: <input id="usernameInput" type="text" placeholder="Ecris ton pseudo ici"><br>
+      Pseudo: <input id="usernameInput" type="text"
+               placeholder="Ecris ton pseudo ici"><br>
       <br>
-      Mot de passe: <input id="passwordInput" type="password" placeholder="Mot de passe"><br>
+      Mot de passe: <input id="passwordInput" type="password"
+                     placeholder="Mot de passe"><br>
       <br>
       <input id="rememberMeInput" type="checkbox"> Se souvenir de moi<br>
       <br>
@@ -15,7 +19,8 @@ const loginFormHtml = `
 
 /**
  * Render the LoginPage :
- * Just an example to demonstrate how to use the router to "redirect" to a new page
+ * Just an example to demonstrate how to use the router
+ * to "redirect" to a new page
  */
 function LoginPage() {
   const page = document.querySelector("#page");
@@ -48,6 +53,10 @@ async function login(e) {
     }
     const notification = document.querySelector("#loginFormNotification");
     const member = await response.json();
+    if(rememberMe)
+      setLocalObject("member", member);
+    else
+      setSessionObject("member", member);
     notification.innerHTML = member.username;
   } catch (err) {
     console.error(err);
