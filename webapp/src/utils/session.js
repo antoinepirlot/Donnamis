@@ -6,7 +6,10 @@ const STORE_NAME = "member";
  * @returns
  */
 const getObject = (storeName) => {
-  const retrievedObject = localStorage.getItem(storeName);
+  let retrievedObject = localStorage.getItem(storeName);
+  if (!retrievedObject) {
+    retrievedObject = sessionStorage.getItem(storeName);
+  }
   if (!retrievedObject) {
     return;
   }
@@ -39,8 +42,9 @@ const setLocalObject = (storeName, object) => {
  * Remove the object in the localStorage under the storeName key
  * @param {String} storeName
  */
-const removeSessionObject = (storeName) => {
-  localStorage.removeItem(storeName);
+const disconnect = (storeName) => {
+  localStorage.clear();
+  sessionStorage.clear();
 };
 
-export {getObject, setSessionObject, setLocalObject, removeSessionObject};
+export {getObject, setSessionObject, setLocalObject, disconnect};
