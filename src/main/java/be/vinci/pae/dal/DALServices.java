@@ -1,5 +1,6 @@
 package be.vinci.pae.dal;
 
+import be.vinci.pae.utils.Config;
 import jakarta.inject.Singleton;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -19,11 +20,16 @@ class DALServices {
    */
   private Connection dbConnection() {
     driverLoading();
-    String url = "jdbc:postgresql://localhost:5432/postgres";
     Connection connection = null;
+    Config.load("./src/db.properties");
+    String url = Config.getProperty("url");
+    String user = Config.getProperty("user");
+    String dbPassword = Config.getProperty("dbpassword");
+    System.out.println(url);
+    System.out.println(user);
+    System.out.println(dbPassword);
     try {
-      connection = DriverManager.getConnection(url, "postgres",
-          "Postgresql001"); //postgres password
+      connection = DriverManager.getConnection(url, user, dbPassword); //postgres password
     } catch (SQLException e) {
       System.out.println("Impossible de joindre le serveur");
       System.exit(1);
