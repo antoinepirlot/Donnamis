@@ -1,4 +1,6 @@
 import {setLocalObject, setSessionObject} from "../../utils/session";
+import {Redirect} from "../Router/Router";
+import Navbar from "../Navbar/Navbar";
 
 const loginFormHtml = `
   <div>
@@ -59,6 +61,8 @@ async function login(e) {
       setSessionObject("member", member);
     }
     notification.innerHTML = member.username;
+    Redirect("/");
+    Navbar();
   } catch (err) {
     console.error(err);
   }
