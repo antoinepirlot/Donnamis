@@ -1,5 +1,6 @@
 package be.vinci.pae.ihm;
 
+import be.vinci.pae.biz.MemberDTO;
 import be.vinci.pae.biz.MemberUCC;
 import be.vinci.pae.biz.MemberUCCImpl;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -55,7 +56,7 @@ public class MemberResource {
     }
     String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
     String password = json.get("password").asText();
-    String token = memberUCC.getToken(memberUCC.login(username, password));;
+    String token = memberUCC.login(username, password);
     try {
       return jsonMapper.createObjectNode()
           .put("token", token)

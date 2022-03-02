@@ -15,11 +15,8 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public Member login(String username, String password) {
-    return (Member) memberDAO.getOne(username, password);
-  }
-
-  public String getToken(Member member) {
+  public String login(String username, String password) {
+    Member member = (Member) memberDAO.getOne(username, password);
     return member.createToken();
   }
 }

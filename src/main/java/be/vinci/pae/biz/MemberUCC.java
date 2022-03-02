@@ -4,9 +4,7 @@ import java.util.List;
 
 public interface MemberUCC {
 
-  Member login(String username, String password);
+  String login(String username, String password);
 
   List<MemberDTO> getAll();
-
-  String getToken(Member member);
 }
