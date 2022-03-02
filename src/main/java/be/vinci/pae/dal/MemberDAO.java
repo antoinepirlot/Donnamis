@@ -62,7 +62,7 @@ public class MemberDAO {
           .type("text/plain")
           .build());
     }
-    if(!checkPassword(password, memberDTO.getPassword())) {
+    if (!checkPassword(password, memberDTO.getPassword())) {
       throw new WebApplicationException(Response.status(Status.FORBIDDEN)
           .entity("Wrong password")
           .type("text/plain")
