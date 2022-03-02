@@ -3,6 +3,9 @@ package be.vinci.pae.biz;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import java.util.Objects;
 
 class MemberImpl implements Member {
@@ -103,10 +106,32 @@ class MemberImpl implements Member {
   public String createToken() {
     System.out.println("Generating token.");
     Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
-    String token =  JWT.create().withIssuer("auth0")
+    String token = JWT.create().withIssuer("auth0")
         .withClaim("username", this.username).sign(jwtAlgorithm);
     System.out.println("Token generated");
     return token;
+  }
+
+  @Override
+  public void verifyState() {
+    System.out.println("L'état est :" + this.actualState);
+    if (this.actualState.equals("confirmed")) {
+      return;
+    }
+    if (this.actualState.equals("registered")) {
+      throw new WebApplicationException(Response.status(Status.FORBIDDEN)
+          .entity("The member is registered")
+          .type("text/plain")
+          .build());
+    }
+    if (this.actualState.equals("denied")) {
+      throw new WebApplicationException(Response.status(Status.FORBIDDEN)
+          .entity("The member is denied")
+          .type("text/plain")
+          .build());
+    }
+
+
   }
 
   @Override

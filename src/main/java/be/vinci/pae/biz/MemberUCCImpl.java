@@ -17,6 +17,7 @@ public class MemberUCCImpl implements MemberUCC {
   @Override
   public String login(String username, String password) {
     Member member = (Member) memberDAO.getOne(username, password);
+    member.verifyState();
     return member.createToken();
   }
 }
