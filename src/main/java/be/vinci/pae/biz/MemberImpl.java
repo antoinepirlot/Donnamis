@@ -112,6 +112,11 @@ class MemberImpl implements Member {
     return token;
   }
 
+  /**
+   * Verify if the state of the member is allowed to connect to the website.
+   * If the state is "confirmed" the user can access.
+   * @throws WebApplicationException if the state is "registered" or "denied"
+   */
   @Override
   public void verifyState() {
     System.out.println("L'état est :" + this.actualState);
