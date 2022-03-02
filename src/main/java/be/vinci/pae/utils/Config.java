@@ -34,5 +34,4 @@ public class Config {
   public static boolean getBoolProperty(String key) {
     return Boolean.parseBoolean(props.getProperty(key));
   }
-
 }

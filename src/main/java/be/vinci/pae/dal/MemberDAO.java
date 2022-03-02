@@ -1,23 +1,24 @@
 package be.vinci.pae.dal;
 
+import be.vinci.pae.biz.Factory;
+import be.vinci.pae.biz.FactoryImpl;
 import be.vinci.pae.biz.MemberDTO;
-import be.vinci.pae.utils.Config;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+//import com.fasterxml.jackson.databind.node.ObjectNode;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.text.StringEscapeUtils;
+//import org.apache.commons.text.StringEscapeUtils;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class MemberDAO {
 
-  private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
-  private final ObjectMapper jsonMapper = new ObjectMapper();
   private final DALServices dalServices = new DALServices();
+  private final Factory factory = new FactoryImpl();
 
   /**
    * Get all members from the db.
@@ -46,16 +47,42 @@ public class MemberDAO {
   }
 
   /**
+   * Verify if the member is present into the db and its username and password are correct then it
+   * created the token associated with this member if login credentials are correct.
+   *
+   * @param username the member's username
+   * @param password the member's password
+   * @return the match member otherwise null
+   */
+  public MemberDTO getOne(String username, String password) {
+    MemberDTO memberDTO = getOne(username);
+    if (memberDTO == null) {
+      throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+          .entity("This member has not been found")
+          .type("text/plain")
+          .build());
+    }
+    if(!checkPassword(password, memberDTO.getPassword())) {
+      throw new WebApplicationException(Response.status(Status.FORBIDDEN)
+          .entity("Wrong password")
+          .type("text/plain")
+          .build());
+    }
+    return memberDTO;
+  }
+
+  /**
    * Get a specific member identified by its username.
    *
    * @param username the member's username
    * @return the member got from the db
    */
-  public MemberDTO getOne(String username) {
+  private MemberDTO getOne(String username) {
+    System.out.println("getOne(String username) in MemberDAO");
     try {
       String query = "SELECT * FROM project_pae.members WHERE username = ?";
       PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
-      System.out.println("Préparation du statement");
+      System.out.println("Prepared statement successfully generated");
       preparedStatement.setString(1, username);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) { //We know only one is returned by the db
@@ -76,15 +103,15 @@ public class MemberDAO {
    * @throws SQLException if there's an issue while getting data from the result set
    */
   private MemberDTO createMemberInstance(ResultSet rs) throws SQLException {
-    int id = rs.getInt("id_member");
-    System.out.println("Création du membre : " + id);
-    MemberDTO memberDTO = new MemberDTO(
-        id, rs.getString("username"),
-        rs.getString("password"), rs.getString("last_name"),
-        rs.getString("first_name"), rs.getBoolean("is_admin"),
-        rs.getString("state"), rs.getString("phone")
-    );
-    System.out.println("Ajout du membre dans la liste des membres : " + memberDTO);
+    MemberDTO memberDTO = factory.getMember();
+    memberDTO.setId(rs.getInt("id_member"));
+    memberDTO.setUsername(rs.getString("username"));
+    memberDTO.setPassword(rs.getString("password"));
+    memberDTO.setLastName(rs.getString("last_name"));
+    memberDTO.setFirstName(rs.getString("first_name"));
+    memberDTO.setAdmin(rs.getBoolean("is_admin"));
+    memberDTO.setActualState(rs.getString("state"));
+    memberDTO.setPhoneNumber(rs.getString("phone"));
     return memberDTO;
   }
 
@@ -119,84 +146,51 @@ public class MemberDAO {
     return null;
   }
 
-  /**
-   * Verify if the member is present into the db and its username and password are correct then it
-   * created the token associated with this member if login credentials are correct.
-   *
-   * @param username the member's username
-   * @param password the member's password
-   * @return the match member otherwise null
-   */
-  public ObjectNode login(String username, String password) {
-    MemberDTO memberDTO = getOne(username);
-    if (memberDTO == null || !memberDTO.checkPassword(password)) {
-      return null;
-    }
-    try {
-      return createToken(memberDTO);
-    } catch (Exception e) {
-      System.out.println("Unable to create token");
-      return null;
-    }
+  public boolean checkPassword(String password, String hashedPassword) {
+    return BCrypt.checkpw(password, hashedPassword);
   }
 
-  /**
-   * Add a new member to the db if it's not already in the db.
-   *
-   * @param username    the member's username
-   * @param password    the member's password
-   * @param lastName    the member's lastname
-   * @param firstName   the member's firstname
-   * @param actualState the member's actualState ("registered" while registering)
-   * @param phoneNumber the member's phone number
-   * @param admin       the member's admin status (false by default)
-   * @return the new created member if it's not already into the db otherwise null
-   */
-  public ObjectNode register(String username, String password, String lastName, String firstName,
-      String actualState, String phoneNumber, boolean admin) {
-    MemberDTO tempMemberDTO = getOne(username);
-    if (tempMemberDTO != null) { // the user already exists !
-      return null;
-    }
-    tempMemberDTO = new MemberDTO(
-        0,
-        StringEscapeUtils.escapeHtml4(username),
-        StringEscapeUtils.escapeHtml4(password),
-        StringEscapeUtils.escapeHtml4(lastName),
-        StringEscapeUtils.escapeHtml4(firstName),
-        admin,
-        StringEscapeUtils.escapeHtml4(actualState),
-        StringEscapeUtils.escapeHtml4(phoneNumber)
-    );
-    System.out.println("!!!!!!!!!");
-    System.out.println(tempMemberDTO);
-    MemberDTO addedMemberDTO = this.createOne(tempMemberDTO);
-    if (addedMemberDTO == null) {
-      System.out.println("addedMember is null.");
-      return null;
-    }
-    try {
-      return createToken(addedMemberDTO);
-    } catch (Exception e) {
-      System.out.println("Unable to create token");
-      return null;
-    }
-  }
-
-  /**
-   * Create a connection token for a member
-   *
-   * @param memberDTO the member who need a token
-   * @return the member's token
-   */
-  private ObjectNode createToken(MemberDTO memberDTO) {
-    String token;
-    token = JWT.create().withIssuer("auth0")
-        .withClaim("member", memberDTO.getId()).sign(this.jwtAlgorithm);
-    return jsonMapper.createObjectNode()
-        .put("token", token)
-        .put("username", memberDTO.getUsername());
-  }
-
+//  /**
+//   * Add a new member to the db if it's not already in the db.
+//   *
+//   * @param username    the member's username
+//   * @param password    the member's password
+//   * @param lastName    the member's lastname
+//   * @param firstName   the member's firstname
+//   * @param actualState the member's actualState ("registered" while registering)
+//   * @param phoneNumber the member's phone number
+//   * @param admin       the member's admin status (false by default)
+//   * @return the new created member if it's not already into the db otherwise null
+//   */
+//  public ObjectNode register(String username, String password, String lastName, String firstName,
+//      String actualState, String phoneNumber, boolean admin) {
+//    MemberDTO tempMemberDTO = getOne(username);
+//    if (tempMemberDTO != null) { // the user already exists !
+//      return null;
+//    }
+//    tempMemberDTO = new MemberDTO(
+//        0,
+//        StringEscapeUtils.escapeHtml4(username),
+//        StringEscapeUtils.escapeHtml4(password),
+//        StringEscapeUtils.escapeHtml4(lastName),
+//        StringEscapeUtils.escapeHtml4(firstName),
+//        admin,
+//        StringEscapeUtils.escapeHtml4(actualState),
+//        StringEscapeUtils.escapeHtml4(phoneNumber)
+//    );
+//    System.out.println("!!!!!!!!!");
+//    System.out.println(tempMemberDTO);
+//    MemberDTO addedMemberDTO = this.createOne(tempMemberDTO);
+//    if (addedMemberDTO == null) {
+//      System.out.println("addedMember is null.");
+//      return null;
+//    }
+//    try {
+//      return createToken(addedMemberDTO);
+//    } catch (Exception e) {
+//      System.out.println("Unable to create token");
+//      return null;
+//    }
+//  }
 }
 
