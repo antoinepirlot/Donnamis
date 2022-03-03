@@ -19,5 +19,5 @@ public interface MemberUCC {
    * @param password of the member
    * @return a token for the member
    */
-  String login(String username, String password);
+  void login(String username, String password);
 }

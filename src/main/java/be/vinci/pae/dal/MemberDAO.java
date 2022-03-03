@@ -3,7 +3,6 @@ package be.vinci.pae.dal;
 import be.vinci.pae.biz.Factory;
 import be.vinci.pae.biz.FactoryImpl;
 import be.vinci.pae.biz.MemberDTO;
-//import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -12,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-//import org.apache.commons.text.StringEscapeUtils;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class MemberDAO {
@@ -56,15 +54,9 @@ public class MemberDAO {
    */
   public MemberDTO getOne(String username, String password) {
     MemberDTO memberDTO = getOne(username);
-    if (memberDTO == null) {
+    if (memberDTO == null || !checkPassword(password, memberDTO.getPassword())) {
       throw new WebApplicationException(Response.status(Status.NOT_FOUND)
-          .entity("This member has not been found")
-          .type("text/plain")
-          .build());
-    }
-    if (!checkPassword(password, memberDTO.getPassword())) {
-      throw new WebApplicationException(Response.status(Status.FORBIDDEN)
-          .entity("Wrong password")
+          .entity("Wrong password or username")
           .type("text/plain")
           .build());
     }

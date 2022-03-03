@@ -2,12 +2,14 @@ package be.vinci.pae.ihm;
 
 import be.vinci.pae.biz.MemberUCC;
 import be.vinci.pae.biz.MemberUCCImpl;
+import be.vinci.pae.utils.Config;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
-//import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -56,7 +58,8 @@ public class MemberResource {
     }
     String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
     String password = json.get("password").asText();
-    String token = memberUCC.login(username, password);
+    memberUCC.login(username, password);
+    String token = createToken(username);
     try {
       return jsonMapper.createObjectNode()
           .put("token", token)
@@ -65,6 +68,19 @@ public class MemberResource {
       System.out.println("Unable to create token");
       return null;
     }
+  }
+
+  /**
+   * Create a connection token for a member.
+   *
+   * @return the member's token
+   */
+  private String createToken(String username) {
+    System.out.println("Generating token.");
+    Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
+    String token = JWT.create().withIssuer("auth0")
+        .withClaim("username", username).sign(jwtAlgorithm);
+    return token;
   }
 
   //  @POST

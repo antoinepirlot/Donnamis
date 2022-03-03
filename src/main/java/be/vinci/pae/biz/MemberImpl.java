@@ -1,8 +1,5 @@
 package be.vinci.pae.biz;
 
-import be.vinci.pae.utils.Config;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -96,20 +93,6 @@ class MemberImpl implements Member {
 
   public void setPhoneNumber(String phoneNumber) {
     this.phoneNumber = phoneNumber;
-  }
-
-  /**
-   * Create a connection token for a member.
-   *
-   * @return the member's token
-   */
-  public String createToken() {
-    System.out.println("Generating token.");
-    Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
-    String token = JWT.create().withIssuer("auth0")
-        .withClaim("username", this.username).sign(jwtAlgorithm);
-    System.out.println("Token generated");
-    return token;
   }
 
   /**
