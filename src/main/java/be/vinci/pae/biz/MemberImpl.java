@@ -1,8 +1,5 @@
 package be.vinci.pae.biz;
 
-import be.vinci.pae.utils.Config;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -99,19 +96,11 @@ class MemberImpl implements Member {
   }
 
   /**
-   * Create a connection token for a member
+   * Verify if the state of the member is allowed to connect to the website. If the state is
+   * "confirmed" the user can access.
    *
-   * @return the member's token
+   * @throws WebApplicationException if the state is "registered" or "denied"
    */
-  public String createToken() {
-    System.out.println("Generating token.");
-    Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
-    String token = JWT.create().withIssuer("auth0")
-        .withClaim("username", this.username).sign(jwtAlgorithm);
-    System.out.println("Token generated");
-    return token;
-  }
-
   @Override
   public void verifyState() {
     System.out.println("L'état est :" + this.actualState);
@@ -153,15 +142,15 @@ class MemberImpl implements Member {
 
   @Override
   public String toString() {
-    return "Member{" +
-        "id=" + id +
-        ", username='" + username + '\'' +
-        ", password='" + password + '\'' +
-        ", lastName='" + lastName + '\'' +
-        ", firstName='" + firstName + '\'' +
-        ", isAdmin=" + isAdmin +
-        ", actualState='" + actualState + '\'' +
-        ", phoneNumber='" + phoneNumber + '\'' +
-        '}';
+    return "Member{"
+        + "id=" + id
+        + ", username='" + username + '\''
+        + ", password='" + password + '\''
+        + ", lastName='" + lastName + '\''
+        + ", firstName='" + firstName + '\''
+        + ", isAdmin=" + isAdmin
+        + ", actualState='" + actualState + '\''
+        + ", phoneNumber='" + phoneNumber + '\''
+        + '}';
   }
 }

@@ -12,6 +12,10 @@ public class Config {
 
   private static Properties props;
 
+  /**
+   * Load the properties file from the specified file path.
+   * @param file the specified properties file path
+   */
   public static void load(String file) {
     props = new Properties();
     try (InputStream input = new FileInputStream(file)) {
