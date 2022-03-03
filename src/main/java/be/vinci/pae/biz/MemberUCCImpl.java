@@ -18,12 +18,10 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   /**
-   * Get the member from the db, checks its state and return a token for the member if it's
-   * allowed.
+   * Get the member from the db, checks its state.
    *
    * @param username of the member
    * @param password of the member
-   * @return a token for the member
    */
   @Override
   public void login(String username, String password) {

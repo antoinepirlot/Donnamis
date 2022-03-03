@@ -12,12 +12,10 @@ public interface MemberUCC {
   List<MemberDTO> getAll();
 
   /**
-   * Get the member from the db, checks its state and return a token for the member if it's
-   * allowed.
+   * Get the member from the db, checks its state.
    *
    * @param username of the member
    * @param password of the member
-   * @return a token for the member
    */
   void login(String username, String password);
 }
