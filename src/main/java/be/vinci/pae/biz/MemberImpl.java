@@ -159,8 +159,8 @@ class MemberImpl implements Member {
 
   @Override
   public String toString() {
-    return "Member{" +
-        "id=" + id
+    return "Member{"
+        + "id=" + id
         + ", username='" + username + '\''
         + ", password='" + password + '\''
         + ", lastName='" + lastName + '\''
