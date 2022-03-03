@@ -96,7 +96,7 @@ public class MemberDAO {
   }
 
   /**
-   * Create a Member instance
+   * Create a Member instance.
    *
    * @param rs the result set that contains sql result
    * @return a new instance of member based on what rs contains
@@ -150,47 +150,46 @@ public class MemberDAO {
     return BCrypt.checkpw(password, hashedPassword);
   }
 
-//  /**
-//   * Add a new member to the db if it's not already in the db.
-//   *
-//   * @param username    the member's username
-//   * @param password    the member's password
-//   * @param lastName    the member's lastname
-//   * @param firstName   the member's firstname
-//   * @param actualState the member's actualState ("registered" while registering)
-//   * @param phoneNumber the member's phone number
-//   * @param admin       the member's admin status (false by default)
-//   * @return the new created member if it's not already into the db otherwise null
-//   */
-//  public ObjectNode register(String username, String password, String lastName, String firstName,
-//      String actualState, String phoneNumber, boolean admin) {
-//    MemberDTO tempMemberDTO = getOne(username);
-//    if (tempMemberDTO != null) { // the user already exists !
-//      return null;
-//    }
-//    tempMemberDTO = new MemberDTO(
-//        0,
-//        StringEscapeUtils.escapeHtml4(username),
-//        StringEscapeUtils.escapeHtml4(password),
-//        StringEscapeUtils.escapeHtml4(lastName),
-//        StringEscapeUtils.escapeHtml4(firstName),
-//        admin,
-//        StringEscapeUtils.escapeHtml4(actualState),
-//        StringEscapeUtils.escapeHtml4(phoneNumber)
-//    );
-//    System.out.println("!!!!!!!!!");
-//    System.out.println(tempMemberDTO);
-//    MemberDTO addedMemberDTO = this.createOne(tempMemberDTO);
-//    if (addedMemberDTO == null) {
-//      System.out.println("addedMember is null.");
-//      return null;
-//    }
-//    try {
-//      return createToken(addedMemberDTO);
-//    } catch (Exception e) {
-//      System.out.println("Unable to create token");
-//      return null;
-//    }
-//  }
+  //  /**
+  //   * Add a new member to the db if it's not already in the db.
+  //   *
+  //   * @param username    the member's username
+  //   * @param password    the member's password
+  //   * @param lastName    the member's lastname
+  //   * @param firstName   the member's firstname
+  //   * @param actualState the member's actualState ("registered" while registering)
+  //   * @param phoneNumber the member's phone number
+  //   * @param admin       the member's admin status (false by default)
+  //   * @return the new created member if it's not already into the db otherwise null
+  //   */
+  //  public ObjectNode register(String username, String password, String lastName, String firstName,
+  //      String actualState, String phoneNumber, boolean admin) {
+  //    MemberDTO tempMemberDTO = getOne(username);
+  //    if (tempMemberDTO != null) { // the user already exists !
+  //      return null;
+  //    }
+  //    tempMemberDTO = new MemberDTO(
+  //        0,
+  //        StringEscapeUtils.escapeHtml4(username),
+  //        StringEscapeUtils.escapeHtml4(password),
+  //        StringEscapeUtils.escapeHtml4(lastName),
+  //        StringEscapeUtils.escapeHtml4(firstName),
+  //        admin,
+  //        StringEscapeUtils.escapeHtml4(actualState),
+  //        StringEscapeUtils.escapeHtml4(phoneNumber)
+  //    );
+  //    System.out.println("!!!!!!!!!");
+  //    System.out.println(tempMemberDTO);
+  //    MemberDTO addedMemberDTO = this.createOne(tempMemberDTO);
+  //    if (addedMemberDTO == null) {
+  //      System.out.println("addedMember is null.");
+  //      return null;
+  //    }
+  //    try {
+  //      return createToken(addedMemberDTO);
+  //    } catch (Exception e) {
+  //      System.out.println("Unable to create token");
+  //      return null;
+  //    }
+  //  }
 }
-
