@@ -16,6 +16,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.time.LocalTime;
+import java.util.Date;
 import org.apache.commons.text.StringEscapeUtils;
 
 /**
@@ -78,8 +80,13 @@ public class MemberResource {
   private String createToken(String username) {
     System.out.println("Generating token.");
     Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
-    return JWT.create().withIssuer("auth0")
-        .withClaim("username", username).sign(jwtAlgorithm);
+    long currentTimeMillis = System.currentTimeMillis();
+    long duration = 1000 * 60 * 60; //1 hour
+    return JWT.create()
+        .withIssuer("auth0")
+        .withClaim("username", username)
+        .withExpiresAt(new Date(currentTimeMillis + duration))
+        .sign(jwtAlgorithm);
   }
 
   //  @POST
