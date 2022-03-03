@@ -78,9 +78,8 @@ public class MemberResource {
   private String createToken(String username) {
     System.out.println("Generating token.");
     Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
-    String token = JWT.create().withIssuer("auth0")
+    return JWT.create().withIssuer("auth0")
         .withClaim("username", username).sign(jwtAlgorithm);
-    return token;
   }
 
   //  @POST
