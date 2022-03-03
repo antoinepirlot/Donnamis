@@ -5,7 +5,7 @@ import jakarta.ws.rs.WebApplicationException;
 public interface Member extends MemberDTO {
 
   /**
-   * Create a connection token for a member
+   * Create a connection token for a member.
    *
    * @return the member's token
    */
