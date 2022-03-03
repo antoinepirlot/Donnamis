@@ -1,5 +1,6 @@
 package be.vinci.pae.main;
 
+import be.vinci.pae.utils.ApplicationBinder;
 import be.vinci.pae.utils.Config;
 import java.io.IOException;
 import java.net.URI;
@@ -14,8 +15,9 @@ import org.glassfish.jersey.server.ResourceConfig;
 public class Main {
 
 
-  final ResourceConfig rc = new ResourceConfig().packages("be.vinci.pae.api")
-      .register(JacksonFeature.class);
+  final ResourceConfig rc = new ResourceConfig().packages("be.vinci.pae.ihm")
+      .register(JacksonFeature.class)
+      .register(ApplicationBinder.class);
 
   /**
    * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.

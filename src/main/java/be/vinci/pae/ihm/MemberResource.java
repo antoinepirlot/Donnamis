@@ -8,6 +8,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -24,8 +25,8 @@ import org.apache.commons.text.StringEscapeUtils;
 @Singleton
 @Path("members")
 public class MemberResource {
-
-  private final MemberUCC memberUCC = new MemberUCCImpl();
+  @Inject
+  private MemberUCC memberUCC;
   private final ObjectMapper jsonMapper = new ObjectMapper();
 
   //  /**

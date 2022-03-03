@@ -1,11 +1,13 @@
 package be.vinci.pae.biz;
 
 import be.vinci.pae.dal.MemberDAO;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class MemberUCCImpl implements MemberUCC {
 
-  private final MemberDAO memberDAO = new MemberDAO();
+  @Inject
+  private MemberDAO memberDAO;
 
   /**
    * Get all members from the database.
