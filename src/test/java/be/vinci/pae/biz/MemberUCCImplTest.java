@@ -1,13 +1,10 @@
 package be.vinci.pae.biz;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
 class MemberUCCImplTest {
 
   private Factory factory = new FactoryImpl();
-  private MemberUCC memberUCC = new MemberUCCImpl();
   private Member member;
 
   @BeforeEach
@@ -23,9 +20,4 @@ class MemberUCCImplTest {
     member.setPhoneNumber("0477810590");
   }
 
-  @Test
-  @DisplayName("Test Login")
-  void testLogin1() {
-
-  }
 }
