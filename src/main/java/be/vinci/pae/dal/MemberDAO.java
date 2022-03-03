@@ -162,8 +162,8 @@ public class MemberDAO {
   //   * @param admin       the member's admin status (false by default)
   //   * @return the new created member if it's not already into the db otherwise null
   //   */
-  //  public ObjectNode register(String username, String password, String lastName, String firstName,
-  //      String actualState, String phoneNumber, boolean admin) {
+  //  public ObjectNode register(String username, String password, String lastName,
+  //  String firstName, String actualState, String phoneNumber, boolean admin) {
   //    MemberDTO tempMemberDTO = getOne(username);
   //    if (tempMemberDTO != null) { // the user already exists !
   //      return null;
