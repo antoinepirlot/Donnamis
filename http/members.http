@@ -1,0 +1,41 @@
+### get all
+GET {{baseUrl}}/members
+
+### Login with default user credentials
+POST {{baseUrl}}/members/login
+Content-Type: application/json
+
+{
+  "username": "Swapiz",
+  "password": "password"
+}
+
+###
+
+### Create One memberDTO
+POST {{baseUrl}}/members
+Content-Type: application/json
+
+{
+  "username": "LePirelot",
+  "password": "pswdPasOuf",
+  "lastName": "Pirlot",
+  "firstName": "Antoine",
+  "actualState": "confirmed",
+  "phoneNumber": "0478 85 22 64",
+  "admin": false
+}
+
+### Register john
+POST {{baseUrl}}/members/register
+Content-Type: application/json
+
+{
+  "username": "Michel03",
+  "password": "Securitas",
+  "lastName": "DuMoulin",
+  "firstName": "Michel",
+  "actualState": "confirmed",
+  "phoneNumber": "0478 79 69 32",
+  "admin": false
+}
