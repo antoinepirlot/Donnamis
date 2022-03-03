@@ -25,6 +25,10 @@ const loginFormHtml = `
  * to "redirect" to a new page
  */
 function LoginPage() {
+  if (localStorage.getItem("member") || sessionStorage.getItem("member")) {
+    Redirect("/");
+    return;
+  }
   const page = document.querySelector("#page");
   page.innerHTML = loginFormHtml;
   page.addEventListener("submit", login);
