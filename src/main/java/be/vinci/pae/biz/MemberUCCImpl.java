@@ -7,7 +7,6 @@ import java.util.List;
 public class MemberUCCImpl implements MemberUCC {
 
   private final MemberDAO memberDAO = new MemberDAO();
-  private final ObjectMapper jsonMapper = new ObjectMapper();
 
   /**
    * Get all members from the database.
