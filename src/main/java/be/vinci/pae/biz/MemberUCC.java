@@ -5,7 +5,7 @@ import java.util.List;
 public interface MemberUCC {
 
   /**
-   * Get all members from the database
+   * Get all members from the database.
    *
    * @return all members
    */

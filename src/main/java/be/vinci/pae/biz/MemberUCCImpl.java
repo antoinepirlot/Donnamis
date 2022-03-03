@@ -10,7 +10,7 @@ public class MemberUCCImpl implements MemberUCC {
   private final ObjectMapper jsonMapper = new ObjectMapper();
 
   /**
-   * Get all members from the database
+   * Get all members from the database.
    *
    * @return all members
    */
