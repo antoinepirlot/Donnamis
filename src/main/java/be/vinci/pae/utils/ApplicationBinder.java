@@ -2,8 +2,6 @@ package be.vinci.pae.utils;
 
 import be.vinci.pae.biz.Factory;
 import be.vinci.pae.biz.FactoryImpl;
-import be.vinci.pae.biz.Member;
-import be.vinci.pae.biz.MemberDTO;
 import be.vinci.pae.biz.MemberUCC;
 import be.vinci.pae.biz.MemberUCCImpl;
 import be.vinci.pae.dal.MemberDAO;
