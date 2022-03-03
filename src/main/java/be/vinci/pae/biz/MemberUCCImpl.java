@@ -1,7 +1,6 @@
 package be.vinci.pae.biz;
 
 import be.vinci.pae.dal.MemberDAO;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 
 public class MemberUCCImpl implements MemberUCC {
