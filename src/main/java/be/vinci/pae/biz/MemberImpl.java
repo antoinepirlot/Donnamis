@@ -99,7 +99,7 @@ class MemberImpl implements Member {
   }
 
   /**
-   * Create a connection token for a member
+   * Create a connection token for a member.
    *
    * @return the member's token
    */
@@ -113,8 +113,9 @@ class MemberImpl implements Member {
   }
 
   /**
-   * Verify if the state of the member is allowed to connect to the website.
-   * If the state is "confirmed" the user can access.
+   * Verify if the state of the member is allowed to connect to the website. If the state is
+   * "confirmed" the user can access.
+   *
    * @throws WebApplicationException if the state is "registered" or "denied"
    */
   @Override
@@ -159,14 +160,14 @@ class MemberImpl implements Member {
   @Override
   public String toString() {
     return "Member{" +
-        "id=" + id +
-        ", username='" + username + '\'' +
-        ", password='" + password + '\'' +
-        ", lastName='" + lastName + '\'' +
-        ", firstName='" + firstName + '\'' +
-        ", isAdmin=" + isAdmin +
-        ", actualState='" + actualState + '\'' +
-        ", phoneNumber='" + phoneNumber + '\'' +
-        '}';
+        "id=" + id
+        + ", username='" + username + '\''
+        + ", password='" + password + '\''
+        + ", lastName='" + lastName + '\''
+        + ", firstName='" + firstName + '\''
+        + ", isAdmin=" + isAdmin
+        + ", actualState='" + actualState + '\''
+        + ", phoneNumber='" + phoneNumber + '\''
+        + '}';
   }
 }
