@@ -14,7 +14,7 @@ class DALServices {
 
 
   /**
-   * Try to connect to the db
+   * Try to connect to the db.
    *
    * @return the db connection
    */
