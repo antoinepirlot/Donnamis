@@ -1,7 +1,6 @@
 package be.vinci.pae.ihm;
 
 import be.vinci.pae.biz.MemberUCC;
-import be.vinci.pae.biz.MemberUCCImpl;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
