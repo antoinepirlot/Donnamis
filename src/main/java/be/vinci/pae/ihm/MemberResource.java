@@ -1,6 +1,5 @@
 package be.vinci.pae.ihm;
 
-import be.vinci.pae.biz.MemberDTO;
 import be.vinci.pae.biz.MemberUCC;
 import be.vinci.pae.biz.MemberUCCImpl;
 import com.fasterxml.jackson.databind.JsonNode;
