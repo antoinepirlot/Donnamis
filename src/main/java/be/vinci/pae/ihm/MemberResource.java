@@ -63,8 +63,7 @@ public class MemberResource {
     String token = createToken(username);
     try {
       return jsonMapper.createObjectNode()
-          .put("token", token)
-          .put("username", username);
+          .put("token", token);
     } catch (Exception e) {
       System.out.println("Unable to create token");
       return null;
