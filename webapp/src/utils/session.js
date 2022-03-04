@@ -1,7 +1,8 @@
 /**
- * Get the Object that is in the localStorage under the storeName key
+ * Get the Object that is in the localStorage or sessionStorage
+ * under the storeName key.
  * @param {string} storeName
- * @returns
+ * @returns the retrived object
  */
 const getObject = (storeName) => {
   let retrievedObject = localStorage.getItem(storeName);
@@ -12,6 +13,22 @@ const getObject = (storeName) => {
     return;
   }
   return JSON.parse(retrievedObject);
+};
+
+/**
+ * Get the token payload from the local or session storage.
+ * @returns the payload object
+ */
+const getPayload = () => {
+  let payload = localStorage.getItem("token");
+  if (!payload) {
+    payload = sessionStorage.getItem("token");
+  }
+  if (!payload) {
+    return;
+  }
+  payload = payload.split('.')[1];
+  return JSON.parse(window.atob(payload));
 };
 
 /**
@@ -44,4 +61,4 @@ const disconnect = () => {
   sessionStorage.clear();
 };
 
-export {getObject, setSessionObject, setLocalObject, disconnect};
+export {getObject, getPayload, setSessionObject, setLocalObject, disconnect};
