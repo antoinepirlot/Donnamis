@@ -1,5 +1,3 @@
-const STORE_NAME = "member";
-
 /**
  * Get the Object that is in the localStorage under the storeName key
  * @param {string} storeName
@@ -40,9 +38,8 @@ const setLocalObject = (storeName, object) => {
 
 /**
  * Remove the object in the localStorage under the storeName key
- * @param {String} storeName
  */
-const disconnect = (storeName) => {
+const disconnect = () => {
   localStorage.clear();
   sessionStorage.clear();
 };
