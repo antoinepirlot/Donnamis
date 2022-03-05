@@ -2,7 +2,9 @@ package be.vinci.pae.biz;
 
 import be.vinci.pae.dal.MemberDAO;
 import jakarta.inject.Inject;
-import java.util.List;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 public class MemberUCCImpl implements MemberUCC {
 
@@ -28,6 +30,12 @@ public class MemberUCCImpl implements MemberUCC {
   @Override
   public void login(String username, String password) {
     Member member = (Member) memberDAO.getOne(username, password);
+    if (!member.checkPassword(password, member.getPassword())) {
+      throw new WebApplicationException(Response.status(Status.NOT_FOUND)
+          .entity("Wrong password or username")
+          .type("text/plain")
+          .build());
+    }
     member.verifyState();
   }
 
