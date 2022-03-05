@@ -28,12 +28,6 @@ class MemberUCCImplTest {
         .thenReturn(memberDTO);
   }
 
-  @DisplayName("Test getAll")
-  @Test
-  void testGetAll() {
-    //assertEquals();
-  }
-
   @Test
   void testLoginConfirmedMember() {
     configureMemberDTO("confirmed");
