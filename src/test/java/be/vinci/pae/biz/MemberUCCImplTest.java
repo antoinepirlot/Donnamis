@@ -18,7 +18,6 @@ class MemberUCCImplTest {
   private final MemberDAO MEMBER_DAO = LOCATOR.getService(MemberDAO.class);
   private final MemberUCC MEMBER_UCC = LOCATOR.getService(MemberUCC.class);
   private String hashedPassword;
-  private String wrongHashedPassword;
   private String password;
   private String wrongPassword;
 
@@ -26,7 +25,6 @@ class MemberUCCImplTest {
   void setUp() {
     hashedPassword = "$2a$10$vD5FXSmaNv4DkfpFfKfDsOjaJ192x2RdWyjIWr28lj5r1X9uvB9yC";
     password = "password";
-    wrongHashedPassword = "$2a$10$6NWbEdxH/8uq87ERFFmP9eNpuJDOGIceda1h2R5QiLsCrQhUrs3CC";
     wrongPassword = "wrongpassword";
   }
 
