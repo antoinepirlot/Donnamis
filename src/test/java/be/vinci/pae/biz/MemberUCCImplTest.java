@@ -75,4 +75,14 @@ class MemberUCCImplTest {
         () -> MEMBER_UCC.login("nico", wrongPassword)
     );
   }
+
+  @DisplayName("Test login with registered member and wrong password")
+  @Test
+  void testLoginRegisteredMemberWithWrongPassword() {
+    configureMemberDTO("registered", wrongPassword);
+    assertThrows(
+        WebApplicationException.class,
+        () -> MEMBER_UCC.login("nico", wrongPassword)
+    );
+  }
 }
