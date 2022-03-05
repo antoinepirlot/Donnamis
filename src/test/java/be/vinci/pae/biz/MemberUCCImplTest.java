@@ -17,25 +17,33 @@ class MemberUCCImplTest {
   private final ServiceLocator LOCATOR = ServiceLocatorUtilities.bind(new ApplicationBinder());
   private final MemberDAO MEMBER_DAO = LOCATOR.getService(MemberDAO.class);
   private final MemberUCC MEMBER_UCC = LOCATOR.getService(MemberUCC.class);
+  private String hashedPassword;
+  private String wrongHashedPassword;
+  private String password;
+  private String wrongPassword;
 
   @BeforeEach
   void setUp() {
-
+    hashedPassword = "$2a$10$vD5FXSmaNv4DkfpFfKfDsOjaJ192x2RdWyjIWr28lj5r1X9uvB9yC";
+    password = "password";
+    wrongHashedPassword = "$2a$10$6NWbEdxH/8uq87ERFFmP9eNpuJDOGIceda1h2R5QiLsCrQhUrs3CC";
+    wrongPassword = "wrongpassword";
   }
 
   private void configureMemberDTO(String actualState) {
     MemberDTO memberDTO = new MemberImpl();
     memberDTO.setActualState(actualState);
-    Mockito.when(MEMBER_DAO.getOne("nico", "password"))
+    memberDTO.setPassword(hashedPassword);
+    Mockito.when(MEMBER_DAO.getOne("nico", password))
         .thenReturn(memberDTO);
   }
 
-  @DisplayName("Test login with good password")
+  @DisplayName("Test login with confirmed member good password")
   @Test
-  void testLoginConfirmedMemberWithoutGoodPassword(){
+  void testLoginConfirmedMemberWithoutGoodPassword() {
     configureMemberDTO("confirmed");
     assertDoesNotThrow(
-        () -> MEMBER_UCC.login("nico", "password")
+        () -> MEMBER_UCC.login("nico", password)
     );
   }
 
@@ -43,27 +51,27 @@ class MemberUCCImplTest {
   void testLoginConfirmedMemberWithGoodPassword() {
     configureMemberDTO("confirmed");
     assertDoesNotThrow(
-        () -> MEMBER_UCC.login("nico", "password")
+        () -> MEMBER_UCC.login("nico", password)
     );
   }
 
-  @DisplayName("Test login with denied member")
+  @DisplayName("Test login with denied member and good password")
   @Test
-  void testLoginDeniedMember() {
+  void testLoginDeniedMemberWithGoodPassword() {
     configureMemberDTO("denied");
     assertThrows(
         WebApplicationException.class,
-        () -> MEMBER_UCC.login("nico", "password")
+        () -> MEMBER_UCC.login("nico", password)
     );
   }
 
-  @DisplayName("Test login with registered member")
+  @DisplayName("Test login with registered member and good password")
   @Test
-  void testLoginRegisteredMember() {
+  void testLoginRegisteredMemberWithGoodPassword() {
     configureMemberDTO("registered");
     assertThrows(
         WebApplicationException.class,
-        () -> MEMBER_UCC.login("nico", "password")
+        () -> MEMBER_UCC.login("nico", password)
     );
   }
 }
