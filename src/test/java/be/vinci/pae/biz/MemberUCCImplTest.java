@@ -12,35 +12,32 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 class MemberUCCImplTest {
-  private MemberDAO memberDAO;
-  private MemberUCC memberUCC;
-  private final ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
-
+  private final ServiceLocator LOCATOR = ServiceLocatorUtilities.bind(new ApplicationBinder());
+  private final MemberDAO MEMBER_DAO = LOCATOR.getService(MemberDAO.class);
+  private final MemberUCC MEMBER_UCC = LOCATOR.getService(MemberUCC.class);
   @BeforeEach
   void setUp() {
-    memberUCC = new MemberUCCImpl();
-    memberDAO = locator.getService(MemberDAO.class);
+
   }
 
   private void configureMemberDTO(String actualState) {
     MemberDTO memberDTO = new MemberImpl();
     memberDTO.setActualState(actualState);
-    Mockito.when(memberDAO.getOne("nico", "password"))
+    Mockito.when(MEMBER_DAO.getOne("nico", "password"))
         .thenReturn(memberDTO);
   }
 
   @DisplayName("Test getAll")
   @Test
-  void getAll() {
+  void testGetAll() {
     //assertEquals();
   }
 
   @Test
-  void loginConfirmedMember() {
+  void testLoginConfirmedMember() {
     configureMemberDTO("confirmed");
     assertDoesNotThrow(
-        () -> memberUCC.login("nico", "password"),
-        "hje"
+        () -> MEMBER_UCC.login("nico", "password")
     );
   }
 }
