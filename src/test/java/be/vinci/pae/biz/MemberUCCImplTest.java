@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import be.vinci.pae.dal.MemberDAO;
 import be.vinci.pae.utils.ApplicationBinder;
+import jakarta.ws.rs.WebApplicationException;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +38,16 @@ class MemberUCCImplTest {
   void testLoginConfirmedMember() {
     configureMemberDTO("confirmed");
     assertDoesNotThrow(
+        () -> MEMBER_UCC.login("nico", "password")
+    );
+  }
+
+  @DisplayName("Test login with denied member")
+  @Test
+  void testLoginDeniedMember() {
+    configureMemberDTO("denied");
+    assertThrows(
+        WebApplicationException.class,
         () -> MEMBER_UCC.login("nico", "password")
     );
   }
