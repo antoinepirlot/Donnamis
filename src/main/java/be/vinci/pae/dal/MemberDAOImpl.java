@@ -116,7 +116,7 @@ public class MemberDAOImpl implements MemberDAO {
   //   */
   //  @Override
   //  public MemberDTO createOne(MemberDTO memberDTO) {
-  //    String query = "INSERT INTO project_pae.members (username, password, last_name, first_name, "
+  //    String query = "INSERT INTO project_pae.members (username, password, last_name, first_name,"
   //        + "is_admin, state, phone) VALUES (?, ?, ?, ?, ?, ?, ?)";
   //    try {
   //      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
