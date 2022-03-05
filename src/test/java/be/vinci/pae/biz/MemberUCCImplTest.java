@@ -16,9 +16,9 @@ import org.mockito.Mockito;
 
 class MemberUCCImplTest {
 
-  private final ServiceLocator LOCATOR = ServiceLocatorUtilities.bind(new ApplicationBinder());
-  private final MemberDAO MEMBER_DAO = LOCATOR.getService(MemberDAO.class);
-  private final MemberUCC MEMBER_UCC = LOCATOR.getService(MemberUCC.class);
+  private final ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
+  private final MemberDAO memberDAO = locator.getService(MemberDAO.class);
+  private final MemberUCC memberUCC = locator.getService(MemberUCC.class);
   private String hashedPassword;
   private String password;
   private String wrongPassword;
@@ -34,7 +34,7 @@ class MemberUCCImplTest {
     MemberDTO memberDTO = new MemberImpl();
     memberDTO.setActualState(actualState);
     memberDTO.setPassword(hashedPassword);
-    Mockito.when(MEMBER_DAO.getOne("nico", password))
+    Mockito.when(memberDAO.getOne("nico", password))
         .thenReturn(memberDTO);
   }
 
@@ -42,7 +42,7 @@ class MemberUCCImplTest {
   void testLoginConfirmedMemberWithGoodPassword() {
     configureMemberDTO("confirmed", password);
     assertDoesNotThrow(
-        () -> MEMBER_UCC.login("nico", password)
+        () -> memberUCC.login("nico", password)
     );
   }
 
@@ -52,7 +52,7 @@ class MemberUCCImplTest {
     configureMemberDTO("denied", password);
     assertThrows(
         WebApplicationException.class,
-        () -> MEMBER_UCC.login("nico", password)
+        () -> memberUCC.login("nico", password)
     );
   }
 
@@ -62,7 +62,7 @@ class MemberUCCImplTest {
     configureMemberDTO("registered", password);
     assertThrows(
         WebApplicationException.class,
-        () -> MEMBER_UCC.login("nico", password)
+        () -> memberUCC.login("nico", password)
     );
   }
 
@@ -72,7 +72,7 @@ class MemberUCCImplTest {
     configureMemberDTO("confirmed", wrongPassword);
     assertThrows(
         WebApplicationException.class,
-        () -> MEMBER_UCC.login("nico", wrongPassword)
+        () -> memberUCC.login("nico", wrongPassword)
     );
   }
 
@@ -82,7 +82,7 @@ class MemberUCCImplTest {
     configureMemberDTO("registered", wrongPassword);
     assertThrows(
         WebApplicationException.class,
-        () -> MEMBER_UCC.login("nico", wrongPassword)
+        () -> memberUCC.login("nico", wrongPassword)
     );
   }
 
@@ -92,7 +92,7 @@ class MemberUCCImplTest {
     configureMemberDTO("denied", wrongPassword);
     assertThrows(
         WebApplicationException.class,
-        () -> MEMBER_UCC.login("nico", wrongPassword)
+        () -> memberUCC.login("nico", wrongPassword)
     );
   }
 }
