@@ -15,5 +15,5 @@ public interface MemberUCC {
    * @param username of the member
    * @param password of the member
    */
-  void login(String username, String password);
+  MemberDTO login(String username, String password);
 }

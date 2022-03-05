@@ -28,7 +28,7 @@ public class MemberUCCImpl implements MemberUCC {
    * @param password of the member
    */
   @Override
-  public void login(String username, String password) {
+  public MemberDTO login(String username, String password) {
     Member member = (Member) memberDAO.getOne(username, password);
     if (!member.checkPassword(password, member.getPassword())) {
       throw new WebApplicationException(Response.status(Status.NOT_FOUND)
@@ -37,6 +37,7 @@ public class MemberUCCImpl implements MemberUCC {
           .build());
     }
     member.verifyState();
+    return (MemberDTO) member;
   }
 
 }

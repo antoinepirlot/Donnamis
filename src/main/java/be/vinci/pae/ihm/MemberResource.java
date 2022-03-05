@@ -1,5 +1,6 @@
 package be.vinci.pae.ihm;
 
+import be.vinci.pae.biz.MemberDTO;
 import be.vinci.pae.biz.MemberUCC;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
@@ -59,8 +60,8 @@ public class MemberResource {
     }
     String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
     String password = json.get("password").asText();
-    memberUCC.login(username, password);
-    String token = createToken(username);
+    MemberDTO memberDTO = memberUCC.login(username, password);
+    String token = createToken(memberDTO.getUsername(), memberDTO.getId());
     try {
       return jsonMapper.createObjectNode()
           .put("token", token);
@@ -75,7 +76,7 @@ public class MemberResource {
    *
    * @return the member's token
    */
-  private String createToken(String username) {
+  private String createToken(String username, int id) {
     System.out.println("Generating token.");
     Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
     long currentTimeMillis = System.currentTimeMillis();
@@ -83,6 +84,7 @@ public class MemberResource {
     return JWT.create()
         .withIssuer("auth0")
         .withClaim("username", username)
+        .withClaim("id", id)
         .withExpiresAt(new Date(currentTimeMillis + duration))
         .sign(jwtAlgorithm);
   }
