@@ -4,12 +4,12 @@ import java.util.List;
 
 public interface MemberUCC {
 
-  /**
-   * Get all members from the database.
-   *
-   * @return all members
-   */
-  List<MemberDTO> getAll();
+  //  /**
+  //   * Get all members from the database.
+  //   *
+  //   * @return all members
+  //   */
+  //  List<MemberDTO> getAll();
 
   /**
    * Get the member from the db, checks its state.

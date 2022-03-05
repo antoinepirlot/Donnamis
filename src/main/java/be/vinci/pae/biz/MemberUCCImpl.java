@@ -9,15 +9,15 @@ public class MemberUCCImpl implements MemberUCC {
   @Inject
   private MemberDAO memberDAO;
 
-  /**
-   * Get all members from the database.
-   *
-   * @return all members
-   */
-  @Override
-  public List<MemberDTO> getAll() {
-    return memberDAO.getAll();
-  }
+  //  /**
+  //   * Get all members from the database.
+  //   *
+  //   * @return all members
+  //   */
+  //  @Override
+  //  public List<MemberDTO> getAll() {
+  //    return memberDAO.getAll();
+  //  }
 
   /**
    * Get the member from the db, checks its state.
