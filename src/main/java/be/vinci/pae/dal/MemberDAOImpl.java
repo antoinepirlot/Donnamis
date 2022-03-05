@@ -9,7 +9,6 @@ import jakarta.ws.rs.core.Response.Status;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.mindrot.jbcrypt.BCrypt;
 
 public class MemberDAOImpl implements MemberDAO {
 
@@ -55,7 +54,7 @@ public class MemberDAOImpl implements MemberDAO {
   @Override
   public MemberDTO getOne(String username, String password) {
     MemberDTO memberDTO = getOne(username);
-    if (memberDTO == null || !checkPassword(password, memberDTO.getPassword())) {
+    if (memberDTO == null) {
       throw new WebApplicationException(Response.status(Status.NOT_FOUND)
           .entity("Wrong password or username")
           .type("text/plain")
@@ -96,7 +95,7 @@ public class MemberDAOImpl implements MemberDAO {
    * @throws SQLException if there's an issue while getting data from the result set
    */
   private MemberDTO createMemberInstance(ResultSet rs) throws SQLException {
-    System.out.println("Member instance creation");
+    System.out.println("Mreaember instance creation");
     MemberDTO memberDTO = factory.getMember();
     memberDTO.setId(rs.getInt("id_member"));
     memberDTO.setUsername(rs.getString("username"));
@@ -141,10 +140,6 @@ public class MemberDAOImpl implements MemberDAO {
   //    return null;
   //  }
   //
-  @Override
-  public boolean checkPassword(String password, String hashedPassword) {
-    return BCrypt.checkpw(password, hashedPassword);
-  }
 
   //  /**
   //   * Add a new member to the db if it's not already in the db.

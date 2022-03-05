@@ -10,5 +10,4 @@ public interface MemberDAO {
 
   //  MemberDTO createOne(MemberDTO memberDTO);
 
-  boolean checkPassword(String password, String hashedPassword);
 }
