@@ -51,4 +51,14 @@ class MemberUCCImplTest {
         () -> MEMBER_UCC.login("nico", "password")
     );
   }
+
+  @DisplayName("Test login with registered member")
+  @Test
+  void testLoginRegisteredMember() {
+    configureMemberDTO("registered");
+    assertThrows(
+        WebApplicationException.class,
+        () -> MEMBER_UCC.login("nico", "password")
+    );
+  }
 }
