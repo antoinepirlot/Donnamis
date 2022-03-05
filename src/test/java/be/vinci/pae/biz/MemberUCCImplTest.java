@@ -30,6 +30,15 @@ class MemberUCCImplTest {
         .thenReturn(memberDTO);
   }
 
+  @DisplayName("Test login with good password")
+  @Test
+  void testLoginConfirmedMemberWithoutGoodPassword(){
+    configureMemberDTO("confirmed");
+    assertDoesNotThrow(
+        () -> MEMBER_UCC.login("nico", "password")
+    );
+  }
+
   @Test
   void testLoginConfirmedMemberWithGoodPassword() {
     configureMemberDTO("confirmed");
