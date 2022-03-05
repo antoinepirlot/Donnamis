@@ -19,7 +19,7 @@ class MemberUCCImplTest {
   @BeforeEach
   void setUp() {
     memberUCC = new MemberUCCImpl();
-    memberDAO = Mockito.mock(MemberDAO.class);
+    memberDAO = locator.getService(MemberDAO.class);
   }
 
   private void configureMemberDTO(String actualState) {
