@@ -16,6 +16,6 @@ public class ApplicationBinder extends AbstractBinder {
 
   @Override
   protected void configure() {
-    bind(MemberDAOImpl.class).to(Mockito.class).in(Singleton.class);
+    bind(Mockito.mock(MemberDAOImpl.class)).to(MemberDAO.class);
   }
 }
