@@ -1,8 +1,5 @@
 package be.vinci.pae.biz;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import be.vinci.pae.dal.MemberDAO;
 import be.vinci.pae.utils.ApplicationBinder;
 import jakarta.ws.rs.WebApplicationException;
@@ -13,6 +10,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class MemberUCCImplTest {
 
   private final ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
@@ -21,6 +20,7 @@ class MemberUCCImplTest {
   private String hashedPassword;
   private String password;
   private String wrongPassword;
+  private MemberDTO memberDTO;
 
   @BeforeEach
   void setUp() {
@@ -30,7 +30,7 @@ class MemberUCCImplTest {
   }
 
   private void configureMemberDTO(String actualState, String password) {
-    MemberDTO memberDTO = new MemberImpl();
+    memberDTO = new MemberImpl();
     memberDTO.setActualState(actualState);
     memberDTO.setPassword(hashedPassword);
     Mockito.when(memberDAO.getOne("nico", password))
@@ -40,8 +40,8 @@ class MemberUCCImplTest {
   @Test
   void testLoginConfirmedMemberWithGoodPassword() {
     configureMemberDTO("confirmed", password);
-    assertDoesNotThrow(
-        () -> memberUCC.login("nico", password)
+    assertEquals(memberDTO,
+        memberUCC.login("nico", password)
     );
   }
 
