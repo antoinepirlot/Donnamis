@@ -71,9 +71,8 @@ public class MemberDAOImpl implements MemberDAO {
    */
   private MemberDTO getOne(String username) {
     System.out.println("getOne(String username) in MemberDAO");
-    try {
-      String query = "SELECT * FROM project_pae.members WHERE username = ?";
-      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
+    String query = "SELECT * FROM project_pae.members WHERE username = ?";
+    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
       System.out.println("Prepared statement successfully generated");
       preparedStatement.setString(1, username);
       try (ResultSet rs = preparedStatement.executeQuery()) {
