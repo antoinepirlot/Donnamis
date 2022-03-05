@@ -30,7 +30,7 @@ class MemberUCCImplTest {
     wrongPassword = "wrongpassword";
   }
 
-  private void configureMemberDTO(String actualState) {
+  private void configureMemberDTO(String actualState, String password) {
     MemberDTO memberDTO = new MemberImpl();
     memberDTO.setActualState(actualState);
     memberDTO.setPassword(hashedPassword);
@@ -38,18 +38,9 @@ class MemberUCCImplTest {
         .thenReturn(memberDTO);
   }
 
-  @DisplayName("Test login with confirmed member good password")
-  @Test
-  void testLoginConfirmedMemberWithoutGoodPassword() {
-    configureMemberDTO("confirmed");
-    assertDoesNotThrow(
-        () -> MEMBER_UCC.login("nico", password)
-    );
-  }
-
   @Test
   void testLoginConfirmedMemberWithGoodPassword() {
-    configureMemberDTO("confirmed");
+    configureMemberDTO("confirmed", password);
     assertDoesNotThrow(
         () -> MEMBER_UCC.login("nico", password)
     );
@@ -58,7 +49,7 @@ class MemberUCCImplTest {
   @DisplayName("Test login with denied member and good password")
   @Test
   void testLoginDeniedMemberWithGoodPassword() {
-    configureMemberDTO("denied");
+    configureMemberDTO("denied", password);
     assertThrows(
         WebApplicationException.class,
         () -> MEMBER_UCC.login("nico", password)
@@ -68,7 +59,7 @@ class MemberUCCImplTest {
   @DisplayName("Test login with registered member and good password")
   @Test
   void testLoginRegisteredMemberWithGoodPassword() {
-    configureMemberDTO("registered");
+    configureMemberDTO("registered", password);
     assertThrows(
         WebApplicationException.class,
         () -> MEMBER_UCC.login("nico", password)
