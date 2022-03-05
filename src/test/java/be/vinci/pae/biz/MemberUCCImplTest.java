@@ -13,9 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 class MemberUCCImplTest {
+
   private final ServiceLocator LOCATOR = ServiceLocatorUtilities.bind(new ApplicationBinder());
   private final MemberDAO MEMBER_DAO = LOCATOR.getService(MemberDAO.class);
   private final MemberUCC MEMBER_UCC = LOCATOR.getService(MemberUCC.class);
+
   @BeforeEach
   void setUp() {
 
