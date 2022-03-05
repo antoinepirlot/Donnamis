@@ -7,7 +7,6 @@ const routes = {
   "/": HomePage,
   "/login": LoginPage,
   "/logout": Logout,
-  "/generatetoken": GenerateToken
 };
 
 /**
