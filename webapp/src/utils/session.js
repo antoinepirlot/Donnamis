@@ -1,9 +1,8 @@
-const STORE_NAME = "member";
-
 /**
- * Get the Object that is in the localStorage under the storeName key
+ * Get the Object that is in the localStorage or sessionStorage
+ * under the storeName key.
  * @param {string} storeName
- * @returns
+ * @returns the retrived object
  */
 const getObject = (storeName) => {
   let retrievedObject = localStorage.getItem(storeName);
@@ -15,6 +14,59 @@ const getObject = (storeName) => {
   }
   return JSON.parse(retrievedObject);
 };
+
+/**
+ * Get the token payload from the local or session storage.
+ * @returns the payload object
+ */
+const getPayload = async () => {
+  let token = localStorage.getItem("token");
+  if (!token) {
+    token = sessionStorage.getItem("token");
+  }
+  if (!token) {
+    return;
+  }
+  let payload = token.split('.')[1];
+  console.log("Payload : " + payload)
+  console.log("token : " + token)
+  payload = JSON.parse(window.atob(payload));
+  // we divided by 1000 because jwt token does contains only 10 digit and 13 for Date.now()
+  if(Date.now() / 1000 >= payload.exp){
+    console.log("TOKEN EXPIRED")
+    await refreshToken(payload.username, payload.id)
+    await getPayload();
+  }
+  return payload;
+};
+
+const refreshToken = async (username, id) => {
+  const request = {
+    method : "POST",
+    headers: {
+      "Content-Type":
+          "application/json"
+    },
+    body: JSON.stringify({
+      username: username,
+      id: id
+    })
+  };
+  try{
+    const response = await fetch("api/members/refreshToken", request);
+    if(!response.ok){
+      throw new Error("Problème lors du refresh du token");
+    }
+    const token = await response.json();
+    if(localStorage.getItem("token")){
+      setLocalObject("token", JSON.stringify(token));
+    }else{
+      setSessionObject("token", JSON.stringify(token));
+    }
+  }catch (e){
+    console.error(e);
+  }
+}
 
 /**
  * Set the object in the sessionObject under the storeName key.
@@ -40,11 +92,10 @@ const setLocalObject = (storeName, object) => {
 
 /**
  * Remove the object in the localStorage under the storeName key
- * @param {String} storeName
  */
-const disconnect = (storeName) => {
+const disconnect = () => {
   localStorage.clear();
   sessionStorage.clear();
 };
 
-export {getObject, setSessionObject, setLocalObject, disconnect};
+export {getObject, getPayload, setSessionObject, setLocalObject, disconnect};

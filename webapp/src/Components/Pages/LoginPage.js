@@ -1,4 +1,8 @@
-import {setLocalObject, setSessionObject} from "../../utils/session";
+import {
+  getPayload,
+  setLocalObject,
+  setSessionObject
+} from "../../utils/session";
 import {Redirect} from "../Router/Router";
 import Navbar from "../Navbar/Navbar";
 
@@ -24,8 +28,8 @@ const loginFormHtml = `
  * Just an example to demonstrate how to use the router
  * to "redirect" to a new page
  */
-function LoginPage() {
-  if (localStorage.getItem("member") || sessionStorage.getItem("member")) {
+async function LoginPage() {
+  if (await getPayload()) {
     Redirect("/");
     return;
   }
@@ -57,14 +61,12 @@ async function login(e) {
     if (!response.ok) {
       throw new Error("Problème lors du fetch");
     }
-    const notification = document.querySelector("#loginFormNotification");
-    const member = await response.json();
+    const token = await response.json();
     if (rememberMe) {
-      setLocalObject("member", member);
+      setLocalObject("token", token);
     } else {
-      setSessionObject("member", member);
+      setSessionObject("token", token);
     }
-    notification.innerHTML = member.username;
     Redirect("/");
     Navbar();
   } catch (err) {

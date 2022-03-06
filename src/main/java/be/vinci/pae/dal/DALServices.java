@@ -21,7 +21,6 @@ class DALServices {
   private Connection dbConnection() {
     driverLoading();
     Connection connection = null;
-    Config.load("./src/db.properties");
     String url = Config.getProperty("url");
     String user = Config.getProperty("user");
     String dbPassword = Config.getProperty("dbpassword");
