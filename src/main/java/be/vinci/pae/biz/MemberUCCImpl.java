@@ -49,7 +49,7 @@ public class MemberUCCImpl implements MemberUCC {
   @Override
   public MemberDTO getMember(String username, int id) {
     Member member = (Member) memberDAO.getOne(username);
-    if(member == null || member.getId() != id){
+    if (member == null || member.getId() != id){
       throw new WebApplicationException(Response.status(Status.NOT_FOUND)
           .entity("ID or username incorrect")
           .type("text/plain")
