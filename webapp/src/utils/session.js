@@ -34,13 +34,13 @@ const getPayload = async () => {
   // we divided by 1000 because jwt token does contains only 10 digit and 13 for Date.now()
   if(Date.now() / 1000 >= payload.exp){
     console.log("TOKEN EXPIRED")
-    await refreshToken(payload.username)
+    await refreshToken(payload.username, payload.id)
     await getPayload();
   }
   return payload;
 };
 
-const refreshToken = async (username) => {
+const refreshToken = async (username, id) => {
   const request = {
     method : "POST",
     headers: {
@@ -48,7 +48,8 @@ const refreshToken = async (username) => {
           "application/json"
     },
     body: JSON.stringify({
-      username: username
+      username: username,
+      id: id
     })
   };
   try{
