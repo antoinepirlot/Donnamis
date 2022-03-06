@@ -1,8 +1,8 @@
 package be.vinci.pae.biz;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import be.vinci.pae.dal.MemberDAO;
 import be.vinci.pae.utils.ApplicationBinder;
