@@ -8,6 +8,7 @@ public interface MemberDAO {
 
   MemberDTO getOne(String username, String password);
 
+  MemberDTO getOne(String username);
   //  MemberDTO createOne(MemberDTO memberDTO);
 
 }

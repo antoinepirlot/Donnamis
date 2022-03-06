@@ -52,11 +52,12 @@ const logoutLinkHtml = `
           </li>
 `;
 
-const Navbar = () => {
+const Navbar = async () => {
   const navbarWrapper = document.querySelector("#navbarWrapper");
   navbarWrapper.innerHTML = navBarHtml;
-  const payload = getPayload();
+  const payload = await getPayload();
   const links = document.querySelector("#navbarLinks");
+  console.table(payload)
   if (payload) {
     links.innerHTML += logoutLinkHtml;
     document.querySelector("#usernameNavbar").innerHTML = payload.username

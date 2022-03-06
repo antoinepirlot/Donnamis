@@ -69,7 +69,7 @@ public class MemberDAOImpl implements MemberDAO {
    * @param username the member's username
    * @return the member got from the db
    */
-  private MemberDTO getOne(String username) {
+  public MemberDTO getOne(String username) {
     System.out.println("getOne(String username) in MemberDAO");
     String query = "SELECT * FROM project_pae.members WHERE username = ?";
     try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {

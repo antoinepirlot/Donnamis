@@ -26,6 +26,7 @@ import org.apache.commons.text.StringEscapeUtils;
 @Singleton
 @Path("members")
 public class MemberResource {
+
   @Inject
   private MemberUCC memberUCC;
   private final ObjectMapper jsonMapper = new ObjectMapper();
@@ -46,7 +47,7 @@ public class MemberResource {
    * Method that login the member. It verify if the user can be connected by calling ucc.
    *
    * @param json the member login informations
-   * @return the token created for the member
+   * @return token created for the member
    */
   @POST
   @Path("login")
@@ -62,6 +63,37 @@ public class MemberResource {
     String password = json.get("password").asText();
     MemberDTO memberDTO = memberUCC.login(username, password);
     String token = createToken(memberDTO.getUsername(), memberDTO.getId());
+    return createObjextNode(token);
+  }
+
+  /**
+   * Regenerate a new token based on the username in parameter.
+   *
+   * @param json that contains the username
+   * @return token created for the member
+   */
+  @POST
+  @Path("refreshToken")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public ObjectNode refreshToken(JsonNode json) {
+    if (!json.hasNonNull("username")) {
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+          .entity("username required").type("text/plain").build());
+    }
+    String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
+    MemberDTO memberDTO = memberUCC.getMember(username);
+    String token = createToken(memberDTO.getUsername(), memberDTO.getId());
+    return createObjextNode(token);
+  }
+
+  /**
+   * Create a ObjectNode that contains a token from a String.
+   *
+   * @param token that will be add to ObjectNode
+   * @return objectNode that contains the new token
+   */
+  private ObjectNode createObjextNode(String token) {
     try {
       return jsonMapper.createObjectNode()
           .put("token", token);
@@ -79,13 +111,15 @@ public class MemberResource {
   private String createToken(String username, int id) {
     System.out.println("Generating token.");
     Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
-    long currentTimeMillis = System.currentTimeMillis();
-    long duration = 1000 * 60 * 60; //1 hour
+    Date date = new Date();
+    long duration = 1000 * 10; //1 hour
+    System.out.println("GetTime() : " + (date.getTime() + duration));
+    System.out.println("Date" + new Date(date.getTime() + duration));
     return JWT.create()
         .withIssuer("auth0")
         .withClaim("username", username)
         .withClaim("id", id)
-        .withExpiresAt(new Date(currentTimeMillis + duration))
+        .withExpiresAt(new Date(date.getTime() + duration))
         .sign(jwtAlgorithm);
   }
 

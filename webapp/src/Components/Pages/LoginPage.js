@@ -28,8 +28,8 @@ const loginFormHtml = `
  * Just an example to demonstrate how to use the router
  * to "redirect" to a new page
  */
-function LoginPage() {
-  if (getPayload()) {
+async function LoginPage() {
+  if (await getPayload()) {
     Redirect("/");
     return;
   }

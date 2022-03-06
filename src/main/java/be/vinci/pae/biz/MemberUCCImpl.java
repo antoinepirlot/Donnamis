@@ -40,4 +40,18 @@ public class MemberUCCImpl implements MemberUCC {
     return (MemberDTO) member;
   }
 
+  /**
+   * Get member from the db and check its state.
+   *
+   * @param username
+   * @return memberDTO from the username in parameter
+   */
+  @Override
+  public MemberDTO getMember(String username) {
+    Member member = (Member) memberDAO.getOne(username);
+    member.verifyState();
+    return (MemberDTO) member;
+  }
+
+
 }

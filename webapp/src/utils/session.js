@@ -19,17 +19,53 @@ const getObject = (storeName) => {
  * Get the token payload from the local or session storage.
  * @returns the payload object
  */
-const getPayload = () => {
-  let payload = localStorage.getItem("token");
-  if (!payload) {
-    payload = sessionStorage.getItem("token");
+const getPayload = async () => {
+  let token = localStorage.getItem("token");
+  if (!token) {
+    token = sessionStorage.getItem("token");
   }
-  if (!payload) {
+  if (!token) {
     return;
   }
-  payload = payload.split('.')[1];
-  return JSON.parse(window.atob(payload));
+  let payload = token.split('.')[1];
+  console.log("Payload : " + payload)
+  console.log("token : " + token)
+  payload = JSON.parse(window.atob(payload));
+  // we divided by 1000 because jwt token does contains only 10 digit and 13 for Date.now()
+  if(Date.now() / 1000 >= payload.exp){
+    console.log("TOKEN EXPIRED")
+    await refreshToken(payload.username)
+    await getPayload();
+  }
+  return payload;
 };
+// eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImlkIjoxLCJleHAiOjE2NDY1MjM5MjIsInVzZXJuYW1lIjoibmlrZXNha291In0.eErD7SA2kVpFoGtJt56CtmFAIybtu1GTdOt15HgOe0o
+const refreshToken = async (username) => {
+  const request = {
+    method : "POST",
+    headers: {
+      "Content-Type":
+          "application/json"
+    },
+    body: JSON.stringify({
+      username: username
+    })
+  };
+  try{
+    const response = await fetch("api/members/refreshToken", request);
+    if(!response.ok){
+      throw new Error("Problème lors du refresh du token");
+    }
+    const token = await response.json();
+    if(localStorage.getItem("token")){
+      setLocalObject("token", JSON.stringify(token));
+    }else{
+      setSessionObject("token", JSON.stringify(token));
+    }
+  }catch (e){
+    console.error(e);
+  }
+}
 
 /**
  * Set the object in the sessionObject under the storeName key.
