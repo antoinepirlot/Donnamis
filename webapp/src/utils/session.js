@@ -39,7 +39,7 @@ const getPayload = async () => {
   }
   return payload;
 };
-// eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhdXRoMCIsImlkIjoxLCJleHAiOjE2NDY1MjM5MjIsInVzZXJuYW1lIjoibmlrZXNha291In0.eErD7SA2kVpFoGtJt56CtmFAIybtu1GTdOt15HgOe0o
+
 const refreshToken = async (username) => {
   const request = {
     method : "POST",

@@ -20,8 +20,8 @@ public interface MemberUCC {
   /**
    * Get member from the db and check its state.
    *
-   * @param username
+   * @param username whose information we want
    * @return memberDTO from the username in parameter
    */
-  MemberDTO getMember(String username);
+  MemberDTO getMember(String username, int id);
 }

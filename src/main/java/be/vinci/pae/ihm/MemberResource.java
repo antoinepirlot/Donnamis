@@ -82,7 +82,8 @@ public class MemberResource {
           .entity("username required").type("text/plain").build());
     }
     String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
-    MemberDTO memberDTO = memberUCC.getMember(username);
+    int id = json.get("id").asInt();
+    MemberDTO memberDTO = memberUCC.getMember(username, id);
     String token = createToken(memberDTO.getUsername(), memberDTO.getId());
     return createObjextNode(token);
   }
@@ -112,7 +113,7 @@ public class MemberResource {
     System.out.println("Generating token.");
     Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
     Date date = new Date();
-    long duration = 1000 * 10; //1 hour
+    long duration = 1000 * 60 * 60; //1 hour
     System.out.println("GetTime() : " + (date.getTime() + duration));
     System.out.println("Date" + new Date(date.getTime() + duration));
     return JWT.create()
