@@ -37,7 +37,7 @@ public class MemberUCCImpl implements MemberUCC {
           .build());
     }
     member.verifyState();
-    return (MemberDTO) member;
+    return member;
   }
 
   /**
@@ -56,7 +56,7 @@ public class MemberUCCImpl implements MemberUCC {
           .build());
     }
     member.verifyState();
-    return (MemberDTO) member;
+    return member;
   }
 
 
