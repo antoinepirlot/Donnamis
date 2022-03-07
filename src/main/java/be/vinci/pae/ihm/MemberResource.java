@@ -67,28 +67,6 @@ public class MemberResource {
   }
 
   /**
-   * Regenerate a new token based on the username in parameter.
-   *
-   * @param json that contains the username
-   * @return token created for the member
-   */
-  @POST
-  @Path("refreshToken")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public ObjectNode refreshToken(JsonNode json) {
-    if (!json.hasNonNull("username")) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("username required").type("text/plain").build());
-    }
-    String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
-    int id = json.get("id").asInt();
-    MemberDTO memberDTO = memberUCC.getMember(username, id);
-    String token = createToken(memberDTO.getUsername(), memberDTO.getId());
-    return createObjextNode(token);
-  }
-
-  /**
    * Create a ObjectNode that contains a token from a String.
    *
    * @param token that will be add to ObjectNode

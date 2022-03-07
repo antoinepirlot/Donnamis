@@ -39,25 +39,4 @@ public class MemberUCCImpl implements MemberUCC {
     member.verifyState();
     return member;
   }
-
-  /**
-   * Get member from the db and check its state.
-   *
-   * @param username whose information we want
-   * @return memberDTO from the username in parameter
-   */
-  @Override
-  public MemberDTO getMember(String username, int id) {
-    Member member = (Member) memberDAO.getOne(username);
-    if (member == null || member.getId() != id) {
-      throw new WebApplicationException(Response.status(Status.NOT_FOUND)
-          .entity("ID or username incorrect")
-          .type("text/plain")
-          .build());
-    }
-    member.verifyState();
-    return member;
-  }
-
-
 }
