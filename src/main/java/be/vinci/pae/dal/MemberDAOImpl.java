@@ -15,55 +15,43 @@ public class MemberDAOImpl implements MemberDAO {
   @Inject
   private Factory factory;
 
-  //  /**
-  //   * Get all members from the db.
-  //   *
-  //   * @return a list of members
-  //   */
-  //  @Override
-  //  public List<MemberDTO> getAll() {
-  //    System.out.println("getAll");
-  //    List<MemberDTO> membersToReturn = new ArrayList<>();
-  //    try {
-  //      String query = "SELECT * FROM project_pae.members";
-  //      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
-  //      System.out.println("Préparation du statement");
-  //      try (ResultSet rs = preparedStatement.executeQuery()) {
-  //        while (rs.next()) {
-  //          MemberDTO memberDTO = createMemberInstance(rs);
-  //          membersToReturn.add(memberDTO);
-  //        }
-  //      }
-  //    } catch (SQLException e) {
-  //      System.out.println(e.getMessage());
-  //    }
-  //    System.out.println("Création des membres réussie");
-  //
-  //    return membersToReturn;
-  //  }
-
   /**
    * Get all the members in the DB.
    *
    * @return all the members otherwise null
    */
   public List<MemberDTO> getAllMembers() {
-    List<MemberDTO> listMemberDTO = new ArrayList<MemberDTO>();
+    List<MemberDTO> listMemberDTO = new ArrayList<>();
     String query = "SELECT * FROM project_pae.members";
 
     //Execute the query
-    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
-      try (ResultSet rs = preparedStatement.executeQuery()) {
-        while (rs.next()) {
-          listMemberDTO.add(createMemberInstance(rs));
-        }
-        return listMemberDTO;
-      }
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
-    }
-    System.out.println("ici");
-    return null;
+    return getMemberDTOS(listMemberDTO, query);
+  }
+
+  /**
+   * Get all the members in the DB with the state registered.
+   *
+   * @return all the members with the state registered otherwise null
+   */
+  public List<MemberDTO> getMembersRegistered() {
+    List<MemberDTO> listMemberDTO = new ArrayList<>();
+    String query = "SELECT * FROM project_pae.members m WHERE m.state = 'registered'";
+
+    //Execute the query
+    return getMemberDTOS(listMemberDTO, query);
+  }
+
+  /**
+   * Get all the members in the DB with the state registered.
+   *
+   * @return all the members with the state registered otherwise null
+   */
+  public List<MemberDTO> getMembersDenied() {
+    List<MemberDTO> listMemberDTO = new ArrayList<>();
+    String query = "SELECT * FROM project_pae.members m WHERE m.state = 'denied'";
+
+    //Execute the query
+    return getMemberDTOS(listMemberDTO, query);
   }
 
   /**
@@ -103,6 +91,25 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   //****************************** UTILS *******************************
+
+  /**
+   * Execute the query and return a list of member.
+   *
+   * @return a list of member
+   */
+  private List<MemberDTO> getMemberDTOS(List<MemberDTO> listMemberDTO, String query) {
+    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        while (rs.next()) {
+          listMemberDTO.add(createMemberInstance(rs));
+        }
+        return listMemberDTO;
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return null;
+  }
 
   /**
    * Create a Member instance.

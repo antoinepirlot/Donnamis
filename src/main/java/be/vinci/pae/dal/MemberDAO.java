@@ -5,9 +5,11 @@ import java.util.List;
 
 public interface MemberDAO {
 
-  //  List<MemberDTO> getAll();
-
   List<MemberDTO> getAllMembers();
+
+  List<MemberDTO> getMembersRegistered();
+
+  List<MemberDTO> getMembersDenied();
 
   MemberDTO getOne(String username, String password);
 }

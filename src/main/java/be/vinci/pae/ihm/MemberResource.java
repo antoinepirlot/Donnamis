@@ -49,8 +49,54 @@ public class MemberResource {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
           .entity("Ressource not found").type("text/plain").build());
     }
+    try {
+      return listMemberDTO;
+    } catch (Exception e) {
+      System.out.println("Unable to create list of member");
+      return null;
+    }
+  }
 
-    //Convert to ObjectNode
+  /**
+   * Method handling HTTP GET requests. The returned object will be sent to the client as
+   * "text/plain" media type.
+   *
+   * @return list of member
+   */
+  @GET
+  @Path("list_registered")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<MemberDTO> getMembersRegistered() {
+    List<MemberDTO> listMemberDTO = memberUCC.getMembersRegistered();
+    if (listMemberDTO == null) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Ressource not found").type("text/plain").build());
+    }
+    try {
+      return listMemberDTO;
+    } catch (Exception e) {
+      System.out.println("Unable to create list of member");
+      return null;
+    }
+  }
+
+  /**
+   * Method handling HTTP GET requests. The returned object will be sent to the client as
+   * "text/plain" media type.
+   *
+   * @return list of member
+   */
+  @GET
+  @Path("list_denied")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<MemberDTO> getMembersDenied() {
+    List<MemberDTO> listMemberDTO = memberUCC.getMembersDenied();
+    if (listMemberDTO == null) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Ressource not found").type("text/plain").build());
+    }
     try {
       return listMemberDTO;
     } catch (Exception e) {

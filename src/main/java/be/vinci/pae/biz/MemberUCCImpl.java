@@ -2,9 +2,6 @@ package be.vinci.pae.biz;
 
 import be.vinci.pae.dal.MemberDAO;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 import java.util.List;
 
 public class MemberUCCImpl implements MemberUCC {
@@ -12,19 +9,36 @@ public class MemberUCCImpl implements MemberUCC {
   @Inject
   private MemberDAO memberDAO;
 
-  //  /**
-  //   * Get all members from the database.
-  //   *
-  //   * @return all members
-  //   */
-  //  @Override
-  //  public List<MemberDTO> getAll() {
-  //    return memberDAO.getAll();
-  //  }
-
+  /**
+   * Get all the members from the db.
+   *
+   * @return list of member
+   */
   @Override
   public List<MemberDTO> getAllMembers() {
     List<MemberDTO> listMember = memberDAO.getAllMembers();
+    return listMember;
+  }
+
+  /**
+   * Get all the members with the state registered from the db.
+   *
+   * @return list of member registered
+   */
+  @Override
+  public List<MemberDTO> getMembersRegistered() {
+    List<MemberDTO> listMember = memberDAO.getMembersRegistered();
+    return listMember;
+  }
+
+  /**
+   * Get all the members with the state denied from the db.
+   *
+   * @return list of member denied
+   */
+  @Override
+  public List<MemberDTO> getMembersDenied() {
+    List<MemberDTO> listMember = memberDAO.getMembersDenied();
     return listMember;
   }
 
