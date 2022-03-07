@@ -20,18 +20,6 @@ class MemberImpl implements Member {
   public MemberImpl() {
   }
 
-  public MemberImpl(int id, String username, String password, String lastName, String firstName,
-      boolean isAdmin, String actualState, String phoneNumber) {
-    this.id = id;
-    this.username = username;
-    this.password = password;
-    this.lastName = lastName;
-    this.firstName = firstName;
-    this.isAdmin = isAdmin;
-    this.actualState = actualState;
-    this.phoneNumber = phoneNumber;
-  }
-
   public int getId() {
     return id;
   }
