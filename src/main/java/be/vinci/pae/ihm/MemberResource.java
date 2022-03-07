@@ -27,9 +27,9 @@ import org.apache.commons.text.StringEscapeUtils;
 @Path("members")
 public class MemberResource {
 
+  private final ObjectMapper jsonMapper = new ObjectMapper();
   @Inject
   private MemberUCC memberUCC;
-  private final ObjectMapper jsonMapper = new ObjectMapper();
 
   //  /**
   //   * Method handling HTTP GET requests. The returned object will be sent to the client as
@@ -62,6 +62,10 @@ public class MemberResource {
     String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
     String password = json.get("password").asText();
     MemberDTO memberDTO = memberUCC.login(username, password);
+    if (memberDTO == null) {
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+          .entity("This user doesn't exist").type("text/plain").build());
+    }
     String token = createToken(memberDTO.getUsername(), memberDTO.getId());
     return createObjextNode(token);
   }
