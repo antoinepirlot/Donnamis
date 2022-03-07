@@ -66,6 +66,7 @@ const Navbar = async () => {
   console.table(payload)
   if (payload) {
     links.innerHTML += logoutLinkHtml;
+    links.innerHTML += listMemberLinkHtml;
     document.querySelector("#usernameNavbar").innerHTML = payload.username
   } else {
     links.innerHTML += loginLinkHtml;
