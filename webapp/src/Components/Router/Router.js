@@ -1,12 +1,14 @@
 import HomePage from "../Pages/HomePage";
 import LoginPage from "../Pages/LoginPage";
 import Logout from "../Logout/Logout";
+import ListMemberPage from "../Pages/ListMemberPage";
 
 // Configure your routes here
 const routes = {
   "/": HomePage,
   "/login": LoginPage,
   "/logout": Logout,
+  "/list_member": ListMemberPage,
 };
 
 /**
@@ -43,10 +45,11 @@ const Router = () => {
   /* Route the right component when the page is loaded / refreshed */
   window.addEventListener("load", (e) => {
     const componentToRender = routes[window.location.pathname];
-    if (!componentToRender)
+    if (!componentToRender) {
       throw Error(
-        "The " + window.location.pathname + " ressource does not exist."
+          "The " + window.location.pathname + " ressource does not exist."
       );
+    }
 
     componentToRender();
   });
@@ -76,4 +79,4 @@ const Redirect = (uri) => {
   }
 };
 
-export { Router, Redirect };
+export {Router, Redirect};
