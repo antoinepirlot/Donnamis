@@ -6,4 +6,9 @@ public class FactoryImpl implements Factory {
   public Member getMember() {
     return new MemberImpl();
   }
+
+  @Override
+  public Item getItem() {
+    return new ItemImpl();
+  }
 }

@@ -2,8 +2,12 @@ package be.vinci.pae.utils;
 
 import be.vinci.pae.biz.Factory;
 import be.vinci.pae.biz.FactoryImpl;
+import be.vinci.pae.biz.ItemUCC;
+import be.vinci.pae.biz.ItemUCCImpl;
 import be.vinci.pae.biz.MemberUCC;
 import be.vinci.pae.biz.MemberUCCImpl;
+import be.vinci.pae.dal.ItemDAO;
+import be.vinci.pae.dal.ItemDAOImpl;
 import be.vinci.pae.dal.MemberDAO;
 import be.vinci.pae.dal.MemberDAOImpl;
 import jakarta.inject.Singleton;
@@ -18,5 +22,7 @@ public class ApplicationBinder extends AbstractBinder {
     bind(FactoryImpl.class).to(Factory.class).in(Singleton.class);
     bind(MemberDAOImpl.class).to(MemberDAO.class).in(Singleton.class);
     bind(MemberUCCImpl.class).to(MemberUCC.class).in(Singleton.class);
+    bind(ItemUCCImpl.class).to(ItemUCC.class).in(Singleton.class);
+    bind(ItemDAOImpl.class).to(ItemDAO.class).in(Singleton.class);
   }
 }
