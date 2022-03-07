@@ -6,7 +6,7 @@ import Logout from "../Logout/Logout";
 const routes = {
   "/": HomePage,
   "/login": LoginPage,
-  "/logout": Logout
+  "/logout": Logout,
 };
 
 /**

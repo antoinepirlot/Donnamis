@@ -10,7 +10,7 @@
  * - the router will show the Page associated to this URI when the user click on a nav-link
  */
 
-import {getObject} from "../../utils/session";
+import {getObject, getPayload} from "../../utils/session";
 
 const navBarHtml = `
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -52,14 +52,15 @@ const logoutLinkHtml = `
           </li>
 `;
 
-const Navbar = () => {
+const Navbar = async () => {
   const navbarWrapper = document.querySelector("#navbarWrapper");
   navbarWrapper.innerHTML = navBarHtml;
-  let member = getObject("member");
+  const payload = await getPayload();
   const links = document.querySelector("#navbarLinks");
-  if (member) {
+  console.table(payload)
+  if (payload) {
     links.innerHTML += logoutLinkHtml;
-    document.querySelector("#usernameNavbar").innerHTML = member.username
+    document.querySelector("#usernameNavbar").innerHTML = payload.username
   } else {
     links.innerHTML += loginLinkHtml;
   }

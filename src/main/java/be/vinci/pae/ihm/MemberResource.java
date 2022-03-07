@@ -1,5 +1,6 @@
 package be.vinci.pae.ihm;
 
+import be.vinci.pae.biz.MemberDTO;
 import be.vinci.pae.biz.MemberUCC;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
@@ -25,6 +26,7 @@ import org.apache.commons.text.StringEscapeUtils;
 @Singleton
 @Path("members")
 public class MemberResource {
+
   @Inject
   private MemberUCC memberUCC;
   private final ObjectMapper jsonMapper = new ObjectMapper();
@@ -45,7 +47,7 @@ public class MemberResource {
    * Method that login the member. It verify if the user can be connected by calling ucc.
    *
    * @param json the member login informations
-   * @return the token created for the member
+   * @return token created for the member
    */
   @POST
   @Path("login")
@@ -59,12 +61,21 @@ public class MemberResource {
     }
     String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
     String password = json.get("password").asText();
-    memberUCC.login(username, password);
-    String token = createToken(username);
+    MemberDTO memberDTO = memberUCC.login(username, password);
+    String token = createToken(memberDTO.getUsername(), memberDTO.getId());
+    return createObjextNode(token);
+  }
+
+  /**
+   * Create a ObjectNode that contains a token from a String.
+   *
+   * @param token that will be add to ObjectNode
+   * @return objectNode that contains the new token
+   */
+  private ObjectNode createObjextNode(String token) {
     try {
       return jsonMapper.createObjectNode()
-          .put("token", token)
-          .put("username", username);
+          .put("token", token);
     } catch (Exception e) {
       System.out.println("Unable to create token");
       return null;
@@ -76,15 +87,18 @@ public class MemberResource {
    *
    * @return the member's token
    */
-  private String createToken(String username) {
+  private String createToken(String username, int id) {
     System.out.println("Generating token.");
     Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
-    long currentTimeMillis = System.currentTimeMillis();
+    Date date = new Date();
     long duration = 1000 * 60 * 60; //1 hour
+    System.out.println("GetTime() : " + (date.getTime() + duration));
+    System.out.println("Date" + new Date(date.getTime() + duration));
     return JWT.create()
         .withIssuer("auth0")
         .withClaim("username", username)
-        .withExpiresAt(new Date(currentTimeMillis + duration))
+        .withClaim("id", id)
+        .withExpiresAt(new Date(date.getTime() + duration))
         .sign(jwtAlgorithm);
   }
 

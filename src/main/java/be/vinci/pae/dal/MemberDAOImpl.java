@@ -9,9 +9,6 @@ import jakarta.ws.rs.core.Response.Status;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import org.mindrot.jbcrypt.BCrypt;
 
 public class MemberDAOImpl implements MemberDAO {
 
@@ -19,32 +16,32 @@ public class MemberDAOImpl implements MemberDAO {
   @Inject
   private Factory factory;
 
-  /**
-   * Get all members from the db.
-   *
-   * @return a list of members
-   */
-  @Override
-  public List<MemberDTO> getAll() {
-    System.out.println("getAll");
-    List<MemberDTO> membersToReturn = new ArrayList<>();
-    try {
-      String query = "SELECT * FROM project_pae.members";
-      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
-      System.out.println("Préparation du statement");
-      try (ResultSet rs = preparedStatement.executeQuery()) {
-        while (rs.next()) {
-          MemberDTO memberDTO = createMemberInstance(rs);
-          membersToReturn.add(memberDTO);
-        }
-      }
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
-    }
-    System.out.println("Création des membres réussie");
-
-    return membersToReturn;
-  }
+  //  /**
+  //   * Get all members from the db.
+  //   *
+  //   * @return a list of members
+  //   */
+  //  @Override
+  //  public List<MemberDTO> getAll() {
+  //    System.out.println("getAll");
+  //    List<MemberDTO> membersToReturn = new ArrayList<>();
+  //    try {
+  //      String query = "SELECT * FROM project_pae.members";
+  //      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
+  //      System.out.println("Préparation du statement");
+  //      try (ResultSet rs = preparedStatement.executeQuery()) {
+  //        while (rs.next()) {
+  //          MemberDTO memberDTO = createMemberInstance(rs);
+  //          membersToReturn.add(memberDTO);
+  //        }
+  //      }
+  //    } catch (SQLException e) {
+  //      System.out.println(e.getMessage());
+  //    }
+  //    System.out.println("Création des membres réussie");
+  //
+  //    return membersToReturn;
+  //  }
 
   /**
    * Verify if the member is present into the db and its username and password are correct then it
@@ -57,7 +54,7 @@ public class MemberDAOImpl implements MemberDAO {
   @Override
   public MemberDTO getOne(String username, String password) {
     MemberDTO memberDTO = getOne(username);
-    if (memberDTO == null || !checkPassword(password, memberDTO.getPassword())) {
+    if (memberDTO == null) {
       throw new WebApplicationException(Response.status(Status.NOT_FOUND)
           .entity("Wrong password or username")
           .type("text/plain")
@@ -74,9 +71,8 @@ public class MemberDAOImpl implements MemberDAO {
    */
   private MemberDTO getOne(String username) {
     System.out.println("getOne(String username) in MemberDAO");
-    try {
-      String query = "SELECT * FROM project_pae.members WHERE username = ?";
-      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
+    String query = "SELECT * FROM project_pae.members WHERE username = ?";
+    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
       System.out.println("Prepared statement successfully generated");
       preparedStatement.setString(1, username);
       try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -98,7 +94,7 @@ public class MemberDAOImpl implements MemberDAO {
    * @throws SQLException if there's an issue while getting data from the result set
    */
   private MemberDTO createMemberInstance(ResultSet rs) throws SQLException {
-    System.out.println("Member instance creation");
+    System.out.println("Mreaember instance creation");
     MemberDTO memberDTO = factory.getMember();
     memberDTO.setId(rs.getInt("id_member"));
     memberDTO.setUsername(rs.getString("username"));
@@ -111,42 +107,38 @@ public class MemberDAOImpl implements MemberDAO {
     return memberDTO;
   }
 
-  /**
-   * Add the member to the db.
-   *
-   * @param memberDTO the member to add into the db
-   * @return the added member
-   */
-  @Override
-  public MemberDTO createOne(MemberDTO memberDTO) {
-    String query = "INSERT INTO project_pae.members (username, password, last_name, first_name, "
-        + "is_admin, state, phone) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    try {
-      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
-      preparedStatement.setString(1, memberDTO.getUsername());
-      preparedStatement.setString(2, memberDTO.getPassword());
-      preparedStatement.setString(3, memberDTO.getLastName());
-      preparedStatement.setString(4, memberDTO.getFirstName());
-      preparedStatement.setBoolean(5, memberDTO.isAdmin());
-      preparedStatement.setString(6, memberDTO.getActualState());
-      preparedStatement.setString(7, memberDTO.getPhoneNumber());
-      try (ResultSet rs = preparedStatement.executeQuery()) {
-        //it adds into the db BUT can't execute getOne(), it returns null
-        if (rs.next()) {
-          System.out.println("Ajout du membre réussi.");
-          return this.getOne(memberDTO.getUsername());
-        }
-      }
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
-    }
-    return null;
-  }
-
-  @Override
-  public boolean checkPassword(String password, String hashedPassword) {
-    return BCrypt.checkpw(password, hashedPassword);
-  }
+  //  /**
+  //   * Add the member to the db.
+  //   *
+  //   * @param memberDTO the member to add into the db
+  //   * @return the added member
+  //   */
+  //  @Override
+  //  public MemberDTO createOne(MemberDTO memberDTO) {
+  //    String query = "INSERT INTO project_pae.members (username, password, last_name, first_name,"
+  //        + "is_admin, state, phone) VALUES (?, ?, ?, ?, ?, ?, ?)";
+  //    try {
+  //      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
+  //      preparedStatement.setString(1, memberDTO.getUsername());
+  //      preparedStatement.setString(2, memberDTO.getPassword());
+  //      preparedStatement.setString(3, memberDTO.getLastName());
+  //      preparedStatement.setString(4, memberDTO.getFirstName());
+  //      preparedStatement.setBoolean(5, memberDTO.isAdmin());
+  //      preparedStatement.setString(6, memberDTO.getActualState());
+  //      preparedStatement.setString(7, memberDTO.getPhoneNumber());
+  //      try (ResultSet rs = preparedStatement.executeQuery()) {
+  //        //it adds into the db BUT can't execute getOne(), it returns null
+  //        if (rs.next()) {
+  //          System.out.println("Ajout du membre réussi.");
+  //          return this.getOne(memberDTO.getUsername());
+  //        }
+  //      }
+  //    } catch (SQLException e) {
+  //      System.out.println(e.getMessage());
+  //    }
+  //    return null;
+  //  }
+  //
 
   //  /**
   //   * Add a new member to the db if it's not already in the db.

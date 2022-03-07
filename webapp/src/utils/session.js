@@ -1,7 +1,8 @@
 /**
- * Get the Object that is in the localStorage under the storeName key
+ * Get the Object that is in the localStorage or sessionStorage
+ * under the storeName key.
  * @param {string} storeName
- * @returns
+ * @returns the retrived object
  */
 const getObject = (storeName) => {
   let retrievedObject = localStorage.getItem(storeName);
@@ -12,6 +13,26 @@ const getObject = (storeName) => {
     return;
   }
   return JSON.parse(retrievedObject);
+};
+
+/**
+ * Get the token payload from the local or session storage.
+ * @returns the payload object
+ */
+const getPayload = async () => {
+  let token = localStorage.getItem("token");
+  if (!token) {
+    token = sessionStorage.getItem("token");
+  }
+  if (!token) {
+    return;
+  }
+  let payload = token.split('.')[1];
+  console.log("Payload : " + payload)
+  console.log("token : " + token)
+  payload = JSON.parse(window.atob(payload));
+  // we divided by 1000 because jwt token does contains only 10 digit and 13 for Date.now()
+  return payload;
 };
 
 /**
@@ -44,4 +65,4 @@ const disconnect = () => {
   sessionStorage.clear();
 };
 
-export {getObject, setSessionObject, setLocalObject, disconnect};
+export {getObject, getPayload, setSessionObject, setLocalObject, disconnect};
