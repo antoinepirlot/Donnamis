@@ -3,9 +3,6 @@ package be.vinci.pae.dal;
 import be.vinci.pae.biz.Factory;
 import be.vinci.pae.biz.MemberDTO;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -79,14 +76,7 @@ public class MemberDAOImpl implements MemberDAO {
    */
   @Override
   public MemberDTO getOne(String username, String password) {
-    MemberDTO memberDTO = getOne(username);
-    if (memberDTO == null) {
-      throw new WebApplicationException(Response.status(Status.NOT_FOUND)
-          .entity("Wrong password or username")
-          .type("text/plain")
-          .build());
-    }
-    return memberDTO;
+    return getOne(username);
   }
 
   /**
@@ -95,7 +85,7 @@ public class MemberDAOImpl implements MemberDAO {
    * @param username the member's username
    * @return the member got from the db
    */
-  public MemberDTO getOne(String username) {
+  private MemberDTO getOne(String username) {
     System.out.println("getOne(String username) in MemberDAO");
     String query = "SELECT * FROM project_pae.members WHERE username = ?";
     try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {

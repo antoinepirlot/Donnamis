@@ -25,12 +25,4 @@ public interface MemberUCC {
    * @param password of the member
    */
   MemberDTO login(String username, String password);
-
-  /**
-   * Get member from the db and check its state.
-   *
-   * @param username whose information we want
-   * @return memberDTO from the username in parameter
-   */
-  MemberDTO getMember(String username, int id);
 }

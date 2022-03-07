@@ -40,39 +40,3 @@ Content-Type: application/json
   "phoneNumber": "0478 79 69 32",
   "admin": false
 }
-
-### Refresh nikesakou's token, should work
-POST {{baseUrl}}/members/refreshToken
-Content-Type: application/json
-
-{
-  "username": "nikesakou",
-  "id": 1
-}
-
-### Refresh nikesakou's token with bad id, should not work
-POST {{baseUrl}}/members/refreshToken
-Content-Type: application/json
-
-{
-  "username": "nikesakou",
-  "id": 3
-}
-
-### Refresh user with id 1 token with bad username, should not work
-POST {{baseUrl}}/members/refreshToken
-Content-Type: application/json
-
-{
-  "username": "Navial",
-  "id": 1
-}
-
-### Refresh token of inexistent user and id, should not work
-POST {{baseUrl}}/members/refreshToken
-Content-Type: application/json
-
-{
-  "username": "ViviLeGrosBg",
-  "id": 42069
-}

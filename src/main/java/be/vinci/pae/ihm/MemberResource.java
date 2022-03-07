@@ -29,9 +29,9 @@ import org.apache.commons.text.StringEscapeUtils;
 @Path("members")
 public class MemberResource {
 
-  private final ObjectMapper jsonMapper = new ObjectMapper();
   @Inject
   private MemberUCC memberUCC;
+  private final ObjectMapper jsonMapper = new ObjectMapper();
 
   /**
    * Method handling HTTP GET requests. The returned object will be sent to the client as
@@ -69,7 +69,6 @@ public class MemberResource {
   @Path("login")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-
   public ObjectNode login(JsonNode json) {
     // Get and check credentials
     if (!json.hasNonNull("username") || !json.hasNonNull("password")) {
@@ -95,12 +94,10 @@ public class MemberResource {
   @Produces(MediaType.APPLICATION_JSON)
   public ObjectNode refreshToken(JsonNode json) {
     if (!json.hasNonNull("username")) {
+    if (memberDTO == null) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("username required").type("text/plain").build());
+          .entity("This user doesn't exist").type("text/plain").build());
     }
-    String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
-    int id = json.get("id").asInt();
-    MemberDTO memberDTO = memberUCC.getMember(username, id);
     String token = createToken(memberDTO.getUsername(), memberDTO.getId());
     return createObjectNode(token);
   }
@@ -120,7 +117,6 @@ public class MemberResource {
       return null;
     }
   }
-
 
   /**
    * Create a connection token for a member.
