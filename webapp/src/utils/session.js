@@ -32,41 +32,8 @@ const getPayload = async () => {
   console.log("token : " + token)
   payload = JSON.parse(window.atob(payload));
   // we divided by 1000 because jwt token does contains only 10 digit and 13 for Date.now()
-  if(Date.now() / 1000 >= payload.exp){
-    console.log("TOKEN EXPIRED")
-    await refreshToken(payload.username, payload.id)
-    await getPayload();
-  }
   return payload;
 };
-
-const refreshToken = async (username, id) => {
-  const request = {
-    method : "POST",
-    headers: {
-      "Content-Type":
-          "application/json"
-    },
-    body: JSON.stringify({
-      username: username,
-      id: id
-    })
-  };
-  try{
-    const response = await fetch("api/members/refreshToken", request);
-    if(!response.ok){
-      throw new Error("Problème lors du refresh du token");
-    }
-    const token = await response.json();
-    if(localStorage.getItem("token")){
-      setLocalObject("token", JSON.stringify(token));
-    }else{
-      setSessionObject("token", JSON.stringify(token));
-    }
-  }catch (e){
-    console.error(e);
-  }
-}
 
 /**
  * Set the object in the sessionObject under the storeName key.
