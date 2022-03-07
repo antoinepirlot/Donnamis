@@ -32,7 +32,7 @@ CREATE TABLE project_pae.adresses
     FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
 );
 
-CREATE TABLE project_pae.objects
+CREATE TABLE project_pae.items
 (
     id_object        SERIAL PRIMARY KEY,
     item_description VARCHAR(500) NOT NULL,
