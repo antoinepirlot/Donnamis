@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.util.List;
 
 public class MemberUCCImpl implements MemberUCC {
 
@@ -20,6 +21,12 @@ public class MemberUCCImpl implements MemberUCC {
   //  public List<MemberDTO> getAll() {
   //    return memberDAO.getAll();
   //  }
+
+  @Override
+  public List<MemberDTO> getAllMembers() {
+    List<MemberDTO> listMember = memberDAO.getAllMembers();
+    return listMember;
+  }
 
   /**
    * Get the member from the db, checks its state.

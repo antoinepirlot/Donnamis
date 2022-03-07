@@ -1,5 +1,7 @@
 package be.vinci.pae.biz;
 
+import java.util.List;
+
 public interface MemberUCC {
 
   //  /**
@@ -8,6 +10,13 @@ public interface MemberUCC {
   //   * @return all members
   //   */
   //  List<MemberDTO> getAll();
+
+  /**
+   * Get all the members from the db.
+   *
+   * @return list of member
+   */
+  List<MemberDTO> getAllMembers();
 
   /**
    * Get the member from the db, checks its state and password.

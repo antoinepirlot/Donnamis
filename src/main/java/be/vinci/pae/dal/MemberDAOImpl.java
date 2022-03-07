@@ -9,6 +9,8 @@ import jakarta.ws.rs.core.Response.Status;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MemberDAOImpl implements MemberDAO {
 
@@ -42,6 +44,30 @@ public class MemberDAOImpl implements MemberDAO {
   //
   //    return membersToReturn;
   //  }
+
+  /**
+   * Get all the members in the DB.
+   *
+   * @return all the members otherwise null
+   */
+  public List<MemberDTO> getAllMembers() {
+    List<MemberDTO> listMemberDTO = new ArrayList<MemberDTO>();
+    String query = "SELECT * FROM project_pae.members";
+
+    //Execute the query
+    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        while (rs.next()) {
+          listMemberDTO.add(createMemberInstance(rs));
+        }
+        return listMemberDTO;
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    System.out.println("ici");
+    return null;
+  }
 
   /**
    * Verify if the member is present into the db and its username and password are correct then it
@@ -85,6 +111,8 @@ public class MemberDAOImpl implements MemberDAO {
     }
     return null;
   }
+
+  //****************************** UTILS *******************************
 
   /**
    * Create a Member instance.

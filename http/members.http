@@ -10,7 +10,8 @@ Content-Type: application/json
   "password": "password"
 }
 
-###
+### Get All Members
+GET {{baseUrl}}/members/list_member
 
 ### Create One memberDTO
 POST {{baseUrl}}/members
