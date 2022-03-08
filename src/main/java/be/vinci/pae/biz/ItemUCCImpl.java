@@ -18,4 +18,14 @@ public class ItemUCCImpl implements ItemUCC {
   public List<ItemDTO> getLatestItems() {
     return itemDAO.getLatestItems();
   }
+
+  /**
+   * Get the latest items from the database.
+   *
+   * @return List of all items offered
+   */
+  @Override
+  public List<ItemDTO> getAllItems() {
+    return itemDAO.getAllItems();
+  }
 }

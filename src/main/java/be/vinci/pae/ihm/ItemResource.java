@@ -46,4 +46,28 @@ public class ItemResource {
   }
 
 
+  /*
+  Method that get all the items offered
+   */
+  @GET
+  @Path("all_items")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<ItemDTO> getAllItems() {
+    List<ItemDTO> listItemDTO = itemUCC.getAllItems();
+    if (listItemDTO == null) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Ressource not found").type("text/plain").build());
+    }
+
+    //Convert to ObjectNode
+    try {
+      return listItemDTO;
+    } catch (Exception e) {
+      System.out.println("Unable to create list of the latest items");
+      return null;
+    }
+  }
+
+
 }

@@ -54,6 +54,35 @@ public class ItemDAOImpl implements ItemDAO {
     return itemsToReturn;
   }
 
+
+  /**
+   * Get all items from the database.
+   *
+   * @return List of all items offered
+   */
+  @Override
+  public List<ItemDTO> getAllItems() {
+    System.out.println("getAllItems");
+    List<ItemDTO> itemsToReturn = new ArrayList<>();
+    try {
+      String query = "SELECT * FROM project_pae.items";
+      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
+      System.out.println("Préparation du statement");
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        while (rs.next()) {
+          ItemDTO itemDTO = createItemInstance(rs);
+          itemsToReturn.add(itemDTO);
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    System.out.println("Création des objets réussie");
+
+    return itemsToReturn;
+  }
+
+
   private ItemDTO createItemInstance(ResultSet rs) throws SQLException {
     System.out.println("Item instance creation");
     ItemDTO itemDTO = factory.getItem();

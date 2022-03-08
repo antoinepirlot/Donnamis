@@ -5,4 +5,6 @@ import java.util.List;
 public interface ItemUCC {
 
   List<ItemDTO> getLatestItems();
+
+  List<ItemDTO> getAllItems();
 }
