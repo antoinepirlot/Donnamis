@@ -5,6 +5,7 @@ import be.vinci.pae.biz.ItemUCC;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -25,6 +26,8 @@ public class ItemResource {
   Method that get all the latest items offered
    */
   @GET
+  @Path("latest_items")
+  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public List<ItemDTO> getLatestItems() {
     List<ItemDTO> listItemDTO = itemUCC.getLatestItems();

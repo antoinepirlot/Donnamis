@@ -11,9 +11,11 @@ import java.util.List;
 
 public class ItemDAOImpl implements ItemDAO {
 
+
   @Inject
-  private final DALServices dalServices = new DALServices();
   private Factory factory;
+  @Inject
+  private DALServices dalServices;
 
   /**
    * Get the latest items from the database.
@@ -22,7 +24,7 @@ public class ItemDAOImpl implements ItemDAO {
    */
   @Override
   public List<ItemDTO> getLatestItems() {
-    System.out.println("getAll");
+    System.out.println("getLatestItems");
     List<ItemDTO> itemsToReturn = new ArrayList<>();
     try {
       String query = "SELECT items.id_item,\n"

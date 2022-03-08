@@ -2,6 +2,7 @@ import HomePage from "../Pages/HomePage";
 import LoginPage from "../Pages/LoginPage";
 import Logout from "../Logout/Logout";
 import ListMemberPage from "../Pages/ListMemberPage";
+import LatestItemsOffersPage from "../Pages/LatestItemsOffersPage"
 
 // Configure your routes here
 const routes = {
@@ -9,6 +10,7 @@ const routes = {
   "/login": LoginPage,
   "/logout": Logout,
   "/list_member": ListMemberPage,
+  "/latest_items": LatestItemsOffersPage
 };
 
 /**
