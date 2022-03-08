@@ -3,12 +3,11 @@ package be.vinci.pae.dal;
 import be.vinci.pae.biz.Factory;
 import be.vinci.pae.biz.MemberDTO;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MemberDAOImpl implements MemberDAO {
 
@@ -44,6 +43,30 @@ public class MemberDAOImpl implements MemberDAO {
   //  }
 
   /**
+   * Get all the members in the DB.
+   *
+   * @return all the members otherwise null
+   */
+  public List<MemberDTO> getAllMembers() {
+    List<MemberDTO> listMemberDTO = new ArrayList<MemberDTO>();
+    String query = "SELECT * FROM project_pae.members";
+
+    //Execute the query
+    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        while (rs.next()) {
+          listMemberDTO.add(createMemberInstance(rs));
+        }
+        return listMemberDTO;
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    System.out.println("ici");
+    return null;
+  }
+
+  /**
    * Verify if the member is present into the db and its username and password are correct then it
    * created the token associated with this member if login credentials are correct.
    *
@@ -53,14 +76,7 @@ public class MemberDAOImpl implements MemberDAO {
    */
   @Override
   public MemberDTO getOne(String username, String password) {
-    MemberDTO memberDTO = getOne(username);
-    if (memberDTO == null) {
-      throw new WebApplicationException(Response.status(Status.NOT_FOUND)
-          .entity("Wrong password or username")
-          .type("text/plain")
-          .build());
-    }
-    return memberDTO;
+    return getOne(username);
   }
 
   /**
@@ -85,6 +101,8 @@ public class MemberDAOImpl implements MemberDAO {
     }
     return null;
   }
+
+  //****************************** UTILS *******************************
 
   /**
    * Create a Member instance.

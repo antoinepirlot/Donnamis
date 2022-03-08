@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -18,6 +19,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.Date;
+import java.util.List;
 import org.apache.commons.text.StringEscapeUtils;
 
 /**
@@ -27,21 +29,35 @@ import org.apache.commons.text.StringEscapeUtils;
 @Path("members")
 public class MemberResource {
 
+  private final ObjectMapper jsonMapper = new ObjectMapper();
   @Inject
   private MemberUCC memberUCC;
-  private final ObjectMapper jsonMapper = new ObjectMapper();
 
-  //  /**
-  //   * Method handling HTTP GET requests. The returned object will be sent to the client as
-  //   * "text/plain" media type.
-  //   *
-  //   * @return String that will be returned as a text/plain response.
-  //   */
-  //  @GET
-  //  @Produces(MediaType.APPLICATION_JSON)
-  //  public List<MemberDTO> getAll() {
-  //    return memberUCC.getAll();
-  //  }
+  /**
+   * Method handling HTTP GET requests. The returned object will be sent to the client as
+   * "text/plain" media type.
+   *
+   * @return list of member
+   */
+  @GET
+  @Path("list_member")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<MemberDTO> getAllMembers() {
+    List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
+    if (listMemberDTO == null) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Ressource not found").type("text/plain").build());
+    }
+
+    //Convert to ObjectNode
+    try {
+      return listMemberDTO;
+    } catch (Exception e) {
+      System.out.println("Unable to create list of member");
+      return null;
+    }
+  }
 
   /**
    * Method that login the member. It verify if the user can be connected by calling ucc.
@@ -63,7 +79,7 @@ public class MemberResource {
     String password = json.get("password").asText();
     MemberDTO memberDTO = memberUCC.login(username, password);
     String token = createToken(memberDTO.getUsername(), memberDTO.getId());
-    return createObjextNode(token);
+    return createObjectNode(token);
   }
 
   /**
@@ -72,7 +88,7 @@ public class MemberResource {
    * @param token that will be add to ObjectNode
    * @return objectNode that contains the new token
    */
-  private ObjectNode createObjextNode(String token) {
+  private ObjectNode createObjectNode(String token) {
     try {
       return jsonMapper.createObjectNode()
           .put("token", token);
