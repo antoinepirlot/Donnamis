@@ -114,3 +114,16 @@ VALUES ('Swapiz', '$2a$10$YUc0XQ56mZr9p2RQOPko/OuszOaUJaypZ.viL4FSFwG4oeKkoQNZS'
 INSERT INTO project_pae.members (username, password, last_name, first_name, is_admin, state, phone)
 VALUES ('username', '$2a$10$EOyq/phHFeZu4dnCJIpS2e4GBwOrhMOkY3Oz5zIQWqjN23ziS1Wra', 'Lastname',
         'Firstname', false, 'denied', NULL);
+
+
+SELECT items.id_item,
+       items.item_description,
+       items.id_item_type,
+       items.id_member,
+       items.photo,
+       items.title,
+       items.offer_status
+FROM project_pae.items items
+         LEFT OUTER JOIN project_pae.offers offers
+                         ON items.id_item = offers.id_item
+ORDER BY offers.date DESC
