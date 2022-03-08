@@ -26,8 +26,8 @@ public interface ItemDTO {
 
   void setTitle(String title);
 
-  String getOffers_status();
+  String getOffer_status();
 
-  void setOffers_status(String offers_status);
+  void setOffer_status(String offers_status);
 
 }

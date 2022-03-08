@@ -10,7 +10,7 @@ public class ItemImpl implements Item {
   private int id_member;
   private String photo;
   private String title;
-  private String offers_status;
+  private String offer_status;
 
   public ItemImpl() {
   }
@@ -63,12 +63,12 @@ public class ItemImpl implements Item {
     this.title = title;
   }
 
-  public String getOffers_status() {
-    return offers_status;
+  public String getOffer_status() {
+    return offer_status;
   }
 
-  public void setOffers_status(String offers_status) {
-    this.offers_status = offers_status;
+  public void setOffer_status(String offers_status) {
+    this.offer_status = offers_status;
   }
 
   @Override
@@ -97,7 +97,7 @@ public class ItemImpl implements Item {
         + ", id_member='" + id_member + '\''
         + ", photo='" + photo + '\''
         + ", title=" + title
-        + ", offer_status='" + offers_status + '\''
+        + ", offer_status='" + offer_status + '\''
         + '}';
   }
 
