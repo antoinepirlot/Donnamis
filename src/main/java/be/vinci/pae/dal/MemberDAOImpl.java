@@ -11,7 +11,8 @@ import java.util.List;
 
 public class MemberDAOImpl implements MemberDAO {
 
-  private final DALServices dalServices = new DALServices();
+  @Inject
+  private DALServices dalServices;
   @Inject
   private Factory factory;
 

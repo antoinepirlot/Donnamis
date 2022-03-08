@@ -13,6 +13,15 @@ Content-Type: application/json
 ### Get All Members
 GET {{baseUrl}}/members/list_member
 
+### Login "registered" user credentials, forbidden expected
+POST {{baseUrl}}/members/login
+Content-Type: application/json
+
+{
+  "username": "lepirelot",
+  "password": "password"
+}
+
 ### Create One memberDTO
 POST {{baseUrl}}/members
 Content-Type: application/json

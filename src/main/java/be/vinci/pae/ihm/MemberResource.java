@@ -29,35 +29,21 @@ import org.apache.commons.text.StringEscapeUtils;
 @Path("members")
 public class MemberResource {
 
-  private final ObjectMapper jsonMapper = new ObjectMapper();
   @Inject
   private MemberUCC memberUCC;
+  private final ObjectMapper jsonMapper = new ObjectMapper();
 
-  /**
-   * Method handling HTTP GET requests. The returned object will be sent to the client as
-   * "text/plain" media type.
-   *
-   * @return list of member
-   */
-  @GET
-  @Path("list_member")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public List<MemberDTO> getAllMembers() {
-    List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
-    if (listMemberDTO == null) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Ressource not found").type("text/plain").build());
-    }
-
-    //Convert to ObjectNode
-    try {
-      return listMemberDTO;
-    } catch (Exception e) {
-      System.out.println("Unable to create list of member");
-      return null;
-    }
-  }
+  //  /**
+  //   * Method handling HTTP GET requests. The returned object will be sent to the client as
+  //   * "text/plain" media type.
+  //   *
+  //   * @return String that will be returned as a text/plain response.
+  //   */
+  //  @GET
+  //  @Produces(MediaType.APPLICATION_JSON)
+  //  public List<MemberDTO> getAll() {
+  //    return memberUCC.getAll();
+  //  }
 
   /**
    * Method that login the member. It verify if the user can be connected by calling ucc.
@@ -78,8 +64,8 @@ public class MemberResource {
     String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
     String password = json.get("password").asText();
     MemberDTO memberDTO = memberUCC.login(username, password);
-    String token = createToken(memberDTO.getUsername(), memberDTO.getId());
-    return createObjectNode(token);
+    String token = createToken(memberDTO.getId());
+    return createObjextNode(token);
   }
 
   /**
@@ -103,7 +89,7 @@ public class MemberResource {
    *
    * @return the member's token
    */
-  private String createToken(String username, int id) {
+  private String createToken(int id) {
     System.out.println("Generating token.");
     Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
     Date date = new Date();
@@ -112,7 +98,6 @@ public class MemberResource {
     System.out.println("Date" + new Date(date.getTime() + duration));
     return JWT.create()
         .withIssuer("auth0")
-        .withClaim("username", username)
         .withClaim("id", id)
         .withExpiresAt(new Date(date.getTime() + duration))
         .sign(jwtAlgorithm);
