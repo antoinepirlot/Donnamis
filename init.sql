@@ -34,7 +34,7 @@ CREATE TABLE project_pae.adresses
 
 CREATE TABLE project_pae.items
 (
-    id_object        SERIAL PRIMARY KEY,
+    id_item          SERIAL PRIMARY KEY,
     item_description VARCHAR(500) NOT NULL,
     id_item_type     INTEGER      NOT NULL,
     id_member        INTEGER      NOT NULL,
@@ -47,11 +47,11 @@ CREATE TABLE project_pae.items
 
 CREATE TABLE project_pae.ratings
 (
-    id_object SERIAL PRIMARY KEY,
+    id_item   SERIAL PRIMARY KEY,
     rating    INTEGER      NOT NULL,
     text      VARCHAR(500) NOT NULL,
     id_member INTEGER      NOT NULL,
-    FOREIGN KEY (id_object) REFERENCES project_pae.objects (id_object),
+    FOREIGN KEY (id_item) REFERENCES project_pae.items (id_item),
     FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
 );
 
@@ -60,8 +60,8 @@ CREATE TABLE project_pae.offers
     id_offer  SERIAL PRIMARY KEY,
     date      DATE        NOT NULL,
     time_slot VARCHAR(50) NOT NULL,
-    id_object INTEGER     NOT NULL,
-    FOREIGN KEY (id_object) REFERENCES project_pae.objects (id_object)
+    id_item   INTEGER     NOT NULL,
+    FOREIGN KEY (id_item) REFERENCES project_pae.items (id_item)
 );
 
 CREATE TABLE project_pae.interests
@@ -87,10 +87,10 @@ CREATE TABLE project_pae.refusals
 CREATE TABLE project_pae.recipients
 (
     id_recipient SERIAL PRIMARY KEY,
-    id_object    INTEGER     NOT NULL,
+    id_item      INTEGER     NOT NULL,
     id_member    INTEGER     NOT NULL,
     received     VARCHAR(15) NOT NULL,
-    FOREIGN KEY (id_object) REFERENCES project_pae.objects (id_object),
+    FOREIGN KEY (id_item) REFERENCES project_pae.items (id_item),
     FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
 
 );
