@@ -2,6 +2,7 @@ package be.vinci.pae.biz;
 
 import be.vinci.pae.dal.MemberDAO;
 import jakarta.inject.Inject;
+import java.util.List;
 
 public class MemberUCCImpl implements MemberUCC {
 
@@ -17,6 +18,13 @@ public class MemberUCCImpl implements MemberUCC {
   //  public List<MemberDTO> getAll() {
   //    return memberDAO.getAll();
   //  }
+
+  @Override
+  public List<MemberDTO> getAllMembers() {
+    List<MemberDTO> listMember = memberDAO.getAllMembers();
+    return listMember;
+  }
+
 
   /**
    * Get the member from the db, checks its state.

@@ -29,9 +29,9 @@ import org.apache.commons.text.StringEscapeUtils;
 @Path("members")
 public class MemberResource {
 
+  private final ObjectMapper jsonMapper = new ObjectMapper();
   @Inject
   private MemberUCC memberUCC;
-  private final ObjectMapper jsonMapper = new ObjectMapper();
 
   //  /**
   //   * Method handling HTTP GET requests. The returned object will be sent to the client as
@@ -44,6 +44,26 @@ public class MemberResource {
   //  public List<MemberDTO> getAll() {
   //    return memberUCC.getAll();
   //  }
+
+  @GET
+  @Path("list_member")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<MemberDTO> getAllMembers() {
+    List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
+    if (listMemberDTO == null) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Ressource not found").type("text/plain").build());
+    }
+
+    //Convert to ObjectNode
+    try {
+      return listMemberDTO;
+    } catch (Exception e) {
+      System.out.println("Unable to create list of member");
+      return null;
+    }
+  }
 
   /**
    * Method that login the member. It verify if the user can be connected by calling ucc.
@@ -65,7 +85,7 @@ public class MemberResource {
     String password = json.get("password").asText();
     MemberDTO memberDTO = memberUCC.login(username, password);
     String token = createToken(memberDTO.getId());
-    return createObjextNode(token);
+    return createObjectNode(token);
   }
 
   /**
