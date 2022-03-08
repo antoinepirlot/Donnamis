@@ -1,18 +1,21 @@
 package be.vinci.pae.ihm;
 
 import be.vinci.pae.biz.ItemDTO;
+import be.vinci.pae.biz.ItemUCC;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.util.List;
 
 @Singleton
 @Path("items")
-public class ItemResource<ItemUCC> {
+public class ItemResource {
 
   private final ObjectMapper jsonMapper = new ObjectMapper();
   @Inject
@@ -24,8 +27,19 @@ public class ItemResource<ItemUCC> {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public List<ItemDTO> getLatestItems() {
-    return null;
-    //return itemUCC.getLatestItems();
+    List<ItemDTO> listItemDTO = itemUCC.getLatestItems();
+    if (listItemDTO == null) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Ressource not found").type("text/plain").build());
+    }
+
+    //Convert to ObjectNode
+    try {
+      return listItemDTO;
+    } catch (Exception e) {
+      System.out.println("Unable to create list of the latest items");
+      return null;
+    }
   }
 
 
