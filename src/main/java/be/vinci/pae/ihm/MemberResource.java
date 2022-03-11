@@ -63,7 +63,7 @@ public class MemberResource {
     String password = json.get("password").asText();
     MemberDTO memberDTO = memberUCC.login(username, password);
     String token = createToken(memberDTO.getId());
-    return createObjextNode(token);
+    return createObjextNode(token, memberDTO);
   }
 
   /**
@@ -72,10 +72,11 @@ public class MemberResource {
    * @param token that will be add to ObjectNode
    * @return objectNode that contains the new token
    */
-  private ObjectNode createObjextNode(String token) {
+  private ObjectNode createObjextNode(String token, MemberDTO memberDTO) {
     try {
       return jsonMapper.createObjectNode()
-          .put("token", token);
+          .put("token", token)
+          .putPOJO("memberDTO", memberDTO);
     } catch (Exception e) {
       System.out.println("Unable to create token");
       return null;
