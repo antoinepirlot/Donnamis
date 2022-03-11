@@ -31,7 +31,7 @@ class MemberUCCImplTest {
     wrongPassword = "wrongpassword";
   }
 
-  private void configureMemberDTO(String actualState, String password) {
+  private void configureMemberDTOForLogin(String actualState, String password) {
     memberDTO = new MemberImpl();
     memberDTO.setActualState(actualState);
     memberDTO.setPassword(hashedPassword);
@@ -39,10 +39,19 @@ class MemberUCCImplTest {
         .thenReturn(memberDTO);
   }
 
+  private void configureMemberDTOForRegister(String username, String password, String lastName,
+      String firstName) {
+    memberDTO = new MemberImpl();
+    memberDTO.setUsername(username);
+    memberDTO.setPassword(password);
+    memberDTO.setLastName(lastName);
+    memberDTO.setFirstName(firstName);
+  }
+
   @DisplayName("Test login with confirmed member and good password")
   @Test
   void testLoginConfirmedMemberWithGoodPassword() {
-    configureMemberDTO("confirmed", password);
+    configureMemberDTOForLogin("confirmed", password);
     assertEquals(memberDTO,
         memberUCC.login("nico", password)
     );
@@ -51,7 +60,7 @@ class MemberUCCImplTest {
   @DisplayName("Test login with denied member and good password")
   @Test
   void testLoginDeniedMemberWithGoodPassword() {
-    configureMemberDTO("denied", password);
+    configureMemberDTOForLogin("denied", password);
     assertThrows(
         WebApplicationException.class,
         () -> memberUCC.login("nico", password)
@@ -61,7 +70,7 @@ class MemberUCCImplTest {
   @DisplayName("Test login with registered member and good password")
   @Test
   void testLoginRegisteredMemberWithGoodPassword() {
-    configureMemberDTO("registered", password);
+    configureMemberDTOForLogin("registered", password);
     assertThrows(
         WebApplicationException.class,
         () -> memberUCC.login("nico", password)
@@ -71,7 +80,7 @@ class MemberUCCImplTest {
   @DisplayName("Test login with confirmed member and wrong password")
   @Test
   void testLoginConfirmedMemberWithWrongPassword() {
-    configureMemberDTO("confirmed", wrongPassword);
+    configureMemberDTOForLogin("confirmed", wrongPassword);
     assertThrows(
         WebApplicationException.class,
         () -> memberUCC.login("nico", wrongPassword)
@@ -81,7 +90,7 @@ class MemberUCCImplTest {
   @DisplayName("Test login with registered member and wrong password")
   @Test
   void testLoginRegisteredMemberWithWrongPassword() {
-    configureMemberDTO("registered", wrongPassword);
+    configureMemberDTOForLogin("registered", wrongPassword);
     assertThrows(
         WebApplicationException.class,
         () -> memberUCC.login("nico", wrongPassword)
@@ -91,7 +100,7 @@ class MemberUCCImplTest {
   @DisplayName("Test login with denied member and wrong password")
   @Test
   void testLoginDeniedMemberWithWrongPassword() {
-    configureMemberDTO("denied", wrongPassword);
+    configureMemberDTOForLogin("denied", wrongPassword);
     assertThrows(
         WebApplicationException.class,
         () -> memberUCC.login("nico", wrongPassword)
