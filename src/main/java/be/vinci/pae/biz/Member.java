@@ -10,7 +10,7 @@ public interface Member extends MemberDTO {
    *
    * @throws WebApplicationException if the state is "registered" or "denied"
    */
-  void verifyState();
+  boolean verifyState(String expectedState);
 
   boolean checkPassword(String password, String hashedPassword);
 }

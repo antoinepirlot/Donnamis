@@ -109,20 +109,50 @@ public class MemberResource {
   }
 
   @PUT
-  @Path("confirmRegistration/{id}")
+  @Path("confirm/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public void confirmRegistration(@PathParam("id") int id) {
-    if (id == 0) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("username or password required").type("text/plain").build());
-    }
+  public void confirmMember(@PathParam("id") int id) {
     if (memberUCC.getOneMember(id) == null) {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
           .entity("Ressource not found").type("text/plain").build());
     }
-    memberUCC.confirmRegistration(id);
+    if (!memberUCC.confirmMember(id)) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Confirm Registration Error").type("text/plain").build());
+    }
   }
+
+  @PUT
+  @Path("denies/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public void denyMember(@PathParam("id") int id) {
+    if (memberUCC.getOneMember(id) == null) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Ressource not found").type("text/plain").build());
+    }
+    if (!memberUCC.denyMember(id)) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Deny Member Error").type("text/plain").build());
+    }
+  }
+
+  @PUT
+  @Path("registerTEST/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public void registerTESTMember(@PathParam("id") int id) {
+    if (memberUCC.getOneMember(id) == null) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Ressource not found").type("text/plain").build());
+    }
+    if (!memberUCC.registerTESTMember(id)) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Register Member Error").type("text/plain").build());
+    }
+  }
+
 
   /**
    * Method that login the member. It verify if the user can be connected by calling ucc.

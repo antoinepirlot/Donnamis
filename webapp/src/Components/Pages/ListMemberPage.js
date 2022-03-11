@@ -52,6 +52,8 @@ async function viewRegisteredMembers() {
       const firstNameCell = document.createElement("td");
       firstNameCell.innerText = member.firstName;
       line.appendChild(firstNameCell);
+
+      // Confirm Button
       const confirmButtonCell = document.createElement("td");
       const confirmButton = document.createElement("button");
       confirmButton.innerHTML = "Confirmer";
@@ -64,7 +66,7 @@ async function viewRegisteredMembers() {
           };
 
           const reponse = await fetch(
-              "/api/members/confirmRegistration/" + member.id, options);
+              "/api/members/confirm/" + member.id, options);
           if (!reponse.ok) {
             throw new Error(
                 "fetch error : " + reponse.status + " : " + reponse.statusText
@@ -77,6 +79,34 @@ async function viewRegisteredMembers() {
       });
       confirmButtonCell.appendChild(confirmButton);
       line.appendChild(confirmButtonCell);
+
+      //Deny Button
+      const denyButtonCell = document.createElement("td");
+      const denyButton = document.createElement("button");
+      denyButton.innerHTML = "Refuser";
+      denyButton.addEventListener("click", async function () {
+
+        //Confirm the registration (Click on the button)
+        try {
+          const options = {
+            method: "PUT",
+          };
+
+          const reponse = await fetch(
+              "/api/members/denies/" + member.id, options);
+          if (!reponse.ok) {
+            throw new Error(
+                "fetch error : " + reponse.status + " : " + reponse.statusText
+            );
+          }
+          location.reload();
+        } catch (error) {
+          console.error("ListMemberPage::error::deny registration:", error);
+        }
+      });
+      denyButtonCell.appendChild(denyButton);
+      line.appendChild(denyButtonCell);
+
       line.dataset.memberId = member.id;
       tbody.appendChild(line);
     });
@@ -131,6 +161,34 @@ async function viewDeniedMembers() {
       const firstNameCell = document.createElement("td");
       firstNameCell.innerText = member.firstName;
       line.appendChild(firstNameCell);
+
+      // Confirm Button
+      const confirmButtonCell = document.createElement("td");
+      const confirmButton = document.createElement("button");
+      confirmButton.innerHTML = "Confirmer";
+      confirmButton.addEventListener("click", async function () {
+
+        //Confirm the registration (Click on the button)
+        try {
+          const options = {
+            method: "PUT",
+          };
+
+          const reponse = await fetch(
+              "/api/members/confirm/" + member.id, options);
+          if (!reponse.ok) {
+            throw new Error(
+                "fetch error : " + reponse.status + " : " + reponse.statusText
+            );
+          }
+          location.reload();
+        } catch (error) {
+          console.error("ListMemberPage::error::confirm registration:", error);
+        }
+      });
+      confirmButtonCell.appendChild(confirmButton);
+      line.appendChild(confirmButtonCell);
+
       line.dataset.memberId = member.id;
       tbody.appendChild(line);
     });

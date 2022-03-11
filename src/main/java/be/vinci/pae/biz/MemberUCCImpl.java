@@ -54,14 +54,37 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   /**
-   * Change the state of the member.
+   * Verify the state of the member and then change the state of the member to confirmed.
    *
    * @param id of the member
-   * @return Member or null
+   * @return True if success
    */
   @Override
-  public boolean confirmRegistration(int id) {
-    return memberDAO.confirmRegistration(id);
+  public boolean confirmMember(int id) {
+    Member member = (Member) getOneMember(id);
+    if (!member.verifyState("registered") && !member.verifyState("denied")) {
+      return false;
+    }
+    return memberDAO.confirmMember(id);
+  }
+
+  /**
+   * Verify the state of the member and then change the state of the member to denied.
+   *
+   * @param id of the member
+   * @return True if success
+   */
+  @Override
+  public boolean denyMember(int id) {
+    Member member = (Member) getOneMember(id);
+    if (!member.verifyState("registered")) {
+      return false;
+    }
+    return memberDAO.denyMember(id);
+  }
+
+  public boolean registerTESTMember(int id) {
+    return memberDAO.registerTESTMember(id);
   }
 
   /**
@@ -76,7 +99,7 @@ public class MemberUCCImpl implements MemberUCC {
     if (member == null || !member.checkPassword(password, member.getPassword())) {
       return null;
     }
-    member.verifyState();
+    member.verifyState("confirmed");
     return member;
   }
 }

@@ -80,8 +80,36 @@ public class MemberDAOImpl implements MemberDAO {
    *
    * @return all the members with the state registered otherwise null
    */
-  public boolean confirmRegistration(int id) {
+  public boolean confirmMember(int id) {
     String query = "UPDATE project_pae.members SET state = 'confirmed' WHERE id_member = ?";
+    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+      preparedStatement.setInt(1, id);
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        return true;
+      }
+    } catch (SQLException e) {
+
+      System.out.println(e.getMessage());
+    }
+    return false;
+  }
+
+  public boolean denyMember(int id) {
+    String query = "UPDATE project_pae.members SET state = 'denied' WHERE id_member = ?";
+    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+      preparedStatement.setInt(1, id);
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        return true;
+      }
+    } catch (SQLException e) {
+
+      System.out.println(e.getMessage());
+    }
+    return false;
+  }
+
+  public boolean registerTESTMember(int id) {
+    String query = "UPDATE project_pae.members SET state = 'registered' WHERE id_member = ?";
     try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {

@@ -1,8 +1,6 @@
 package be.vinci.pae.biz;
 
 import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 import java.util.Objects;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -91,23 +89,12 @@ class MemberImpl implements Member {
    * @throws WebApplicationException if the state is "registered" or "denied"
    */
   @Override
-  public void verifyState() {
+  public boolean verifyState(String expectedState) {
     System.out.println("L'état est :" + this.actualState);
-    if (this.actualState.equals("confirmed")) {
-      return;
+    if (this.actualState.equals(expectedState)) {
+      return true;
     }
-    if (this.actualState.equals("registered")) {
-      throw new WebApplicationException(Response.status(Status.FORBIDDEN)
-          .entity("The member is registered")
-          .type("text/plain")
-          .build());
-    }
-    if (this.actualState.equals("denied")) {
-      throw new WebApplicationException(Response.status(Status.FORBIDDEN)
-          .entity("The member is denied")
-          .type("text/plain")
-          .build());
-    }
+    return false;
 
   }
 
