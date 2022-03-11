@@ -10,8 +10,11 @@ Content-Type: application/json
   "password": "password"
 }
 
+### Confirm registration
+PUT {{baseUrl}}/members/confirmRegistration/1
+
 ### Get All Members
-GET {{baseUrl}}/members/list_denied
+GET {{baseUrl}}/members/list_member
 
 ### Login "registered" user credentials, forbidden expected
 POST {{baseUrl}}/members/login

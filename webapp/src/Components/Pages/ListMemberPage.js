@@ -23,12 +23,12 @@ async function viewRegisteredMembers() {
     const members = await response.json();
 
     //Create Div and Table
-    const tableWrapper = document.createElement("div");
-    tableWrapper.className = "table-responsive pt-5";
-    tableWrapper.innerHTML = "Membres en attente d'acceptation";
-    const table = document.createElement("table");
-    table.className = "table table";
-    tableWrapper.appendChild(table);
+    const tableWrapperRegistered = document.createElement("div");
+    tableWrapperRegistered.className = "table-responsive pt-5";
+    tableWrapperRegistered.innerHTML = "Membres en attente d'acceptation";
+    const tableRegistered = document.createElement("table");
+    tableRegistered.className = "table table";
+    tableWrapperRegistered.appendChild(tableRegistered);
 
     //Create the header of the table
     const thead = document.createElement("thead");
@@ -40,7 +40,7 @@ async function viewRegisteredMembers() {
     header2.innerText = "Prénom";
     header.appendChild(header1);
     header.appendChild(header2);
-    table.appendChild(thead);
+    tableRegistered.appendChild(thead);
 
     // Create the body of the table
     const tbody = document.createElement("tbody");
@@ -52,12 +52,37 @@ async function viewRegisteredMembers() {
       const firstNameCell = document.createElement("td");
       firstNameCell.innerText = member.firstName;
       line.appendChild(firstNameCell);
+      const confirmButtonCell = document.createElement("td");
+      const confirmButton = document.createElement("button");
+      confirmButton.innerHTML = "Confirmer";
+      confirmButton.addEventListener("click", async function () {
+
+        //Confirm the registration (Click on the button)
+        try {
+          const options = {
+            method: "PUT",
+          };
+
+          const reponse = await fetch(
+              "/api/members/confirmRegistration/" + member.id, options);
+          if (!reponse.ok) {
+            throw new Error(
+                "fetch error : " + reponse.status + " : " + reponse.statusText
+            );
+          }
+          location.reload();
+        } catch (error) {
+          console.error("ListMemberPage::error::confirm registration:", error);
+        }
+      });
+      confirmButtonCell.appendChild(confirmButton);
+      line.appendChild(confirmButtonCell);
       line.dataset.memberId = member.id;
       tbody.appendChild(line);
     });
-    table.appendChild(tbody);
+    tableRegistered.appendChild(tbody);
     // add the HTMLTableElement to the main, within the #page div
-    pageDiv.appendChild(tableWrapper);
+    pageDiv.appendChild(tableWrapperRegistered);
   } catch (error) {
     console.error("ListMemberPage::error: ", error);
   }

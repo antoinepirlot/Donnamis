@@ -43,6 +43,28 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   /**
+   * Get One Member by id.
+   *
+   * @param id of the member
+   * @return Member or null
+   */
+  @Override
+  public MemberDTO getOneMember(int id) {
+    return memberDAO.getOneMember(id);
+  }
+
+  /**
+   * Change the state of the member.
+   *
+   * @param id of the member
+   * @return Member or null
+   */
+  @Override
+  public boolean confirmRegistration(int id) {
+    return memberDAO.confirmRegistration(id);
+  }
+
+  /**
    * Get the member from the db, checks its state.
    *
    * @param username of the member
