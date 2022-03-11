@@ -131,32 +131,39 @@ public class MemberDAOImpl implements MemberDAO {
 
   /**
    * Add a new member to the db if it's not already in the db.
-   * @param memberDTO the memberDTO to add in the db
-   * @return the new created member if it's not already into the db otherwise null
+   * @param username of the member we add into de DB
+   * @param password of the member we add into de DB
+   * @param firstName of the member we add into de DB
+   * @param lastName of the member we add into de DB
+   * @return true if the member has been  registered
    */
-    public boolean register(MemberDTO memberDTO) {
-      MemberDTO memberDB = this.getOne(memberDTO.getUsername());
+    public boolean register(String username, String password, String firstName, String lastName) {
+
+      MemberDTO memberDB = this.getOne(username);
       if (memberDB != null) { // the user already exists !
         return false;
       }
-      return addOne(memberDTO);
+      return addOne(username, password, firstName, lastName);
     }
 
   /**
    * Add the member to the db.
    *
-   * @param memberDTO the member to add into the db
-   * @return the added member
+   * @param username of the member we add into de DB
+   * @param password of the member we add into de DB
+   * @param firstName of the member we add into de DB
+   * @param lastName of the member we add into de DB
+   * @return true if the member has been added to the DB
    */
-  private boolean addOne(MemberDTO memberDTO) {
+  private boolean addOne(String username, String password, String firstName, String lastName) {
     String query = "INSERT INTO project_pae.members (username, password, last_name, first_name,"
         + "is_admin, state) VALUES (?, ?, ?, ?, ?, ?)";
     try {
       PreparedStatement ps = dalServices.getPreparedStatement(query);
-      ps.setString(1, StringEscapeUtils.escapeHtml4(memberDTO.getUsername()));
-      ps.setString(2, StringEscapeUtils.escapeHtml4(memberDTO.getPassword()));
-      ps.setString(3, StringEscapeUtils.escapeHtml4(memberDTO.getLastName()));
-      ps.setString(4, StringEscapeUtils.escapeHtml4(memberDTO.getFirstName()));
+      ps.setString(1, StringEscapeUtils.escapeHtml4(username));
+      ps.setString(2, StringEscapeUtils.escapeHtml4(password));
+      ps.setString(3, StringEscapeUtils.escapeHtml4(lastName));
+      ps.setString(4, StringEscapeUtils.escapeHtml4(firstName));
       ps.setBoolean(5, DEFAULT_IS_ADMIN);
       ps.setString(6, DEFAULT_STATE);
       try (ResultSet rs = ps.executeQuery()) {

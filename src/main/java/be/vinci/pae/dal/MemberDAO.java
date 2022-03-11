@@ -13,8 +13,11 @@ public interface MemberDAO {
 
   /**
    * Add a new member to the db if it's not already in the db.
-   * @param memberDTO the memberDTO to add in the db
-   * @return the new created member if it's not already into the db otherwise null
+   * @param username of the member we add into de DB
+   * @param password of the member we add into de DB
+   * @param firstName of the member we add into de DB
+   * @param lastName of the member we add into de DB
+   * @return true if the member has been registered
    */
-  boolean register(MemberDTO memberDTO);
+  boolean register(String username, String password, String firstName, String lastName);
 }
