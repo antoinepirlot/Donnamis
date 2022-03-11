@@ -51,10 +51,13 @@ public class MemberUCCImpl implements MemberUCC {
   @Override
   public MemberDTO login(String username, String password) {
     Member member = (Member) memberDAO.getOne(username, password);
-    if (member == null || !member.checkPassword(password, member.getPassword())) {
+    if (
+        member == null
+            || !member.checkPassword(password, member.getPassword())
+            || !member.verifyState()
+    ) {
       return null;
     }
-    member.verifyState();
     return member;
   }
 }

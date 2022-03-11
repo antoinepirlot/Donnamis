@@ -124,8 +124,8 @@ public class MemberResource {
     String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
     String password = json.get("password").asText();
     MemberDTO memberDTO = memberUCC.login(username, password);
-    String token = createToken(memberDTO.getUsername(), memberDTO.getId());
-    return createObjectNode(token);
+    String token = createToken(memberDTO.getId());
+    return createObjectNode(token, memberDTO);
   }
 
   /**
@@ -134,10 +134,11 @@ public class MemberResource {
    * @param token that will be add to ObjectNode
    * @return objectNode that contains the new token
    */
-  private ObjectNode createObjectNode(String token) {
+  private ObjectNode createObjectNode(String token, MemberDTO memberDTO) {
     try {
       return jsonMapper.createObjectNode()
-          .put("token", token);
+          .put("token", token)
+          .putPOJO("memberDTO", memberDTO);
     } catch (Exception e) {
       System.out.println("Unable to create token");
       return null;
@@ -149,7 +150,7 @@ public class MemberResource {
    *
    * @return the member's token
    */
-  private String createToken(String username, int id) {
+  private String createToken(int id) {
     System.out.println("Generating token.");
     Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
     Date date = new Date();
@@ -158,7 +159,6 @@ public class MemberResource {
     System.out.println("Date" + new Date(date.getTime() + duration));
     return JWT.create()
         .withIssuer("auth0")
-        .withClaim("username", username)
         .withClaim("id", id)
         .withExpiresAt(new Date(date.getTime() + duration))
         .sign(jwtAlgorithm);

@@ -11,7 +11,8 @@ import java.util.List;
 
 public class MemberDAOImpl implements MemberDAO {
 
-  private final DALServices dalServices = new DALServices();
+  @Inject
+  private DALServices dalServices;
   @Inject
   private Factory factory;
 
@@ -119,7 +120,7 @@ public class MemberDAOImpl implements MemberDAO {
    * @throws SQLException if there's an issue while getting data from the result set
    */
   private MemberDTO createMemberInstance(ResultSet rs) throws SQLException {
-    System.out.println("Mreaember instance creation");
+    System.out.println("Member instance creation");
     MemberDTO memberDTO = factory.getMember();
     memberDTO.setId(rs.getInt("id_member"));
     memberDTO.setUsername(rs.getString("username"));

@@ -61,11 +61,13 @@ async function login(e) {
     if (!response.ok) {
       throw new Error("Problème lors du fetch");
     }
-    const token = await response.json();
+    const content = await response.json();
     if (rememberMe) {
-      setLocalObject("token", token);
+      setLocalObject("token", content.token);
+      setLocalObject("memberDTO", content.memberDTO);
     } else {
-      setSessionObject("token", token);
+      setSessionObject("token", content.token);
+      setSessionObject("memberDTO", content.memberDTO);
     }
     Redirect("/");
     Navbar();

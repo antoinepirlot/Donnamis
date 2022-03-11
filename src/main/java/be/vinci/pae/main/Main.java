@@ -14,11 +14,6 @@ import org.glassfish.jersey.server.ResourceConfig;
  */
 public class Main {
 
-
-  final ResourceConfig rc = new ResourceConfig().packages("be.vinci.pae.ihm")
-      .register(JacksonFeature.class)
-      .register(ApplicationBinder.class);
-
   /**
    * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
    *
@@ -27,7 +22,9 @@ public class Main {
   public static HttpServer startServer() {
     // create a resource config that scans for JAX-RS resources and providers
     // in be.vinci package
-    final ResourceConfig rc = new ResourceConfig().packages("be.vinci");
+    final ResourceConfig rc = new ResourceConfig().packages("be.vinci.pae.ihm")
+        .register(JacksonFeature.class)
+        .register(ApplicationBinder.class);
 
     // create and start a new instance of grizzly http server
     // exposing the Jersey application at BASE_URI
