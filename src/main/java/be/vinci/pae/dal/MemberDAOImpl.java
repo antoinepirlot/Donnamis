@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class MemberDAOImpl implements MemberDAO {
 
@@ -15,6 +16,8 @@ public class MemberDAOImpl implements MemberDAO {
   private DALServices dalServices;
   @Inject
   private Factory factory;
+  private static final String DEFAULT_STATE = "registered";
+  private static final boolean DEFAULT_IS_ADMIN = false;
 
   //  /**
   //   * Get all members from the db.
@@ -126,79 +129,46 @@ public class MemberDAOImpl implements MemberDAO {
     return memberDTO;
   }
 
-  //  /**
-  //   * Add the member to the db.
-  //   *
-  //   * @param memberDTO the member to add into the db
-  //   * @return the added member
-  //   */
-  //  @Override
-  //  public MemberDTO createOne(MemberDTO memberDTO) {
-  //    String query = "INSERT INTO project_pae.members (username, password, last_name, first_name,"
-  //        + "is_admin, state, phone) VALUES (?, ?, ?, ?, ?, ?, ?)";
-  //    try {
-  //      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
-  //      preparedStatement.setString(1, memberDTO.getUsername());
-  //      preparedStatement.setString(2, memberDTO.getPassword());
-  //      preparedStatement.setString(3, memberDTO.getLastName());
-  //      preparedStatement.setString(4, memberDTO.getFirstName());
-  //      preparedStatement.setBoolean(5, memberDTO.isAdmin());
-  //      preparedStatement.setString(6, memberDTO.getActualState());
-  //      preparedStatement.setString(7, memberDTO.getPhoneNumber());
-  //      try (ResultSet rs = preparedStatement.executeQuery()) {
-  //        //it adds into the db BUT can't execute getOne(), it returns null
-  //        if (rs.next()) {
-  //          System.out.println("Ajout du membre réussi.");
-  //          return this.getOne(memberDTO.getUsername());
-  //        }
-  //      }
-  //    } catch (SQLException e) {
-  //      System.out.println(e.getMessage());
-  //    }
-  //    return null;
-  //  }
-  //
+  /**
+   * Add a new member to the db if it's not already in the db.
+   * @param memberDTO the memberDTO to add in the db
+   * @return the new created member if it's not already into the db otherwise null
+   */
+    public boolean register(MemberDTO memberDTO) {
+      MemberDTO memberDB = this.getOne(memberDTO.getUsername());
+      if (memberDB != null) { // the user already exists !
+        return false;
+      }
+      return addOne(memberDTO);
+    }
 
-  //  /**
-  //   * Add a new member to the db if it's not already in the db.
-  //   *
-  //   * @param username    the member's username
-  //   * @param password    the member's password
-  //   * @param lastName    the member's lastname
-  //   * @param firstName   the member's firstname
-  //   * @param actualState the member's actualState ("registered" while registering)
-  //   * @param phoneNumber the member's phone number
-  //   * @param admin       the member's admin status (false by default)
-  //   * @return the new created member if it's not already into the db otherwise null
-  //   */
-  //  public ObjectNode register(String username, String password, String lastName,
-  //  String firstName, String actualState, String phoneNumber, boolean admin) {
-  //    MemberDTO tempMemberDTO = getOne(username);
-  //    if (tempMemberDTO != null) { // the user already exists !
-  //      return null;
-  //    }
-  //    tempMemberDTO = new MemberDTO(
-  //        0,
-  //        StringEscapeUtils.escapeHtml4(username),
-  //        StringEscapeUtils.escapeHtml4(password),
-  //        StringEscapeUtils.escapeHtml4(lastName),
-  //        StringEscapeUtils.escapeHtml4(firstName),
-  //        admin,
-  //        StringEscapeUtils.escapeHtml4(actualState),
-  //        StringEscapeUtils.escapeHtml4(phoneNumber)
-  //    );
-  //    System.out.println("!!!!!!!!!");
-  //    System.out.println(tempMemberDTO);
-  //    MemberDTO addedMemberDTO = this.createOne(tempMemberDTO);
-  //    if (addedMemberDTO == null) {
-  //      System.out.println("addedMember is null.");
-  //      return null;
-  //    }
-  //    try {
-  //      return createToken(addedMemberDTO);
-  //    } catch (Exception e) {
-  //      System.out.println("Unable to create token");
-  //      return null;
-  //    }
-  //  }
+  /**
+   * Add the member to the db.
+   *
+   * @param memberDTO the member to add into the db
+   * @return the added member
+   */
+  private boolean addOne(MemberDTO memberDTO) {
+    String query = "INSERT INTO project_pae.members (username, password, last_name, first_name,"
+        + "is_admin, state) VALUES (?, ?, ?, ?, ?, ?)";
+    try {
+      PreparedStatement ps = dalServices.getPreparedStatement(query);
+      ps.setString(1, StringEscapeUtils.escapeHtml4(memberDTO.getUsername()));
+      ps.setString(2, StringEscapeUtils.escapeHtml4(memberDTO.getPassword()));
+      ps.setString(3, StringEscapeUtils.escapeHtml4(memberDTO.getLastName()));
+      ps.setString(4, StringEscapeUtils.escapeHtml4(memberDTO.getFirstName()));
+      ps.setBoolean(5, DEFAULT_IS_ADMIN);
+      ps.setString(6, DEFAULT_STATE);
+      try (ResultSet rs = ps.executeQuery()) {
+        //it adds into the db BUT can't execute getOne(), it returns null
+        if (rs.next()) {
+          System.out.println("Ajout du membre réussi.");
+          return true;
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return false;
+  }
 }
