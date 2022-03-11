@@ -43,4 +43,16 @@ public class MemberUCCImpl implements MemberUCC {
     }
     return member;
   }
+
+  /**
+   * @param username  of the member
+   * @param password  of the member
+   * @param firstName of the member
+   * @param lastName  of the member
+   * @return true if the member has been  registered
+   */
+  @Override
+  public boolean register(String username, String password, String firstName, String lastName) {
+    return this.memberDAO.register(username, password, firstName, lastName);
+  }
 }

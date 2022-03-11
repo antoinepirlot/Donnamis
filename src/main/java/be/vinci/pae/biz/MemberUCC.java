@@ -25,4 +25,14 @@ public interface MemberUCC {
    * @param password of the member
    */
   MemberDTO login(String username, String password);
+
+  /**
+   *
+   * @param username of the member
+   * @param password of the member
+   * @param firstName of the member
+   * @param lastName of the member
+   * @return true if the member has been  registered
+   */
+  boolean register(String username, String password, String firstName, String lastName);
 }
