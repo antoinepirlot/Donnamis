@@ -23,17 +23,14 @@ Content-Type: application/json
 }
 
 ### Create One memberDTO
-POST {{baseUrl}}/members
+POST {{baseUrl}}/members/register
 Content-Type: application/json
 
 {
   "username": "LePirelot",
   "password": "pswdPasOuf",
   "lastName": "Pirlot",
-  "firstName": "Antoine",
-  "actualState": "confirmed",
-  "phoneNumber": "0478 85 22 64",
-  "admin": false
+  "firstName": "Antoine"
 }
 
 ### Register john
@@ -44,8 +41,5 @@ Content-Type: application/json
   "username": "Michel03",
   "password": "Securitas",
   "lastName": "DuMoulin",
-  "firstName": "Michel",
-  "actualState": "confirmed",
-  "phoneNumber": "0478 79 69 32",
-  "admin": false
+  "firstName": "Michel"
 }
