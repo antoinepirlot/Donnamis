@@ -33,7 +33,7 @@ public class MemberUCCImpl implements MemberUCC {
    */
   @Override
   public MemberDTO login(String username, String password) {
-    Member member = (Member) memberDAO.getOne(username, password);
+    Member member = (Member) memberDAO.getOne(username);
     if (
         member == null
             || !member.checkPassword(password, member.getPassword())
