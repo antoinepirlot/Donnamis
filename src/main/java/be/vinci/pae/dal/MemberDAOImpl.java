@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.text.StringEscapeUtils;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class MemberDAOImpl implements MemberDAO {
 
@@ -71,25 +72,13 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   /**
-   * Verify if the member is present into the db and its username and password are correct then it
-   * created the token associated with this member if login credentials are correct.
-   *
-   * @param username the member's username
-   * @param password the member's password
-   * @return the match member otherwise null
-   */
-  @Override
-  public MemberDTO getOne(String username, String password) {
-    return getOne(username);
-  }
-
-  /**
    * Get a specific member identified by its username.
    *
    * @param username the member's username
    * @return the member got from the db
    */
-  private MemberDTO getOne(String username) {
+  @Override
+  public MemberDTO getOne(String username) {
     System.out.println("getOne(String username) in MemberDAO");
     String query = "SELECT * FROM project_pae.members WHERE username = ?";
     try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
@@ -131,47 +120,53 @@ public class MemberDAOImpl implements MemberDAO {
 
   /**
    * Add a new member to the db if it's not already in the db.
-   * @param username of the member we add into de DB
-   * @param password of the member we add into de DB
+   *
+   * @param username  of the member we add into de DB
+   * @param password  of the member we add into de DB
    * @param firstName of the member we add into de DB
-   * @param lastName of the member we add into de DB
+   * @param lastName  of the member we add into de DB
    * @return true if the member has been  registered
    */
-    public boolean register(String username, String password, String firstName, String lastName) {
+  public boolean register(String username, String password, String firstName, String lastName) {
 
-      MemberDTO memberDB = this.getOne(username);
-      if (memberDB != null) { // the user already exists !
-        return false;
-      }
-      return addOne(username, password, firstName, lastName);
+    MemberDTO memberDB = this.getOne(username);
+    if (memberDB != null) { // the user already exists !
+      return false;
     }
+    return addOne(username, password, firstName, lastName);
+  }
 
   /**
    * Add the member to the db.
    *
-   * @param username of the member we add into de DB
-   * @param password of the member we add into de DB
+   * @param username  of the member we add into de DB
+   * @param password  of the member we add into de DB
    * @param firstName of the member we add into de DB
-   * @param lastName of the member we add into de DB
+   * @param lastName  of the member we add into de DB
    * @return true if the member has been added to the DB
    */
   private boolean addOne(String username, String password, String firstName, String lastName) {
-    String query = "INSERT INTO project_pae.members (username, password, last_name, first_name,"
+    String query = "INSERT INTO project_pae.members (username, password, last_name, first_name, "
         + "is_admin, state) VALUES (?, ?, ?, ?, ?, ?)";
-    try {
-      PreparedStatement ps = dalServices.getPreparedStatement(query);
+    String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(10));
+    try (
+        PreparedStatement ps = dalServices.getPreparedStatement(query)
+    ) {
       ps.setString(1, StringEscapeUtils.escapeHtml4(username));
-      ps.setString(2, StringEscapeUtils.escapeHtml4(password));
+      ps.setString(2, hashedPassword);
       ps.setString(3, StringEscapeUtils.escapeHtml4(lastName));
       ps.setString(4, StringEscapeUtils.escapeHtml4(firstName));
       ps.setBoolean(5, DEFAULT_IS_ADMIN);
       ps.setString(6, DEFAULT_STATE);
-      try (ResultSet rs = ps.executeQuery()) {
+      try {
+        int result = ps.executeUpdate();
         //it adds into the db BUT can't execute getOne(), it returns null
-        if (rs.next()) {
+        if (result != 0) {
           System.out.println("Ajout du membre réussi.");
           return true;
         }
+      } catch (SQLException e) {
+        System.out.println(e.getMessage());
       }
     } catch (SQLException e) {
       System.out.println(e.getMessage());
