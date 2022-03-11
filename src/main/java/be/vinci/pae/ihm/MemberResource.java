@@ -13,7 +13,9 @@ import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
@@ -30,6 +32,7 @@ import org.apache.commons.text.StringEscapeUtils;
 public class MemberResource {
 
   private final ObjectMapper jsonMapper = new ObjectMapper();
+
   @Inject
   private MemberUCC memberUCC;
 
@@ -103,6 +106,22 @@ public class MemberResource {
       System.out.println("Unable to create list of member");
       return null;
     }
+  }
+
+  @PUT
+  @Path("confirmRegistration/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public void confirmRegistration(@PathParam("id") int id) {
+    if (id == 0) {
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+          .entity("username or password required").type("text/plain").build());
+    }
+    if (memberUCC.getOneMember(id) == null) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Ressource not found").type("text/plain").build());
+    }
+    memberUCC.confirmRegistration(id);
   }
 
   /**

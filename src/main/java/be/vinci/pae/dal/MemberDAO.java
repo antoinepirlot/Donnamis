@@ -11,5 +11,9 @@ public interface MemberDAO {
 
   List<MemberDTO> getMembersDenied();
 
+  MemberDTO getOneMember(int id);
+
+  boolean confirmRegistration(int id);
+
   MemberDTO getOne(String username, String password);
 }

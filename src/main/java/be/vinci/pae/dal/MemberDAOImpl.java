@@ -55,6 +55,46 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   /**
+   * Get all the members in the DB with the state registered.
+   *
+   * @return all the members with the state registered otherwise null
+   */
+  public MemberDTO getOneMember(int id) {
+    String query = "SELECT * FROM project_pae.members m WHERE m.id_member = ?";
+    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+      preparedStatement.setInt(1, id);
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        if (rs.next()) { //We know only one is returned by the db
+          System.out.println("ici");
+          return createMemberInstance(rs);
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return null;
+  }
+
+  /**
+   * Get all the members in the DB with the state registered.
+   *
+   * @return all the members with the state registered otherwise null
+   */
+  public boolean confirmRegistration(int id) {
+    String query = "UPDATE project_pae.members SET state = 'confirmed' WHERE id_member = ?";
+    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+      preparedStatement.setInt(1, id);
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        return true;
+      }
+    } catch (SQLException e) {
+
+      System.out.println(e.getMessage());
+    }
+    return false;
+  }
+
+  /**
    * Verify if the member is present into the db and its username and password are correct then it
    * created the token associated with this member if login credentials are correct.
    *

@@ -26,6 +26,21 @@ public interface MemberUCC {
   List<MemberDTO> getMembersDenied();
 
   /**
+   * Get One Member by id.
+   *
+   * @return Member or null
+   */
+  MemberDTO getOneMember(int id);
+
+  /**
+   * Change the state of the member.
+   *
+   * @param id of the member
+   * @return Member or null
+   */
+  boolean confirmRegistration(int id);
+
+  /**
    * Get the member from the db, checks its state and password.
    *
    * @param username of the member
