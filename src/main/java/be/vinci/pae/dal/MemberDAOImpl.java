@@ -52,7 +52,7 @@ public class MemberDAOImpl implements MemberDAO {
    * @return all the members otherwise null
    */
   public List<MemberDTO> getAllMembers() {
-    List<MemberDTO> listMemberDTO = new ArrayList<MemberDTO>();
+    List<MemberDTO> listMemberDTO = new ArrayList<>();
     String query = "SELECT * FROM project_pae.members";
 
     //Execute the query
