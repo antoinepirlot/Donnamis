@@ -27,7 +27,7 @@ public interface MemberUCC {
   MemberDTO login(String username, String password);
 
   /**
-   *
+   * Ask DAO to insert the member into the db.
    * @param username of the member
    * @param password of the member
    * @param firstName of the member
