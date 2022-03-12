@@ -35,7 +35,7 @@ class MemberUCCImplTest {
     memberDTO = new MemberImpl();
     memberDTO.setActualState(actualState);
     memberDTO.setPassword(hashedPassword);
-    Mockito.when(memberDAO.getOne("nico", password))
+    Mockito.when(memberDAO.getOne(password))
         .thenReturn(memberDTO);
   }
 
