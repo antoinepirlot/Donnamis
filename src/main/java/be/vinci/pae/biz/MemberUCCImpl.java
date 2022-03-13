@@ -83,8 +83,30 @@ public class MemberUCCImpl implements MemberUCC {
     return memberDAO.denyMember(id);
   }
 
+  /**
+   * ONLY FOR MY TESTS
+   *
+   * @param id test
+   * @return test
+   */
   public boolean registerTESTMember(int id) {
     return memberDAO.registerTESTMember(id);
+  }
+
+  /**
+   * Verify the state of the member and then change the state of the member to confirmed and member
+   * is an admin.
+   *
+   * @param id of the member
+   * @return True if success
+   */
+  public boolean confirmAdmin(int id) {
+    Member member = (Member) getOneMember(id);
+    if (!member.verifyState("registered")) {
+      return false;
+    }
+    memberDAO.confirmMember(id);
+    return memberDAO.isAdmin(id);
   }
 
   /**

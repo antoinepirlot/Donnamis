@@ -124,6 +124,21 @@ public class MemberResource {
   }
 
   @PUT
+  @Path("confirmAdmin/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public void confirmAdmin(@PathParam("id") int id) {
+    if (memberUCC.getOneMember(id) == null) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Ressource not found").type("text/plain").build());
+    }
+    if (!memberUCC.confirmAdmin(id)) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Confirm Registration Error").type("text/plain").build());
+    }
+  }
+
+  @PUT
   @Path("denies/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)

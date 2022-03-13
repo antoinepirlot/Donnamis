@@ -15,6 +15,8 @@ public interface MemberDAO {
 
   boolean confirmMember(int id);
 
+  boolean isAdmin(int id);
+
   boolean registerTESTMember(int id);
 
   boolean denyMember(int id);

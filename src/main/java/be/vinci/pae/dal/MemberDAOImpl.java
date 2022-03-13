@@ -42,9 +42,9 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   /**
-   * Get all the members in the DB with the state registered.
+   * Get all the members in the DB with the state denied.
    *
-   * @return all the members with the state registered otherwise null
+   * @return all the members with the state denied otherwise null
    */
   public List<MemberDTO> getMembersDenied() {
     List<MemberDTO> listMemberDTO = new ArrayList<>();
@@ -55,17 +55,17 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   /**
-   * Get all the members in the DB with the state registered.
+   * Get the members in the DB with the corresponding id.
    *
-   * @return all the members with the state registered otherwise null
+   * @param id the id of the member
+   * @return the members in the DB with the corresponding id otherwise null
    */
   public MemberDTO getOneMember(int id) {
     String query = "SELECT * FROM project_pae.members m WHERE m.id_member = ?";
     try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
-        if (rs.next()) { //We know only one is returned by the db
-          System.out.println("ici");
+        if (rs.next()) {
           return createMemberInstance(rs);
         }
       }
@@ -76,50 +76,47 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   /**
-   * Get all the members in the DB with the state registered.
+   * Change the state of the member to confirmed.
    *
-   * @return all the members with the state registered otherwise null
+   * @param id the id of the member
+   * @return boolean
    */
   public boolean confirmMember(int id) {
     String query = "UPDATE project_pae.members SET state = 'confirmed' WHERE id_member = ?";
-    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
-      preparedStatement.setInt(1, id);
-      try (ResultSet rs = preparedStatement.executeQuery()) {
-        return true;
-      }
-    } catch (SQLException e) {
-
-      System.out.println(e.getMessage());
-    }
-    return false;
+    return executeQueryWithId(id, query);
   }
 
+  /**
+   * Change the is_admin field to true.
+   *
+   * @param id the id of the member
+   * @return boolean
+   */
+  public boolean isAdmin(int id) {
+    String query = "UPDATE project_pae.members SET is_admin = true WHERE id_member = ?";
+    return executeQueryWithId(id, query);
+  }
+
+  /**
+   * Change the state of the member to denied.
+   *
+   * @param id the id of the member
+   * @return boolean
+   */
   public boolean denyMember(int id) {
     String query = "UPDATE project_pae.members SET state = 'denied' WHERE id_member = ?";
-    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
-      preparedStatement.setInt(1, id);
-      try (ResultSet rs = preparedStatement.executeQuery()) {
-        return true;
-      }
-    } catch (SQLException e) {
-
-      System.out.println(e.getMessage());
-    }
-    return false;
+    return executeQueryWithId(id, query);
   }
 
+  /**
+   * Change the state of the member to register (Util for the test).
+   *
+   * @param id the id of the member
+   * @return boolean
+   */
   public boolean registerTESTMember(int id) {
     String query = "UPDATE project_pae.members SET state = 'registered' WHERE id_member = ?";
-    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
-      preparedStatement.setInt(1, id);
-      try (ResultSet rs = preparedStatement.executeQuery()) {
-        return true;
-      }
-    } catch (SQLException e) {
-
-      System.out.println(e.getMessage());
-    }
-    return false;
+    return executeQueryWithId(id, query);
   }
 
   /**
@@ -180,6 +177,26 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   /**
+   * Execute a query with an id param
+   *
+   * @param id    the id of the member
+   * @param query the query to execute
+   * @return boolean
+   */
+  private boolean executeQueryWithId(int id, String query) {
+    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+      preparedStatement.setInt(1, id);
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        return true;
+      }
+    } catch (SQLException e) {
+
+      System.out.println(e.getMessage());
+    }
+    return false;
+  }
+
+  /**
    * Create a Member instance.
    *
    * @param rs the result set that contains sql result
@@ -199,6 +216,8 @@ public class MemberDAOImpl implements MemberDAO {
     memberDTO.setPhoneNumber(rs.getString("phone"));
     return memberDTO;
   }
+
+  // ************** DELETE ???
 
   //  /**
   //   * Add the member to the db.

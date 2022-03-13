@@ -56,6 +56,8 @@ public interface MemberUCC {
    */
   boolean registerTESTMember(int id);
 
+  boolean confirmAdmin(int id);
+
   /**
    * Get the member from the db, checks its state and password.
    *

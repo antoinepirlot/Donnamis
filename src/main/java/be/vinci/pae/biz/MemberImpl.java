@@ -91,10 +91,7 @@ class MemberImpl implements Member {
   @Override
   public boolean verifyState(String expectedState) {
     System.out.println("L'état est :" + this.actualState);
-    if (this.actualState.equals(expectedState)) {
-      return true;
-    }
-    return false;
+    return this.actualState.equals(expectedState);
 
   }
 
