@@ -54,14 +54,59 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   /**
-   * Change the state of the member.
+   * Verify the state of the member and then change the state of the member to confirmed.
    *
    * @param id of the member
-   * @return Member or null
+   * @return True if success
    */
   @Override
-  public boolean confirmRegistration(int id) {
-    return memberDAO.confirmRegistration(id);
+  public MemberDTO confirmMember(int id) {
+    Member member = (Member) getOneMember(id);
+    if (!member.verifyState("registered") && !member.verifyState("denied")) {
+      return null;
+    }
+    return memberDAO.confirmMember(id);
+  }
+
+  /**
+   * Verify the state of the member and then change the state of the member to denied.
+   *
+   * @param id of the member
+   * @return True if success
+   */
+  @Override
+  public MemberDTO denyMember(int id) {
+    Member member = (Member) getOneMember(id);
+    if (!member.verifyState("registered")) {
+      return null;
+    }
+    return memberDAO.denyMember(id);
+  }
+
+  /**
+   * ONLY FOR MY TESTS
+   *
+   * @param id test
+   * @return test
+   */
+  public MemberDTO registerTESTMember(int id) {
+    return memberDAO.registerTESTMember(id);
+  }
+
+  /**
+   * Verify the state of the member and then change the state of the member to confirmed and member
+   * is an admin.
+   *
+   * @param id of the member
+   * @return True if success
+   */
+  public MemberDTO confirmAdmin(int id) {
+    Member member = (Member) getOneMember(id);
+    if (!member.verifyState("registered") && !member.verifyState("denied")) {
+      return null;
+    }
+    memberDAO.confirmMember(id);
+    return memberDAO.isAdmin(id);
   }
 
   /**
@@ -73,13 +118,10 @@ public class MemberUCCImpl implements MemberUCC {
   @Override
   public MemberDTO login(String username, String password) {
     Member member = (Member) memberDAO.getOne(username, password);
-    if (
-        member == null
-            || !member.checkPassword(password, member.getPassword())
-            || !member.verifyState()
-    ) {
+    if (member == null || !member.checkPassword(password, member.getPassword())) {
       return null;
     }
+    member.verifyState("confirmed");
     return member;
   }
 }

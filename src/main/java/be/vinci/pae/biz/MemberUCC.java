@@ -33,12 +33,30 @@ public interface MemberUCC {
   MemberDTO getOneMember(int id);
 
   /**
-   * Change the state of the member.
+   * Verify the state of the member and then change the state of the member.
    *
    * @param id of the member
-   * @return Member or null
+   * @return True if success
    */
-  boolean confirmRegistration(int id);
+  MemberDTO confirmMember(int id);
+
+  /**
+   * Verify the state of the member and then change the state of the member to denied.
+   *
+   * @param id of the member
+   * @return True if success
+   */
+  MemberDTO denyMember(int id);
+
+  /**
+   * ONLY FOR MY TESTS
+   *
+   * @param id
+   * @return
+   */
+  MemberDTO registerTESTMember(int id);
+
+  MemberDTO confirmAdmin(int id);
 
   /**
    * Get the member from the db, checks its state and password.
