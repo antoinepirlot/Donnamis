@@ -8,6 +8,11 @@ public class FactoryImpl implements Factory {
   }
 
   @Override
+  public OfferDTO getOffer() {
+    return null;
+  }
+
+  @Override
   public Item getItem() {
     return new ItemImpl();
   }

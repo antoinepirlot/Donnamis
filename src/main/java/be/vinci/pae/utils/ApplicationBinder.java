@@ -6,12 +6,16 @@ import be.vinci.pae.biz.ItemUCC;
 import be.vinci.pae.biz.ItemUCCImpl;
 import be.vinci.pae.biz.MemberUCC;
 import be.vinci.pae.biz.MemberUCCImpl;
-import be.vinci.pae.dal.ItemDAO;
-import be.vinci.pae.dal.ItemDAOImpl;
+import be.vinci.pae.biz.OfferUCC;
+import be.vinci.pae.biz.OfferUCCImpl;
 import be.vinci.pae.dal.DALServices;
 import be.vinci.pae.dal.DALServicesImpl;
+import be.vinci.pae.dal.ItemDAO;
+import be.vinci.pae.dal.ItemDAOImpl;
 import be.vinci.pae.dal.MemberDAO;
 import be.vinci.pae.dal.MemberDAOImpl;
+import be.vinci.pae.dal.OfferDAO;
+import be.vinci.pae.dal.OfferDAOImpl;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.ext.Provider;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -27,5 +31,7 @@ public class ApplicationBinder extends AbstractBinder {
     bind(MemberUCCImpl.class).to(MemberUCC.class).in(Singleton.class);
     bind(ItemUCCImpl.class).to(ItemUCC.class).in(Singleton.class);
     bind(ItemDAOImpl.class).to(ItemDAO.class).in(Singleton.class);
+    bind(OfferUCCImpl.class).to(OfferUCC.class).in(Singleton.class);
+    bind(OfferDAOImpl.class).to(OfferDAO.class).in(Singleton.class);
   }
 }

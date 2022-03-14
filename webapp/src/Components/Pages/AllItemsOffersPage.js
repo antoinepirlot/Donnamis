@@ -38,7 +38,7 @@ const AllItemsOffersPage = async () => {
     items.forEach((item) => {
       const line = document.createElement("tr");
       const Id_ItemCell = document.createElement("td");
-      Id_ItemCell.innerText = item.id_item;
+      Id_ItemCell.innerText = item.id;
       line.appendChild(Id_ItemCell);
       const Item_DescriptionCell = document.createElement("td");
       Item_DescriptionCell.innerText = item.item_description;

@@ -92,7 +92,7 @@ public class ItemDAOImpl implements ItemDAO {
     itemDTO.setId_member(rs.getInt("id_member"));
     itemDTO.setPhoto(rs.getString("photo"));
     itemDTO.setTitle(rs.getString("title"));
-    itemDTO.setOffer_status(rs.getString("offer"));
+    itemDTO.setOffer_status(rs.getString("offer_status"));
     return itemDTO;
   }
 

@@ -29,8 +29,11 @@ const LatestItemsOffersPage = async () => {
     header1.innerText = "Id_item";
     const header2 = document.createElement("th");
     header2.innerText = "Description";
+    const header3 = document.createElement("th");
+    header3.innerText = "Title";
     header.appendChild(header1);
     header.appendChild(header2);
+    header.appendChild(header3);
     table.appendChild(thead);
 
     // Create the body of the table
@@ -38,11 +41,16 @@ const LatestItemsOffersPage = async () => {
     items.forEach((item) => {
       const line = document.createElement("tr");
       const Id_ItemCell = document.createElement("td");
-      Id_ItemCell.innerText = item.id_item;
+      Id_ItemCell.innerText = item.id;
       line.appendChild(Id_ItemCell);
       const Item_DescriptionCell = document.createElement("td");
       Item_DescriptionCell.innerText = item.item_description;
       line.appendChild(Item_DescriptionCell);
+
+      const TitleCell = document.createElement("td");
+      TitleCell.innerText = item.title;
+      line.appendChild(TitleCell);
+
       line.dataset.itemId = item.id_item;
       tbody.appendChild(line);
     });

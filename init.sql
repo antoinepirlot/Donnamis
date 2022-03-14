@@ -115,15 +115,9 @@ INSERT INTO project_pae.members (username, password, last_name, first_name, is_a
 VALUES ('username', '$2a$10$EOyq/phHFeZu4dnCJIpS2e4GBwOrhMOkY3Oz5zIQWqjN23ziS1Wra', 'Lastname',
         'Firstname', false, 'denied', NULL);
 
+INSERT INTO project_pae.items_types (item_type)
+VALUES ('Décoration');
 
-SELECT items.id_item,
-       items.item_description,
-       items.id_item_type,
-       items.id_member,
-       items.photo,
-       items.title,
-       items.offer_status
-FROM project_pae.items items
-         LEFT OUTER JOIN project_pae.offers offers
-                         ON items.id_item = offers.id_item
-ORDER BY offers.date DESC
+INSERT INTO project_pae.items (item_description, id_item_type, id_member, photo, title,
+                               offer_status)
+VALUES ('Cadre de la mort qui tue', 1, 1, 'photo', 'Cadre', 'donated');

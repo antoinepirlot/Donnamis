@@ -5,4 +5,6 @@ public interface Factory {
   ItemDTO getItem();
 
   MemberDTO getMember();
+
+  OfferDTO getOffer();
 }
