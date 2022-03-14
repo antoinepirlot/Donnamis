@@ -37,7 +37,7 @@ public interface MemberDTO {
 
   void setPhoneNumber(String phoneNumber);
 
-  AddressDTO getAdresse();
+  AddressDTO getAddress();
 
-  void setAdresse(AddressDTO addressDTO);
+  void setAddress(AddressDTO addressDTO);
 }

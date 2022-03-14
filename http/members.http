@@ -42,7 +42,7 @@ Content-Type: application/json
   "password": "Securitas",
   "lastName": "DuMoulin",
   "firstName": "Michel",
-  "adresse": {
+  "address": {
     "street": "Avenue Beau Voisin",
     "buildingNumber": 11,
     "postcode": "1410",

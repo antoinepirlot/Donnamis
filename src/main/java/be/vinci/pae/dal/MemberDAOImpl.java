@@ -141,7 +141,7 @@ public class MemberDAOImpl implements MemberDAO {
     memberDTO.setAdmin(rs.getBoolean("is_admin"));
     memberDTO.setActualState(rs.getString("state"));
     memberDTO.setPhoneNumber(rs.getString("phone"));
-    memberDTO.setAdresse(this.createAddressInstance(rs));
+    memberDTO.setAddress(this.createAddressInstance(rs));
     return memberDTO;
   }
 
@@ -181,7 +181,7 @@ public class MemberDAOImpl implements MemberDAO {
       return false;
     }
     loadMemberId(memberDTO);
-    return addAddress(memberDTO.getId(), memberDTO.getAdresse());
+    return addAddress(memberDTO.getId(), memberDTO.getAddress());
   }
 
   /**

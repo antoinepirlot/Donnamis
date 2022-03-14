@@ -82,11 +82,11 @@ class MemberImpl implements Member {
     this.phoneNumber = phoneNumber;
   }
 
-  public AddressDTO getAdresse() {
+  public AddressDTO getAddress() {
     return address;
   }
 
-  public void setAdresse(AddressDTO addressDTO) {
+  public void setAddress(AddressDTO addressDTO) {
     this.address = (Address) addressDTO;
   }
 
