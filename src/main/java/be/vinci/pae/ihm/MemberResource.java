@@ -140,11 +140,4 @@ public class MemberResource {
           .build());
     }
   }
-  //
-  //  @POST
-  //  @Produces(MediaType.APPLICATION_JSON)
-  //  @Consumes(MediaType.APPLICATION_JSON)
-  //  public MemberDTO createOne(MemberDTO memberDTO) {
-  //    return memberUCC.createOne(memberDTO);
-  //  }
 }
