@@ -1,5 +1,6 @@
 package be.vinci.pae.biz;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -96,6 +97,11 @@ class MemberImpl implements Member {
   @Override
   public boolean checkPassword(String password, String hashedPassword) {
     return BCrypt.checkpw(password, hashedPassword);
+  }
+
+  @Override
+  public void hashPassword() {
+    this.password = BCrypt.hashpw(this.password, BCrypt.gensalt(10));
   }
 
   @Override

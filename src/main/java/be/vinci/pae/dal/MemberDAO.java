@@ -9,5 +9,13 @@ public interface MemberDAO {
 
   List<MemberDTO> getAllMembers();
 
-  MemberDTO getOne(String username, String password);
+  MemberDTO getOne(String username);
+
+  /**
+   * Add a new member to the db if it's not already in the db.
+   *
+   * @param memberDTO the member to add in the db
+   * @return true if the member has been  registered
+   */
+  boolean register(MemberDTO memberDTO);
 }

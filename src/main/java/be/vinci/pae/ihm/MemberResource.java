@@ -5,6 +5,7 @@ import be.vinci.pae.biz.MemberUCC;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -16,11 +17,13 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.text.StringEscapeUtils;
+import org.glassfish.jersey.server.ContainerRequest;
 
 /**
  * Root resource (exposed at "myresource" path).
@@ -33,18 +36,12 @@ public class MemberResource {
   @Inject
   private MemberUCC memberUCC;
 
-  //  /**
-  //   * Method handling HTTP GET requests. The returned object will be sent to the client as
-  //   * "text/plain" media type.
-  //   *
-  //   * @return String that will be returned as a text/plain response.
-  //   */
-  //  @GET
-  //  @Produces(MediaType.APPLICATION_JSON)
-  //  public List<MemberDTO> getAll() {
-  //    return memberUCC.getAll();
-  //  }
-
+  /**
+   * Method handling HTTP GET requests. The returned object will be sent to the client as
+   * "text/plain" media type.
+   *
+   * @return list of member
+   */
   @GET
   @Path("list_member")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -85,7 +82,7 @@ public class MemberResource {
     String password = json.get("password").asText();
     MemberDTO memberDTO = memberUCC.login(username, password);
     String token = createToken(memberDTO.getId());
-    return createObjectNode(token);
+    return createObjectNode(token, memberDTO);
   }
 
   /**
@@ -94,10 +91,11 @@ public class MemberResource {
    * @param token that will be add to ObjectNode
    * @return objectNode that contains the new token
    */
-  private ObjectNode createObjectNode(String token) {
+  private ObjectNode createObjectNode(String token, MemberDTO memberDTO) {
     try {
       return jsonMapper.createObjectNode()
-          .put("token", token);
+          .put("token", token)
+          .putPOJO("memberDTO", memberDTO);
     } catch (Exception e) {
       System.out.println("Unable to create token");
       return null;
@@ -123,38 +121,25 @@ public class MemberResource {
         .sign(jwtAlgorithm);
   }
 
-  //  @POST
-  //  @Path("register")
-  //  @Consumes(MediaType.APPLICATION_JSON)
-  //  @Produces(MediaType.APPLICATION_JSON)
-  //  public ObjectNode register(JsonNode json) {
-  //    // Get and check credentials
-  //    if (!json.hasNonNull("username") || !json.hasNonNull("password") ||
-  //        !json.hasNonNull("lastName") || !json.hasNonNull("firstName") ||
-  //        !json.hasNonNull("actualState") || !json.hasNonNull("phoneNumber") ||
-  //        !json.hasNonNull("admin")) {
-  //      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-  //          .entity("username or password required").type("text/plain").build());
-  //    }
-  //    String username = json.get("username").asText();
-  //    String password = json.get("password").asText();
-  //    String lastName = json.get("lastName").asText();
-  //    String firstName = json.get("firstName").asText();
-  //    String actualState = json.get("actualState").asText();
-  //    String phoneNumber = json.get("phoneNumber").asText();
-  //    boolean admin = json.get("admin").asBoolean();
-  //
-  //    // Try to login
-  //    ObjectNode publicUser = memberUCC.register(username, password, lastName, firstName,
-  //        actualState, phoneNumber, admin);
-  //    if (publicUser == null) {
-  //      throw new WebApplicationException(Response.status(Response.Status.CONFLICT)
-  //          .entity("this resource already exists").type(MediaType.TEXT_PLAIN)
-  //          .build());
-  //    }
-  //    return publicUser;
-  //
-  //  }
+  @POST
+  @Path("register")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public void register(MemberDTO memberDTO) {
+    // Get and check credentials
+    if (memberDTO.getUsername() == null || memberDTO.getPassword() == null ||
+        memberDTO.getFirstName() == null || memberDTO.getLastName() == null
+    ) {
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+          .entity("username password, lastname or firstname required").type("text/plain").build());
+    }
+
+    //Try to login
+    if (!memberUCC.register(memberDTO)) {
+      throw new WebApplicationException(Response.status(Response.Status.CONFLICT)
+          .entity("this resource already exists").type(MediaType.TEXT_PLAIN)
+          .build());
+    }
+  }
   //
   //  @POST
   //  @Produces(MediaType.APPLICATION_JSON)
