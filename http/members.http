@@ -11,13 +11,13 @@ Content-Type: application/json
 }
 
 ### Confirm registration
-PUT {{baseUrl}}/members/confirm/5
+PUT {{baseUrl}}/members/confirm/1
 
 ### Deny member
 PUT {{baseUrl}}/members/denies/3
 
 ### Make Member State Register
-PUT {{baseUrl}}/members/registerTEST/15
+PUT {{baseUrl}}/members/registerTEST/3
 
 ### Confirm Admin
 PUT {{baseUrl}}/members/confirmAdmin/3

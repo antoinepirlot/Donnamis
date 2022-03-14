@@ -1,6 +1,5 @@
 package be.vinci.pae.biz;
 
-import jakarta.ws.rs.WebApplicationException;
 import java.util.Objects;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -85,12 +84,9 @@ class MemberImpl implements Member {
   /**
    * Verify if the state of the member is allowed to connect to the website. If the state is
    * "confirmed" the user can access.
-   *
-   * @throws WebApplicationException if the state is "registered" or "denied"
    */
   @Override
   public boolean verifyState(String expectedState) {
-    System.out.println("L'état est :" + this.actualState);
     return this.actualState.equals(expectedState);
 
   }

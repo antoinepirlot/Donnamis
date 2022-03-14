@@ -38,7 +38,7 @@ public interface MemberUCC {
    * @param id of the member
    * @return True if success
    */
-  boolean confirmMember(int id);
+  MemberDTO confirmMember(int id);
 
   /**
    * Verify the state of the member and then change the state of the member to denied.
@@ -46,7 +46,7 @@ public interface MemberUCC {
    * @param id of the member
    * @return True if success
    */
-  boolean denyMember(int id);
+  MemberDTO denyMember(int id);
 
   /**
    * ONLY FOR MY TESTS
@@ -54,9 +54,9 @@ public interface MemberUCC {
    * @param id
    * @return
    */
-  boolean registerTESTMember(int id);
+  MemberDTO registerTESTMember(int id);
 
-  boolean confirmAdmin(int id);
+  MemberDTO confirmAdmin(int id);
 
   /**
    * Get the member from the db, checks its state and password.

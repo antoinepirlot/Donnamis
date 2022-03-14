@@ -60,10 +60,10 @@ public class MemberUCCImpl implements MemberUCC {
    * @return True if success
    */
   @Override
-  public boolean confirmMember(int id) {
+  public MemberDTO confirmMember(int id) {
     Member member = (Member) getOneMember(id);
     if (!member.verifyState("registered") && !member.verifyState("denied")) {
-      return false;
+      return null;
     }
     return memberDAO.confirmMember(id);
   }
@@ -75,10 +75,10 @@ public class MemberUCCImpl implements MemberUCC {
    * @return True if success
    */
   @Override
-  public boolean denyMember(int id) {
+  public MemberDTO denyMember(int id) {
     Member member = (Member) getOneMember(id);
     if (!member.verifyState("registered")) {
-      return false;
+      return null;
     }
     return memberDAO.denyMember(id);
   }
@@ -89,7 +89,7 @@ public class MemberUCCImpl implements MemberUCC {
    * @param id test
    * @return test
    */
-  public boolean registerTESTMember(int id) {
+  public MemberDTO registerTESTMember(int id) {
     return memberDAO.registerTESTMember(id);
   }
 
@@ -100,10 +100,10 @@ public class MemberUCCImpl implements MemberUCC {
    * @param id of the member
    * @return True if success
    */
-  public boolean confirmAdmin(int id) {
+  public MemberDTO confirmAdmin(int id) {
     Member member = (Member) getOneMember(id);
     if (!member.verifyState("registered")) {
-      return false;
+      return null;
     }
     memberDAO.confirmMember(id);
     return memberDAO.isAdmin(id);

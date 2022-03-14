@@ -13,13 +13,13 @@ public interface MemberDAO {
 
   MemberDTO getOneMember(int id);
 
-  boolean confirmMember(int id);
+  MemberDTO confirmMember(int id);
 
-  boolean isAdmin(int id);
+  MemberDTO isAdmin(int id);
 
-  boolean registerTESTMember(int id);
+  MemberDTO registerTESTMember(int id);
 
-  boolean denyMember(int id);
+  MemberDTO denyMember(int id);
 
   MemberDTO getOne(String username, String password);
 }

@@ -81,8 +81,8 @@ public class MemberDAOImpl implements MemberDAO {
    * @param id the id of the member
    * @return boolean
    */
-  public boolean confirmMember(int id) {
-    String query = "UPDATE project_pae.members SET state = 'confirmed' WHERE id_member = ?";
+  public MemberDTO confirmMember(int id) {
+    String query = "UPDATE project_pae.members SET state = 'confirmed' WHERE id_member = ? RETURNING *";
     return executeQueryWithId(id, query);
   }
 
@@ -92,8 +92,8 @@ public class MemberDAOImpl implements MemberDAO {
    * @param id the id of the member
    * @return boolean
    */
-  public boolean isAdmin(int id) {
-    String query = "UPDATE project_pae.members SET is_admin = true WHERE id_member = ?";
+  public MemberDTO isAdmin(int id) {
+    String query = "UPDATE project_pae.members SET is_admin = true WHERE id_member = ? RETURNING *";
     return executeQueryWithId(id, query);
   }
 
@@ -103,8 +103,8 @@ public class MemberDAOImpl implements MemberDAO {
    * @param id the id of the member
    * @return boolean
    */
-  public boolean denyMember(int id) {
-    String query = "UPDATE project_pae.members SET state = 'denied' WHERE id_member = ?";
+  public MemberDTO denyMember(int id) {
+    String query = "UPDATE project_pae.members SET state = 'denied' WHERE id_member = ? RETURNING *";
     return executeQueryWithId(id, query);
   }
 
@@ -114,8 +114,8 @@ public class MemberDAOImpl implements MemberDAO {
    * @param id the id of the member
    * @return boolean
    */
-  public boolean registerTESTMember(int id) {
-    String query = "UPDATE project_pae.members SET state = 'registered' WHERE id_member = ?";
+  public MemberDTO registerTESTMember(int id) {
+    String query = "UPDATE project_pae.members SET state = 'registered' WHERE id_member = ? RETURNING *";
     return executeQueryWithId(id, query);
   }
 
@@ -183,17 +183,19 @@ public class MemberDAOImpl implements MemberDAO {
    * @param query the query to execute
    * @return boolean
    */
-  private boolean executeQueryWithId(int id, String query) {
+  private MemberDTO executeQueryWithId(int id, String query) {
     try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
-        return true;
+        if (rs.next()) {
+          MemberDTO memberDTO = createMemberInstance(rs);
+          return memberDTO;
+        }
       }
     } catch (SQLException e) {
-
       System.out.println(e.getMessage());
     }
-    return false;
+    return null;
   }
 
   /**
@@ -204,7 +206,6 @@ public class MemberDAOImpl implements MemberDAO {
    * @throws SQLException if there's an issue while getting data from the result set
    */
   private MemberDTO createMemberInstance(ResultSet rs) throws SQLException {
-    System.out.println("Mreaember instance creation");
     MemberDTO memberDTO = factory.getMember();
     memberDTO.setId(rs.getInt("id_member"));
     memberDTO.setUsername(rs.getString("username"));

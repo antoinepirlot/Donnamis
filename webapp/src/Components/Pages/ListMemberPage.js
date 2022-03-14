@@ -74,8 +74,8 @@ async function viewRegisteredMembers() {
       confirmButton.addEventListener("click", async function () {
 
         let request;
-        console.log(confirmButton);
-        if (confirmButton.checked) {
+        console.log(isAdminButton);
+        if (isAdminButton.checked) {
           request = "/api/members/confirmAdmin/";
         } else {
           request = "/api/members/confirm/";

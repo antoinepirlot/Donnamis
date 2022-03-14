@@ -112,60 +112,49 @@ public class MemberResource {
   @Path("confirm/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public void confirmMember(@PathParam("id") int id) {
+  public MemberDTO confirmMember(@PathParam("id") int id) {
+    System.out.println("********* Confirm Member *************");
     if (memberUCC.getOneMember(id) == null) {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
           .entity("Ressource not found").type("text/plain").build());
     }
-    if (!memberUCC.confirmMember(id)) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Confirm Registration Error").type("text/plain").build());
-    }
+    return memberUCC.confirmMember(id);
   }
 
   @PUT
   @Path("confirmAdmin/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public void confirmAdmin(@PathParam("id") int id) {
+  public MemberDTO confirmAdmin(@PathParam("id") int id) {
     if (memberUCC.getOneMember(id) == null) {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
           .entity("Ressource not found").type("text/plain").build());
     }
-    if (!memberUCC.confirmAdmin(id)) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Confirm Registration Error").type("text/plain").build());
-    }
+    return memberUCC.confirmAdmin(id);
   }
 
   @PUT
   @Path("denies/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public void denyMember(@PathParam("id") int id) {
+  public MemberDTO denyMember(@PathParam("id") int id) {
     if (memberUCC.getOneMember(id) == null) {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
           .entity("Ressource not found").type("text/plain").build());
     }
-    if (!memberUCC.denyMember(id)) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Deny Member Error").type("text/plain").build());
-    }
+    return memberUCC.denyMember(id);
   }
 
   @PUT
   @Path("registerTEST/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public void registerTESTMember(@PathParam("id") int id) {
+  public MemberDTO registerTESTMember(@PathParam("id") int id) {
     if (memberUCC.getOneMember(id) == null) {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
           .entity("Ressource not found").type("text/plain").build());
     }
-    if (!memberUCC.registerTESTMember(id)) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Register Member Error").type("text/plain").build());
-    }
+    return memberUCC.registerTESTMember(id);
   }
 
 
