@@ -17,7 +17,7 @@ PUT {{baseUrl}}/members/confirm/1
 PUT {{baseUrl}}/members/denies/3
 
 ### Make Member State Register
-PUT {{baseUrl}}/members/registerTEST/3
+PUT {{baseUrl}}/members/registerTEST/5
 
 ### Confirm Admin
 PUT {{baseUrl}}/members/confirmAdmin/3

@@ -102,7 +102,7 @@ public class MemberUCCImpl implements MemberUCC {
    */
   public MemberDTO confirmAdmin(int id) {
     Member member = (Member) getOneMember(id);
-    if (!member.verifyState("registered")) {
+    if (!member.verifyState("registered") && !member.verifyState("denied")) {
       return null;
     }
     memberDAO.confirmMember(id);

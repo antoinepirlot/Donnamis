@@ -74,7 +74,6 @@ async function viewRegisteredMembers() {
       confirmButton.addEventListener("click", async function () {
 
         let request;
-        console.log(isAdminButton);
         if (isAdminButton.checked) {
           request = "/api/members/confirmAdmin/";
         } else {
@@ -171,8 +170,11 @@ async function viewDeniedMembers() {
     header1.innerText = "Nom";
     const header2 = document.createElement("th");
     header2.innerText = "Prénom";
+    const header3 = document.createElement("th");
+    header3.innerText = "Administrateur";
     header.appendChild(header1);
     header.appendChild(header2);
+    header.appendChild(header3);
     table.appendChild(thead);
 
     // Create the body of the table
@@ -186,11 +188,25 @@ async function viewDeniedMembers() {
       firstNameCell.innerText = member.firstName;
       line.appendChild(firstNameCell);
 
+      // Is Admin Button
+      const isAdminButtonCell = document.createElement("td");
+      const isAdminButton = document.createElement("input");
+      isAdminButton.type = "checkbox";
+      isAdminButtonCell.appendChild(isAdminButton);
+      line.appendChild(isAdminButtonCell);
+
       // Confirm Button
       const confirmButtonCell = document.createElement("td");
       const confirmButton = document.createElement("button");
       confirmButton.innerHTML = "Confirmer";
       confirmButton.addEventListener("click", async function () {
+
+        let request;
+        if (isAdminButton.checked) {
+          request = "/api/members/confirmAdmin/";
+        } else {
+          request = "/api/members/confirm/";
+        }
 
         //Confirm the registration (Click on the button)
         try {
@@ -199,7 +215,7 @@ async function viewDeniedMembers() {
           };
 
           const reponse = await fetch(
-              "/api/members/confirm/" + member.id, options);
+              request + member.id, options);
           if (!reponse.ok) {
             throw new Error(
                 "fetch error : " + reponse.status + " : " + reponse.statusText
