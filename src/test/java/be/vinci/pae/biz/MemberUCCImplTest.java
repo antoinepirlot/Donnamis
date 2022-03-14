@@ -1,6 +1,5 @@
 package be.vinci.pae.biz;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -22,7 +21,7 @@ class MemberUCCImplTest {
   private String hashedPassword;
   private String password;
   private String wrongPassword;
-  private MemberDTO memberDTO;
+  private MemberDTO memberDTO = new MemberImpl();
 
   @BeforeEach
   void setUp() {
@@ -32,12 +31,91 @@ class MemberUCCImplTest {
   }
 
   private void configureMemberDTO(String actualState, String password) {
-    memberDTO = new MemberImpl();
     memberDTO.setActualState(actualState);
     memberDTO.setPassword(hashedPassword);
     Mockito.when(memberDAO.getOne("nico", password))
         .thenReturn(memberDTO);
   }
+
+  private void configureMemberDTOState(String state) {
+    memberDTO.setActualState(state);
+    memberDTO.setId(99);
+    Mockito.when(memberDAO.confirmMember(99)).thenReturn(memberDTO);
+    Mockito.when(memberDAO.denyMember(99)).thenReturn(memberDTO);
+    Mockito.when(memberDAO.getOneMember(99)).thenReturn(memberDTO);
+    Mockito.when(memberDAO.isAdmin(99)).thenReturn(memberDTO);
+  }
+
+  //Test Confirm Member
+
+  @DisplayName("Test Confirm Member with the state registered")
+  @Test
+  void testConfirmMemberWithStateRegistered() {
+    configureMemberDTOState("registered");
+    assertEquals(memberDTO, memberUCC.confirmMember(99));
+  }
+
+  @DisplayName("Test Confirm Member with the state denied")
+  @Test
+  void testConfirmMemberWithStateDenied() {
+    configureMemberDTOState("denied");
+    assertEquals(memberDTO, memberUCC.confirmMember(99));
+  }
+
+  @DisplayName("Test Confirm Member with the state confirmed")
+  @Test
+  void testConfirmMemberWithStateConfirmed() {
+    configureMemberDTOState("confirmed");
+    assertEquals(null, memberUCC.confirmMember(99));
+  }
+
+  //Test Deny Member
+
+  @DisplayName("Test Deny Member With the state confirmedd")
+  @Test
+  void testDenyMemberWithStateConfirmed() {
+    configureMemberDTOState("confirmed");
+    assertEquals(null, memberUCC.denyMember(99));
+  }
+
+  @DisplayName("Test Deny Member With the state registered")
+  @Test
+  void testDenyMemberWithStateRegistered() {
+    configureMemberDTOState("registered");
+    assertEquals(memberDTO, memberUCC.denyMember(99));
+  }
+
+  @DisplayName("Test Deny Member With the state denied")
+  @Test
+  void testDenyMemberWithStateDenied() {
+    configureMemberDTOState("denied");
+    assertEquals(null, memberUCC.denyMember(99));
+  }
+
+  //Test Confirm Admin
+
+  @DisplayName("Test Confirm Admin With the state denied")
+  @Test
+  void testConfirmAdminWithStateRefused() {
+    configureMemberDTOState("denied");
+    assertEquals(memberDTO, memberUCC.confirmAdmin(99));
+  }
+
+  @DisplayName("Test Confirm Admin With the state registered")
+  @Test
+  void testConfirmAdminWithStateRegistered() {
+    configureMemberDTOState("registered");
+    assertEquals(memberDTO, memberUCC.confirmAdmin(99));
+  }
+
+  @DisplayName("Test Confirm Admin With the state confirmed")
+  @Test
+  void testConfirmAdminWithStateConfirmed() {
+    configureMemberDTOState("confirmed");
+    assertEquals(null, memberUCC.confirmAdmin(99));
+  }
+
+  //Test Login
 
   @DisplayName("Test login with confirmed member and good password")
   @Test
