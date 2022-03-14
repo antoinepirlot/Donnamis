@@ -1,6 +1,5 @@
 package be.vinci.pae.biz;
 
-import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -14,6 +13,7 @@ class MemberImpl implements Member {
   private boolean isAdmin;
   private String actualState;
   private String phoneNumber;
+  private Address address;
 
   public MemberImpl() {
   }
@@ -80,6 +80,14 @@ class MemberImpl implements Member {
 
   public void setPhoneNumber(String phoneNumber) {
     this.phoneNumber = phoneNumber;
+  }
+
+  public AddressDTO getAdresse() {
+    return address;
+  }
+
+  public void setAdresse(AddressDTO addressDTO) {
+    this.address = (Address) addressDTO;
   }
 
   /**

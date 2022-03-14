@@ -6,4 +6,9 @@ public class FactoryImpl implements Factory {
   public MemberDTO getMember() {
     return new MemberImpl();
   }
+
+  @Override
+  public AddressDTO getAddress() {
+    return new AddressImpl();
+  }
 }

@@ -1,5 +1,6 @@
 package be.vinci.pae.dal;
 
+import be.vinci.pae.biz.AddressDTO;
 import be.vinci.pae.biz.Factory;
 import be.vinci.pae.biz.MemberDTO;
 import jakarta.inject.Inject;
@@ -66,7 +67,6 @@ public class MemberDAOImpl implements MemberDAO {
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
-    System.out.println("ici");
     return null;
   }
 
@@ -79,7 +79,11 @@ public class MemberDAOImpl implements MemberDAO {
   @Override
   public MemberDTO getOne(String username) {
     System.out.println("getOne(String username) in MemberDAO");
-    String query = "SELECT * FROM project_pae.members WHERE username = ?";
+    String query = "SELECT m.id_member, m.username, m.password, m.last_name, m.first_name, "
+        + "m.is_admin, m.state, m.phone, a.id_address, a.street, a.building_number, a.unit_number,"
+        + "a.postcode, a.commune "
+        + "FROM project_pae.members m, project_pae.addresses a "
+        + "WHERE m.username = ?";
     try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
       System.out.println("Prepared statement successfully generated");
       preparedStatement.setString(1, username);
@@ -92,6 +96,29 @@ public class MemberDAOImpl implements MemberDAO {
       System.out.println(e.getMessage());
     }
     return null;
+  }
+
+  /**
+   * Load the member's id and set it into memberDTO
+   *
+   * @param memberDTO the member DTO that needs the id being loaded
+   */
+  private void loadMemberId(MemberDTO memberDTO) {
+    String query = "SELECT id_member FROM project_pae.members WHERE username = ?";
+    try (
+        PreparedStatement ps = dalServices.getPreparedStatement(query)
+    ) {
+      ps.setString(1, StringEscapeUtils.escapeHtml4(memberDTO.getUsername()));
+      try (
+          ResultSet rs = ps.executeQuery()
+      ) {
+        if(rs.next()) {
+          memberDTO.setId(rs.getInt("id_member"));
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 
   //****************************** UTILS *******************************
@@ -114,26 +141,52 @@ public class MemberDAOImpl implements MemberDAO {
     memberDTO.setAdmin(rs.getBoolean("is_admin"));
     memberDTO.setActualState(rs.getString("state"));
     memberDTO.setPhoneNumber(rs.getString("phone"));
+    memberDTO.setAdresse(this.createAddressInstance(rs));
     return memberDTO;
   }
 
   /**
-   * Add a new member to the db if it's not already in the db.
+   * Create an address instance.
+   *
+   * @param rs the result set that contains sql result
+   * @return a new instance of address based on what rs contains
+   * @throws SQLException if there's an issue while getting data from the result set
+   */
+  private AddressDTO createAddressInstance(ResultSet rs) throws SQLException {
+    System.out.println("Address instance creation");
+    AddressDTO addressDTO = factory.getAddress();
+    addressDTO.setId(rs.getInt("id_address"));
+    addressDTO.setStreet(rs.getString("street"));
+    addressDTO.setBuildingNumber(rs.getString("building_number"));
+    addressDTO.setUnitNumber(rs.getString("unit_number"));
+    addressDTO.setPostcode(rs.getString("postcode"));
+    addressDTO.setCommune(rs.getString("commune"));
+    addressDTO.setId(rs.getInt("id_member"));
+    return addressDTO;
+  }
+
+  /**
+   * Add a new member to the db if it's not already in the db, then its address
    *
    * @param memberDTO the member to add in the db
    * @return true if the member has been  registered
    */
   public boolean register(MemberDTO memberDTO) {
-
     MemberDTO memberDB = this.getOne(memberDTO.getUsername());
     if (memberDB != null) { // the user already exists !
       return false;
     }
-    return addOne(memberDTO);
+    //Add the member to the db then the address
+    if (!addOne(memberDTO)) {
+      return false;
+    }
+    loadMemberId(memberDTO);
+    return addAddress(memberDTO.getId(), memberDTO.getAdresse());
   }
 
   /**
    * Add the member to the db.
+   *
    * @param memberDTO the member to add in the db
    * @return true if the member has been added to the DB
    */
@@ -149,18 +202,44 @@ public class MemberDAOImpl implements MemberDAO {
       ps.setString(4, StringEscapeUtils.escapeHtml4(memberDTO.getFirstName()));
       ps.setBoolean(5, DEFAULT_IS_ADMIN);
       ps.setString(6, DEFAULT_STATE);
-      try {
-        int result = ps.executeUpdate();
-        //it adds into the db BUT can't execute getOne(), it returns null
-        if (result != 0) {
-          System.out.println("Ajout du membre réussi.");
-          return true;
-        }
-      } catch (SQLException e) {
-        System.out.println(e.getMessage());
+      int result = ps.executeUpdate();
+      //it adds into the db BUT can't execute getOne(), it returns null
+      if (result != 0) {
+        System.out.println("Ajout du membre réussi.");
+        return true;
       }
     } catch (SQLException e) {
       System.out.println(e.getMessage());
+    }
+    return false;
+  }
+
+  /**
+   * Add the address associated with the member'id to the DB
+   *
+   * @param addressDTO the address to add into the db
+   * @return true if the address has been added, otherwise false
+   */
+  private boolean addAddress(int memberId, AddressDTO addressDTO) {
+    String query = "INSERT INTO project_pae.addresses (street, building_number, unit_number, "
+        + "postcode, commune, id_member) "
+        + "VALUES (?, ?, ?, ?, ?, ?);";
+    try (
+        PreparedStatement ps = dalServices.getPreparedStatement(query)
+    ) {
+      ps.setString(1, StringEscapeUtils.escapeHtml4(addressDTO.getStreet()));
+      ps.setString(2, StringEscapeUtils.escapeHtml4(addressDTO.getBuildingNumber()));
+      ps.setString(3, StringEscapeUtils.escapeHtml4(addressDTO.getUnitNumber()));
+      ps.setString(4, StringEscapeUtils.escapeHtml4(addressDTO.getPostcode()));
+      ps.setString(5, StringEscapeUtils.escapeHtml4(addressDTO.getCommune()));
+      ps.setInt(6, memberId);
+      int result = ps.executeUpdate();
+      if (result != 0) {
+        System.out.println("Ajout de l'adresse réussi");
+        return true;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
     return false;
   }
