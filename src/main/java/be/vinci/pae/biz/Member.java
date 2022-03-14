@@ -11,4 +11,6 @@ public interface Member extends MemberDTO {
   boolean verifyState();
 
   boolean checkPassword(String password, String hashedPassword);
+
+  void hashPassword();
 }

@@ -1,5 +1,8 @@
 package be.vinci.pae.biz;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+@JsonDeserialize(as = MemberImpl.class)
 public interface MemberDTO {
 
   int getId();

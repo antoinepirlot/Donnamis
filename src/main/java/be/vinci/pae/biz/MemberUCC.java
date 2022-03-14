@@ -28,11 +28,8 @@ public interface MemberUCC {
 
   /**
    * Ask DAO to insert the member into the db.
-   * @param username of the member
-   * @param password of the member
-   * @param firstName of the member
-   * @param lastName of the member
+   * @param memberDTO member to add in the db
    * @return true if the member has been  registered
    */
-  boolean register(String username, String password, String firstName, String lastName);
+  boolean register(MemberDTO memberDTO);
 }

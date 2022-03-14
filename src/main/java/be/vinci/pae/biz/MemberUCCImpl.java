@@ -46,14 +46,13 @@ public class MemberUCCImpl implements MemberUCC {
 
   /**
    * Ask DAO to insert the member into the db.
-   * @param username  of the member
-   * @param password  of the member
-   * @param firstName of the member
-   * @param lastName  of the member
+   * @param memberDTO member to add in the db
    * @return true if the member has been  registered
    */
   @Override
-  public boolean register(String username, String password, String firstName, String lastName) {
-    return this.memberDAO.register(username, password, firstName, lastName);
+  public boolean register(MemberDTO memberDTO) {
+    Member member = (Member) memberDTO;
+    member.hashPassword();
+    return this.memberDAO.register(member);
   }
 }

@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.text.StringEscapeUtils;
-import org.mindrot.jbcrypt.BCrypt;
 
 public class MemberDAOImpl implements MemberDAO {
 
@@ -121,41 +120,33 @@ public class MemberDAOImpl implements MemberDAO {
   /**
    * Add a new member to the db if it's not already in the db.
    *
-   * @param username  of the member we add into de DB
-   * @param password  of the member we add into de DB
-   * @param firstName of the member we add into de DB
-   * @param lastName  of the member we add into de DB
+   * @param memberDTO the member to add in the db
    * @return true if the member has been  registered
    */
-  public boolean register(String username, String password, String firstName, String lastName) {
+  public boolean register(MemberDTO memberDTO) {
 
-    MemberDTO memberDB = this.getOne(username);
+    MemberDTO memberDB = this.getOne(memberDTO.getUsername());
     if (memberDB != null) { // the user already exists !
       return false;
     }
-    return addOne(username, password, firstName, lastName);
+    return addOne(memberDTO);
   }
 
   /**
    * Add the member to the db.
-   *
-   * @param username  of the member we add into de DB
-   * @param password  of the member we add into de DB
-   * @param firstName of the member we add into de DB
-   * @param lastName  of the member we add into de DB
+   * @param memberDTO the member to add in the db
    * @return true if the member has been added to the DB
    */
-  private boolean addOne(String username, String password, String firstName, String lastName) {
+  private boolean addOne(MemberDTO memberDTO) {
     String query = "INSERT INTO project_pae.members (username, password, last_name, first_name, "
         + "is_admin, state) VALUES (?, ?, ?, ?, ?, ?)";
-    String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(10));
     try (
         PreparedStatement ps = dalServices.getPreparedStatement(query)
     ) {
-      ps.setString(1, StringEscapeUtils.escapeHtml4(username));
-      ps.setString(2, hashedPassword);
-      ps.setString(3, StringEscapeUtils.escapeHtml4(lastName));
-      ps.setString(4, StringEscapeUtils.escapeHtml4(firstName));
+      ps.setString(1, StringEscapeUtils.escapeHtml4(memberDTO.getUsername()));
+      ps.setString(2, memberDTO.getPassword());
+      ps.setString(3, StringEscapeUtils.escapeHtml4(memberDTO.getLastName()));
+      ps.setString(4, StringEscapeUtils.escapeHtml4(memberDTO.getFirstName()));
       ps.setBoolean(5, DEFAULT_IS_ADMIN);
       ps.setString(6, DEFAULT_STATE);
       try {
