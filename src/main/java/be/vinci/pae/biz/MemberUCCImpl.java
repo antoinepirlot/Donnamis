@@ -21,8 +21,7 @@ public class MemberUCCImpl implements MemberUCC {
 
   @Override
   public List<MemberDTO> getAllMembers() {
-    List<MemberDTO> listMember = memberDAO.getAllMembers();
-    return listMember;
+    return memberDAO.getAllMembers();
   }
 
   /**
