@@ -46,6 +46,12 @@ const loginLinkHtml = `
           </li>
 `;
 
+const registerLinkHtml = `
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-uri="/register">Register</a>
+          </li>
+`;
+
 const logoutLinkHtml = `
           <li class="nav-item">
             <a class="nav-link" href="#" data-uri="/logout">Logout</a>
@@ -69,6 +75,7 @@ const Navbar = async () => {
     document.querySelector("#usernameNavbar").innerHTML = memberDTO.username
   } else {
     links.innerHTML += loginLinkHtml;
+    links.innerHTML += registerLinkHtml;
     links.innerHTML += listMemberLinkHtml;
   }
 };
