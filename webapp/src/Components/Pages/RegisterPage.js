@@ -47,6 +47,13 @@ async function register(e) {
   const password = document.querySelector("#passwordInput").value;
   const firstName = document.querySelector("#firstNameInput").value;
   const lastName = document.querySelector("#lastNameInput").value;
+  if(username === "" ||
+    password === "" ||
+    firstName === "" ||
+    lastName === ""){
+    showError("Tous les champs doivent être complet", "danger")
+    return;
+  }
   try {
     const request = {
       method: "POST",
@@ -65,7 +72,6 @@ async function register(e) {
     if (!response.ok) {
       throw new Error("Problème lors du fetch");
     }
-    await response.json();
     showError("Votre inscription à bien été prise en compte. Veuillez patienter la validation de votre compte.", "success")
   } catch (err) {
     showError("Echec de l'inscription", "danger");
