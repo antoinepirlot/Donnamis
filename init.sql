@@ -20,7 +20,7 @@ CREATE TABLE project_pae.items_types
     item_type VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE project_pae.adresses
+CREATE TABLE project_pae.addresses
 (
     id_address      SERIAL PRIMARY KEY,
     street          VARCHAR(150) NOT NULL,
