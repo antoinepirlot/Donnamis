@@ -14,6 +14,86 @@ CREATE TABLE project_pae.members
     phone      VARCHAR(15)
 );
 
+CREATE TABLE project_pae.items_types
+(
+    id_type   SERIAL PRIMARY KEY,
+    item_type VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE project_pae.adresses
+(
+    id_address      SERIAL PRIMARY KEY,
+    street          VARCHAR(150) NOT NULL,
+    building_number VARCHAR(20)  NOT NULL,
+    unit_number     VARCHAR(10)  NULL,
+    postcode        VARCHAR(10)  NOT NULL,
+    commune         VARCHAR(100) NOT NULL,
+    id_member       INTEGER      NOT NULL,
+    FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
+);
+
+CREATE TABLE project_pae.items
+(
+    id_item          SERIAL PRIMARY KEY,
+    item_description VARCHAR(500) NOT NULL,
+    id_item_type     INTEGER      NOT NULL,
+    id_member        INTEGER      NOT NULL,
+    photo            VARCHAR(500) NULL,
+    title            VARCHAR(50)  NOT NULL,
+    offer_status     VARCHAR(10)  NOT NULL,
+    FOREIGN KEY (id_item_type) REFERENCES project_pae.items_types (id_type),
+    FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
+);
+
+CREATE TABLE project_pae.ratings
+(
+    id_item   SERIAL PRIMARY KEY,
+    rating    INTEGER      NOT NULL,
+    text      VARCHAR(500) NOT NULL,
+    id_member INTEGER      NOT NULL,
+    FOREIGN KEY (id_item) REFERENCES project_pae.items (id_item),
+    FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
+);
+
+CREATE TABLE project_pae.offers
+(
+    id_offer  SERIAL PRIMARY KEY,
+    date      DATE        NOT NULL,
+    time_slot VARCHAR(50) NOT NULL,
+    id_item   INTEGER     NOT NULL,
+    FOREIGN KEY (id_item) REFERENCES project_pae.items (id_item)
+);
+
+CREATE TABLE project_pae.interests
+(
+    id_interest SERIAL PRIMARY KEY,
+    call_wanted BOOLEAN NOT NULL,
+    id_offer    INTEGER NOT NULL,
+    id_member   INTEGER NOT NULL,
+    date        DATE    NOT NULL,
+    FOREIGN KEY (id_offer) REFERENCES project_pae.offers (id_offer),
+    FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
+);
+
+CREATE TABLE project_pae.refusals
+(
+    id_refusal SERIAL PRIMARY KEY,
+    text       VARCHAR(500) NOT NULL,
+    id_member  INTEGER      NOT NULL,
+    FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
+);
+
+
+CREATE TABLE project_pae.recipients
+(
+    id_recipient SERIAL PRIMARY KEY,
+    id_item      INTEGER     NOT NULL,
+    id_member    INTEGER     NOT NULL,
+    received     VARCHAR(15) NOT NULL,
+    FOREIGN KEY (id_item) REFERENCES project_pae.items (id_item),
+    FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
+
+);
 -------------------INSERT INTO--------------------------
 --Mot de passe : password
 INSERT INTO project_pae.members (username, password, last_name, first_name, is_admin, state, phone)
