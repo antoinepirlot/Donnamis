@@ -2,6 +2,7 @@ import {
   getPayload,
 } from "../../utils/session";
 import {Redirect} from "../Router/Router";
+import {showError} from "../../utils/ShowError";
 
 const registerFormHtml = `
   <div>
@@ -22,7 +23,7 @@ const registerFormHtml = `
     </form>
     <div id="registerFormNotification"></div>
   </div>
-  <div id="registerError"></div>
+  <div id="registerMessage"></div>
 `;
 
 /**
@@ -47,11 +48,12 @@ async function register(e) {
   const password = document.querySelector("#passwordInput").value;
   const firstName = document.querySelector("#firstNameInput").value;
   const lastName = document.querySelector("#lastNameInput").value;
+  const registerMessage =  document.querySelector("#registerMessage");
   if(username === "" ||
     password === "" ||
     firstName === "" ||
     lastName === ""){
-    showError("Tous les champs doivent être complet", "danger")
+    showError("Tous les champs doivent être complet", "danger", registerMessage)
     return;
   }
   try {
@@ -77,13 +79,6 @@ async function register(e) {
     showError("Echec de l'inscription", "danger");
     console.error(err);
   }
-}
-
-function showError(message, alertType){
-  const regsiterError =  document.querySelector("#registerError");
-  regsiterError.innerHTML += `
-    <p class="alert-${alertType}">${message}</p>
-  `;
 }
 
 export default RegisterPage;
