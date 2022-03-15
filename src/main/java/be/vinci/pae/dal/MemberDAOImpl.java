@@ -83,7 +83,8 @@ public class MemberDAOImpl implements MemberDAO {
         + "m.is_admin, m.state, m.phone, a.id_address, a.street, a.building_number, a.unit_number,"
         + "a.postcode, a.commune "
         + "FROM project_pae.members m, project_pae.addresses a "
-        + "WHERE m.username = ?";
+        + "WHERE m.username = ?"
+        + "  AND a.id_member = m.id_member";
     try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
       System.out.println("Prepared statement successfully generated");
       preparedStatement.setString(1, username);
