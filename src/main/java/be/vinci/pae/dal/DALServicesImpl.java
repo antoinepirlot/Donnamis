@@ -30,7 +30,7 @@ public class DALServicesImpl implements DALServices {
       System.out.println("Impossible de joindre le serveur");
       System.exit(1);
     }
-    System.out.println("Réussis");
+    System.out.println("Connection à la db réussie.");
     return connection;
   }
 
