@@ -16,8 +16,7 @@ public class MemberUCCImpl implements MemberUCC {
    */
   @Override
   public List<MemberDTO> getAllMembers() {
-    List<MemberDTO> listMember = memberDAO.getAllMembers();
-    return listMember;
+    return memberDAO.getAllMembers();
   }
 
   /**
@@ -117,11 +116,26 @@ public class MemberUCCImpl implements MemberUCC {
    */
   @Override
   public MemberDTO login(String username, String password) {
-    Member member = (Member) memberDAO.getOne(username, password);
-    if (member == null || !member.checkPassword(password, member.getPassword())) {
+    Member member = (Member) memberDAO.getOne(username);
+    if (
+        member == null
+            || !member.checkPassword(password, member.getPassword())
+            || !member.verifyState()
+    ) {
       return null;
     }
-    member.verifyState("confirmed");
     return member;
+  }
+
+  /**
+   * Ask DAO to insert the member into the db.
+   * @param memberDTO member to add in the db
+   * @return true if the member has been  registered
+   */
+  @Override
+  public boolean register(MemberDTO memberDTO) {
+    Member member = (Member) memberDTO;
+    member.hashPassword();
+    return this.memberDAO.register(member);
   }
 }

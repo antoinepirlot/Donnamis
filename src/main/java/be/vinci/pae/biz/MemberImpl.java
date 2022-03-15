@@ -13,6 +13,7 @@ class MemberImpl implements Member {
   private boolean isAdmin;
   private String actualState;
   private String phoneNumber;
+  private Address address;
 
   public MemberImpl() {
   }
@@ -81,6 +82,14 @@ class MemberImpl implements Member {
     this.phoneNumber = phoneNumber;
   }
 
+  public AddressDTO getAddress() {
+    return address;
+  }
+
+  public void setAddress(AddressDTO addressDTO) {
+    this.address = (Address) addressDTO;
+  }
+
   /**
    * Verify if the state of the member is allowed to connect to the website. If the state is
    * "confirmed" the user can access.
@@ -96,6 +105,11 @@ class MemberImpl implements Member {
   @Override
   public boolean checkPassword(String password, String hashedPassword) {
     return BCrypt.checkpw(password, hashedPassword);
+  }
+
+  @Override
+  public void hashPassword() {
+    this.password = BCrypt.hashpw(this.password, BCrypt.gensalt(10));
   }
 
   @Override

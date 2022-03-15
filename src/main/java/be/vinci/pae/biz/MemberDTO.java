@@ -1,5 +1,8 @@
 package be.vinci.pae.biz;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+@JsonDeserialize(as = MemberImpl.class)
 public interface MemberDTO {
 
   int getId();
@@ -33,4 +36,8 @@ public interface MemberDTO {
   String getPhoneNumber();
 
   void setPhoneNumber(String phoneNumber);
+
+  AddressDTO getAddress();
+
+  void setAddress(AddressDTO addressDTO);
 }

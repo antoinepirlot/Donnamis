@@ -1,5 +1,6 @@
 package be.vinci.pae.ihm;
 
+import be.vinci.pae.biz.AddressDTO;
 import be.vinci.pae.biz.MemberDTO;
 import be.vinci.pae.biz.MemberUCC;
 import be.vinci.pae.utils.Config;
@@ -20,6 +21,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.text.StringEscapeUtils;
@@ -217,43 +219,40 @@ public class MemberResource {
         .sign(jwtAlgorithm);
   }
 
-  //  @POST
-  //  @Path("register")
-  //  @Consumes(MediaType.APPLICATION_JSON)
-  //  @Produces(MediaType.APPLICATION_JSON)
-  //  public ObjectNode register(JsonNode json) {
-  //    // Get and check credentials
-  //    if (!json.hasNonNull("username") || !json.hasNonNull("password") ||
-  //        !json.hasNonNull("lastName") || !json.hasNonNull("firstName") ||
-  //        !json.hasNonNull("actualState") || !json.hasNonNull("phoneNumber") ||
-  //        !json.hasNonNull("admin")) {
-  //      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-  //          .entity("username or password required").type("text/plain").build());
-  //    }
-  //    String username = json.get("username").asText();
-  //    String password = json.get("password").asText();
-  //    String lastName = json.get("lastName").asText();
-  //    String firstName = json.get("firstName").asText();
-  //    String actualState = json.get("actualState").asText();
-  //    String phoneNumber = json.get("phoneNumber").asText();
-  //    boolean admin = json.get("admin").asBoolean();
-  //
-  //    // Try to login
-  //    ObjectNode publicUser = memberUCC.register(username, password, lastName, firstName,
-  //        actualState, phoneNumber, admin);
-  //    if (publicUser == null) {
-  //      throw new WebApplicationException(Response.status(Response.Status.CONFLICT)
-  //          .entity("this resource already exists").type(MediaType.TEXT_PLAIN)
-  //          .build());
-  //    }
-  //    return publicUser;
-  //
-  //  }
-  //
-  //  @POST
-  //  @Produces(MediaType.APPLICATION_JSON)
-  //  @Consumes(MediaType.APPLICATION_JSON)
-  //  public MemberDTO createOne(MemberDTO memberDTO) {
-  //    return memberUCC.createOne(memberDTO);
-  //  }
+  @POST
+  @Path("register")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public void register(MemberDTO memberDTO) {
+    // Verify memberDTO integrity
+    if (memberDTO == null ||
+        memberDTO.getUsername() == null || memberDTO.getUsername().equals("") ||
+        memberDTO.getPassword() == null || memberDTO.getPassword().equals("") ||
+        memberDTO.getFirstName() == null || memberDTO.getFirstName().equals("") ||
+        memberDTO.getLastName() == null || memberDTO.getLastName().equals("")
+    ) {
+      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
+          .entity("Missing member information")
+          .type(MediaType.TEXT_PLAIN)
+          .build());
+    }
+    //Verify addressDTO integrity
+    AddressDTO addressDTO = memberDTO.getAddress();
+    if (addressDTO == null ||
+        addressDTO.getStreet() == null || addressDTO.getStreet().equals("") ||
+        addressDTO.getCommune() == null || addressDTO.getCommune().equals("") ||
+        addressDTO.getPostcode() == null || addressDTO.getPostcode().equals("") ||
+        addressDTO.getBuildingNumber() == null || addressDTO.getBuildingNumber().equals("")
+    ) {
+      throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
+          .entity("Missing address information")
+          .type("text/plain")
+          .build());
+    }
+    // Get and check credentials
+    if (!memberUCC.register(memberDTO)) {
+      throw new WebApplicationException(Response.status(Response.Status.CONFLICT)
+          .entity("this resource already exists").type(MediaType.TEXT_PLAIN)
+          .build());
+    }
+  }
 }

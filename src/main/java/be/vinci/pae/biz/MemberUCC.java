@@ -65,4 +65,11 @@ public interface MemberUCC {
    * @param password of the member
    */
   MemberDTO login(String username, String password);
+
+  /**
+   * Ask DAO to insert the member into the db.
+   * @param memberDTO member to add in the db
+   * @return true if the member has been  registered
+   */
+  boolean register(MemberDTO memberDTO);
 }
