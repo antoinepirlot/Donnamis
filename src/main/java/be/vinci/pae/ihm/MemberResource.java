@@ -1,5 +1,6 @@
 package be.vinci.pae.ihm;
 
+import be.vinci.pae.biz.AddressDTO;
 import be.vinci.pae.biz.MemberDTO;
 import be.vinci.pae.biz.MemberUCC;
 import be.vinci.pae.utils.Config;
@@ -18,6 +19,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.text.StringEscapeUtils;
@@ -122,14 +124,32 @@ public class MemberResource {
   @Path("register")
   @Consumes(MediaType.APPLICATION_JSON)
   public void register(MemberDTO memberDTO) {
-    // Get and check credentials
-    if (memberDTO.getUsername() == null || memberDTO.getPassword() == null ||
-        memberDTO.getFirstName() == null || memberDTO.getLastName() == null
+    // Verify memberDTO integrity
+    if (memberDTO == null ||
+        memberDTO.getUsername() == null || memberDTO.getUsername().equals("") ||
+        memberDTO.getPassword() == null || memberDTO.getPassword().equals("") ||
+        memberDTO.getFirstName() == null || memberDTO.getFirstName().equals("") ||
+        memberDTO.getLastName() == null || memberDTO.getLastName().equals("")
     ) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("username password, lastname or firstname required").type("text/plain").build());
+          .entity("Missing member information")
+          .type(MediaType.TEXT_PLAIN)
+          .build());
     }
-
+    //Verify addressDTO integrity
+    AddressDTO addressDTO = memberDTO.getAddress();
+    if (addressDTO == null ||
+        addressDTO.getStreet() == null || addressDTO.getStreet().equals("") ||
+        addressDTO.getCommune() == null || addressDTO.getCommune().equals("") ||
+        addressDTO.getPostcode() == null || addressDTO.getPostcode().equals("") ||
+        addressDTO.getBuildingNumber() == null || addressDTO.getBuildingNumber().equals("")
+    ) {
+      throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
+          .entity("Missing address information")
+          .type("text/plain")
+          .build());
+    }
+    // Get and check credentials
     if (!memberUCC.register(memberDTO)) {
       throw new WebApplicationException(Response.status(Response.Status.CONFLICT)
           .entity("this resource already exists").type(MediaType.TEXT_PLAIN)
