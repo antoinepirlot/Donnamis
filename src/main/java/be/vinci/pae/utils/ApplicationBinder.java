@@ -4,10 +4,14 @@ import be.vinci.pae.biz.Factory;
 import be.vinci.pae.biz.FactoryImpl;
 import be.vinci.pae.biz.MemberUCC;
 import be.vinci.pae.biz.MemberUCCImpl;
+import be.vinci.pae.biz.interest.InterestUCC;
+import be.vinci.pae.biz.interest.InterestUCCImpl;
 import be.vinci.pae.dal.DALServices;
 import be.vinci.pae.dal.DALServicesImpl;
 import be.vinci.pae.dal.MemberDAO;
 import be.vinci.pae.dal.MemberDAOImpl;
+import be.vinci.pae.dal.interest.InterestDAO;
+import be.vinci.pae.dal.interest.InterestDAOImpl;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.ext.Provider;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -19,7 +23,13 @@ public class ApplicationBinder extends AbstractBinder {
   protected void configure() {
     bind(DALServicesImpl.class).to(DALServices.class).in(Singleton.class);
     bind(FactoryImpl.class).to(Factory.class).in(Singleton.class);
+
+    //Member
     bind(MemberDAOImpl.class).to(MemberDAO.class).in(Singleton.class);
     bind(MemberUCCImpl.class).to(MemberUCC.class).in(Singleton.class);
+
+    //Interest
+    bind(InterestDAOImpl.class).to(InterestDAO.class).in(Singleton.class);
+    bind(InterestUCCImpl.class).to(InterestUCC.class).in(Singleton.class);
   }
 }
