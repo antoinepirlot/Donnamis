@@ -36,4 +36,8 @@ public interface MemberDTO {
   String getPhoneNumber();
 
   void setPhoneNumber(String phoneNumber);
+
+  AddressDTO getAddress();
+
+  void setAddress(AddressDTO addressDTO);
 }

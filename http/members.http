@@ -38,8 +38,14 @@ POST {{baseUrl}}/members/register
 Content-Type: application/json
 
 {
-  "username": "Michel03",
+  "username": "Coucoun n",
   "password": "Securitas",
   "lastName": "DuMoulin",
-  "firstName": "Michel"
+  "firstName": "Michel",
+  "address": {
+    "street": "Avenue Beau Voisin",
+    "buildingNumber": 11,
+    "postcode": "1410",
+    "commune": "Waterloo"
+  }
 }
