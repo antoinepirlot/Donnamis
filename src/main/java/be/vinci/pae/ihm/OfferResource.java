@@ -23,7 +23,7 @@ public class OfferResource {
   @POST
   @Path("add_offer")
   @Consumes(MediaType.APPLICATION_JSON)
-  public void register(OfferDTO offerDTO) {
+  public void add_offer(OfferDTO offerDTO) {
     // Get and check credentials
     if (offerDTO.getTime_slot() == null
     ) {
