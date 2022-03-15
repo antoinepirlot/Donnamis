@@ -1,0 +1,7 @@
+### Mark Interest
+POST {{baseUrl}}/interests/1
+Content-Type: application/json
+
+{
+  "id_member": 4
+}
