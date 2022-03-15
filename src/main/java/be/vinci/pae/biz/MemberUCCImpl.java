@@ -120,7 +120,7 @@ public class MemberUCCImpl implements MemberUCC {
     if (
         member == null
             || !member.checkPassword(password, member.getPassword())
-            || !member.verifyState()
+            || !member.verifyState("confirmed")
     ) {
       return null;
     }
