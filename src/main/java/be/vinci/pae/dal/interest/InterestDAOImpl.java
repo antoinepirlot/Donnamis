@@ -48,6 +48,23 @@ public class InterestDAOImpl implements InterestDAO {
     return executeQueryWithId(id_member, query);
   }
 
+  @Override
+  public boolean interestExist(int id_offer, int id_member) {
+    String query = "SELECT * FROM project_pae.interests WHERE id_offer = ? AND id_member = ?";
+    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+      preparedStatement.setInt(1, id_offer);
+      preparedStatement.setInt(2, id_member);
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        if (rs.next()) {
+          return true;
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return false;
+  }
+
   //*****UTILS******
 
   private boolean executeQueryWithId(int id_member, String query) {

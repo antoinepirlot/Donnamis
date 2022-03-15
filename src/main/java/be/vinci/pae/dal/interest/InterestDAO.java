@@ -10,4 +10,6 @@ public interface InterestDAO {
 
   boolean memberExist(int id_member);
 
+  boolean interestExist(int id_offer, int id_member);
+
 }
