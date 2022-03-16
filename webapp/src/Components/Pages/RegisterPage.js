@@ -57,6 +57,7 @@ const registerFormHtml = `
     </div>
     
     <div id="registerMessage"></div>
+    <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </div>
 `;
