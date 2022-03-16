@@ -57,6 +57,7 @@ const registerFormHtml = `
     </div>
     
     <div id="registerMessage"></div>
+    <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </div>
 `;
@@ -126,9 +127,9 @@ async function register(e) {
       })
     };
     const response = await fetch("api/members/register", request);
-    console.log(response)
     if (!response.ok) {
-      throw new Error("Problème lors du fetch");
+      showError("Echec de l'inscription", "danger", registerMessage);
+      return;
     }
     showError("Votre inscription à bien été prise en compte. Veuillez patienter la validation de votre compte.", "success", registerMessage)
   } catch (err) {
