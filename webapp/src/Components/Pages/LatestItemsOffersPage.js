@@ -7,7 +7,7 @@ const LatestItemsOffersPage = async () => {
   pageDiv.innerHTML = "Latest items offers";
 
   try {
-    const response = await fetch("/api/items/latest_items");
+    const response = await fetch("/api/offers/latest_offers");
     if (!response.ok) {
       // status code was not 200, error status code
       throw new Error(
@@ -26,11 +26,11 @@ const LatestItemsOffersPage = async () => {
     const header = document.createElement("tr");
     thead.appendChild(header);
     const header1 = document.createElement("th");
-    header1.innerText = "Id_item";
+    header1.innerText = "Id_offer";
     const header2 = document.createElement("th");
-    header2.innerText = "Description";
+    header2.innerText = "Date";
     const header3 = document.createElement("th");
-    header3.innerText = "Title";
+    header3.innerText = "Title of the item";
     header.appendChild(header1);
     header.appendChild(header2);
     header.appendChild(header3);
@@ -41,17 +41,17 @@ const LatestItemsOffersPage = async () => {
     items.forEach((item) => {
       const line = document.createElement("tr");
       const Id_ItemCell = document.createElement("td");
-      Id_ItemCell.innerText = item.id;
+      Id_ItemCell.innerText = item.idOffer;
       line.appendChild(Id_ItemCell);
       const Item_DescriptionCell = document.createElement("td");
-      Item_DescriptionCell.innerText = item.item_description;
+      Item_DescriptionCell.innerText = item.date;
       line.appendChild(Item_DescriptionCell);
 
       const TitleCell = document.createElement("td");
-      TitleCell.innerText = item.title;
+      TitleCell.innerText = item.item.title;
       line.appendChild(TitleCell);
 
-      line.dataset.itemId = item.id_item;
+      line.dataset.itemId = item.idOffer;
       tbody.appendChild(line);
     });
     table.appendChild(tbody);

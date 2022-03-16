@@ -37,11 +37,11 @@ public class OfferImpl implements Offer {
     this.time_slot = time_slot;
   }
 
-  public Item getItem() {
+  public ItemDTO getItem() {
     return item;
   }
 
-  public void setItem(Item item) {
-    this.item = item;
+  public void setItem(ItemDTO itemDTO) {
+    this.item = (Item) itemDTO;
   }
 }

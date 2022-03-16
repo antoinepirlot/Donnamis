@@ -14,7 +14,7 @@ public class FactoryImpl implements Factory {
 
   @Override
   public OfferDTO getOffer() {
-    return null;
+    return new OfferImpl();
   }
 
   @Override

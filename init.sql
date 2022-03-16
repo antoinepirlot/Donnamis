@@ -121,3 +121,18 @@ VALUES ('Décoration');
 INSERT INTO project_pae.items (item_description, id_item_type, id_member, photo, title,
                                offer_status)
 VALUES ('Cadre de la mort qui tue', 1, 1, 'photo', 'Cadre', 'donated');
+
+
+SELECT offers.id_offer,
+       offers.date,
+       offers.time_slot,
+       items.id_item,
+       items.item_description,
+       items.id_item_type,
+       items.id_member,
+       items.photo,
+       items.title,
+       items.offer_status
+FROM project_pae.offers offers
+         LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item
+ORDER BY offers.date DESC
