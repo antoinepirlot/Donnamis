@@ -2,6 +2,8 @@ import HomePage from "../Pages/HomePage";
 import LoginPage from "../Pages/LoginPage";
 import Logout from "../Logout/Logout";
 import ListMemberPage from "../Pages/ListMemberPage";
+import LatestItemsOffersPage from "../Pages/LatestItemsOffersPage"
+import AllItemsOffersPage from "../Pages/AllItemsOffersPage"
 import RegisterPage from "../Pages/RegisterPage";
 
 // Configure your routes here
@@ -11,6 +13,8 @@ const routes = {
   "/register": RegisterPage,
   "/logout": Logout,
   "/list_member": ListMemberPage,
+  "/latest_items": LatestItemsOffersPage,
+  "/all_items": AllItemsOffersPage
 };
 
 /**

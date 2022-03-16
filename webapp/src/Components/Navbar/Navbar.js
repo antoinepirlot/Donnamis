@@ -64,6 +64,18 @@ const listMemberLinkHtml = `
           </li>
 `;
 
+const latestItemsLinkHtml = `
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-uri="/latest_items">Latest Items</a>
+          </li>
+`;
+
+const allItemsLinkHtml = `
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-uri="/all_items">All Items</a>
+          </li>
+`;
+
 const Navbar = async () => {
   const navbarWrapper = document.querySelector("#navbarWrapper");
   navbarWrapper.innerHTML = navBarHtml;
@@ -73,10 +85,15 @@ const Navbar = async () => {
     links.innerHTML += logoutLinkHtml;
     links.innerHTML += listMemberLinkHtml;
     document.querySelector("#usernameNavbar").innerHTML = memberDTO.username
+    links.innerHTML += latestItemsLinkHtml;
+    links.innerHTML += allItemsLinkHtml;
+    document.querySelector("#usernameNavbar").innerHTML = payload.username
   } else {
     links.innerHTML += loginLinkHtml;
     links.innerHTML += registerLinkHtml;
     links.innerHTML += listMemberLinkHtml;
+    links.innerHTML += latestItemsLinkHtml;
+    links.innerHTML += allItemsLinkHtml;
   }
 };
 
