@@ -18,7 +18,7 @@ public interface OfferDTO {
 
   void setTime_slot(String time_slot);
 
-  Item getItem();
+  ItemDTO getItem();
 
-  void setItem(Item item);
+  void setItem(ItemDTO itemDTO);
 }
