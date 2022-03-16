@@ -9,4 +9,5 @@ public interface Factory {
   AddressDTO getAddress();
 
   OfferDTO getOffer();
+
 }

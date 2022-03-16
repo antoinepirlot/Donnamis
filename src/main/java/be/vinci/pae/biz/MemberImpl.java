@@ -97,9 +97,9 @@ class MemberImpl implements Member {
    * @return true if the actual state is "confirmed", else return false
    */
   @Override
-  public boolean verifyState() {
-    System.out.println("L'état est :" + this.actualState);
-    return this.actualState.equals("confirmed");
+  public boolean verifyState(String expectedState) {
+    return this.actualState.equals(expectedState);
+
   }
 
   @Override

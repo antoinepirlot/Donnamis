@@ -20,33 +20,6 @@ public class MemberDAOImpl implements MemberDAO {
   private static final String DEFAULT_STATE = "registered";
   private static final boolean DEFAULT_IS_ADMIN = false;
 
-  //  /**
-  //   * Get all members from the db.
-  //   *
-  //   * @return a list of members
-  //   */
-  //  @Override
-  //  public List<MemberDTO> getAll() {
-  //    System.out.println("getAll");
-  //    List<MemberDTO> membersToReturn = new ArrayList<>();
-  //    try {
-  //      String query = "SELECT * FROM project_pae.members";
-  //      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
-  //      System.out.println("Préparation du statement");
-  //      try (ResultSet rs = preparedStatement.executeQuery()) {
-  //        while (rs.next()) {
-  //          MemberDTO memberDTO = createMemberInstance(rs);
-  //          membersToReturn.add(memberDTO);
-  //        }
-  //      }
-  //    } catch (SQLException e) {
-  //      System.out.println(e.getMessage());
-  //    }
-  //    System.out.println("Création des membres réussie");
-  //
-  //    return membersToReturn;
-  //  }
-
   /**
    * Get all the members in the DB.
    *
@@ -57,17 +30,111 @@ public class MemberDAOImpl implements MemberDAO {
     String query = "SELECT * FROM project_pae.members";
 
     //Execute the query
+    return getMemberDTOS(listMemberDTO, query);
+  }
+
+  /**
+   * Get all the members in the DB with the state registered.
+   *
+   * @return all the members with the state registered otherwise null
+   */
+  public List<MemberDTO> getMembersRegistered() {
+    List<MemberDTO> listMemberDTO = new ArrayList<>();
+    String query = "SELECT * FROM project_pae.members m WHERE m.state = 'registered'";
+
+    //Execute the query
+    return getMemberDTOS(listMemberDTO, query);
+  }
+
+  /**
+   * Get all the members in the DB with the state denied.
+   *
+   * @return all the members with the state denied otherwise null
+   */
+  public List<MemberDTO> getMembersDenied() {
+    List<MemberDTO> listMemberDTO = new ArrayList<>();
+    String query = "SELECT * FROM project_pae.members m WHERE m.state = 'denied'";
+
+    //Execute the query
+    return getMemberDTOS(listMemberDTO, query);
+  }
+
+  /**
+   * Get the members in the DB with the corresponding id.
+   *
+   * @param id the id of the member
+   * @return the members in the DB with the corresponding id otherwise null
+   */
+  public MemberDTO getOneMember(int id) {
+    String query = "SELECT * FROM project_pae.members m WHERE m.id_member = ?";
     try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+      preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
-        while (rs.next()) {
-          listMemberDTO.add(createMemberInstance(rs));
+        if (rs.next()) {
+          return createMemberInstance(rs);
         }
-        return listMemberDTO;
       }
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
     return null;
+  }
+
+  /**
+   * Change the state of the member to confirmed.
+   *
+   * @param id the id of the member
+   * @return boolean
+   */
+  public MemberDTO confirmMember(int id) {
+    String query = "UPDATE project_pae.members SET state = 'confirmed' WHERE id_member = ? RETURNING *";
+    return executeQueryWithId(id, query);
+  }
+
+  /**
+   * Change the is_admin field to true.
+   *
+   * @param id the id of the member
+   * @return boolean
+   */
+  public MemberDTO isAdmin(int id) {
+    String query = "UPDATE project_pae.members SET is_admin = true WHERE id_member = ? RETURNING *";
+    return executeQueryWithId(id, query);
+  }
+
+  /**
+   * Change the state of the member to denied.
+   *
+   * @param id the id of the member
+   * @return boolean
+   */
+  public MemberDTO denyMember(int id) {
+    String query = "UPDATE project_pae.members SET state = 'denied' WHERE id_member = ? RETURNING *";
+    return executeQueryWithId(id, query);
+  }
+
+  /**
+   * Change the state of the member to register (Util for the test).
+   *
+   * @param id the id of the member
+   * @return boolean
+   */
+  public MemberDTO registerTESTMember(int id) {
+    String query = "UPDATE project_pae.members SET state = 'registered' WHERE id_member = ? RETURNING *";
+    return executeQueryWithId(id, query);
+  }
+
+  /**
+   * Verify if the member is present into the db and its username and password are correct then it
+   * created the token associated with this member if login credentials are correct.
+   *
+   * @param username the member's username
+   * @param password the member's password
+   * @return the match member otherwise null
+   */
+  @Override
+  public MemberDTO getOne(String username, String password) {
+    return getOne(username);
   }
 
   /**
@@ -83,7 +150,8 @@ public class MemberDAOImpl implements MemberDAO {
         + "m.is_admin, m.state, m.phone, a.id_address, a.street, a.building_number, a.unit_number,"
         + "a.postcode, a.commune "
         + "FROM project_pae.members m, project_pae.addresses a "
-        + "WHERE m.username = ?";
+        + "WHERE m.username = ?"
+        + "  AND a.id_member = m.id_member";
     try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
       System.out.println("Prepared statement successfully generated");
       preparedStatement.setString(1, username);
@@ -124,6 +192,47 @@ public class MemberDAOImpl implements MemberDAO {
   //****************************** UTILS *******************************
 
   /**
+   * Execute the query and return a list of member.
+   *
+   * @return a list of member
+   */
+  private List<MemberDTO> getMemberDTOS(List<MemberDTO> listMemberDTO, String query) {
+    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        while (rs.next()) {
+          listMemberDTO.add(createMemberInstance(rs));
+        }
+        return listMemberDTO;
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return null;
+  }
+
+  /**
+   * Execute a query with an id param
+   *
+   * @param id    the id of the member
+   * @param query the query to execute
+   * @return boolean
+   */
+  private MemberDTO executeQueryWithId(int id, String query) {
+    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+      preparedStatement.setInt(1, id);
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        if (rs.next()) {
+          MemberDTO memberDTO = createMemberInstance(rs);
+          return memberDTO;
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return null;
+  }
+
+  /**
    * Create a Member instance.
    *
    * @param rs the result set that contains sql result
@@ -145,6 +254,40 @@ public class MemberDAOImpl implements MemberDAO {
     return memberDTO;
   }
 
+  // ************** DELETE ???
+
+  //  /**
+  //   * Add the member to the db.
+  //   *
+  //   * @param memberDTO the member to add into the db
+  //   * @return the added member
+  //   */
+  //  @Override
+  //  public MemberDTO createOne(MemberDTO memberDTO) {
+  //    String query = "INSERT INTO project_pae.members (username, password, last_name, first_name,"
+  //        + "is_admin, state, phone) VALUES (?, ?, ?, ?, ?, ?, ?)";
+  //    try {
+  //      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
+  //      preparedStatement.setString(1, memberDTO.getUsername());
+  //      preparedStatement.setString(2, memberDTO.getPassword());
+  //      preparedStatement.setString(3, memberDTO.getLastName());
+  //      preparedStatement.setString(4, memberDTO.getFirstName());
+  //      preparedStatement.setBoolean(5, memberDTO.isAdmin());
+  //      preparedStatement.setString(6, memberDTO.getActualState());
+  //      preparedStatement.setString(7, memberDTO.getPhoneNumber());
+  //      try (ResultSet rs = preparedStatement.executeQuery()) {
+  //        //it adds into the db BUT can't execute getOne(), it returns null
+  //        if (rs.next()) {
+  //          System.out.println("Ajout du membre réussi.");
+  //          return this.getOne(memberDTO.getUsername());
+  //        }
+  //      }
+  //    } catch (SQLException e) {
+  //      System.out.println(e.getMessage());
+  //    }
+  //    return null;
+  //  }
+  //
   /**
    * Create an address instance.
    *

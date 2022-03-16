@@ -1,6 +1,5 @@
 package be.vinci.pae.biz;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -22,7 +21,7 @@ class MemberUCCImplTest {
   private String hashedPassword;
   private String password;
   private String wrongPassword;
-  private MemberDTO memberDTO;
+  private MemberDTO memberDTO = new MemberImpl();
 
   @BeforeEach
   void setUp() {
@@ -31,27 +30,97 @@ class MemberUCCImplTest {
     wrongPassword = "wrongpassword";
   }
 
-  private void configureMemberDTOForLogin(String actualState, String password) {
-    memberDTO = new MemberImpl();
+  private void configureMemberDTO(String actualState, String password) {
     memberDTO.setActualState(actualState);
     memberDTO.setPassword(hashedPassword);
-    Mockito.when(memberDAO.getOne(password))
+    Mockito.when(memberDAO.getOne("nico", password))
         .thenReturn(memberDTO);
   }
 
-  private void configureMemberDTOForRegister(String username, String password, String lastName,
-      String firstName) {
-    memberDTO = new MemberImpl();
-    memberDTO.setUsername(username);
-    memberDTO.setPassword(password);
-    memberDTO.setLastName(lastName);
-    memberDTO.setFirstName(firstName);
+  private void configureMemberDTOState(String state) {
+    memberDTO.setActualState(state);
+    memberDTO.setId(99);
+    Mockito.when(memberDAO.confirmMember(99)).thenReturn(memberDTO);
+    Mockito.when(memberDAO.denyMember(99)).thenReturn(memberDTO);
+    Mockito.when(memberDAO.getOneMember(99)).thenReturn(memberDTO);
+    Mockito.when(memberDAO.isAdmin(99)).thenReturn(memberDTO);
   }
+
+  //Test Confirm Member
+
+  @DisplayName("Test Confirm Member with the state registered")
+  @Test
+  void testConfirmMemberWithStateRegistered() {
+    configureMemberDTOState("registered");
+    assertEquals(memberDTO, memberUCC.confirmMember(99));
+  }
+
+  @DisplayName("Test Confirm Member with the state denied")
+  @Test
+  void testConfirmMemberWithStateDenied() {
+    configureMemberDTOState("denied");
+    assertEquals(memberDTO, memberUCC.confirmMember(99));
+  }
+
+  @DisplayName("Test Confirm Member with the state confirmed")
+  @Test
+  void testConfirmMemberWithStateConfirmed() {
+    configureMemberDTOState("confirmed");
+    assertEquals(null, memberUCC.confirmMember(99));
+  }
+
+  //Test Deny Member
+
+  @DisplayName("Test Deny Member With the state confirmedd")
+  @Test
+  void testDenyMemberWithStateConfirmed() {
+    configureMemberDTOState("confirmed");
+    assertEquals(null, memberUCC.denyMember(99));
+  }
+
+  @DisplayName("Test Deny Member With the state registered")
+  @Test
+  void testDenyMemberWithStateRegistered() {
+    configureMemberDTOState("registered");
+    assertEquals(memberDTO, memberUCC.denyMember(99));
+  }
+
+  @DisplayName("Test Deny Member With the state denied")
+  @Test
+  void testDenyMemberWithStateDenied() {
+    configureMemberDTOState("denied");
+    assertEquals(null, memberUCC.denyMember(99));
+  }
+
+  //Test Confirm Admin
+
+  @DisplayName("Test Confirm Admin With the state denied")
+  @Test
+  void testConfirmAdminWithStateRefused() {
+    configureMemberDTOState("denied");
+    assertEquals(memberDTO, memberUCC.confirmAdmin(99));
+  }
+
+  @DisplayName("Test Confirm Admin With the state registered")
+  @Test
+  void testConfirmAdminWithStateRegistered() {
+    configureMemberDTOState("registered");
+    assertEquals(memberDTO, memberUCC.confirmAdmin(99));
+  }
+
+  @DisplayName("Test Confirm Admin With the state confirmed")
+  @Test
+  void testConfirmAdminWithStateConfirmed() {
+    configureMemberDTOState("confirmed");
+    assertEquals(null, memberUCC.confirmAdmin(99));
+  }
+
+  //Test Login
 
   @DisplayName("Test login with confirmed member and good password")
   @Test
   void testLoginConfirmedMemberWithGoodPassword() {
-    configureMemberDTOForLogin("confirmed", password);
+    configureMemberDTO("confirmed", password);
     assertEquals(memberDTO,
         memberUCC.login("nico", password)
     );
@@ -60,7 +129,7 @@ class MemberUCCImplTest {
   @DisplayName("Test login with denied member and good password")
   @Test
   void testLoginDeniedMemberWithGoodPassword() {
-    configureMemberDTOForLogin("denied", password);
+    configureMemberDTO("denied", password);
     assertThrows(
         WebApplicationException.class,
         () -> memberUCC.login("nico", password)
@@ -70,7 +139,7 @@ class MemberUCCImplTest {
   @DisplayName("Test login with registered member and good password")
   @Test
   void testLoginRegisteredMemberWithGoodPassword() {
-    configureMemberDTOForLogin("registered", password);
+    configureMemberDTO("registered", password);
     assertThrows(
         WebApplicationException.class,
         () -> memberUCC.login("nico", password)
@@ -80,7 +149,7 @@ class MemberUCCImplTest {
   @DisplayName("Test login with confirmed member and wrong password")
   @Test
   void testLoginConfirmedMemberWithWrongPassword() {
-    configureMemberDTOForLogin("confirmed", wrongPassword);
+    configureMemberDTO("confirmed", wrongPassword);
     assertThrows(
         WebApplicationException.class,
         () -> memberUCC.login("nico", wrongPassword)
@@ -90,7 +159,7 @@ class MemberUCCImplTest {
   @DisplayName("Test login with registered member and wrong password")
   @Test
   void testLoginRegisteredMemberWithWrongPassword() {
-    configureMemberDTOForLogin("registered", wrongPassword);
+    configureMemberDTO("registered", wrongPassword);
     assertThrows(
         WebApplicationException.class,
         () -> memberUCC.login("nico", wrongPassword)
@@ -100,7 +169,7 @@ class MemberUCCImplTest {
   @DisplayName("Test login with denied member and wrong password")
   @Test
   void testLoginDeniedMemberWithWrongPassword() {
-    configureMemberDTOForLogin("denied", wrongPassword);
+    configureMemberDTO("denied", wrongPassword);
     assertThrows(
         WebApplicationException.class,
         () -> memberUCC.login("nico", wrongPassword)

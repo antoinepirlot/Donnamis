@@ -10,6 +10,18 @@ Content-Type: application/json
   "password": "password"
 }
 
+### Confirm registration
+PUT {{baseUrl}}/members/confirm/1
+
+### Deny member
+PUT {{baseUrl}}/members/denies/3
+
+### Make Member State Register
+PUT {{baseUrl}}/members/registerTEST/6
+
+### Confirm Admin
+PUT {{baseUrl}}/members/confirmAdmin/3
+
 ### Get All Members
 GET {{baseUrl}}/members/list_member
 

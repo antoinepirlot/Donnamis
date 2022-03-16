@@ -1,5 +1,7 @@
 package be.vinci.pae.biz;
 
+import jakarta.ws.rs.WebApplicationException;
+
 public interface Member extends MemberDTO {
 
   /**
@@ -8,7 +10,7 @@ public interface Member extends MemberDTO {
    *
    * @return true if the actual state is "confirmed", else return false
    */
-  boolean verifyState();
+  boolean verifyState(String expectedState);
 
   boolean checkPassword(String password, String hashedPassword);
 

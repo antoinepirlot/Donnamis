@@ -7,7 +7,9 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
@@ -69,5 +71,16 @@ public class ItemResource {
     }
   }
 
-  
+  @PUT
+  @Path("cancel/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public ItemDTO cancelOffer(@PathParam("id") int id) {
+    if (itemUCC.getOneItem(id) == null) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Item not found").type("text/plain").build());
+    }
+    return itemUCC.cancelOffer(id);
+  }
+
 }
