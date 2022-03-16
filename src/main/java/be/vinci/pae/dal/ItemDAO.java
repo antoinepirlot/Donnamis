@@ -8,4 +8,8 @@ public interface ItemDAO {
   List<ItemDTO> getLatestItems();
 
   List<ItemDTO> getAllItems();
+
+  ItemDTO getOneItem(int id);
+
+  ItemDTO cancelOffer(int id);
 }

@@ -82,9 +82,42 @@ public class ItemDAOImpl implements ItemDAO {
     return itemsToReturn;
   }
 
+  @Override
+  public ItemDTO getOneItem(int id) {
+    String query = "SELECT * FROM project_pae.items i WHERE i.id_item = ?";
+    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+      preparedStatement.setInt(1, id);
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        if (rs.next()) {
+          return createItemInstance(rs);
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return null;
+  }
+
+  @Override
+  public ItemDTO cancelOffer(int id) {
+    String query = "UPDATE project_pae.items SET offer_status = 'cancelled' WHERE id_item = ? "
+        + "RETURNING *";
+    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+      preparedStatement.setInt(1, id);
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        if (rs.next()) {
+          ItemDTO itemDTO = createItemInstance(rs);
+          return itemDTO;
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return null;
+  }
+
 
   private ItemDTO createItemInstance(ResultSet rs) throws SQLException {
-    System.out.println("Item instance creation");
     ItemDTO itemDTO = factory.getItem();
     itemDTO.setId(rs.getInt("id_item"));
     itemDTO.setItem_description(rs.getString("item_description"));

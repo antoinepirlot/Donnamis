@@ -28,4 +28,14 @@ public class ItemUCCImpl implements ItemUCC {
   public List<ItemDTO> getAllItems() {
     return itemDAO.getAllItems();
   }
+
+  @Override
+  public ItemDTO getOneItem(int id) {
+    return itemDAO.getOneItem(id);
+  }
+
+  @Override
+  public ItemDTO cancelOffer(int id) {
+    return itemDAO.cancelOffer(id);
+  }
 }
