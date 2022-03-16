@@ -157,6 +157,7 @@ public class MemberDAOImpl implements MemberDAO {
       preparedStatement.setString(1, username);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) { //We know only one is returned by the db
+          System.out.println("USER FOUNDED");
           return createMemberInstance(rs);
         }
       }

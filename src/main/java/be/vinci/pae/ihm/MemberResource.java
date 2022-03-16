@@ -181,6 +181,7 @@ public class MemberResource {
     MemberDTO memberDTO = memberUCC.login(username, password);
     String token = createToken(memberDTO.getId());
     return createObjectNode(token, memberDTO);
+
   }
 
   /**
