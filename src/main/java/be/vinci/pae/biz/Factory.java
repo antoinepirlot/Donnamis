@@ -7,4 +7,6 @@ public interface Factory {
   MemberDTO getMember();
 
   OfferDTO getOffer();
+
+  AddressDTO getAddress();
 }

@@ -5,8 +5,6 @@ import java.util.List;
 
 public interface MemberDAO {
 
-  //  List<MemberDTO> getAll();
-
   List<MemberDTO> getAllMembers();
 
   MemberDTO getOne(String username);
@@ -18,4 +16,20 @@ public interface MemberDAO {
    * @return true if the member has been  registered
    */
   boolean register(MemberDTO memberDTO);
+
+  List<MemberDTO> getMembersRegistered();
+
+  List<MemberDTO> getMembersDenied();
+
+  MemberDTO getOneMember(int id);
+
+  MemberDTO confirmMember(int id);
+
+  MemberDTO isAdmin(int id);
+
+  MemberDTO registerTESTMember(int id);
+
+  MemberDTO denyMember(int id);
+
+  MemberDTO getOne(String username, String password);
 }

@@ -16,4 +16,9 @@ public class FactoryImpl implements Factory {
   public Item getItem() {
     return new ItemImpl();
   }
+
+  @Override
+  public AddressDTO getAddress() {
+    return new AddressImpl();
+  }
 }

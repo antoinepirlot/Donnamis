@@ -5,6 +5,7 @@ import {
 } from "../../utils/session";
 import {Redirect} from "../Router/Router";
 import Navbar from "../Navbar/Navbar";
+import {showError} from "../../utils/ShowError";
 
 const loginFormHtml = `
   <div>
@@ -19,7 +20,7 @@ const loginFormHtml = `
       <br>
       <input type="submit">
     </form>
-    <div id="loginFormNotification"></div>
+    <div id="loginMessage"></div>
   </div>
 `;
 
@@ -44,7 +45,12 @@ async function login(e) {
   const username = document.querySelector("#usernameInput").value;
   const password = document.querySelector("#passwordInput").value;
   const rememberMe = document.querySelector("#rememberMeInput").checked;
-
+  const loginMessage = document.querySelector("#loginMessage");
+  if(username === "" ||
+      password === ""){
+    showError("Tous les champs doivent être complet", "danger", loginMessage)
+    return;
+  }
   try {
     const request = {
       method: "POST",
@@ -52,14 +58,17 @@ async function login(e) {
         "Content-Type":
             "application/json"
       },
-      body: JSON.stringify({
+      body: JSON.stringify( {
         username: username,
         password: password
       })
     };
     const response = await fetch("api/members/login", request);
+
+    console.table(response)
     if (!response.ok) {
-      throw new Error("Problème lors du fetch");
+      showError("Aucun utilisateur pour ce username et ce mot de passe", "danger", loginMessage)
+      return;
     }
     const content = await response.json();
     if (rememberMe) {
