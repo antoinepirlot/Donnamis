@@ -164,6 +164,7 @@ public class OfferDAOImpl implements OfferDAO {
     System.out.println("Factory réussie");
     offerDTO.setIdOffer(rs.getInt("id_offer"));
     System.out.println("id_offer set");
+    System.out.println(rs.getDate("date"));
     offerDTO.setDate(rs.getDate("date"));
     System.out.println("date set");
     offerDTO.setTime_slot(rs.getString("time_slot"));
