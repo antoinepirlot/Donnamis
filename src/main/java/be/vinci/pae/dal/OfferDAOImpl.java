@@ -1,7 +1,9 @@
 package be.vinci.pae.dal;
 
+import be.vinci.pae.biz.AddressDTO;
 import be.vinci.pae.biz.Factory;
 import be.vinci.pae.biz.ItemDTO;
+import be.vinci.pae.biz.MemberDTO;
 import be.vinci.pae.biz.OfferDTO;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -85,32 +87,6 @@ public class OfferDAOImpl implements OfferDAO {
     return offersToReturn;
   }
 
-  private OfferDTO createOfferInstance(ResultSet rs) throws SQLException {
-    System.out.println("Offer instance creation");
-    OfferDTO offerDTO = factory.getOffer();
-    System.out.println("Factory réussie");
-    offerDTO.setIdOffer(rs.getInt("id_offer"));
-    System.out.println("id_offer set");
-    offerDTO.setDate(rs.getDate("date"));
-    System.out.println("date set");
-    offerDTO.setTime_slot(rs.getString("time_slot"));
-    System.out.println("tile_slot set");
-    offerDTO.setItem(this.createItemInstance(rs));
-
-    return offerDTO;
-  }
-
-  private ItemDTO createItemInstance(ResultSet rs) throws SQLException {
-    System.out.println("Item instance creation");
-    ItemDTO itemDTO = factory.getItem();
-    itemDTO.setId(rs.getInt("id_item"));
-    itemDTO.setId_item_type(rs.getInt("id_item_type"));
-    itemDTO.setId_member(rs.getInt("id_member"));
-    itemDTO.setPhoto(rs.getString("photo"));
-    itemDTO.setTitle(rs.getString("title"));
-    itemDTO.setOffer_status(rs.getString("offer_status"));
-    return itemDTO;
-  }
 
   /**
    * Add the offer to the db.
@@ -171,6 +147,91 @@ public class OfferDAOImpl implements OfferDAO {
       e.printStackTrace();
     }
     return false;
+  }
+
+  //****************************** UTILS *******************************
+
+  /**
+   * Create an Offer instance.
+   *
+   * @param rs the result set that contains sql result
+   * @return a new instance of offer based on what rs contains
+   * @throws SQLException if there's an issue while getting data from the result set
+   */
+  private OfferDTO createOfferInstance(ResultSet rs) throws SQLException {
+    System.out.println("Offer instance creation");
+    OfferDTO offerDTO = factory.getOffer();
+    System.out.println("Factory réussie");
+    offerDTO.setIdOffer(rs.getInt("id_offer"));
+    System.out.println("id_offer set");
+    offerDTO.setDate(rs.getDate("date"));
+    System.out.println("date set");
+    offerDTO.setTime_slot(rs.getString("time_slot"));
+    System.out.println("tile_slot set");
+    offerDTO.setItem(this.createItemInstance(rs));
+
+    return offerDTO;
+  }
+
+  /**
+   * Create an Item instance.
+   *
+   * @param rs the result set that contains sql result
+   * @return a new instance of item based on what rs contains
+   * @throws SQLException if there's an issue while getting data from the result set
+   */
+  private ItemDTO createItemInstance(ResultSet rs) throws SQLException {
+    System.out.println("Item instance creation");
+    ItemDTO itemDTO = factory.getItem();
+    itemDTO.setId(rs.getInt("id_item"));
+    itemDTO.setId_item_type(rs.getInt("id_item_type"));
+    itemDTO.setId_member(rs.getInt("id_member"));
+    itemDTO.setPhoto(rs.getString("photo"));
+    itemDTO.setTitle(rs.getString("title"));
+    itemDTO.setOffer_status(rs.getString("offer_status"));
+    return itemDTO;
+  }
+
+  /**
+   * Create a Member instance.
+   *
+   * @param rs the result set that contains sql result
+   * @return a new instance of member based on what rs contains
+   * @throws SQLException if there's an issue while getting data from the result set
+   */
+  private MemberDTO createMemberInstance(ResultSet rs) throws SQLException {
+    System.out.println("Member instance creation");
+    MemberDTO memberDTO = factory.getMember();
+    memberDTO.setId(rs.getInt("id_member"));
+    memberDTO.setUsername(rs.getString("username"));
+    memberDTO.setPassword(rs.getString("password"));
+    memberDTO.setLastName(rs.getString("last_name"));
+    memberDTO.setFirstName(rs.getString("first_name"));
+    memberDTO.setAdmin(rs.getBoolean("is_admin"));
+    memberDTO.setActualState(rs.getString("state"));
+    memberDTO.setPhoneNumber(rs.getString("phone"));
+    memberDTO.setAddress(this.createAddressInstance(rs));
+    return memberDTO;
+  }
+
+  /**
+   * Create an address instance.
+   *
+   * @param rs the result set that contains sql result
+   * @return a new instance of address based on what rs contains
+   * @throws SQLException if there's an issue while getting data from the result set
+   */
+  private AddressDTO createAddressInstance(ResultSet rs) throws SQLException {
+    System.out.println("Address instance creation");
+    AddressDTO addressDTO = factory.getAddress();
+    addressDTO.setId(rs.getInt("id_address"));
+    addressDTO.setStreet(rs.getString("street"));
+    addressDTO.setBuildingNumber(rs.getString("building_number"));
+    addressDTO.setUnitNumber(rs.getString("unit_number"));
+    addressDTO.setPostcode(rs.getString("postcode"));
+    addressDTO.setCommune(rs.getString("commune"));
+    addressDTO.setId(rs.getInt("id_member"));
+    return addressDTO;
   }
 
 
