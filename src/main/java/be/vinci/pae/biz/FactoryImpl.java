@@ -8,6 +8,11 @@ public class FactoryImpl implements Factory {
   }
 
   @Override
+  public AddressDTO getAddress() {
+    return new AddressImpl();
+  }
+
+  @Override
   public OfferDTO getOffer() {
     return null;
   }
