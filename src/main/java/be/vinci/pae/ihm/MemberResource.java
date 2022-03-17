@@ -179,6 +179,7 @@ public class MemberResource {
     String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
     String password = json.get("password").asText();
     MemberDTO memberDTO = memberUCC.login(username, password);
+    memberDTO.setPassword(null);
     String token = createToken(memberDTO.getId());
     return createObjectNode(token, memberDTO);
 
