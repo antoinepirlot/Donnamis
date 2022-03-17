@@ -1,6 +1,8 @@
-package be.vinci.pae.biz;
+package be.vinci.pae.biz.objects.item.items_type;
 
-class ItemTypeImpl implements ItemType{
+import be.vinci.pae.biz.interfaces.item.items_type.ItemType;
+
+public class ItemTypeImpl implements ItemType {
   private int idType;
 
   private String itemType;

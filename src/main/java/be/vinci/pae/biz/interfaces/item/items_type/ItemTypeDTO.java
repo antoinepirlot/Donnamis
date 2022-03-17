@@ -1,4 +1,4 @@
-package be.vinci.pae.biz;
+package be.vinci.pae.biz.interfaces.item.items_type;
 
 public interface ItemTypeDTO {
   int getIdType();

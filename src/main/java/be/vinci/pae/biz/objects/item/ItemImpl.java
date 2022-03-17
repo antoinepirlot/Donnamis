@@ -1,6 +1,10 @@
 package be.vinci.pae.biz.objects.item;
 
 import be.vinci.pae.biz.interfaces.item.Item;
+import be.vinci.pae.biz.interfaces.item.items_type.ItemType;
+import be.vinci.pae.biz.interfaces.item.items_type.ItemTypeDTO;
+import be.vinci.pae.biz.interfaces.member.Member;
+import be.vinci.pae.biz.interfaces.member.MemberDTO;
 import java.util.Objects;
 
 public class ItemImpl implements Item {

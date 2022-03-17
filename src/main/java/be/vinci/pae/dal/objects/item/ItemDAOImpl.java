@@ -1,8 +1,11 @@
-package be.vinci.pae.dal;
+package be.vinci.pae.dal.objects.item;
 
-import be.vinci.pae.biz.Factory;
-import be.vinci.pae.biz.ItemDTO;
-import be.vinci.pae.biz.ItemTypeDTO;
+import be.vinci.pae.biz.factory.Factory;
+import be.vinci.pae.biz.interfaces.item.ItemDTO;
+import be.vinci.pae.biz.interfaces.item.items_type.ItemTypeDTO;
+import be.vinci.pae.dal.interfaces.item.ItemDAO;
+import be.vinci.pae.dal.interfaces.member.MemberDAO;
+import be.vinci.pae.dal.services.DALServices;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

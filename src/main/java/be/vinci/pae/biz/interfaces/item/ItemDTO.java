@@ -1,5 +1,7 @@
 package be.vinci.pae.biz.interfaces.item;
 
+import be.vinci.pae.biz.interfaces.item.items_type.ItemTypeDTO;
+import be.vinci.pae.biz.interfaces.member.MemberDTO;
 import be.vinci.pae.biz.objects.item.ItemImpl;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
