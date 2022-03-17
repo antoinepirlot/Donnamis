@@ -4,9 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import be.vinci.pae.dal.MemberDAO;
+import be.vinci.pae.biz.interfaces.member.MemberDTO;
+import be.vinci.pae.biz.objects.member.MemberImpl;
+import be.vinci.pae.biz.interfaces.member.MemberUCC;
+import be.vinci.pae.dal.interfaces.member.MemberDAO;
 import be.vinci.pae.utils.ApplicationBinder;
-import jakarta.ws.rs.WebApplicationException;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeEach;
