@@ -5,12 +5,12 @@ import java.util.Objects;
 public class ItemImpl implements Item {
 
   private int id;
-  private String item_description;
-  private int id_item_type;
+  private String itemDescription;
+  private int idItemType;
   private Member member;
   private String photo;
   private String title;
-  private String offer_status;
+  private String offerStatus;
 
   public ItemImpl() {
   }
@@ -23,20 +23,20 @@ public class ItemImpl implements Item {
     this.id = id;
   }
 
-  public String getItem_description() {
-    return item_description;
+  public String getItemDescription() {
+    return itemDescription;
   }
 
-  public void setItem_description(String item_description) {
-    this.item_description = item_description;
+  public void setItemDescription(String itemDescription) {
+    this.itemDescription = itemDescription;
   }
 
-  public int getId_item_type() {
-    return id_item_type;
+  public int getIdItemType() {
+    return idItemType;
   }
 
-  public void setId_item_type(int id_item_type) {
-    this.id_item_type = id_item_type;
+  public void setIdItemType(int idItemType) {
+    this.idItemType = idItemType;
   }
 
   public MemberDTO getMember() {
@@ -63,12 +63,12 @@ public class ItemImpl implements Item {
     this.title = title;
   }
 
-  public String getOffer_status() {
-    return offer_status;
+  public String getOfferStatus() {
+    return offerStatus;
   }
 
-  public void setOffer_status(String offers_status) {
-    this.offer_status = offers_status;
+  public void setOfferStatus(String offers_status) {
+    this.offerStatus = offers_status;
   }
 
   @Override
@@ -92,12 +92,12 @@ public class ItemImpl implements Item {
   public String toString() {
     return "Item{"
         + "id=" + id
-        + ", item_description='" + item_description + '\''
-        + ", id_item_type='" + id_item_type + '\''
+        + ", item_description='" + itemDescription + '\''
+        + ", id_item_type='" + idItemType + '\''
         + ", id_member='" + member + '\''
         + ", photo='" + photo + '\''
         + ", title=" + title
-        + ", offer_status='" + offer_status + '\''
+        + ", offer_status='" + offerStatus + '\''
         + '}';
   }
 
