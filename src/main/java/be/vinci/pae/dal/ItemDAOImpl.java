@@ -2,6 +2,7 @@ package be.vinci.pae.dal;
 
 import be.vinci.pae.biz.Factory;
 import be.vinci.pae.biz.ItemDTO;
+import be.vinci.pae.biz.ItemTypeDTO;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -123,12 +124,19 @@ public class ItemDAOImpl implements ItemDAO {
     ItemDTO itemDTO = factory.getItem();
     itemDTO.setId(rs.getInt("id_item"));
     itemDTO.setItemDescription(rs.getString("item_description"));
-    itemDTO.setIdItemType(rs.getInt("id_item_type"));
+    itemDTO.setItemType(createItemTypeInstance(rs));
     itemDTO.setMember(memberDAO.getOneMember(rs.getInt("id_member")));
     itemDTO.setPhoto(rs.getString("photo"));
     itemDTO.setTitle(rs.getString("title"));
     itemDTO.setOfferStatus(rs.getString("offer_status"));
     return itemDTO;
+  }
+
+  private ItemTypeDTO createItemTypeInstance(ResultSet rs) throws SQLException {
+    ItemTypeDTO itemTypeDTO = factory.getItemType();
+    itemTypeDTO.setIdType(rs.getInt("id_item_type"));
+    itemTypeDTO.setItemType(rs.getString("item_type"));
+    return itemTypeDTO;
   }
 
 }

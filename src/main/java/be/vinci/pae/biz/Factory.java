@@ -10,4 +10,6 @@ public interface Factory {
 
   OfferDTO getOffer();
 
+  ItemTypeDTO getItemType();
+
 }

@@ -3,6 +3,7 @@ package be.vinci.pae.dal;
 import be.vinci.pae.biz.AddressDTO;
 import be.vinci.pae.biz.Factory;
 import be.vinci.pae.biz.ItemDTO;
+import be.vinci.pae.biz.ItemTypeDTO;
 import be.vinci.pae.biz.MemberDTO;
 import be.vinci.pae.biz.OfferDTO;
 import jakarta.inject.Inject;
@@ -73,10 +74,11 @@ public class OfferDAOImpl implements OfferDAO {
     try {
       String query =
           "SELECT offers.id_offer, offers.date, offers.time_slot, items.id_item, "
-              + "items.item_description, items.id_item_type, items.id_member, items.photo, "
-              + "items.title, items.offer_status "
+              + "items.item_description, items.id_member, items.photo, items.title, "
+              + "items.offer_status, it.item_type, it.id_type "
               + "FROM project_pae.offers offers "
-              + "LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item;";
+              + "LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item "
+              + "LEFT OUTER JOIN project_pae.items_types it ON items.id_item_type = it.id_type;";
       PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
       System.out.println("Préparation du statement");
       try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -92,7 +94,6 @@ public class OfferDAOImpl implements OfferDAO {
 
     return offersToReturn;
   }
-
 
   /**
    * Add the offer to the db.
@@ -139,7 +140,7 @@ public class OfferDAOImpl implements OfferDAO {
         PreparedStatement ps = dalServices.getPreparedStatement(query)
     ) {
       ps.setString(1, StringEscapeUtils.escapeHtml4(itemDTO.getItemDescription()));
-      ps.setInt(2, itemDTO.getIdItemType());
+      ps.setInt(2, itemDTO.getItemType().getIdType());
       ps.setInt(3,  itemDTO.getMember().getId());
       ps.setString(4, StringEscapeUtils.escapeHtml4(itemDTO.getPhoto()));
       ps.setString(5, StringEscapeUtils.escapeHtml4(itemDTO.getTitle()));
@@ -190,12 +191,20 @@ public class OfferDAOImpl implements OfferDAO {
     System.out.println("Item instance creation");
     ItemDTO itemDTO = factory.getItem();
     itemDTO.setId(rs.getInt("id_item"));
-    itemDTO.setIdItemType(rs.getInt("id_item_type"));
+    itemDTO.setItemType(this.createItemTypeInstance(rs));
     itemDTO.setMember(memberDAO.getOneMember(rs.getInt("id_member")));
     itemDTO.setPhoto(rs.getString("photo"));
     itemDTO.setTitle(rs.getString("title"));
     itemDTO.setOfferStatus(rs.getString("offer_status"));
     return itemDTO;
+  }
+
+  private ItemTypeDTO createItemTypeInstance(ResultSet rs) throws SQLException {
+    System.out.println("Item type instance creation");
+    ItemTypeDTO itemTypeDTO = factory.getItemType();
+    itemTypeDTO.setIdType(rs.getInt("id_type"));
+    itemTypeDTO.setItemType(rs.getString("item_type"));
+    return itemTypeDTO;
   }
 
   /**
