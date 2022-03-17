@@ -138,12 +138,12 @@ public class OfferDAOImpl implements OfferDAO {
     try (
         PreparedStatement ps = dalServices.getPreparedStatement(query)
     ) {
-      ps.setString(1, StringEscapeUtils.escapeHtml4(itemDTO.getItem_description()));
-      ps.setInt(2, itemDTO.getId_item_type());
+      ps.setString(1, StringEscapeUtils.escapeHtml4(itemDTO.getItemDescription()));
+      ps.setInt(2, itemDTO.getIdItemType());
       ps.setInt(3,  itemDTO.getMember().getId());
       ps.setString(4, StringEscapeUtils.escapeHtml4(itemDTO.getPhoto()));
       ps.setString(5, StringEscapeUtils.escapeHtml4(itemDTO.getTitle()));
-      ps.setString(6, StringEscapeUtils.escapeHtml4(itemDTO.getOffer_status()));
+      ps.setString(6, StringEscapeUtils.escapeHtml4(itemDTO.getOfferStatus()));
       int result = ps.executeUpdate();
       if (result != 0) {
         System.out.println("Ajout de l'item réussi");
@@ -190,11 +190,11 @@ public class OfferDAOImpl implements OfferDAO {
     System.out.println("Item instance creation");
     ItemDTO itemDTO = factory.getItem();
     itemDTO.setId(rs.getInt("id_item"));
-    itemDTO.setId_item_type(rs.getInt("id_item_type"));
+    itemDTO.setIdItemType(rs.getInt("id_item_type"));
     itemDTO.setMember(memberDAO.getOneMember(rs.getInt("id_member")));
     itemDTO.setPhoto(rs.getString("photo"));
     itemDTO.setTitle(rs.getString("title"));
-    itemDTO.setOffer_status(rs.getString("offer_status"));
+    itemDTO.setOfferStatus(rs.getString("offer_status"));
     return itemDTO;
   }
 

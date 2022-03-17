@@ -122,12 +122,12 @@ public class ItemDAOImpl implements ItemDAO {
   private ItemDTO createItemInstance(ResultSet rs) throws SQLException {
     ItemDTO itemDTO = factory.getItem();
     itemDTO.setId(rs.getInt("id_item"));
-    itemDTO.setItem_description(rs.getString("item_description"));
-    itemDTO.setId_item_type(rs.getInt("id_item_type"));
+    itemDTO.setItemDescription(rs.getString("item_description"));
+    itemDTO.setIdItemType(rs.getInt("id_item_type"));
     itemDTO.setMember(memberDAO.getOneMember(rs.getInt("id_member")));
     itemDTO.setPhoto(rs.getString("photo"));
     itemDTO.setTitle(rs.getString("title"));
-    itemDTO.setOffer_status(rs.getString("offer_status"));
+    itemDTO.setOfferStatus(rs.getString("offer_status"));
     return itemDTO;
   }
 
