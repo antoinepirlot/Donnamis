@@ -1,7 +1,7 @@
 package be.vinci.pae.ihm;
 
-import be.vinci.pae.biz.ItemDTO;
-import be.vinci.pae.biz.ItemUCC;
+import be.vinci.pae.biz.interfaces.item.ItemDTO;
+import be.vinci.pae.biz.interfaces.item.ItemUCC;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
