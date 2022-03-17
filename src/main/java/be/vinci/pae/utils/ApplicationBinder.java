@@ -35,13 +35,17 @@ public class ApplicationBinder extends AbstractBinder {
     //Member
     bind(MemberDAOImpl.class).to(MemberDAO.class).in(Singleton.class);
     bind(MemberUCCImpl.class).to(MemberUCC.class).in(Singleton.class);
+
+    //Item
     bind(ItemUCCImpl.class).to(ItemUCC.class).in(Singleton.class);
     bind(ItemDAOImpl.class).to(ItemDAO.class).in(Singleton.class);
-    bind(OfferUCCImpl.class).to(OfferUCC.class).in(Singleton.class);
-    bind(OfferDAOImpl.class).to(OfferDAO.class).in(Singleton.class);
 
     //Interest
     bind(InterestDAOImpl.class).to(InterestDAO.class).in(Singleton.class);
     bind(InterestUCCImpl.class).to(InterestUCC.class).in(Singleton.class);
+
+    //Offer
+    bind(OfferUCCImpl.class).to(OfferUCC.class).in(Singleton.class);
+    bind(OfferDAOImpl.class).to(OfferDAO.class).in(Singleton.class);
   }
 }
