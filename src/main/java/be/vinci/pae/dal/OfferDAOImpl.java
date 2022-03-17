@@ -42,10 +42,12 @@ public class OfferDAOImpl implements OfferDAO {
     List<OfferDTO> offersToReturn = new ArrayList<>();
     try {
       String query =
-          "SELECT offers.id_offer, offers.date, offers.time_slot, items.id_item, items.item_description, items.id_item_type, items.id_member, items.photo, items.title, items.offer_status\n"
-              + "FROM project_pae.offers offers\n"
-              + "         LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item\n"
-              + "ORDER BY offers.date DESC ";
+          "SELECT offers.id_offer, offers.date, offers.time_slot, items.id_item, "
+              + "items.item_description, items.id_item_type, items.id_member, items.photo, "
+              + "items.title, items.offer_status "
+              + "FROM project_pae.offers offers "
+              + "LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item "
+              + "ORDER BY offers.date DESC;";
       PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
       System.out.println("Préparation du statement");
       try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -68,9 +70,11 @@ public class OfferDAOImpl implements OfferDAO {
     List<OfferDTO> offersToReturn = new ArrayList<>();
     try {
       String query =
-          "SELECT offers.id_offer, offers.date, offers.time_slot, items.id_item, items.item_description, items.id_item_type, items.id_member, items.photo, items.title, items.offer_status\n"
-              + "FROM project_pae.offers offers\n"
-              + "         LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item";
+          "SELECT offers.id_offer, offers.date, offers.time_slot, items.id_item, "
+              + "items.item_description, items.id_item_type, items.id_member, items.photo, "
+              + "items.title, items.offer_status "
+              + "FROM project_pae.offers offers "
+              + "LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item;";
       PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
       System.out.println("Préparation du statement");
       try (ResultSet rs = preparedStatement.executeQuery()) {
