@@ -16,6 +16,8 @@ public class ItemDAOImpl implements ItemDAO {
   private Factory factory;
   @Inject
   private DALServices dalServices;
+  @Inject
+  private MemberDAO memberDAO;
 
   /**
    * Get the latest items from the database.
@@ -122,7 +124,7 @@ public class ItemDAOImpl implements ItemDAO {
     itemDTO.setId(rs.getInt("id_item"));
     itemDTO.setItem_description(rs.getString("item_description"));
     itemDTO.setId_item_type(rs.getInt("id_item_type"));
-    itemDTO.setId_member(rs.getInt("id_member"));
+    itemDTO.setMember(memberDAO.getOneMember(rs.getInt("id_member")));
     itemDTO.setPhoto(rs.getString("photo"));
     itemDTO.setTitle(rs.getString("title"));
     itemDTO.setOffer_status(rs.getString("offer_status"));

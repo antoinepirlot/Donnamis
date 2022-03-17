@@ -7,7 +7,7 @@ public class ItemImpl implements Item {
   private int id;
   private String item_description;
   private int id_item_type;
-  private int id_member;
+  private Member member;
   private String photo;
   private String title;
   private String offer_status;
@@ -39,12 +39,12 @@ public class ItemImpl implements Item {
     this.id_item_type = id_item_type;
   }
 
-  public int getId_member() {
-    return id_member;
+  public MemberDTO getMember() {
+    return member;
   }
 
-  public void setId_member(int id_member) {
-    this.id_member = id_member;
+  public void setMember(MemberDTO member) {
+    this.member = (Member) member;
   }
 
   public String getPhoto() {
@@ -94,7 +94,7 @@ public class ItemImpl implements Item {
         + "id=" + id
         + ", item_description='" + item_description + '\''
         + ", id_item_type='" + id_item_type + '\''
-        + ", id_member='" + id_member + '\''
+        + ", id_member='" + member + '\''
         + ", photo='" + photo + '\''
         + ", title=" + title
         + ", offer_status='" + offer_status + '\''

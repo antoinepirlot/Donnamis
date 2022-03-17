@@ -17,9 +17,9 @@ public interface ItemDTO {
 
   void setId_item_type(int id_item_type);
 
-  int getId_member();
+  MemberDTO getMember();
 
-  void setId_member(int id_member);
+  void setMember(MemberDTO member);
 
   String getPhoto();
 

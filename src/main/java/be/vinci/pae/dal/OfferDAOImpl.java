@@ -19,6 +19,8 @@ public class OfferDAOImpl implements OfferDAO {
   private DALServices dalServices;
   @Inject
   private Factory factory;
+  @Inject
+  private MemberDAO memberDAO;
 
 
   @Override
@@ -138,7 +140,7 @@ public class OfferDAOImpl implements OfferDAO {
     ) {
       ps.setString(1, StringEscapeUtils.escapeHtml4(itemDTO.getItem_description()));
       ps.setInt(2, itemDTO.getId_item_type());
-      ps.setInt(3, itemDTO.getId_member());
+      ps.setInt(3,  itemDTO.getMember().getId());
       ps.setString(4, StringEscapeUtils.escapeHtml4(itemDTO.getPhoto()));
       ps.setString(5, StringEscapeUtils.escapeHtml4(itemDTO.getTitle()));
       ps.setString(6, StringEscapeUtils.escapeHtml4(itemDTO.getOffer_status()));
@@ -189,7 +191,7 @@ public class OfferDAOImpl implements OfferDAO {
     ItemDTO itemDTO = factory.getItem();
     itemDTO.setId(rs.getInt("id_item"));
     itemDTO.setId_item_type(rs.getInt("id_item_type"));
-    itemDTO.setId_member(rs.getInt("id_member"));
+    itemDTO.setMember(memberDAO.getOneMember(rs.getInt("id_member")));
     itemDTO.setPhoto(rs.getString("photo"));
     itemDTO.setTitle(rs.getString("title"));
     itemDTO.setOffer_status(rs.getString("offer_status"));
