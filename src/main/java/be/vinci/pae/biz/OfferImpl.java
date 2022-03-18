@@ -44,4 +44,14 @@ public class OfferImpl implements Offer {
   public void setItem(ItemDTO itemDTO) {
     this.item = (Item) itemDTO;
   }
+
+  @Override
+  public String toString() {
+    return "OfferImpl{" +
+        "idOffer=" + idOffer +
+        ", date=" + date +
+        ", time_slot='" + time_slot + '\'' +
+        ", item=" + item +
+        '}';
+  }
 }

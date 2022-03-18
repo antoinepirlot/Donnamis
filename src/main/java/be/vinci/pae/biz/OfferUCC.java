@@ -9,4 +9,6 @@ public interface OfferUCC {
   List<OfferDTO> getLatestOffers();
 
   List<OfferDTO> getAllOffers();
+
+  OfferDTO getOneOffer(int id);
 }

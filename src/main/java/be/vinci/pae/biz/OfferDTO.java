@@ -21,4 +21,6 @@ public interface OfferDTO {
   ItemDTO getItem();
 
   void setItem(ItemDTO itemDTO);
+
+  String toString();
 }

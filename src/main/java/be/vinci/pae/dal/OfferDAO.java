@@ -16,4 +16,6 @@ public interface OfferDAO {
   List<OfferDTO> getLatestOffers();
 
   List<OfferDTO> getAllOffers();
+
+  OfferDTO getOne(int id);
 }
