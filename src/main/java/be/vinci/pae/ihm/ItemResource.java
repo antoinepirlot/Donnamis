@@ -76,7 +76,7 @@ public class ItemResource {
   @POST
   @Path("offer")
   @Consumes(MediaType.APPLICATION_JSON)
-  public void offerItemFirstTime(ItemDTO itemDTO) {
+  public void addItem(ItemDTO itemDTO) {
     if (itemDTO == null ||
         itemDTO.getItemDescription() == null || itemDTO.getItemDescription().equals("") ||
         itemDTO.getItemType() == null || itemDTO.getMember() == null ||
@@ -87,7 +87,7 @@ public class ItemResource {
           .type(MediaType.TEXT_PLAIN_TYPE)
           .build());
     }
-    if(!this.itemUCC.offerItemFirstTime(itemDTO)) {
+    if(!this.itemUCC.addItem(itemDTO)) {
       throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
           .entity("The items can't be added to the db due to a unexpected error")
           .type(MediaType.TEXT_PLAIN_TYPE)

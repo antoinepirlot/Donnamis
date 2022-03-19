@@ -106,10 +106,11 @@ public class ItemDAOImpl implements ItemDAO {
   }
 
   @Override
-  public boolean offerItemFirstTime(ItemDTO itemDTO) {
-    String query = "INSERT INTO project_pae.items (item_description, id_item_type, id_member, photo, "
-        + "title, offer_status) "
-        + "VALUES (?, ?, ?, ?, ?, ?)";
+  public boolean addItem(ItemDTO itemDTO) {
+    String query =
+        "INSERT INTO project_pae.items (item_description, id_item_type, id_member, photo, "
+            + "title, offer_status) "
+            + "VALUES (?, ?, ?, ?, ?, ?)";
     try (PreparedStatement ps = dalServices.getPreparedStatement(query)) {
       ps.setString(1, itemDTO.getItemDescription());
       ps.setInt(2, itemDTO.getItemType().getIdType());
