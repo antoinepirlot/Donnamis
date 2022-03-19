@@ -17,6 +17,10 @@ public interface ItemDTO {
 
   void setId_item_type(int id_item_type);
 
+  String getItem_type();
+
+  void setItem_type(String item_type);
+
   int getId_member();
 
   void setId_member(int id_member);

@@ -100,17 +100,6 @@ public class OfferDAOImpl implements OfferDAO {
         + "       item.id_item = offer.id_item AND"
         + "       item.id_member = member.id_member AND"
         + "       offer.id_offer = ?";
-
-
-    // "SELECT item.id_item, item.id_item_type, item.photo, item.offer_status,"
-    //     + "item.title, item.id_member, item.item_description,item_type.item_type,"
-    //     + "offer.id_offer, offer.date, offer.time_slot, member.first_name, member.last_name"
-    //     + "FROM project_pae.items item, project_pae.items_types item_type,"
-    //     + "project_pae.offers offer, project_pae.members member"
-    //     + "WHERE item.id_item_type = item_type.id_type AND"
-    //     + "item.id_item = offer.id_item AND"
-    //     + "item.id_member = member.id_member AND"
-    //     + "offer.id_offer = ?";
     try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
       System.out.println("Prepared statement successfully generated");
       preparedStatement.setInt(1, id);
@@ -219,53 +208,13 @@ public class OfferDAOImpl implements OfferDAO {
     ItemDTO itemDTO = factory.getItem();
     itemDTO.setId(rs.getInt("id_item"));
     itemDTO.setId_item_type(rs.getInt("id_item_type"));
+    itemDTO.setItem_type(rs.getString("item_type"));
     itemDTO.setId_member(rs.getInt("id_member"));
+    itemDTO.setItem_description(rs.getString("item_description"));
     itemDTO.setPhoto(rs.getString("photo"));
     itemDTO.setTitle(rs.getString("title"));
     itemDTO.setOffer_status(rs.getString("offer_status"));
     return itemDTO;
   }
-
-//  /**
-//   * Create a Member instance.
-//   *
-//   * @param rs the result set that contains sql result
-//   * @return a new instance of member based on what rs contains
-//   * @throws SQLException if there's an issue while getting data from the result set
-//   */
-//  private MemberDTO createMemberInstance(ResultSet rs) throws SQLException {
-//    System.out.println("Member instance creation");
-//    MemberDTO memberDTO = factory.getMember();
-//    memberDTO.setId(rs.getInt("id_member"));
-//    memberDTO.setUsername(rs.getString("username"));
-//    memberDTO.setPassword(rs.getString("password"));
-//    memberDTO.setLastName(rs.getString("last_name"));
-//    memberDTO.setFirstName(rs.getString("first_name"));
-//    memberDTO.setAdmin(rs.getBoolean("is_admin"));
-//    memberDTO.setActualState(rs.getString("state"));
-//    memberDTO.setPhoneNumber(rs.getString("phone"));
-//    memberDTO.setAddress(this.createAddressInstance(rs));
-//    return memberDTO;
-//  }
-
-//  /**
-//   * Create an address instance.
-//   *
-//   * @param rs the result set that contains sql result
-//   * @return a new instance of address based on what rs contains
-//   * @throws SQLException if there's an issue while getting data from the result set
-//   */
-//  private AddressDTO createAddressInstance(ResultSet rs) throws SQLException {
-//    System.out.println("Address instance creation");
-//    AddressDTO addressDTO = factory.getAddress();
-//    addressDTO.setId(rs.getInt("id_address"));
-//    addressDTO.setStreet(rs.getString("street"));
-//    addressDTO.setBuildingNumber(rs.getString("building_number"));
-//    addressDTO.setUnitNumber(rs.getString("unit_number"));
-//    addressDTO.setPostcode(rs.getString("postcode"));
-//    addressDTO.setCommune(rs.getString("commune"));
-//    addressDTO.setId(rs.getInt("id_member"));
-//    return addressDTO;
-//  }
 
 }

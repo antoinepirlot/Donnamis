@@ -7,6 +7,7 @@ public class ItemImpl implements Item {
   private int id;
   private String item_description;
   private int id_item_type;
+  private String item_type;
   private int id_member;
   private String photo;
   private String title;
@@ -37,6 +38,14 @@ public class ItemImpl implements Item {
 
   public void setId_item_type(int id_item_type) {
     this.id_item_type = id_item_type;
+  }
+
+  public String getItem_type() {
+    return item_type;
+  }
+
+  public void setItem_type(String item_type) {
+    this.item_type = item_type;
   }
 
   public int getId_member() {
