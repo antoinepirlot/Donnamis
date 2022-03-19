@@ -1,8 +1,8 @@
 package be.vinci.pae.ihm;
 
-import be.vinci.pae.biz.interfaces.member.address.AddressDTO;
-import be.vinci.pae.biz.interfaces.member.MemberDTO;
-import be.vinci.pae.biz.interfaces.member.MemberUCC;
+import be.vinci.pae.biz.address.interfaces.AddressDTO;
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

@@ -1,7 +1,7 @@
 package be.vinci.pae.ihm;
 
-import be.vinci.pae.biz.interfaces.offer.OfferDTO;
-import be.vinci.pae.biz.interfaces.offer.OfferUCC;
+import be.vinci.pae.biz.offer.interfaces.OfferDTO;
+import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
