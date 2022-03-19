@@ -6,6 +6,7 @@ import be.vinci.pae.biz.items_type.interfaces.ItemTypeDTO;
 import dal.item.interfaces.ItemDAO;
 import dal.member.interfaces.MemberDAO;
 import dal.services.interfaces.DALServices;
+import dal.utils.ObjectsInstanceCreator;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -87,6 +88,28 @@ public class ItemDAOImpl implements ItemDAO {
     System.out.println("Création des objets réussie");
 
     return itemsToReturn;
+  }
+
+  @Override
+  public List<ItemDTO> getAllOfferedItems() {
+    System.out.println("Get all offered items (ItemDAOImpl)");
+    List<ItemDTO> itemsDTO = new ArrayList<>();
+    String query = "SELECT i.id_item, i.item_description, i.photo, i.title, i.offer_status, "
+        + "it.id_type, it.item_type, "
+        + "m.username, m.last_name, m.first_name "
+        + "FROM project_pae.items i, project_pae.items_types it, project_pae.members m "
+        + "WHERE i.id_item_type = it.id_type AND i.id_member = m.id_member AND i.offer_status = ?;";
+    try (PreparedStatement ps = this.dalServices.getPreparedStatement(query)) {
+      ps.setString(1, DEFAULT_OFFER_STATUS);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          itemsDTO.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return itemsDTO;
   }
 
   @Override

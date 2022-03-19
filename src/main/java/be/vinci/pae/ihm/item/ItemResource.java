@@ -73,6 +73,15 @@ public class ItemResource {
     }
   }
 
+  @GET
+  @Path("all_offered_items")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<ItemDTO> getAllOfferedItems() {
+    System.out.println("Get all offered items");
+    List<ItemDTO> itemsDTO = this.itemUCC.getAllOfferedItems();
+    return itemsDTO;
+  }
+
   @POST
   @Path("offer")
   @Consumes(MediaType.APPLICATION_JSON)

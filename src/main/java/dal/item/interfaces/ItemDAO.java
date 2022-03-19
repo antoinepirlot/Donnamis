@@ -9,6 +9,12 @@ public interface ItemDAO {
 
   List<ItemDTO> getAllItems();
 
+  /**
+   * Get all offered items from the db
+   * @return a list of all offered items
+   */
+  List<ItemDTO> getAllOfferedItems();
+
   ItemDTO getOneItem(int id);
 
   boolean addItem(ItemDTO itemDTO);

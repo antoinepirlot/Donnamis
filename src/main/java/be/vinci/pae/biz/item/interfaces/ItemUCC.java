@@ -8,6 +8,12 @@ public interface ItemUCC {
 
   List<ItemDTO> getAllItems();
 
+  /**
+   * Ask itemDAO to give a list of all offered items
+   * @return a list of all offered items
+   */
+  List<ItemDTO> getAllOfferedItems();
+
   ItemDTO getOneItem(int id);
 
   boolean addItem(ItemDTO itemDTO);

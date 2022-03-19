@@ -1,3 +1,9 @@
+### See all items
+GET {{baseUrl}}/items/all_items
+
+### See all offered items
+GET {{baseUrl}}/items/all_offered_items
+
 ### Offer an item for the first time
 POST {{baseUrl}}/items/offer
 Content-Type: application/json
