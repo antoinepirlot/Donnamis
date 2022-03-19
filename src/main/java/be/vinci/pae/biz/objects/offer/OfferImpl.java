@@ -13,7 +13,7 @@ public class OfferImpl implements Offer {
   private Item item;
 
   public OfferImpl() {
-
+    this.date = new Date(System.currentTimeMillis());
   }
 
   public int getIdOffer() {
