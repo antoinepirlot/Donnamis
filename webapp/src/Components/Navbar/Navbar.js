@@ -10,7 +10,7 @@
  * - the router will show the Page associated to this URI when the user click on a nav-link
  */
 
-import {getObject, getPayload} from "../../utils/session";
+import {getObject} from "../../utils/session";
 
 const navBarHtml = `
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -35,8 +35,7 @@ const navBarHtml = `
         </ul>
       </div>
     </div>
-    <div id="usernameNavbar">
-    </div>
+    <div id="usernameNavbar"></div>
   </nav>
 `;
 
@@ -87,13 +86,9 @@ const Navbar = async () => {
     document.querySelector("#usernameNavbar").innerHTML = memberDTO.username
     links.innerHTML += latestItemsLinkHtml;
     links.innerHTML += allItemsLinkHtml;
-    document.querySelector("#usernameNavbar").innerHTML = payload.username
   } else {
     links.innerHTML += loginLinkHtml;
     links.innerHTML += registerLinkHtml;
-    links.innerHTML += listMemberLinkHtml;
-    links.innerHTML += latestItemsLinkHtml;
-    links.innerHTML += allItemsLinkHtml;
   }
 };
 

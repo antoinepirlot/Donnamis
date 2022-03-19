@@ -8,20 +8,24 @@ import Navbar from "../Navbar/Navbar";
 import {showError} from "../../utils/ShowError";
 
 const loginFormHtml = `
-  <div>
-    <form id="loginForm">
-      Pseudo: <input id="usernameInput" type="text"
-               placeholder="Ecris ton pseudo ici"><br>
-      <br>
-      Mot de passe: <input id="passwordInput" type="password"
-                     placeholder="Mot de passe"><br>
-      <br>
-      <input id="rememberMeInput" type="checkbox"> Se souvenir de moi<br>
-      <br>
-      <input type="submit">
-    </form>
-    <div id="loginMessage"></div>
-  </div>
+<div class="form">
+  <form  id="loginForm">
+    <div class="mb-3">
+      <label class="form-label">Pseudo</label>
+      <input type="text" class="form-control" id="usernameInput">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Mot de passe</label>
+      <input type="password" class="form-control" id="passwordInput">
+    </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="rememberMeInput">
+      <label class="form-check-label" >Se souvenir de moi</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <div class="form-error-message" id="loginMessage"></div>
+  </form>
+</div>
 `;
 
 /**
@@ -46,8 +50,8 @@ async function login(e) {
   const password = document.querySelector("#passwordInput").value;
   const rememberMe = document.querySelector("#rememberMeInput").checked;
   const loginMessage = document.querySelector("#loginMessage");
-  if(username === "" ||
-      password === ""){
+  if (username === "" ||
+      password === "") {
     showError("Tous les champs doivent être complet", "danger", loginMessage)
     return;
   }
@@ -58,7 +62,7 @@ async function login(e) {
         "Content-Type":
             "application/json"
       },
-      body: JSON.stringify( {
+      body: JSON.stringify({
         username: username,
         password: password
       })
@@ -67,7 +71,8 @@ async function login(e) {
 
     console.table(response)
     if (!response.ok) {
-      showError("Aucun utilisateur pour ce username et ce mot de passe", "danger", loginMessage)
+      showError("Aucun utilisateur pour ce username et ce mot de passe",
+          "danger", loginMessage)
       return;
     }
     const content = await response.json();

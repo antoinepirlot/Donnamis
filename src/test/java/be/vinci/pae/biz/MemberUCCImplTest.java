@@ -1,11 +1,14 @@
 package be.vinci.pae.biz;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import be.vinci.pae.dal.MemberDAO;
+import be.vinci.pae.biz.interfaces.member.MemberDTO;
+import be.vinci.pae.biz.objects.member.MemberImpl;
+import be.vinci.pae.biz.interfaces.member.MemberUCC;
+import be.vinci.pae.dal.interfaces.member.MemberDAO;
 import be.vinci.pae.utils.ApplicationBinder;
-import jakarta.ws.rs.WebApplicationException;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +36,7 @@ class MemberUCCImplTest {
   private void configureMemberDTO(String actualState, String password) {
     memberDTO.setActualState(actualState);
     memberDTO.setPassword(hashedPassword);
-    Mockito.when(memberDAO.getOne("nico", password))
+    Mockito.when(memberDAO.getOne("nico"))
         .thenReturn(memberDTO);
   }
 
@@ -130,49 +133,34 @@ class MemberUCCImplTest {
   @Test
   void testLoginDeniedMemberWithGoodPassword() {
     configureMemberDTO("denied", password);
-    assertThrows(
-        WebApplicationException.class,
-        () -> memberUCC.login("nico", password)
-    );
+    assertNull(memberUCC.login("nico", password));
   }
 
   @DisplayName("Test login with registered member and good password")
   @Test
   void testLoginRegisteredMemberWithGoodPassword() {
     configureMemberDTO("registered", password);
-    assertThrows(
-        WebApplicationException.class,
-        () -> memberUCC.login("nico", password)
-    );
+    assertNull(memberUCC.login("nico", password));
   }
 
   @DisplayName("Test login with confirmed member and wrong password")
   @Test
   void testLoginConfirmedMemberWithWrongPassword() {
     configureMemberDTO("confirmed", wrongPassword);
-    assertThrows(
-        WebApplicationException.class,
-        () -> memberUCC.login("nico", wrongPassword)
-    );
+    assertNull(memberUCC.login("nico", wrongPassword));
   }
 
   @DisplayName("Test login with registered member and wrong password")
   @Test
   void testLoginRegisteredMemberWithWrongPassword() {
     configureMemberDTO("registered", wrongPassword);
-    assertThrows(
-        WebApplicationException.class,
-        () -> memberUCC.login("nico", wrongPassword)
-    );
+    assertNull(memberUCC.login("nico", wrongPassword));
   }
 
   @DisplayName("Test login with denied member and wrong password")
   @Test
   void testLoginDeniedMemberWithWrongPassword() {
     configureMemberDTO("denied", wrongPassword);
-    assertThrows(
-        WebApplicationException.class,
-        () -> memberUCC.login("nico", wrongPassword)
-    );
+    assertNull(memberUCC.login("nico", wrongPassword));
   }
 }

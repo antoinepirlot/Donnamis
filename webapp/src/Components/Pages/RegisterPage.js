@@ -5,42 +5,61 @@ import {Redirect} from "../Router/Router";
 import {showError} from "../../utils/ShowError";
 
 const registerFormHtml = `
-  <div>
-    <form id="RegisterForm">
-      <p>Mes infos</p>
-      Pseudo: <input id="usernameInput" type="text"
-               placeholder="Ecris ton pseudo ici"><br>
-      <br>
-      Mot de passe: <input id="passwordInput" type="password"
-                     placeholder="Mot de passe"><br>
-      <br>
-      Prénom: <input id="firstNameInput" type="text"
-                     placeholder="Prénom"><br>
-      <br>
-      Nom: <input id="lastNameInput" type="text"
-                     placeholder="Nom"><br>
-      <br>
-      <p>Adresse</p>
-      Rue: <input id="streetInput" type="text"
-                  placeholder="Rue"><br>
-      <br>
-      Numero: <input id="buildingNumberInput" type="text"
-                     placeholder="Numéro du batiment"><br>
-      <br>
-      Boîte (facultatif): <input id="unitNumberInput" type="text"
-                                 placeholder="Boîte (peut être vide)"><br>
-      <br>
-      Commune: <input id="communeInput" type="text"
-                      placeholder="Commune"><br>
-      <br>
-      Code postal: <input id="postcodeInput" type="text"
-                          placeholder="Code postal"><br>
-      <br>
-      <input type="submit" value="S'inscrire">
-    </form>
-    <div id="registerFormNotification"></div>
-  </div>
-  <div id="registerMessage"></div>
+
+<div class="form">
+  <h3>Mes infos</h3>
+  <form  id="registerForm">
+    <div class="mb-3">
+      <label class="form-label">Pseudo</label>
+      <input type="text" class="form-control" id="usernameInput">
+    </div>
+    
+    <div class="mb-3">
+      <label class="form-label">Mot de passe</label>
+      <input type="password" class="form-control" id="passwordInput">
+    </div>
+    
+    <div class="mb-3">
+      <label class="form-label">Prénom</label>
+      <input type="text" class="form-control" id="firstNameInput">
+    </div>
+    
+    <div class="mb-3">
+      <label class="form-label">Nom</label>
+      <input type="text" class="form-control" id="lastNameInput">
+    </div>
+    
+    <h3>Adresse</h3>
+    
+    <div class="mb-3">
+      <label class="form-label">Rue</label>
+      <input type="text" class="form-control" id="streetInput">
+    </div>
+    
+    <div class="mb-3">
+      <label class="form-label">Numero</label>
+      <input type="text" class="form-control" id="buildingNumberInput">
+    </div>
+    
+    <div class="mb-3">
+      <label class="form-label">Boîte (facultatif)</label>
+      <input type="text" class="form-control" id="unitNumberInput">
+    </div>
+    
+    <div class="mb-3">
+      <label class="form-label">Commune</label>
+      <input type="text" class="form-control" id="communeInput">
+    </div>
+    
+    <div class="mb-3">
+      <label class="form-label">Code postal</label>
+      <input type="text" class="form-control" id="postcodeInput">
+    </div>
+    
+    <div id="registerMessage"></div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
 `;
 
 /**
@@ -108,9 +127,9 @@ async function register(e) {
       })
     };
     const response = await fetch("api/members/register", request);
-    console.log(response)
     if (!response.ok) {
-      throw new Error("Problème lors du fetch");
+      showError("Echec de l'inscription", "danger", registerMessage);
+      return;
     }
     showError("Votre inscription à bien été prise en compte. Veuillez patienter la validation de votre compte.", "success", registerMessage)
   } catch (err) {
