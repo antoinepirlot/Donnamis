@@ -7,6 +7,7 @@ import be.vinci.pae.biz.interfaces.member.MemberDTO;
 import be.vinci.pae.biz.objects.member.MemberImpl;
 import be.vinci.pae.biz.interfaces.member.address.AddressDTO;
 import be.vinci.pae.biz.objects.member.address.AddressImpl;
+import be.vinci.pae.biz.objects.offer.OfferImpl;
 
 public class FactoryImpl implements Factory {
 
@@ -17,7 +18,7 @@ public class FactoryImpl implements Factory {
 
   @Override
   public OfferDTO getOffer() {
-    return null;
+    return new OfferImpl();
   }
 
   @Override
