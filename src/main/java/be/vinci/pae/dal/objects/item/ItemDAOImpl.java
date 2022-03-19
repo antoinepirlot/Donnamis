@@ -2,7 +2,9 @@ package be.vinci.pae.dal.objects.item;
 
 import be.vinci.pae.biz.factory.Factory;
 import be.vinci.pae.biz.interfaces.item.ItemDTO;
+import be.vinci.pae.biz.interfaces.item.items_type.ItemTypeDTO;
 import be.vinci.pae.dal.interfaces.item.ItemDAO;
+import be.vinci.pae.dal.interfaces.member.MemberDAO;
 import be.vinci.pae.dal.services.DALServices;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -18,6 +20,8 @@ public class ItemDAOImpl implements ItemDAO {
   private Factory factory;
   @Inject
   private DALServices dalServices;
+  @Inject
+  private MemberDAO memberDAO;
 
   /**
    * Get the latest items from the database.
@@ -122,13 +126,20 @@ public class ItemDAOImpl implements ItemDAO {
   private ItemDTO createItemInstance(ResultSet rs) throws SQLException {
     ItemDTO itemDTO = factory.getItem();
     itemDTO.setId(rs.getInt("id_item"));
-    itemDTO.setItem_description(rs.getString("item_description"));
-    itemDTO.setId_item_type(rs.getInt("id_item_type"));
-    itemDTO.setId_member(rs.getInt("id_member"));
+    itemDTO.setItemDescription(rs.getString("item_description"));
+    itemDTO.setItemType(createItemTypeInstance(rs));
+    itemDTO.setMember(memberDAO.getOneMember(rs.getInt("id_member")));
     itemDTO.setPhoto(rs.getString("photo"));
     itemDTO.setTitle(rs.getString("title"));
-    itemDTO.setOffer_status(rs.getString("offer_status"));
+    itemDTO.setOfferStatus(rs.getString("offer_status"));
     return itemDTO;
+  }
+
+  private ItemTypeDTO createItemTypeInstance(ResultSet rs) throws SQLException {
+    ItemTypeDTO itemTypeDTO = factory.getItemType();
+    itemTypeDTO.setIdType(rs.getInt("id_item_type"));
+    itemTypeDTO.setItemType(rs.getString("item_type"));
+    return itemTypeDTO;
   }
 
 }

@@ -1,5 +1,7 @@
 package be.vinci.pae.biz.interfaces.item;
 
+import be.vinci.pae.biz.interfaces.item.items_type.ItemTypeDTO;
+import be.vinci.pae.biz.interfaces.member.MemberDTO;
 import be.vinci.pae.biz.objects.item.ItemImpl;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -10,17 +12,17 @@ public interface ItemDTO {
 
   void setId(int id);
 
-  String getItem_description();
+  String getItemDescription();
 
-  void setItem_description(String item_description);
+  void setItemDescription(String itemDescription);
 
-  int getId_item_type();
+  ItemTypeDTO getItemType();
 
-  void setId_item_type(int id_item_type);
+  void setItemType(ItemTypeDTO itemType);
 
-  int getId_member();
+  MemberDTO getMember();
 
-  void setId_member(int id_member);
+  void setMember(MemberDTO member);
 
   String getPhoto();
 
@@ -30,8 +32,8 @@ public interface ItemDTO {
 
   void setTitle(String title);
 
-  String getOffer_status();
+  String getOfferStatus();
 
-  void setOffer_status(String offers_status);
+  void setOfferStatus(String offers_status);
 
 }

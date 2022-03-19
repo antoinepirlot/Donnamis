@@ -1,17 +1,21 @@
 package be.vinci.pae.biz.objects.item;
 
 import be.vinci.pae.biz.interfaces.item.Item;
+import be.vinci.pae.biz.interfaces.item.items_type.ItemType;
+import be.vinci.pae.biz.interfaces.item.items_type.ItemTypeDTO;
+import be.vinci.pae.biz.interfaces.member.Member;
+import be.vinci.pae.biz.interfaces.member.MemberDTO;
 import java.util.Objects;
 
 public class ItemImpl implements Item {
 
   private int id;
-  private String item_description;
-  private int id_item_type;
-  private int id_member;
+  private String itemDescription;
+  private ItemType itemType;
+  private Member member;
   private String photo;
   private String title;
-  private String offer_status;
+  private String offerStatus;
 
   public ItemImpl() {
   }
@@ -24,28 +28,28 @@ public class ItemImpl implements Item {
     this.id = id;
   }
 
-  public String getItem_description() {
-    return item_description;
+  public String getItemDescription() {
+    return itemDescription;
   }
 
-  public void setItem_description(String item_description) {
-    this.item_description = item_description;
+  public void setItemDescription(String itemDescription) {
+    this.itemDescription = itemDescription;
   }
 
-  public int getId_item_type() {
-    return id_item_type;
+  public ItemTypeDTO getItemType() {
+    return itemType;
   }
 
-  public void setId_item_type(int id_item_type) {
-    this.id_item_type = id_item_type;
+  public void setItemType(ItemTypeDTO itemType) {
+    this.itemType = (ItemType) itemType;
   }
 
-  public int getId_member() {
-    return id_member;
+  public MemberDTO getMember() {
+    return member;
   }
 
-  public void setId_member(int id_member) {
-    this.id_member = id_member;
+  public void setMember(MemberDTO member) {
+    this.member = (Member) member;
   }
 
   public String getPhoto() {
@@ -64,12 +68,12 @@ public class ItemImpl implements Item {
     this.title = title;
   }
 
-  public String getOffer_status() {
-    return offer_status;
+  public String getOfferStatus() {
+    return offerStatus;
   }
 
-  public void setOffer_status(String offers_status) {
-    this.offer_status = offers_status;
+  public void setOfferStatus(String offers_status) {
+    this.offerStatus = offers_status;
   }
 
   @Override
@@ -93,12 +97,12 @@ public class ItemImpl implements Item {
   public String toString() {
     return "Item{"
         + "id=" + id
-        + ", item_description='" + item_description + '\''
-        + ", id_item_type='" + id_item_type + '\''
-        + ", id_member='" + id_member + '\''
+        + ", item_description='" + itemDescription + '\''
+        + ", id_item_type='" + itemType + '\''
+        + ", id_member='" + member + '\''
         + ", photo='" + photo + '\''
         + ", title=" + title
-        + ", offer_status='" + offer_status + '\''
+        + ", offer_status='" + offerStatus + '\''
         + '}';
   }
 
