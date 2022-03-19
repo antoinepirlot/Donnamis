@@ -37,6 +37,11 @@ public class ItemUCCImpl implements ItemUCC {
   }
 
   @Override
+  public boolean offerItemFirstTime(ItemDTO itemDTO) {
+    return this.itemDAO.offerItemFirstTime(itemDTO);
+  }
+
+  @Override
   public ItemDTO cancelOffer(int id) {
     return itemDAO.cancelOffer(id);
   }

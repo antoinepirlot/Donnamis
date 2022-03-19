@@ -22,6 +22,7 @@ public class ItemDAOImpl implements ItemDAO {
   private DALServices dalServices;
   @Inject
   private MemberDAO memberDAO;
+  private static final String DEFAULT_OFFER_STATUS = "donated";
 
   /**
    * Get the latest items from the database.
@@ -102,6 +103,28 @@ public class ItemDAOImpl implements ItemDAO {
       System.out.println(e.getMessage());
     }
     return null;
+  }
+
+  @Override
+  public boolean offerItemFirstTime(ItemDTO itemDTO) {
+    String query = "INSERT INTO project_pae.items (item_description, id_item_type, id_member, photo, "
+        + "title, offer_status) "
+        + "VALUES (?, ?, ?, ?, ?, ?)";
+    try (PreparedStatement ps = dalServices.getPreparedStatement(query)) {
+      ps.setString(1, itemDTO.getItemDescription());
+      ps.setInt(2, itemDTO.getItemType().getIdType());
+      ps.setInt(3, itemDTO.getMember().getId());
+      ps.setString(4, itemDTO.getPhoto());
+      ps.setString(5, itemDTO.getTitle());
+      ps.setString(6, DEFAULT_OFFER_STATUS);
+      if (ps.executeUpdate() != 0) {
+        System.out.println("Ajout de l'offre réussi.");
+        return true;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
   }
 
   @Override

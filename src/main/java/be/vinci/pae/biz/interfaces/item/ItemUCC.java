@@ -10,5 +10,7 @@ public interface ItemUCC {
 
   ItemDTO getOneItem(int id);
 
+  boolean offerItemFirstTime(ItemDTO itemDTO);
+
   ItemDTO cancelOffer(int id);
 }

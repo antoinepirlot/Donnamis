@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -14,6 +15,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import java.util.List;
 
 @Singleton
@@ -71,6 +73,28 @@ public class ItemResource {
     }
   }
 
+  @POST
+  @Path("offer")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public void offerItemFirstTime(ItemDTO itemDTO) {
+    if (itemDTO == null ||
+        itemDTO.getItemDescription() == null || itemDTO.getItemDescription().equals("") ||
+        itemDTO.getItemType() == null || itemDTO.getMember() == null ||
+        itemDTO.getTitle() == null || itemDTO.getTitle().equals("")
+    ) {
+      throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
+          .entity("Wrong item body")
+          .type(MediaType.TEXT_PLAIN_TYPE)
+          .build());
+    }
+    if(!this.itemUCC.offerItemFirstTime(itemDTO)) {
+      throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
+          .entity("The items can't be added to the db due to a unexpected error")
+          .type(MediaType.TEXT_PLAIN_TYPE)
+          .build());
+    }
+  }
+
   @PUT
   @Path("cancel/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -82,5 +106,4 @@ public class ItemResource {
     }
     return itemUCC.cancelOffer(id);
   }
-
 }

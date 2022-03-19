@@ -1,2 +1,17 @@
+### Offer an item for the first time
+POST {{baseUrl}}/items/offer
+Content-Type: application/json
+
+{
+  "itemDescription": "Logitech G502 Hero",
+  "itemType": {
+    "idType": 1
+  },
+  "member": {
+    "id": 1
+  },
+  "title": "Hello World"
+}
+
 ### Cancel Offer
 PUT {{baseUrl}}/items/cancel/1
