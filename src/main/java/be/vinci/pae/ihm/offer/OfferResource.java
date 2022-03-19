@@ -1,4 +1,4 @@
-package be.vinci.pae.ihm;
+package be.vinci.pae.ihm.offer;
 
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;

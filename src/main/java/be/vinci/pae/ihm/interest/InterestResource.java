@@ -1,4 +1,4 @@
-package be.vinci.pae.ihm;
+package be.vinci.pae.ihm.interest;
 
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
 import com.fasterxml.jackson.databind.JsonNode;

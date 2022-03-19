@@ -1,4 +1,4 @@
-package be.vinci.pae.ihm;
+package be.vinci.pae.ihm.item;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;

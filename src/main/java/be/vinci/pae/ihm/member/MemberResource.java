@@ -1,4 +1,4 @@
-package be.vinci.pae.ihm;
+package be.vinci.pae.ihm.member;
 
 import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
