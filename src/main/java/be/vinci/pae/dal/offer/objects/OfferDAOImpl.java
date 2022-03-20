@@ -1,14 +1,11 @@
 package be.vinci.pae.dal.offer.objects;
 
-import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
-import be.vinci.pae.biz.itemstype.interfaces.ItemTypeDTO;
-import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
-import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.offer.interfaces.OfferDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,8 +20,6 @@ public class OfferDAOImpl implements OfferDAO {
   private DALServices dalServices;
   @Inject
   private Factory factory;
-  @Inject
-  private MemberDAO memberDAO;
 
 
   @Override
@@ -179,57 +174,8 @@ public class OfferDAOImpl implements OfferDAO {
     System.out.println("date set");
     offerDTO.setTimeSlot(rs.getString("time_slot"));
     System.out.println("tile_slot set");
-    offerDTO.setItem(this.createItemInstance(rs));
+    offerDTO.setItem(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
 
     return offerDTO;
   }
-
-  /**
-   * Create an Item instance.
-   *
-   * @param rs the result set that contains sql result
-   * @return a new instance of item based on what rs contains
-   * @throws SQLException if there's an issue while getting data from the result set
-   */
-  private ItemDTO createItemInstance(ResultSet rs) throws SQLException {
-    System.out.println("Item instance creation");
-    ItemDTO itemDTO = factory.getItem();
-    itemDTO.setId(rs.getInt("id_item"));
-    itemDTO.setItemType(this.createItemTypeInstance(rs));
-    itemDTO.setMember(memberDAO.getOneMember(rs.getInt("id_member")));
-    itemDTO.setPhoto(rs.getString("photo"));
-    itemDTO.setTitle(rs.getString("title"));
-    itemDTO.setOfferStatus(rs.getString("offer_status"));
-    return itemDTO;
-  }
-
-  private ItemTypeDTO createItemTypeInstance(ResultSet rs) throws SQLException {
-    System.out.println("Item type instance creation");
-    ItemTypeDTO itemTypeDTO = factory.getItemType();
-    itemTypeDTO.setIdType(rs.getInt("id_type"));
-    itemTypeDTO.setItemType(rs.getString("item_type"));
-    return itemTypeDTO;
-  }
-
-  /**
-   * Create an address instance.
-   *
-   * @param rs the result set that contains sql result
-   * @return a new instance of address based on what rs contains
-   * @throws SQLException if there's an issue while getting data from the result set
-   */
-  private AddressDTO createAddressInstance(ResultSet rs) throws SQLException {
-    System.out.println("Address instance creation");
-    AddressDTO addressDTO = factory.getAddress();
-    addressDTO.setId(rs.getInt("id_address"));
-    addressDTO.setStreet(rs.getString("street"));
-    addressDTO.setBuildingNumber(rs.getString("building_number"));
-    addressDTO.setUnitNumber(rs.getString("unit_number"));
-    addressDTO.setPostcode(rs.getString("postcode"));
-    addressDTO.setCommune(rs.getString("commune"));
-    addressDTO.setId(rs.getInt("id_member"));
-    return addressDTO;
-  }
-
-
 }

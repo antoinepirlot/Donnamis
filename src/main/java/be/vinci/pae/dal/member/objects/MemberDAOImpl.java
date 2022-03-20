@@ -5,6 +5,7 @@ import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,7 +33,7 @@ public class MemberDAOImpl implements MemberDAO {
     String query = "SELECT * FROM project_pae.members";
 
     //Execute the query
-    return getMemberDTOS(listMemberDTO, query);
+    return getMembersDTO(listMemberDTO, query);
   }
 
   /**
@@ -45,7 +46,7 @@ public class MemberDAOImpl implements MemberDAO {
     String query = "SELECT * FROM project_pae.members m WHERE m.state = 'registered'";
 
     //Execute the query
-    return getMemberDTOS(listMemberDTO, query);
+    return getMembersDTO(listMemberDTO, query);
   }
 
   /**
@@ -58,7 +59,7 @@ public class MemberDAOImpl implements MemberDAO {
     String query = "SELECT * FROM project_pae.members m WHERE m.state = 'denied'";
 
     //Execute the query
-    return getMemberDTOS(listMemberDTO, query);
+    return getMembersDTO(listMemberDTO, query);
   }
 
   /**
@@ -69,17 +70,7 @@ public class MemberDAOImpl implements MemberDAO {
    */
   public MemberDTO getOneMember(int id) {
     String query = "SELECT * FROM project_pae.members m WHERE m.id_member = ?";
-    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
-      preparedStatement.setInt(1, id);
-      try (ResultSet rs = preparedStatement.executeQuery()) {
-        if (rs.next()) {
-          return createMemberInstance(rs);
-        }
-      }
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
-    }
-    return null;
+    return executeQueryWithId(id, query);
   }
 
   /**
@@ -139,7 +130,7 @@ public class MemberDAOImpl implements MemberDAO {
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) { //We know only one is returned by the db
           System.out.println("USER FOUNDED");
-          return createMemberInstance(rs);
+          return ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
         }
       }
     } catch (SQLException e) {
@@ -178,11 +169,11 @@ public class MemberDAOImpl implements MemberDAO {
    *
    * @return a list of member
    */
-  private List<MemberDTO> getMemberDTOS(List<MemberDTO> listMemberDTO, String query) {
+  private List<MemberDTO> getMembersDTO(List<MemberDTO> listMemberDTO, String query) {
     try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
       try (ResultSet rs = preparedStatement.executeQuery()) {
         while (rs.next()) {
-          listMemberDTO.add(createMemberInstance(rs));
+          listMemberDTO.add(ObjectsInstanceCreator.createMemberInstance(this.factory, rs));
         }
         return listMemberDTO;
       }
@@ -204,35 +195,13 @@ public class MemberDAOImpl implements MemberDAO {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
-          return createMemberInstance(rs);
+          return ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
         }
       }
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
     return null;
-  }
-
-  /**
-   * Create a Member instance.
-   *
-   * @param rs the result set that contains sql result
-   * @return a new instance of member based on what rs contains
-   * @throws SQLException if there's an issue while getting data from the result set
-   */
-  private MemberDTO createMemberInstance(ResultSet rs) throws SQLException {
-    System.out.println("Member instance creation");
-    MemberDTO memberDTO = factory.getMember();
-    memberDTO.setId(rs.getInt("id_member"));
-    memberDTO.setUsername(rs.getString("username"));
-    memberDTO.setPassword(rs.getString("password"));
-    memberDTO.setLastName(rs.getString("last_name"));
-    memberDTO.setFirstName(rs.getString("first_name"));
-    memberDTO.setAdmin(rs.getBoolean("is_admin"));
-    memberDTO.setActualState(rs.getString("state"));
-    memberDTO.setPhoneNumber(rs.getString("phone"));
-    memberDTO.setAddress(this.createAddressInstance(rs));
-    return memberDTO;
   }
 
   // ************** DELETE ???
@@ -269,26 +238,6 @@ public class MemberDAOImpl implements MemberDAO {
   //    return null;
   //  }
   //
-
-  /**
-   * Create an address instance.
-   *
-   * @param rs the result set that contains sql result
-   * @return a new instance of address based on what rs contains
-   * @throws SQLException if there's an issue while getting data from the result set
-   */
-  private AddressDTO createAddressInstance(ResultSet rs) throws SQLException {
-    System.out.println("Address instance creation");
-    AddressDTO addressDTO = factory.getAddress();
-    addressDTO.setId(rs.getInt("id_address"));
-    addressDTO.setStreet(rs.getString("street"));
-    addressDTO.setBuildingNumber(rs.getString("building_number"));
-    addressDTO.setUnitNumber(rs.getString("unit_number"));
-    addressDTO.setPostcode(rs.getString("postcode"));
-    addressDTO.setCommune(rs.getString("commune"));
-    addressDTO.setId(rs.getInt("id_member"));
-    return addressDTO;
-  }
 
   /**
    * Add a new member to the db if it's not already in the db, then its address.
