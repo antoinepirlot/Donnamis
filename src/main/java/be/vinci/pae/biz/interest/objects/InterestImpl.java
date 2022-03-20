@@ -88,12 +88,12 @@ public class InterestImpl implements Interest, InterestDTO {
 
   @Override
   public String toString() {
-    return "Interest{" +
-        "id_interest=" + id +
-        ", call_wanted=" + callWanted +
-        ", id_offer=" + idOffer +
-        ", id_member=" + idMember +
-        ", date=" + date +
-        '}';
+    return "Interest{"
+        + "id_interest=" + id
+        + ", call_wanted=" + callWanted
+        + ", id_offer=" + idOffer
+        + ", id_member=" + idMember
+        + ", date=" + date
+        + '}';
   }
 }
