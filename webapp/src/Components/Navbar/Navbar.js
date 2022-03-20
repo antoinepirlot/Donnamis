@@ -75,6 +75,12 @@ const allItemsLinkHtml = `
           </li>
 `;
 
+const allOfferedItemsLinkHtml = `
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-uri="/all_offered_items">All Offered Items</a>
+          </li>
+`;
+
 const Navbar = async () => {
   const navbarWrapper = document.querySelector("#navbarWrapper");
   navbarWrapper.innerHTML = navBarHtml;
@@ -86,6 +92,7 @@ const Navbar = async () => {
     document.querySelector("#usernameNavbar").innerHTML = memberDTO.username
     links.innerHTML += latestItemsLinkHtml;
     links.innerHTML += allItemsLinkHtml;
+    links.innerHTML += allOfferedItemsLinkHtml;
   } else {
     links.innerHTML += loginLinkHtml;
     links.innerHTML += registerLinkHtml;

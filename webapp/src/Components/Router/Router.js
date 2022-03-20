@@ -5,6 +5,7 @@ import ListMemberPage from "../Pages/ListMemberPage";
 import LatestItemsOffersPage from "../Pages/LatestItemsOffersPage"
 import AllItemsOffersPage from "../Pages/AllItemsOffersPage"
 import RegisterPage from "../Pages/RegisterPage";
+import AllOfferedItemsPage from "../Pages/AllOfferedItemPage";
 
 // Configure your routes here
 const routes = {
@@ -14,7 +15,8 @@ const routes = {
   "/logout": Logout,
   "/list_member": ListMemberPage,
   "/latest_items": LatestItemsOffersPage,
-  "/all_items": AllItemsOffersPage
+  "/all_items": AllItemsOffersPage,
+  "/all_offered_items": AllOfferedItemsPage
 };
 
 /**
