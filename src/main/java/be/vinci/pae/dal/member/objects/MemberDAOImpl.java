@@ -89,7 +89,8 @@ public class MemberDAOImpl implements MemberDAO {
    * @return boolean
    */
   public MemberDTO confirmMember(int id) {
-    String query = "UPDATE project_pae.members SET state = 'confirmed' WHERE id_member = ? RETURNING *";
+    String query = "UPDATE project_pae.members SET state = 'confirmed' WHERE id_member = ? "
+        + "RETURNING *;";
     return executeQueryWithId(id, query);
   }
 
@@ -100,7 +101,8 @@ public class MemberDAOImpl implements MemberDAO {
    * @return boolean
    */
   public MemberDTO isAdmin(int id) {
-    String query = "UPDATE project_pae.members SET is_admin = true WHERE id_member = ? RETURNING *";
+    String query = "UPDATE project_pae.members SET is_admin = true WHERE id_member = ? "
+        + "RETURNING *;";
     return executeQueryWithId(id, query);
   }
 
@@ -111,7 +113,8 @@ public class MemberDAOImpl implements MemberDAO {
    * @return boolean
    */
   public MemberDTO denyMember(int id) {
-    String query = "UPDATE project_pae.members SET state = 'denied' WHERE id_member = ? RETURNING *";
+    String query = "UPDATE project_pae.members SET state = 'denied' WHERE id_member = ? "
+        + "RETURNING *;";
     return executeQueryWithId(id, query);
   }
 
@@ -122,7 +125,8 @@ public class MemberDAOImpl implements MemberDAO {
    * @return boolean
    */
   public MemberDTO registerTESTMember(int id) {
-    String query = "UPDATE project_pae.members SET state = 'registered' WHERE id_member = ? RETURNING *";
+    String query = "UPDATE project_pae.members SET state = 'registered' WHERE id_member = ? "
+        + "RETURNING *;";
     return executeQueryWithId(id, query);
   }
 
