@@ -96,10 +96,10 @@ public class ItemResource {
   @Path("offer")
   @Consumes(MediaType.APPLICATION_JSON)
   public void addItem(ItemDTO itemDTO) {
-    if (itemDTO == null ||
-        itemDTO.getItemDescription() == null || itemDTO.getItemDescription().equals("") ||
-        itemDTO.getItemType() == null || itemDTO.getMember() == null ||
-        itemDTO.getTitle() == null || itemDTO.getTitle().equals("")
+    if (itemDTO == null
+        || itemDTO.getItemDescription() == null || itemDTO.getItemDescription().equals("")
+        || itemDTO.getItemType() == null || itemDTO.getMember() == null
+        || itemDTO.getTitle() == null || itemDTO.getTitle().equals("")
     ) {
       throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
           .entity("Wrong item body")

@@ -232,11 +232,11 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   public void register(MemberDTO memberDTO) {
     // Verify memberDTO integrity
-    if (memberDTO == null ||
-        memberDTO.getUsername() == null || memberDTO.getUsername().equals("") ||
-        memberDTO.getPassword() == null || memberDTO.getPassword().equals("") ||
-        memberDTO.getFirstName() == null || memberDTO.getFirstName().equals("") ||
-        memberDTO.getLastName() == null || memberDTO.getLastName().equals("")
+    if (memberDTO == null
+        || memberDTO.getUsername() == null || memberDTO.getUsername().equals("")
+        || memberDTO.getPassword() == null || memberDTO.getPassword().equals("")
+        || memberDTO.getFirstName() == null || memberDTO.getFirstName().equals("")
+        || memberDTO.getLastName() == null || memberDTO.getLastName().equals("")
     ) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
           .entity("Missing member information")
@@ -245,11 +245,11 @@ public class MemberResource {
     }
     //Verify addressDTO integrity
     AddressDTO addressDTO = memberDTO.getAddress();
-    if (addressDTO == null ||
-        addressDTO.getStreet() == null || addressDTO.getStreet().equals("") ||
-        addressDTO.getCommune() == null || addressDTO.getCommune().equals("") ||
-        addressDTO.getPostcode() == null || addressDTO.getPostcode().equals("") ||
-        addressDTO.getBuildingNumber() == null || addressDTO.getBuildingNumber().equals("")
+    if (addressDTO == null
+        ||addressDTO.getStreet() == null || addressDTO.getStreet().equals("")
+        || addressDTO.getCommune() == null || addressDTO.getCommune().equals("")
+        || addressDTO.getPostcode() == null || addressDTO.getPostcode().equals("")
+        || addressDTO.getBuildingNumber() == null || addressDTO.getBuildingNumber().equals("")
     ) {
       throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
           .entity("Missing address information")
