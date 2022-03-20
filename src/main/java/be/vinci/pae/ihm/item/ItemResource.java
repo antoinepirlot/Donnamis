@@ -87,8 +87,7 @@ public class ItemResource {
   @Produces(MediaType.APPLICATION_JSON)
   public List<ItemDTO> getAllOfferedItems() {
     System.out.println("Get all offered items");
-    List<ItemDTO> itemsDTO = this.itemUCC.getAllOfferedItems();
-    return itemsDTO;
+    return this.itemUCC.getAllOfferedItems();
   }
 
   /**
