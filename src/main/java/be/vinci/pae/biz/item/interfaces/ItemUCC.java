@@ -9,7 +9,7 @@ public interface ItemUCC {
   List<ItemDTO> getAllItems();
 
   /**
-   * Ask itemDAO to give a list of all offered items
+   * Ask itemDAO to give a list of all offered items.
    * @return a list of all offered items
    */
   List<ItemDTO> getAllOfferedItems();
