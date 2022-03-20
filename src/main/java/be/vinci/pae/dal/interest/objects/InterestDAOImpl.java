@@ -1,7 +1,7 @@
-package dal.interest.objects;
+package be.vinci.pae.dal.interest.objects;
 
-import dal.interest.interfaces.InterestDAO;
-import dal.services.interfaces.DALServices;
+import be.vinci.pae.dal.interest.interfaces.InterestDAO;
+import be.vinci.pae.dal.services.interfaces.DALServices;
 import jakarta.inject.Inject;
 import java.sql.Date;
 import java.sql.PreparedStatement;
