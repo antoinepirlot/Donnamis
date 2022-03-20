@@ -27,8 +27,6 @@ public interface MemberDAO {
 
   MemberDTO isAdmin(int id);
 
-  MemberDTO registerTESTMember(int id);
-
   MemberDTO denyMember(int id);
 
   MemberDTO getOne(String username, String password);

@@ -119,18 +119,6 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   /**
-   * Change the state of the member to register (Util for the test).
-   *
-   * @param id the id of the member
-   * @return boolean
-   */
-  public MemberDTO registerTESTMember(int id) {
-    String query = "UPDATE project_pae.members SET state = 'registered' WHERE id_member = ? "
-        + "RETURNING *;";
-    return executeQueryWithId(id, query);
-  }
-
-  /**
    * Verify if the member is present into the db and its username and password are correct then it
    * created the token associated with this member if login credentials are correct.
    *

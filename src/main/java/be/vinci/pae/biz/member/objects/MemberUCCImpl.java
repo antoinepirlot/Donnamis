@@ -86,16 +86,6 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   /**
-   * ONLY FOR MY TESTS
-   *
-   * @param id test
-   * @return test
-   */
-  public MemberDTO registerTESTMember(int id) {
-    return memberDAO.registerTESTMember(id);
-  }
-
-  /**
    * Verify the state of the member and then change the state of the member to confirmed and member
    * is an admin.
    *
