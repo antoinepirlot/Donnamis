@@ -2,7 +2,6 @@ package be.vinci.pae.ihm.interest;
 
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
