@@ -22,5 +22,9 @@ public interface OfferDTO {
 
   void setItem(ItemDTO itemDTO);
 
+  Member getMember();
+
+  void setMember(MemberDTO memberDTO);
+
   String toString();
 }

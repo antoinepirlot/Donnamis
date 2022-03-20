@@ -8,6 +8,7 @@ public class OfferImpl implements Offer {
   private Date date;
   private String time_slot;
   private Item item;
+  private Member member;
 
   public OfferImpl() {
 
@@ -43,6 +44,14 @@ public class OfferImpl implements Offer {
 
   public void setItem(ItemDTO itemDTO) {
     this.item = (Item) itemDTO;
+  }
+
+  public Member getMember() {
+    return member;
+  }
+
+  public void setMember(MemberDTO memberDTO) {
+    this.member = (Member) memberDTO;
   }
 
   @Override

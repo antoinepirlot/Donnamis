@@ -3,6 +3,7 @@ package be.vinci.pae.dal;
 import be.vinci.pae.biz.AddressDTO;
 import be.vinci.pae.biz.Factory;
 import be.vinci.pae.biz.ItemDTO;
+import be.vinci.pae.biz.Member;
 import be.vinci.pae.biz.MemberDTO;
 import be.vinci.pae.biz.OfferDTO;
 import jakarta.inject.Inject;
@@ -193,6 +194,7 @@ public class OfferDAOImpl implements OfferDAO {
     offerDTO.setDate(rs.getDate("date"));
     offerDTO.setTime_slot(rs.getString("time_slot"));
     offerDTO.setItem(this.createItemInstance(rs));
+    offerDTO.setMember(this.createMemberInstance(rs));
     return offerDTO;
   }
 
@@ -217,4 +219,11 @@ public class OfferDAOImpl implements OfferDAO {
     return itemDTO;
   }
 
+  private  MemberDTO createMemberInstance(ResultSet rs) throws  SQLException{
+    System.out.println("Member instance creation");
+    MemberDTO memberDTO = factory.getMember();
+    memberDTO.setFirstName(rs.getString("first_name"));
+    memberDTO.setLastName(rs.getString("last_name"));
+    return memberDTO;
+  }
 }
