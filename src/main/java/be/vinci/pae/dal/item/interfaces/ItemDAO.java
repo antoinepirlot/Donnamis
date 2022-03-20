@@ -10,7 +10,7 @@ public interface ItemDAO {
   List<ItemDTO> getAllItems();
 
   /**
-   * Get all offered items from the db
+   * Get all offered items from the db.
    * @return a list of all offered items
    */
   List<ItemDTO> getAllOfferedItems();

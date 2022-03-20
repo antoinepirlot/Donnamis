@@ -130,7 +130,7 @@ public class OfferDAOImpl implements OfferDAO {
   }
 
   /**
-   * Add the item associated with the offer'id to the DB
+   * Add the item associated with the offer'id to the DB.
    *
    * @param itemDTO the item to add into the db
    * @return true if the item has been added, otherwise false

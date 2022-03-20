@@ -149,7 +149,7 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   /**
-   * Load the member's id and set it into memberDTO
+   * Load the member's id and set it into memberDTO.
    *
    * @param memberDTO the member DTO that needs the id being loaded
    */
@@ -193,7 +193,7 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   /**
-   * Execute a query with an id param
+   * Execute a query with an id param.
    *
    * @param id    the id of the member
    * @param query the query to execute
@@ -290,7 +290,7 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   /**
-   * Add a new member to the db if it's not already in the db, then its address
+   * Add a new member to the db if it's not already in the db, then its address.
    *
    * @param memberDTO the member to add in the db
    * @return true if the member has been  registered
@@ -339,7 +339,7 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   /**
-   * Add the address associated with the member'id to the DB
+   * Add the address associated with the member'id to the DB.
    *
    * @param addressDTO the address to add into the db
    * @return true if the address has been added, otherwise false
