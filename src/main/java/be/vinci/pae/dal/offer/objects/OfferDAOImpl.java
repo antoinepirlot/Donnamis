@@ -212,28 +212,6 @@ public class OfferDAOImpl implements OfferDAO {
   }
 
   /**
-   * Create a Member instance.
-   *
-   * @param rs the result set that contains sql result
-   * @return a new instance of member based on what rs contains
-   * @throws SQLException if there's an issue while getting data from the result set
-   */
-  private MemberDTO createMemberInstance(ResultSet rs) throws SQLException {
-    System.out.println("Member instance creation");
-    MemberDTO memberDTO = factory.getMember();
-    memberDTO.setId(rs.getInt("id_member"));
-    memberDTO.setUsername(rs.getString("username"));
-    memberDTO.setPassword(rs.getString("password"));
-    memberDTO.setLastName(rs.getString("last_name"));
-    memberDTO.setFirstName(rs.getString("first_name"));
-    memberDTO.setAdmin(rs.getBoolean("is_admin"));
-    memberDTO.setActualState(rs.getString("state"));
-    memberDTO.setPhoneNumber(rs.getString("phone"));
-    memberDTO.setAddress(this.createAddressInstance(rs));
-    return memberDTO;
-  }
-
-  /**
    * Create an address instance.
    *
    * @param rs the result set that contains sql result
