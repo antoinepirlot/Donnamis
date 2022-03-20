@@ -1,4 +1,4 @@
-package dal.member.interfaces;
+package be.vinci.pae.dal.member.interfaces;
 
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import java.util.List;

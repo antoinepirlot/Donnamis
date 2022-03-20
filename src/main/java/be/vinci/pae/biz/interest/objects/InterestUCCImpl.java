@@ -1,7 +1,7 @@
 package be.vinci.pae.biz.interest.objects;
 
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
-import dal.interest.interfaces.InterestDAO;
+import be.vinci.pae.dal.interest.interfaces.InterestDAO;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
 

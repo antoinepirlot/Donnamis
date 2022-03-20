@@ -1,10 +1,10 @@
-package dal.member.objects;
+package be.vinci.pae.dal.member.objects;
 
 import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
-import dal.member.interfaces.MemberDAO;
-import dal.services.interfaces.DALServices;
+import be.vinci.pae.dal.member.interfaces.MemberDAO;
+import be.vinci.pae.dal.services.interfaces.DALServices;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

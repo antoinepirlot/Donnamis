@@ -1,4 +1,4 @@
-package dal.services.interfaces;
+package be.vinci.pae.dal.services.interfaces;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

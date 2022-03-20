@@ -1,4 +1,4 @@
-package dal.offer.interfaces;
+package be.vinci.pae.dal.offer.interfaces;
 
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import java.util.List;
