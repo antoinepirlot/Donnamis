@@ -110,7 +110,7 @@ public class OfferDAOImpl implements OfferDAO {
         PreparedStatement ps = dalServices.getPreparedStatement(query)
     ) {
       ps.setDate(1, offerDTO.getDate());
-      ps.setString(2, StringEscapeUtils.escapeHtml4(offerDTO.getTime_slot()));
+      ps.setString(2, StringEscapeUtils.escapeHtml4(offerDTO.getTimeSlot()));
       ps.setInt(3, offerDTO.getItem().getId());
 
       try {
@@ -177,7 +177,7 @@ public class OfferDAOImpl implements OfferDAO {
     System.out.println(rs.getDate("date"));
     offerDTO.setDate(rs.getDate("date"));
     System.out.println("date set");
-    offerDTO.setTime_slot(rs.getString("time_slot"));
+    offerDTO.setTimeSlot(rs.getString("time_slot"));
     System.out.println("tile_slot set");
     offerDTO.setItem(this.createItemInstance(rs));
 

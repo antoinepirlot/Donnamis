@@ -9,7 +9,7 @@ public class OfferImpl implements Offer {
 
   private int idOffer;
   private Date date;
-  private String time_slot;
+  private String timeSlot;
   private Item item;
 
   public OfferImpl() {
@@ -32,12 +32,12 @@ public class OfferImpl implements Offer {
     this.date = date;
   }
 
-  public String getTime_slot() {
-    return time_slot;
+  public String getTimeSlot() {
+    return timeSlot;
   }
 
-  public void setTime_slot(String time_slot) {
-    this.time_slot = time_slot;
+  public void setTimeSlot(String timeSlot) {
+    this.timeSlot = timeSlot;
   }
 
   public ItemDTO getItem() {

@@ -34,6 +34,6 @@ public interface ItemDTO {
 
   String getOfferStatus();
 
-  void setOfferStatus(String offers_status);
+  void setOfferStatus(String offersStatus);
 
 }

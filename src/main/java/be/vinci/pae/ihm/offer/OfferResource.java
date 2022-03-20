@@ -28,7 +28,7 @@ public class OfferResource {
   @Consumes(MediaType.APPLICATION_JSON)
   public void add_offer(OfferDTO offerDTO) {
     // Get and check credentials
-    if (offerDTO.getTime_slot() == null
+    if (offerDTO.getTimeSlot() == null
     ) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
           .entity("Some information required").type("text/plain").build());

@@ -72,8 +72,8 @@ public class ItemImpl implements Item {
     return offerStatus;
   }
 
-  public void setOfferStatus(String offers_status) {
-    this.offerStatus = offers_status;
+  public void setOfferStatus(String offersStatus) {
+    this.offerStatus = offersStatus;
   }
 
   @Override

@@ -7,10 +7,10 @@ import java.util.Objects;
 
 public class InterestImpl implements Interest, InterestDTO {
 
-  private int id_interest;
-  private boolean call_wanted;
-  private int id_offer;
-  private int id_member;
+  private int id;
+  private boolean callWanted;
+  private int idOffer;
+  private int idMember;
   private Date date;
 
   public InterestImpl() {
@@ -18,43 +18,43 @@ public class InterestImpl implements Interest, InterestDTO {
   }
 
   @Override
-  public int getId_interest() {
-    return id_interest;
+  public int getIdInterest() {
+    return id;
   }
 
   @Override
-  public void setId_interest(int id_interest) {
-    this.id_interest = id_interest;
+  public void setId(int id) {
+    this.id = id;
   }
 
   @Override
-  public boolean isCall_wanted() {
-    return call_wanted;
+  public boolean isCallWanted() {
+    return callWanted;
   }
 
   @Override
-  public void setCall_wanted(boolean call_wanted) {
-    this.call_wanted = call_wanted;
+  public void setCallWanted(boolean callWanted) {
+    this.callWanted = callWanted;
   }
 
   @Override
-  public int getId_offer() {
-    return id_offer;
+  public int getIdOffer() {
+    return idOffer;
   }
 
   @Override
-  public void setId_offer(int id_offer) {
-    this.id_offer = id_offer;
+  public void setIdOffer(int idOffer) {
+    this.idOffer = idOffer;
   }
 
   @Override
-  public int getId_member() {
-    return id_member;
+  public int getIdMember() {
+    return idMember;
   }
 
   @Override
-  public void setId_member(int id_member) {
-    this.id_member = id_member;
+  public void setIdMember(int idMember) {
+    this.idMember = idMember;
   }
 
   @Override
@@ -76,23 +76,23 @@ public class InterestImpl implements Interest, InterestDTO {
       return false;
     }
     InterestImpl interest = (InterestImpl) o;
-    return id_interest == interest.id_interest && call_wanted == interest.call_wanted
-        && id_offer == interest.id_offer && id_member == interest.id_member
+    return id == interest.id && callWanted == interest.callWanted
+        && idOffer == interest.idOffer && idMember == interest.idMember
         && Objects.equals(date, interest.date);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id_interest, call_wanted, id_offer, id_member, date);
+    return Objects.hash(id, callWanted, idOffer, idMember, date);
   }
 
   @Override
   public String toString() {
     return "Interest{" +
-        "id_interest=" + id_interest +
-        ", call_wanted=" + call_wanted +
-        ", id_offer=" + id_offer +
-        ", id_member=" + id_member +
+        "id_interest=" + id +
+        ", call_wanted=" + callWanted +
+        ", id_offer=" + idOffer +
+        ", id_member=" + idMember +
         ", date=" + date +
         '}';
   }

@@ -4,21 +4,21 @@ import java.util.Date;
 
 public interface InterestDTO {
 
-  int getId_interest();
+  int getIdInterest();
 
-  void setId_interest(int id_interest);
+  void setId(int id);
 
-  boolean isCall_wanted();
+  boolean isCallWanted();
 
-  void setCall_wanted(boolean call_wanted);
+  void setCallWanted(boolean callWanted);
 
-  int getId_offer();
+  int getIdOffer();
 
-  void setId_offer(int id_offer);
+  void setIdOffer(int idOffer);
 
-  int getId_member();
+  int getIdMember();
 
-  void setId_member(int id_member);
+  void setIdMember(int idMember);
 
   Date getDate();
 
