@@ -119,19 +119,6 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   /**
-   * Verify if the member is present into the db and its username and password are correct then it
-   * created the token associated with this member if login credentials are correct.
-   *
-   * @param username the member's username
-   * @param password the member's password
-   * @return the match member otherwise null
-   */
-  @Override
-  public MemberDTO getOne(String username, String password) {
-    return getOne(username);
-  }
-
-  /**
    * Get a specific member identified by its username.
    *
    * @param username the member's username
