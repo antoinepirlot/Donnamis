@@ -2,7 +2,7 @@ package be.vinci.pae.dal.item.objects;
 
 import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
-import be.vinci.pae.biz.itemsType.interfaces.ItemTypeDTO;
+import be.vinci.pae.biz.itemstype.interfaces.ItemTypeDTO;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;

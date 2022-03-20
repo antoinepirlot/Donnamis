@@ -1,8 +1,8 @@
 package be.vinci.pae.biz.item.objects;
 
 import be.vinci.pae.biz.item.interfaces.Item;
-import be.vinci.pae.biz.itemsType.interfaces.ItemType;
-import be.vinci.pae.biz.itemsType.interfaces.ItemTypeDTO;
+import be.vinci.pae.biz.itemstype.interfaces.ItemType;
+import be.vinci.pae.biz.itemstype.interfaces.ItemTypeDTO;
 import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import java.util.Objects;

@@ -3,7 +3,7 @@ package be.vinci.pae.dal.utils;
 import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
-import be.vinci.pae.biz.itemsType.interfaces.ItemTypeDTO;
+import be.vinci.pae.biz.itemstype.interfaces.ItemTypeDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -1,6 +1,6 @@
-package be.vinci.pae.biz.itemsType.interfaces;
+package be.vinci.pae.biz.itemstype.interfaces;
 
-import be.vinci.pae.biz.itemsType.objects.ItemTypeImpl;
+import be.vinci.pae.biz.itemstype.objects.ItemTypeImpl;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = ItemTypeImpl.class)
