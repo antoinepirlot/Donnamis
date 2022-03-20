@@ -20,8 +20,6 @@ import jakarta.ws.rs.core.Response.Status;
 @Path("interests")
 public class InterestResource {
 
-  private final ObjectMapper jsonMapper = new ObjectMapper();
-
   @Inject
   private InterestUCC interestUCC;
 

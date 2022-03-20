@@ -22,7 +22,6 @@ import java.util.List;
 @Path("items")
 public class ItemResource {
 
-  private final ObjectMapper jsonMapper = new ObjectMapper();
   @Inject
   private ItemUCC itemUCC;
 

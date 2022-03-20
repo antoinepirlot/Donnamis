@@ -19,7 +19,6 @@ import java.util.List;
 @Path("offers")
 public class OfferResource {
 
-  private final ObjectMapper jsonMapper = new ObjectMapper();
   @Inject
   private OfferUCC offerUCC;
 
