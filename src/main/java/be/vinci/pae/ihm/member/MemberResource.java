@@ -110,6 +110,11 @@ public class MemberResource {
     }
   }
 
+  /**
+   * Asks UCC to confirm the member identified by its id.
+   * @param id the member's id
+   * @return the confirmed member
+   */
   @PUT
   @Path("confirm/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -123,6 +128,11 @@ public class MemberResource {
     return memberUCC.confirmMember(id);
   }
 
+  /**
+   * Asks UCC to confirm an admin identified by its id.
+   * @param id the member's id
+   * @return the confirmed admin member
+   */
   @PUT
   @Path("confirmAdmin/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -135,6 +145,11 @@ public class MemberResource {
     return memberUCC.confirmAdmin(id);
   }
 
+  /**
+   * Asks UCC to deny the member's inscription.
+   * @param id the member's id
+   * @return the denied member
+   */
   @PUT
   @Path("denies/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -147,6 +162,11 @@ public class MemberResource {
     return memberUCC.denyMember(id);
   }
 
+  /**
+   * Asks UCC to register a TEST member.
+   * @param id the TEST member's id
+   * @return the registered TEST member
+   */
   @PUT
   @Path("registerTEST/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -221,6 +241,10 @@ public class MemberResource {
         .sign(jwtAlgorithm);
   }
 
+  /**
+   * Asks UCC to register a member.
+   * @param memberDTO the member to register
+   */
   @POST
   @Path("register")
   @Consumes(MediaType.APPLICATION_JSON)

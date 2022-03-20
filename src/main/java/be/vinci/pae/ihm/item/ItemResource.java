@@ -26,8 +26,9 @@ public class ItemResource {
   @Inject
   private ItemUCC itemUCC;
 
-  /*
-  Method that get all the latest items offered
+  /**
+   * Method that get all the latest offered items.
+   * @return a list of the latest offered items
    */
   @GET
   @Path("latest_items")
@@ -50,8 +51,9 @@ public class ItemResource {
   }
 
 
-  /*
-  Method that get all the items offered
+  /**
+   * Method that get all items.
+   * @return a list of all items
    */
   @GET
   @Path("all_items")
@@ -73,6 +75,10 @@ public class ItemResource {
     }
   }
 
+  /**
+   * Gets all offered items.
+   * @return a list of all offered items
+   */
   @GET
   @Path("all_offered_items")
   @Produces(MediaType.APPLICATION_JSON)
@@ -82,6 +88,10 @@ public class ItemResource {
     return itemsDTO;
   }
 
+  /**
+   * Checks the item's integrity and asks the UCC to add it into the database.
+   * @param itemDTO to add into the database
+   */
   @POST
   @Path("offer")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -104,6 +114,11 @@ public class ItemResource {
     }
   }
 
+  /**
+   * Asks the UCC to cancel the item's offer.
+   * @param id the item's id
+   * @return the canceled item
+   */
   @PUT
   @Path("cancel/{id}")
   @Consumes(MediaType.APPLICATION_JSON)

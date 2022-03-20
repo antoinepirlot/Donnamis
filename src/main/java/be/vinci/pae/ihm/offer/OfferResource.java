@@ -23,6 +23,10 @@ public class OfferResource {
   @Inject
   private OfferUCC offerUCC;
 
+  /**
+   * Asks UCC to add an offer into the database.
+   * @param offerDTO the offer to add into the database
+   */
   @POST
   @Path("add_offer")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -43,8 +47,9 @@ public class OfferResource {
 
   }
 
-  /*
-  Method that get all the latest items offered
+  /**
+   * Method that get all the latest items offered.
+   * @return the list of lastest offers if there's at least one offer, otherwise null
    */
   @GET
   @Path("latest_offers")
@@ -67,8 +72,9 @@ public class OfferResource {
   }
 
 
-  /*
-  Method that get all the items offered
+  /**
+   * Method that get all the items offered.
+   * @return the list of all offers if there's at least one offer, otherwise null
    */
   @GET
   @Path("all_offers")
