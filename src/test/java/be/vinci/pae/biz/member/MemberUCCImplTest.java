@@ -2,13 +2,12 @@ package be.vinci.pae.biz.member;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
-import be.vinci.pae.biz.member.objects.MemberImpl;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
-import dal.member.interfaces.MemberDAO;
+import be.vinci.pae.biz.member.objects.MemberImpl;
 import be.vinci.pae.utils.ApplicationBinder;
+import dal.member.interfaces.MemberDAO;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeEach;
