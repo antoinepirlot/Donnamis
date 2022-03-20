@@ -163,24 +163,6 @@ public class MemberResource {
   }
 
   /**
-   * Asks UCC to register a TEST member.
-   * @param id the TEST member's id
-   * @return the registered TEST member
-   */
-  @PUT
-  @Path("registerTEST/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public MemberDTO registerTESTMember(@PathParam("id") int id) {
-    if (memberUCC.getOneMember(id) == null) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Ressource not found").type("text/plain").build());
-    }
-    return memberUCC.registerTESTMember(id);
-  }
-
-
-  /**
    * Method that login the member. It verify if the user can be connected by calling ucc.
    *
    * @param json the member login informations
