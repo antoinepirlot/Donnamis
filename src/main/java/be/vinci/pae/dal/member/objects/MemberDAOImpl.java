@@ -204,8 +204,7 @@ public class MemberDAOImpl implements MemberDAO {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
-          MemberDTO memberDTO = createMemberInstance(rs);
-          return memberDTO;
+          return createMemberInstance(rs);
         }
       }
     } catch (SQLException e) {
