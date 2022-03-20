@@ -1,4 +1,4 @@
-package be.vinci.pae.biz.items_type.interfaces;
+package be.vinci.pae.biz.itemsType.interfaces;
 
 public interface ItemType extends ItemTypeDTO {
 
