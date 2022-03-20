@@ -159,8 +159,7 @@ public class ItemDAOImpl implements ItemDAO {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
-          ItemDTO itemDTO = createItemInstance(rs);
-          return itemDTO;
+          return createItemInstance(rs);
         }
       }
     } catch (SQLException e) {
