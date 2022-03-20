@@ -1,4 +1,4 @@
-package dal.interest.interfaces;
+package be.vinci.pae.dal.interest.interfaces;
 
 import java.time.LocalDate;
 

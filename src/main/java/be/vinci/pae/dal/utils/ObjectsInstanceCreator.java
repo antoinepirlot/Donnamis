@@ -1,4 +1,4 @@
-package dal.utils;
+package be.vinci.pae.dal.utils;
 
 import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.factory.interfaces.Factory;

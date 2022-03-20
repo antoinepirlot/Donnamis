@@ -1,6 +1,6 @@
-package dal.services.objects;
+package be.vinci.pae.dal.services.objects;
 
-import dal.services.interfaces.DALServices;
+import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.utils.Config;
 import jakarta.inject.Singleton;
 import java.sql.Connection;

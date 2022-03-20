@@ -3,7 +3,7 @@ package be.vinci.pae.biz.member.objects;
 import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
-import dal.member.interfaces.MemberDAO;
+import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import jakarta.inject.Inject;
 import java.util.List;
 

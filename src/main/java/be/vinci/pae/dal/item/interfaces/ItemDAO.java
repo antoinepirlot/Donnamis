@@ -1,4 +1,4 @@
-package dal.item.interfaces;
+package be.vinci.pae.dal.item.interfaces;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import java.util.List;

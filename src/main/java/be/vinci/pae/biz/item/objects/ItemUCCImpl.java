@@ -2,7 +2,7 @@ package be.vinci.pae.biz.item.objects;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
-import dal.item.interfaces.ItemDAO;
+import be.vinci.pae.dal.item.interfaces.ItemDAO;
 import jakarta.inject.Inject;
 import java.util.List;
 
