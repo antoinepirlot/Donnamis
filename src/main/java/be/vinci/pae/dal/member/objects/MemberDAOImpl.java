@@ -162,7 +162,7 @@ public class MemberDAOImpl implements MemberDAO {
       try (
           ResultSet rs = ps.executeQuery()
       ) {
-        if(rs.next()) {
+        if (rs.next()) {
           memberDTO.setId(rs.getInt("id_member"));
         }
       }
@@ -269,6 +269,7 @@ public class MemberDAOImpl implements MemberDAO {
   //    return null;
   //  }
   //
+
   /**
    * Create an address instance.
    *

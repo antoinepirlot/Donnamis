@@ -112,6 +112,7 @@ public class MemberResource {
 
   /**
    * Asks UCC to confirm the member identified by its id.
+   *
    * @param id the member's id
    * @return the confirmed member
    */
@@ -130,6 +131,7 @@ public class MemberResource {
 
   /**
    * Asks UCC to confirm an admin identified by its id.
+   *
    * @param id the member's id
    * @return the confirmed admin member
    */
@@ -147,6 +149,7 @@ public class MemberResource {
 
   /**
    * Asks UCC to deny the member's inscription.
+   *
    * @param id the member's id
    * @return the denied member
    */
@@ -225,6 +228,7 @@ public class MemberResource {
 
   /**
    * Asks UCC to register a member.
+   *
    * @param memberDTO the member to register
    */
   @POST
@@ -246,7 +250,7 @@ public class MemberResource {
     //Verify addressDTO integrity
     AddressDTO addressDTO = memberDTO.getAddress();
     if (addressDTO == null
-        ||addressDTO.getStreet() == null || addressDTO.getStreet().equals("")
+        || addressDTO.getStreet() == null || addressDTO.getStreet().equals("")
         || addressDTO.getCommune() == null || addressDTO.getCommune().equals("")
         || addressDTO.getPostcode() == null || addressDTO.getPostcode().equals("")
         || addressDTO.getBuildingNumber() == null || addressDTO.getBuildingNumber().equals("")

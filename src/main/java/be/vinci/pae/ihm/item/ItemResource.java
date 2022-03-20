@@ -28,6 +28,7 @@ public class ItemResource {
 
   /**
    * Method that get all the latest offered items.
+   *
    * @return a list of the latest offered items
    */
   @GET
@@ -53,6 +54,7 @@ public class ItemResource {
 
   /**
    * Method that get all items.
+   *
    * @return a list of all items
    */
   @GET
@@ -77,6 +79,7 @@ public class ItemResource {
 
   /**
    * Gets all offered items.
+   *
    * @return a list of all offered items
    */
   @GET
@@ -90,6 +93,7 @@ public class ItemResource {
 
   /**
    * Checks the item's integrity and asks the UCC to add it into the database.
+   *
    * @param itemDTO to add into the database
    */
   @POST
@@ -106,7 +110,7 @@ public class ItemResource {
           .type(MediaType.TEXT_PLAIN_TYPE)
           .build());
     }
-    if(!this.itemUCC.addItem(itemDTO)) {
+    if (!this.itemUCC.addItem(itemDTO)) {
       throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
           .entity("The items can't be added to the db due to a unexpected error")
           .type(MediaType.TEXT_PLAIN_TYPE)
@@ -116,6 +120,7 @@ public class ItemResource {
 
   /**
    * Asks the UCC to cancel the item's offer.
+   *
    * @param id the item's id
    * @return the canceled item
    */
