@@ -4,12 +4,12 @@ import java.time.LocalDate;
 
 public interface InterestDAO {
 
-  int markInterest(int id_member, int id_offer, boolean call_wanted, LocalDate date);
+  int markInterest(int idMember, int idOffer, boolean callWanted, LocalDate date);
 
-  boolean offerExist(int id_offer);
+  boolean offerExist(int idOffer);
 
-  boolean memberExist(int id_member);
+  boolean memberExist(int idMember);
 
-  boolean interestExist(int id_offer, int id_member);
+  boolean interestExist(int idOffer, int idMember);
 
 }
