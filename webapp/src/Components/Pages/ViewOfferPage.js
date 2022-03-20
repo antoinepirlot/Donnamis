@@ -52,7 +52,7 @@ async function getOffersInfo(idOffer) {
 
     document.querySelector("#title").innerHTML = offer.item.title
     document.querySelector("#offerer").innerHTML = `Offre proposée par : ${offer.member.firstName} ${offer.member.lastName} `
-    document.querySelector("#type").innerHTML = `Type : ${offer.item.item_type}Offre proposée par :`
+    document.querySelector("#type").innerHTML = `Type : ${offer.item.item_type}`
     document.querySelector("#description").innerHTML = `Description : ${offer.item.item_description}`
     document.querySelector("#availabilities").innerHTML = `Disponibilités : ${offer.time_slot}`
     document.querySelector("#pubDate").innerHTML = `Date de publication : ${date}`
