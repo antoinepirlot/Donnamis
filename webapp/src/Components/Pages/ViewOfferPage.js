@@ -1,11 +1,11 @@
 
 const viewOfferHtml = `
-<div id="offerCard" class="card mb-3" style="max-width: 800px;">
+<div id="offerCard" class="card mb-3">
   <div class="row no-gutters">
-  <div class="col-md-8">
+  <div class="col-md">
       <div class="card-body">
         <h2 id="title" class="card-title"></h2>
-        <p id="offerer" class="text-muted">Offre proposée par : </p>
+        <p id="offerer" class="text-muted"> </p>
         <h5 id="type" class="card-text"></h5>
         <h5 id="description" class="card-text"></h5>
         <h5 id="availabilities" class="card-text"></h5>
@@ -22,21 +22,23 @@ const viewOfferHtml = `
 `;
 
 /**
- * Render the LoginPage :
- * Just an example to demonstrate how to use the router
- * to "redirect" to a new page
+ * Render the OfferPage :
  */
 async function ViewOfferPage() {
+  //get param from url
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
 
   const page = document.querySelector("#page");
   page.innerHTML = viewOfferHtml;
-  await getOffersInfo()
+  //get offer's infos with the id in param
+  await getOffersInfo(urlParams.get("id"))
 }
 
-async function getOffersInfo() {
+async function getOffersInfo(idOffer) {
 
   try {
-    const response = await fetch("/api/offers/1");
+    const response = await fetch(`/api/offers/${idOffer}`);
     if (!response.ok) {
       // status code was not 200, error status code
       //TODO say that there are no offer for this id
@@ -49,7 +51,8 @@ async function getOffersInfo() {
     date = date.getDate() + "/" + date.getMonth()+1 + "/" + date.getFullYear()
 
     document.querySelector("#title").innerHTML = offer.item.title
-    document.querySelector("#type").innerHTML = `Type : ${offer.item.item_type}`
+    document.querySelector("#offerer").innerHTML = `Offre proposée par : ${offer.member.firstName} ${offer.member.lastName} `
+    document.querySelector("#type").innerHTML = `Type : ${offer.item.item_type}Offre proposée par :`
     document.querySelector("#description").innerHTML = `Description : ${offer.item.item_description}`
     document.querySelector("#availabilities").innerHTML = `Disponibilités : ${offer.time_slot}`
     document.querySelector("#pubDate").innerHTML = `Date de publication : ${date}`
