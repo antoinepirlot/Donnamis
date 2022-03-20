@@ -47,26 +47,26 @@ public class InterestResource {
     }
 
     //Verify the content of the request
-    if (!json.hasNonNull("id_member")) {
+    if (!json.hasNonNull("idMember")) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("id_member required").type("text/plain").build());
+          .entity("idMember required").type("text/plain").build());
     }
-    int id_member = json.get("id_member").asInt();
+    int idMember = json.get("idMember").asInt();
 
     //Verify if the member already exist
-    if (!interestUCC.memberExist(id_member)) {
+    if (!interestUCC.memberExist(idMember)) {
       throw new WebApplicationException(Response.status(Status.NOT_FOUND)
           .entity("interest already exist").type("text/plain").build());
     }
 
     //Verify if the interest already exist
-    if (interestUCC.interestExist(idOffer, id_member)) {
+    if (interestUCC.interestExist(idOffer, idMember)) {
       throw new WebApplicationException(Response.status(Status.NOT_FOUND)
           .entity("member not found").type("text/plain").build());
     }
 
     //Add the interest
-    int res = interestUCC.markInterest(id_member, idOffer, callWanted);
+    int res = interestUCC.markInterest(idMember, idOffer, callWanted);
     if (res == -1) {
       throw new WebApplicationException(Response.status(Status.CONFLICT)
           .entity("error ").type("text/plain").build());
