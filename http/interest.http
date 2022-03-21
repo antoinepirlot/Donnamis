@@ -3,7 +3,7 @@ POST {{baseUrl}}/interests/3
 Content-Type: application/json
 
 {
-  "id_member": 3
+  "idMember": 3
 }
 
 ### Mark Interest
@@ -11,5 +11,5 @@ POST {{baseUrl}}/interests/3?call_wanted=true
 Content-Type: application/json
 
 {
-  "id_member": 3
+  "idMember": 3
 }
