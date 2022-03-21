@@ -27,4 +27,9 @@ public class OfferUCCImpl implements OfferUCC {
   public List<OfferDTO> getAllOffers() {
     return offerDAO.getAllOffers();
   }
+
+  @Override
+  public OfferDTO getOneOffer(int id) {
+    return offerDAO.getOne(id);
+  }
 }

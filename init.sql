@@ -135,4 +135,20 @@ SELECT offers.id_offer,
        items.offer_status
 FROM project_pae.offers offers
          LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item
-ORDER BY offers.date DESC
+ORDER BY offers.date DESC;
+
+SELECT item.title,
+       item.item_description,
+       item_type.item_type,
+       offer.date,
+       offer.time_slot,
+       member.first_name,
+       member.last_name
+      FROM project_pae.items item, project_pae.items_types item_type, project_pae.offers offer, project_pae.members member
+      WHERE item.id_item_type = item_type.id_type AND
+            item.id_item = offer.id_item AND
+            item.id_member = member.id_member AND
+            offer.id_offer = 1;
+
+
+

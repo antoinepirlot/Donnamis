@@ -2,6 +2,8 @@ package be.vinci.pae.biz.offer.objects;
 
 import be.vinci.pae.biz.item.interfaces.Item;
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
+import be.vinci.pae.biz.member.interfaces.Member;
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.interfaces.Offer;
 import java.sql.Date;
 
@@ -11,6 +13,7 @@ public class OfferImpl implements Offer {
   private Date date;
   private String timeSlot;
   private Item item;
+  private Member member;
 
   public OfferImpl() {
     this.date = new Date(System.currentTimeMillis());
@@ -46,5 +49,23 @@ public class OfferImpl implements Offer {
 
   public void setItem(ItemDTO itemDTO) {
     this.item = (Item) itemDTO;
+  }
+
+  public Member getMember() {
+    return member;
+  }
+
+  public void setMember(MemberDTO memberDTO) {
+    this.member = (Member) memberDTO;
+  }
+
+  @Override
+  public String toString() {
+    return "OfferImpl{" +
+        "idOffer=" + idOffer +
+        ", date=" + date +
+        ", time_slot='" + timeSlot + '\'' +
+        ", item=" + item +
+        '}';
   }
 }

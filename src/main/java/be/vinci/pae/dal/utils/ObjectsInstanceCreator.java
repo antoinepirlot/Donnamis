@@ -5,6 +5,7 @@ import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.itemstype.interfaces.ItemTypeDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.apache.commons.text.StringEscapeUtils;
@@ -12,12 +13,36 @@ import org.apache.commons.text.StringEscapeUtils;
 public class ObjectsInstanceCreator {
 
   /**
-   * Create an item instance with the factory and set all its attributes
-   * with data selected from the db.
+   * Create an Offer instance with the factory and set all its attributes * with data selected from
+   * the db.
+   *
    * @param factory the factory that gives an item
-   * @param rs the result set that contains item's data
-   * @return a new item instance with initialized attributes
+   * @param rs      the result set that contains sql result
+   * @return a new instance of offer based on what rs contains
+   * @throws SQLException if there's an issue while getting data from the result set
    */
+  public static OfferDTO createOfferInstance(Factory factory, ResultSet rs) throws SQLException {
+    System.out.println("Offer instance creation");
+    OfferDTO offerDTO = factory.getOffer();
+    offerDTO.setIdOffer(rs.getInt("id_offer"));
+    offerDTO.setDate(rs.getDate("date"));
+    offerDTO.setTimeSlot(rs.getString("time_slot"));
+    offerDTO.setItem(createItemInstance(factory, rs));
+    System.out.println("date set");
+    offerDTO.setTimeSlot(rs.getString("time_slot"));
+    System.out.println("tile_slot set");
+
+    return offerDTO;
+  }
+
+    /**
+     * Create an item instance with the factory and set all its attributes with data selected from the
+     * db.
+     *
+     * @param factory the factory that gives an item
+     * @param rs      the result set that contains item's data
+     * @return a new item instance with initialized attributes
+     */
   public static ItemDTO createItemInstance(Factory factory, ResultSet rs) {
     System.out.println("Setting all item attributes");
     ItemDTO itemDTO = factory.getItem();
@@ -39,11 +64,13 @@ public class ObjectsInstanceCreator {
     return itemDTO;
   }
 
+
   /**
-   * Create an item type instance with the factory and set all its attributes
-   * with data selected from the db.
+   * Create an item type instance with the factory and set all its attributes with data selected
+   * from the db.
+   *
    * @param factory the factory that gives an item type
-   * @param rs the result set that contains item type's data
+   * @param rs      the result set that contains item type's data
    * @return a new item type instance with initialized attributes
    */
   private static ItemTypeDTO createItemTypeInstance(Factory factory, ResultSet rs) {
@@ -59,10 +86,11 @@ public class ObjectsInstanceCreator {
   }
 
   /**
-   * Create a member instance with the factory and set all its attributes
-   * with data selected from the db.
+   * Create a member instance with the factory and set all its attributes with data selected from
+   * the db.
+   *
    * @param factory the factory that gives a member
-   * @param rs the result set that contains member's data
+   * @param rs      the result set that contains member's data
    * @return a new member instance with initialized attributes
    */
   public static MemberDTO createMemberInstance(Factory factory, ResultSet rs) {
@@ -109,10 +137,11 @@ public class ObjectsInstanceCreator {
   }
 
   /**
-   * Create an address instance with the factory and set all its attributes
-   * with data selected from the db.
+   * Create an address instance with the factory and set all its attributes with data selected from
+   * the db.
+   *
    * @param factory the factory that gives an address
-   * @param rs the result set that contains address's data
+   * @param rs      the result set that contains address's data
    * @return a new address instance with initialized attributes
    * @throws SQLException if an attributes is not in the result set
    */
