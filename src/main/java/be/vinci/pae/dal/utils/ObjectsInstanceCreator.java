@@ -24,7 +24,7 @@ public class ObjectsInstanceCreator {
   public static OfferDTO createOfferInstance(Factory factory, ResultSet rs) throws SQLException {
     System.out.println("Offer instance creation");
     OfferDTO offerDTO = factory.getOffer();
-    offerDTO.setIdOffer(rs.getInt("id_offer"));
+    offerDTO.setId(rs.getInt("id_offer"));
     offerDTO.setDate(rs.getDate("date"));
     offerDTO.setTimeSlot(rs.getString("time_slot"));
     offerDTO.setItem(createItemInstance(factory, rs));

@@ -28,8 +28,6 @@ const getPayload = async () => {
     return;
   }
   let payload = token.split('.')[1];
-  console.log("Payload : " + payload)
-  console.log("token : " + token)
   payload = JSON.parse(window.atob(payload));
   // we divided by 1000 because jwt token does contains only 10 digit and 13 for Date.now()
   return payload;

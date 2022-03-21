@@ -1,3 +1,8 @@
+import {
+  getPayload,
+} from "../../utils/session";
+import {Redirect} from "../Router/Router";
+import {showError} from "../../utils/ShowError";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3">
@@ -10,13 +15,21 @@ const viewOfferHtml = `
         <h5 id="description" class="card-text"></h5>
         <h5 id="availabilities" class="card-text"></h5>
         <h5 id="pubDate" class="card-text"></h5>
-         <a id="interestButton" href="#" class="btn btn-primary">Je suis interessé(e) !</a>
+
+        <form>
+                <div class="form-check form-switch">
+         <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+          <label class="form-check-label" for="flexSwitchCheckChecked">J'accepte d'être appelé</label>
+        </div>
+               <input id="interestButton" type="submit" class="btn btn-primary" value="Je suis interessé(e) !">
+       </form>
+
+       <div id="interestMessage"></div>
       </div>
     </div>
-    <!--<div class="col-md-4">
+    <div class="col-md-4">
       <img src="" class="card-img" alt="JS">
-    </div> -->
-    
+    </div>
   </div>
 </div>
 `;
@@ -25,18 +38,28 @@ const viewOfferHtml = `
  * Render the OfferPage :
  */
 async function ViewOfferPage() {
+  if (!await getPayload()) {
+    Redirect("/");
+    return;
+  }
   //get param from url
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-
   const page = document.querySelector("#page");
+  const offerId = urlParams.get("id")
+
   page.innerHTML = viewOfferHtml;
+  const button = document.querySelector("#offerCard");
   //get offer's infos with the id in param
-  await getOffersInfo(urlParams.get("id"))
+  await getOffersInfo(offerId)
+  console.log("TEST")
+  //post an interest
+  button.addEventListener("submit", postInterest);
+  console.log("TEST")
+
 }
 
 async function getOffersInfo(idOffer) {
-
   try {
     const response = await fetch(`/api/offers/${idOffer}`);
     if (!response.ok) {
@@ -48,17 +71,59 @@ async function getOffersInfo(idOffer) {
     }
     const offer = await response.json()
     var date = new Date(offer.date);
-    date = date.getDate() + "/" + date.getMonth()+1 + "/" + date.getFullYear()
+    date = date.getDate() + "/" + date.getMonth() + 1 + "/" + date.getFullYear()
 
     document.querySelector("#title").innerHTML = offer.item.title
-    document.querySelector("#offerer").innerHTML = `Offre proposée par : ${offer.item.member.firstName} ${offer.item.member.lastName} `
-    document.querySelector("#type").innerHTML = `Type : ${offer.item.itemType.itemType}`
-    document.querySelector("#description").innerHTML = `Description : ${offer.item.itemDescription}`
-    document.querySelector("#availabilities").innerHTML = `Disponibilités : ${offer.timeSlot}`
-    document.querySelector("#pubDate").innerHTML = `Date de publication : ${date}`
+    document.querySelector(
+        "#offerer").innerHTML = `Offre proposée par : ${offer.item.member.firstName} ${offer.item.member.lastName} `
+    document.querySelector(
+        "#type").innerHTML = `Type : ${offer.item.itemType.itemType}`
+    document.querySelector(
+        "#description").innerHTML = `Description : ${offer.item.itemDescription}`
+    document.querySelector(
+        "#availabilities").innerHTML = `Disponibilités : ${offer.timeSlot}`
+    document.querySelector(
+        "#pubDate").innerHTML = `Date de publication : ${date}`
   } catch (err) {
     console.error(err);
   }
+}
+
+async function postInterest(e) {
+  console.log("postInterest")
+  e.preventDefault();
+  const payload = await getPayload();
+  const memberId = payload.id
+  console.log("id= " + memberId)
+  const interestMessage = document.querySelector("#interestMessage");
+  //get param from url
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const offerId = urlParams.get("id")
+  try {
+    const request = {
+      method: "POST",
+      headers: {
+        "Content-Type":
+            "application/json"
+      },
+      body: JSON.stringify(
+          {
+            "idMember": memberId
+          })
+    };
+    const response = await fetch(`api/interests/${offerId}`, request);
+    if (response.ok) {
+      showError(
+          "Votre intérêt pour cet article à été bien été enregistré.",
+          "success", interestMessage)
+    }
+  } catch (err) {
+    showError("Votre marque d'intérêt n'a pas pu être ajoutée", "danger",
+        interestMessage);
+    console.error(err);
+  }
+
 }
 
 export default ViewOfferPage;
