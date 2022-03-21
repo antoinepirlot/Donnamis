@@ -17,8 +17,7 @@ const routes = {
   "/list_member": ListMemberPage,
   "/latest_items": LatestItemsOffersPage,
   "/all_items": AllItemsOffersPage,
-  "/all_offered_items": AllOfferedItemsPage
-  "/all_items": AllItemsOffersPage,
+  "/all_offered_items": AllOfferedItemsPage,
   "/offer": ViewOfferPage
 };
 
