@@ -4,6 +4,7 @@ import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
+import be.vinci.pae.dal.services.interfaces.DALServices;
 import jakarta.inject.Inject;
 import java.util.List;
 
@@ -11,6 +12,8 @@ public class MemberUCCImpl implements MemberUCC {
 
   @Inject
   private MemberDAO memberDAO;
+  @Inject
+  private DALServices dalServices;
 
   /**
    * Get all the members from the db.
@@ -19,7 +22,14 @@ public class MemberUCCImpl implements MemberUCC {
    */
   @Override
   public List<MemberDTO> getAllMembers() {
-    return memberDAO.getAllMembers();
+    dalServices.start();
+    List<MemberDTO> memberDTOList = memberDAO.getAllMembers();
+    if (memberDTOList == null) {
+      dalServices.rollback();
+    } else {
+      dalServices.commit();
+    }
+    return memberDTOList;
   }
 
   /**
@@ -29,7 +39,13 @@ public class MemberUCCImpl implements MemberUCC {
    */
   @Override
   public List<MemberDTO> getMembersRegistered() {
+    dalServices.start();
     List<MemberDTO> listMember = memberDAO.getMembersRegistered();
+    if (listMember == null) {
+      dalServices.rollback();
+    } else {
+      dalServices.commit();
+    }
     return listMember;
   }
 
@@ -40,7 +56,13 @@ public class MemberUCCImpl implements MemberUCC {
    */
   @Override
   public List<MemberDTO> getMembersDenied() {
+    dalServices.start();
     List<MemberDTO> listMember = memberDAO.getMembersDenied();
+    if (listMember == null) {
+      dalServices.rollback();
+    } else {
+      dalServices.commit();
+    }
     return listMember;
   }
 
@@ -52,7 +74,14 @@ public class MemberUCCImpl implements MemberUCC {
    */
   @Override
   public MemberDTO getOneMember(int id) {
-    return memberDAO.getOneMember(id);
+    dalServices.start();
+    MemberDTO memberDTO = memberDAO.getOneMember(id);
+    if (memberDTO == null) {
+      dalServices.rollback();
+    } else {
+      dalServices.commit();
+    }
+    return memberDTO;
   }
 
   /**
@@ -63,11 +92,19 @@ public class MemberUCCImpl implements MemberUCC {
    */
   @Override
   public MemberDTO confirmMember(int id) {
+    dalServices.start();
     Member member = (Member) getOneMember(id);
     if (!member.verifyState("registered") && !member.verifyState("denied")) {
+      dalServices.rollback();
       return null;
     }
-    return memberDAO.confirmMember(id);
+    MemberDTO memberDTO = memberDAO.confirmMember(id);
+    if (memberDTO == null) {
+      dalServices.rollback();
+    } else {
+      dalServices.commit();
+    }
+    return memberDTO;
   }
 
   /**
@@ -78,11 +115,19 @@ public class MemberUCCImpl implements MemberUCC {
    */
   @Override
   public MemberDTO denyMember(int id) {
+    dalServices.start();
     Member member = (Member) getOneMember(id);
     if (!member.verifyState("registered")) {
+      dalServices.rollback();
       return null;
     }
-    return memberDAO.denyMember(id);
+    MemberDTO memberDTO = memberDAO.denyMember(id);
+    if (memberDTO == null) {
+      dalServices.rollback();
+    } else {
+      dalServices.commit();
+    }
+    return memberDTO;
   }
 
   /**
@@ -93,12 +138,24 @@ public class MemberUCCImpl implements MemberUCC {
    * @return True if success
    */
   public MemberDTO confirmAdmin(int id) {
+    dalServices.start();
     Member member = (Member) getOneMember(id);
     if (!member.verifyState("registered") && !member.verifyState("denied")) {
+      dalServices.rollback();
       return null;
     }
-    memberDAO.confirmMember(id);
-    return memberDAO.isAdmin(id);
+    MemberDTO memberDTO = memberDAO.confirmMember(id);
+    if (memberDTO == null) {
+      dalServices.rollback();
+      return null;
+    }
+    memberDTO = memberDAO.confirmMember(id);
+    if (memberDTO == null) {
+      dalServices.rollback();
+    } else {
+      dalServices.commit();
+    }
+    return memberDTO;
   }
 
   /**
@@ -109,19 +166,23 @@ public class MemberUCCImpl implements MemberUCC {
    */
   @Override
   public MemberDTO login(String username, String password) {
+    dalServices.start();
     Member member = (Member) memberDAO.getOne(username);
     if (
         member == null
             || !member.checkPassword(password, member.getPassword())
             || !member.verifyState("confirmed")
     ) {
+      dalServices.rollback();
       return null;
     }
+    dalServices.commit();
     return member;
   }
 
   /**
    * Ask DAO to insert the member into the db.
+   *
    * @param memberDTO member to add in the db
    * @return true if the member has been  registered
    */
@@ -129,6 +190,12 @@ public class MemberUCCImpl implements MemberUCC {
   public boolean register(MemberDTO memberDTO) {
     Member member = (Member) memberDTO;
     member.hashPassword();
-    return this.memberDAO.register(member);
+    if (!memberDAO.register(member)) {
+      dalServices.rollback();
+      return false;
+    } else {
+      dalServices.commit();
+      return true;
+    }
   }
 }

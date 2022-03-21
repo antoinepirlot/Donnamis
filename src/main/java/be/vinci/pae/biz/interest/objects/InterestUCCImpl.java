@@ -2,6 +2,7 @@ package be.vinci.pae.biz.interest.objects;
 
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
 import be.vinci.pae.dal.interest.interfaces.InterestDAO;
+import be.vinci.pae.dal.services.interfaces.DALServices;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
 
@@ -9,6 +10,8 @@ public class InterestUCCImpl implements InterestUCC {
 
   @Inject
   private InterestDAO interestDAO;
+  @Inject
+  private DALServices dalServices;
 
   /**
    * Mark the interest in an offer.
@@ -20,8 +23,15 @@ public class InterestUCCImpl implements InterestUCC {
    */
   @Override
   public int markInterest(int idMember, int idOffer, boolean callWanted) {
+    dalServices.start();
     LocalDate date = LocalDate.now();
-    return interestDAO.markInterest(idMember, idOffer, callWanted, date);
+    int res = interestDAO.markInterest(idMember, idOffer, callWanted, date);
+    if (res == -1) {
+      dalServices.rollback();
+    } else {
+      dalServices.commit();
+    }
+    return res;
   }
 
   /**
@@ -32,7 +42,13 @@ public class InterestUCCImpl implements InterestUCC {
    */
   @Override
   public boolean offerExist(int idOffer) {
-    return interestDAO.offerExist(idOffer);
+    dalServices.start();
+    if (!interestDAO.offerExist(idOffer)) {
+      dalServices.rollback();
+      return false;
+    }
+    dalServices.commit();
+    return true;
   }
 
   /**
@@ -43,7 +59,12 @@ public class InterestUCCImpl implements InterestUCC {
    */
   @Override
   public boolean memberExist(int idMember) {
-    return interestDAO.memberExist(idMember);
+    dalServices.start();
+    if (!interestDAO.memberExist(idMember)) {
+      dalServices.rollback();
+    }
+    dalServices.commit();
+    return true;
   }
 
   /**
@@ -55,7 +76,12 @@ public class InterestUCCImpl implements InterestUCC {
    */
   @Override
   public boolean interestExist(int idOffer, int idMember) {
-    return interestDAO.interestExist(idOffer, idMember);
+    dalServices.start();
+    if (!interestDAO.interestExist(idOffer, idMember)) {
+      dalServices.rollback();
+    }
+    dalServices.commit();
+    return true;
   }
 
 }
