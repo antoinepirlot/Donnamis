@@ -30,9 +30,9 @@ public class ApplicationBinder extends AbstractBinder {
 
   @Override
   protected void configure() {
-    bind(DALServicesImpl.class).to(DALServices.class).in(Singleton.class);
     bind(FactoryImpl.class).to(Factory.class).in(Singleton.class);
-    bind(DALServicesImpl.class).to(DALBackendService.class).in(Singleton.class);
+    bind(DALServicesImpl.class).to(DALBackendService.class).to(DALServices.class)
+        .in(Singleton.class);
 
     //Member
     bind(MemberDAOImpl.class).to(MemberDAO.class).in(Singleton.class);
