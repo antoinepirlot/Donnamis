@@ -8,9 +8,9 @@ import java.sql.Date;
 @JsonDeserialize(as = OfferImpl.class)
 public interface OfferDTO {
 
-  int getIdOffer();
+  int getId();
 
-  void setIdOffer(int idOffer);
+  void setId(int id);
 
   Date getDate();
 

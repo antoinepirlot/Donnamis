@@ -7,7 +7,7 @@ import java.sql.Date;
 
 public class OfferImpl implements Offer {
 
-  private int idOffer;
+  private int id;
   private Date date;
   private String timeSlot;
   private Item item;
@@ -16,12 +16,12 @@ public class OfferImpl implements Offer {
     this.date = new Date(System.currentTimeMillis());
   }
 
-  public int getIdOffer() {
-    return idOffer;
+  public int getId() {
+    return id;
   }
 
-  public void setIdOffer(int idOffer) {
-    this.idOffer = idOffer;
+  public void setId(int id) {
+    this.id = id;
   }
 
   public Date getDate() {

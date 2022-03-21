@@ -136,7 +136,7 @@ public class ItemDAOImpl implements ItemDAO {
             + "VALUES (?, ?, ?, ?, ?, ?)";
     try (PreparedStatement ps = dalServices.getPreparedStatement(query)) {
       ps.setString(1, itemDTO.getItemDescription());
-      ps.setInt(2, itemDTO.getItemType().getIdType());
+      ps.setInt(2, itemDTO.getItemType().getId());
       ps.setInt(3, itemDTO.getMember().getId());
       ps.setString(4, itemDTO.getPhoto());
       ps.setString(5, itemDTO.getTitle());
@@ -183,7 +183,7 @@ public class ItemDAOImpl implements ItemDAO {
 
   private ItemTypeDTO createItemTypeInstance(ResultSet rs) throws SQLException {
     ItemTypeDTO itemTypeDTO = factory.getItemType();
-    itemTypeDTO.setIdType(rs.getInt("id_item_type"));
+    itemTypeDTO.setId(rs.getInt("id_item_type"));
     itemTypeDTO.setItemType(rs.getString("item_type"));
     return itemTypeDTO;
   }

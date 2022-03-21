@@ -2,6 +2,10 @@ package be.vinci.pae.biz.interest.objects;
 
 import be.vinci.pae.biz.interest.interfaces.Interest;
 import be.vinci.pae.biz.interest.interfaces.InterestDTO;
+import be.vinci.pae.biz.member.interfaces.Member;
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.offer.interfaces.Offer;
+import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import java.util.Date;
 import java.util.Objects;
 
@@ -9,8 +13,8 @@ public class InterestImpl implements Interest, InterestDTO {
 
   private int id;
   private boolean callWanted;
-  private int idOffer;
-  private int idMember;
+  private Offer offer;
+  private Member member;
   private Date date;
 
   public InterestImpl() {
@@ -18,7 +22,7 @@ public class InterestImpl implements Interest, InterestDTO {
   }
 
   @Override
-  public int getIdInterest() {
+  public int getId() {
     return id;
   }
 
@@ -38,23 +42,23 @@ public class InterestImpl implements Interest, InterestDTO {
   }
 
   @Override
-  public int getIdOffer() {
-    return idOffer;
+  public OfferDTO getOffer() {
+    return offer;
   }
 
   @Override
-  public void setIdOffer(int idOffer) {
-    this.idOffer = idOffer;
+  public void setOffer(OfferDTO offer) {
+    this.offer = (Offer) offer;
   }
 
   @Override
-  public int getIdMember() {
-    return idMember;
+  public MemberDTO getMember() {
+    return member;
   }
 
   @Override
-  public void setIdMember(int idMember) {
-    this.idMember = idMember;
+  public void setMember(MemberDTO member) {
+    this.member = (Member) member;
   }
 
   @Override
@@ -77,13 +81,13 @@ public class InterestImpl implements Interest, InterestDTO {
     }
     InterestImpl interest = (InterestImpl) o;
     return id == interest.id && callWanted == interest.callWanted
-        && idOffer == interest.idOffer && idMember == interest.idMember
+        && offer == interest.offer && member == interest.member
         && Objects.equals(date, interest.date);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, callWanted, idOffer, idMember, date);
+    return Objects.hash(id, callWanted, offer, member, date);
   }
 
   @Override
@@ -91,8 +95,8 @@ public class InterestImpl implements Interest, InterestDTO {
     return "Interest{"
         + "id_interest=" + id
         + ", call_wanted=" + callWanted
-        + ", id_offer=" + idOffer
-        + ", id_member=" + idMember
+        + ", id_offer=" + offer
+        + ", id_member=" + member
         + ", date=" + date
         + '}';
   }

@@ -1,10 +1,13 @@
 package be.vinci.pae.biz.interest.interfaces;
 
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.offer.interfaces.Offer;
+import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import java.util.Date;
 
 public interface InterestDTO {
 
-  int getIdInterest();
+  int getId();
 
   void setId(int id);
 
@@ -12,13 +15,13 @@ public interface InterestDTO {
 
   void setCallWanted(boolean callWanted);
 
-  int getIdOffer();
+  OfferDTO getOffer();
 
-  void setIdOffer(int idOffer);
+  void setOffer(OfferDTO offer);
 
-  int getIdMember();
+  MemberDTO getMember();
 
-  void setIdMember(int idMember);
+  void setMember(MemberDTO idMember);
 
   Date getDate();
 

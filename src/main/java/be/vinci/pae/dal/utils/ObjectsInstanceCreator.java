@@ -50,7 +50,7 @@ public class ObjectsInstanceCreator {
     System.out.println("Setting all item type attributes");
     ItemTypeDTO itemTypeDTO = factory.getItemType();
     try {
-      itemTypeDTO.setIdType(rs.getInt("id_type"));
+      itemTypeDTO.setId(rs.getInt("id_type"));
       itemTypeDTO.setItemType(StringEscapeUtils.escapeHtml4(rs.getString("item_type")));
     } catch (SQLException e) {
       e.printStackTrace();

@@ -138,7 +138,7 @@ public class OfferDAOImpl implements OfferDAO {
         PreparedStatement ps = dalServices.getPreparedStatement(query)
     ) {
       ps.setString(1, StringEscapeUtils.escapeHtml4(itemDTO.getItemDescription()));
-      ps.setInt(2, itemDTO.getItemType().getIdType());
+      ps.setInt(2, itemDTO.getItemType().getId());
       ps.setInt(3,  itemDTO.getMember().getId());
       ps.setString(4, StringEscapeUtils.escapeHtml4(itemDTO.getPhoto()));
       ps.setString(5, StringEscapeUtils.escapeHtml4(itemDTO.getTitle()));
@@ -167,7 +167,7 @@ public class OfferDAOImpl implements OfferDAO {
     System.out.println("Offer instance creation");
     OfferDTO offerDTO = factory.getOffer();
     System.out.println("Factory réussie");
-    offerDTO.setIdOffer(rs.getInt("id_offer"));
+    offerDTO.setId(rs.getInt("id_offer"));
     System.out.println("id_offer set");
     System.out.println(rs.getDate("date"));
     offerDTO.setDate(rs.getDate("date"));

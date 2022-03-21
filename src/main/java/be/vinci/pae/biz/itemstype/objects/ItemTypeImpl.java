@@ -3,16 +3,16 @@ package be.vinci.pae.biz.itemstype.objects;
 import be.vinci.pae.biz.itemstype.interfaces.ItemType;
 
 public class ItemTypeImpl implements ItemType {
-  private int idType;
 
+  private int id;
   private String itemType;
 
-  public int getIdType() {
-    return idType;
+  public int getId() {
+    return id;
   }
 
-  public void setIdType(int idType) {
-    this.idType = idType;
+  public void setId(int id) {
+    this.id = id;
   }
 
   public String getItemType() {
