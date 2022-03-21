@@ -71,7 +71,9 @@ async function getOffersInfo(idOffer) {
     }
     const offer = await response.json()
     var date = new Date(offer.date);
-    date = date.getDate() + "/" + date.getMonth() + 1 + "/" + date.getFullYear()
+    console.log(date.getMonth());
+    date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
+        + date.getFullYear();
 
     document.querySelector("#title").innerHTML = offer.item.title
     document.querySelector(
@@ -90,16 +92,16 @@ async function getOffersInfo(idOffer) {
 }
 
 async function postInterest(e) {
-  console.log("postInterest")
+  console.log("postInterest");
   e.preventDefault();
   const payload = await getPayload();
-  const memberId = payload.id
-  console.log("id= " + memberId)
+  const memberId = payload.id;
+  console.log("id= " + memberId);
   const interestMessage = document.querySelector("#interestMessage");
   //get param from url
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const offerId = urlParams.get("id")
+  const offerId = urlParams.get("id");
   try {
     const request = {
       method: "POST",
@@ -113,10 +115,14 @@ async function postInterest(e) {
           })
     };
     const response = await fetch(`api/interests/${offerId}`, request);
+    console.table(response);
     if (response.ok) {
       showError(
           "Votre intérêt pour cet article à été bien été enregistré.",
-          "success", interestMessage)
+          "success", interestMessage);
+    } else if (response.status === 409) {
+      showError("Vous avez déjà mis une marque d'intérêt pour cette offre",
+          "danger", interestMessage);
     }
   } catch (err) {
     showError("Votre marque d'intérêt n'a pas pu être ajoutée", "danger",

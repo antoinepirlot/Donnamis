@@ -39,6 +39,7 @@ public class InterestResource {
 
     //Verify if the offer already exist
     if (!interestUCC.offerExist(idOffer)) {
+      System.out.println("offer does not exist");
       throw new WebApplicationException(Response.status(Status.NOT_FOUND)
           .entity("offer not found").type("text/plain").build());
     }
@@ -52,14 +53,16 @@ public class InterestResource {
 
     //Verify if the member already exist
     if (!interestUCC.memberExist(idMember)) {
+      System.out.println("member does not exist");
+
       throw new WebApplicationException(Response.status(Status.NOT_FOUND)
           .entity("interest already exist").type("text/plain").build());
     }
 
     //Verify if the interest already exist
     if (interestUCC.interestExist(idOffer, idMember)) {
-      throw new WebApplicationException(Response.status(Status.NOT_FOUND)
-          .entity("member not found").type("text/plain").build());
+      throw new WebApplicationException(Response.status(Status.CONFLICT)
+          .entity("interest already exist").type("text/plain").build());
     }
 
     //Add the interest
