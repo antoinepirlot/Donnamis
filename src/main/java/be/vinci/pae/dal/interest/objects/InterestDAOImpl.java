@@ -1,7 +1,7 @@
 package be.vinci.pae.dal.interest.objects;
 
 import be.vinci.pae.dal.interest.interfaces.InterestDAO;
-import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import jakarta.inject.Inject;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class InterestDAOImpl implements InterestDAO {
 
   @Inject
-  private DALServices dalServices;
+  private DALBackendService dalBackendService;
   //@Inject
   //private Factory factory;
 
@@ -21,7 +21,7 @@ public class InterestDAOImpl implements InterestDAO {
     String query =
         "INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date) VALUES"
             + "(?, ?, ?, ?) RETURNING *";
-    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setBoolean(1, callWanted);
       preparedStatement.setInt(2, idOffer);
       preparedStatement.setInt(3, idMember);
@@ -52,7 +52,7 @@ public class InterestDAOImpl implements InterestDAO {
   @Override
   public boolean interestExist(int idOffer, int idMember) {
     String query = "SELECT * FROM project_pae.interests WHERE id_offer = ? AND id_member = ?";
-    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, idOffer);
       preparedStatement.setInt(2, idMember);
       try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -69,7 +69,7 @@ public class InterestDAOImpl implements InterestDAO {
   //*****UTILS******
 
   private boolean executeQueryWithId(int idMember, String query) {
-    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, idMember);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {

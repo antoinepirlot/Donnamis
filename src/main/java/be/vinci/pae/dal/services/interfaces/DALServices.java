@@ -1,9 +1,13 @@
 package be.vinci.pae.dal.services.interfaces;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.Connection;
 
 public interface DALServices {
 
-  PreparedStatement getPreparedStatement(String query) throws SQLException;
+  Connection start();
+
+  boolean commit();
+
+  boolean rollback();
+
 }
