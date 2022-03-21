@@ -75,6 +75,12 @@ const allItemsLinkHtml = `
           </li>
 `;
 
+const allOfferedItemsLinkHtml = `
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-uri="/all_offered_items">All Offered Items</a>
+          </li>
+`;
+
 const offersDetail = `
           <li class="nav-item">
             <a class="nav-link" href="#" data-uri="/offer?id=1">Offer detail</a>
@@ -91,6 +97,7 @@ const Navbar = async () => {
     document.querySelector("#usernameNavbar").innerHTML = memberDTO.username
     links.innerHTML += latestItemsLinkHtml;
     links.innerHTML += allItemsLinkHtml;
+    links.innerHTML += allOfferedItemsLinkHtml;
     links.innerHTML += offersDetail;
     links.innerHTML += logoutLinkHtml;
   } else {

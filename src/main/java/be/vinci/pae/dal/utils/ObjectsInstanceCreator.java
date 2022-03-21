@@ -35,14 +35,14 @@ public class ObjectsInstanceCreator {
     return offerDTO;
   }
 
-    /**
-     * Create an item instance with the factory and set all its attributes with data selected from the
-     * db.
-     *
-     * @param factory the factory that gives an item
-     * @param rs      the result set that contains item's data
-     * @return a new item instance with initialized attributes
-     */
+  /**
+   * Create an item instance with the factory and set all its attributes with data selected from the
+   * db.
+   *
+   * @param factory the factory that gives an item
+   * @param rs      the result set that contains item's data
+   * @return a new item instance with initialized attributes
+   */
   public static ItemDTO createItemInstance(Factory factory, ResultSet rs) {
     System.out.println("Setting all item attributes");
     ItemDTO itemDTO = factory.getItem();

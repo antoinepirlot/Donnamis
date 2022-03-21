@@ -3,7 +3,7 @@ package be.vinci.pae.biz.factory.objects;
 import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.address.objects.AddressImpl;
 import be.vinci.pae.biz.factory.interfaces.Factory;
-import be.vinci.pae.biz.item.interfaces.Item;
+import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.objects.ItemImpl;
 import be.vinci.pae.biz.itemstype.interfaces.ItemTypeDTO;
 import be.vinci.pae.biz.itemstype.objects.ItemTypeImpl;
@@ -25,7 +25,7 @@ public class FactoryImpl implements Factory {
   }
 
   @Override
-  public Item getItem() {
+  public ItemDTO getItem() {
     return new ItemImpl();
   }
 

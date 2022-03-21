@@ -4,6 +4,7 @@ import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.utils.Config;
+import be.vinci.pae.utils.LoggerHandler;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -57,7 +58,11 @@ public class MemberResource {
     try {
       return listMemberDTO;
     } catch (Exception e) {
-      System.out.println("Unable to create list of member");
+      LoggerHandler.severeLog(
+          "getAllMembers",
+          getClass(),
+          "The list can't be created."
+      );
       return null;
     }
   }
@@ -81,7 +86,11 @@ public class MemberResource {
     try {
       return listMemberDTO;
     } catch (Exception e) {
-      System.out.println("Unable to create list of member");
+      LoggerHandler.severeLog(
+          "getAllMembers",
+          getClass(),
+          "Unable to create list of member."
+      );
       return null;
     }
   }
@@ -105,7 +114,11 @@ public class MemberResource {
     try {
       return listMemberDTO;
     } catch (Exception e) {
-      System.out.println("Unable to create list of member");
+      LoggerHandler.severeLog(
+          "getAllMembers",
+          getClass(),
+          "Unable to create list of member."
+      );
       return null;
     }
   }
@@ -202,7 +215,11 @@ public class MemberResource {
           .put("token", token)
           .putPOJO("memberDTO", memberDTO);
     } catch (Exception e) {
-      System.out.println("Unable to create token");
+      LoggerHandler.severeLog(
+          "getAllMembers",
+          getClass(),
+          "Unable to create token."
+      );
       return null;
     }
   }
