@@ -51,10 +51,10 @@ async function getOffersInfo(idOffer) {
     date = date.getDate() + "/" + date.getMonth()+1 + "/" + date.getFullYear()
 
     document.querySelector("#title").innerHTML = offer.item.title
-    document.querySelector("#offerer").innerHTML = `Offre proposée par : ${offer.member.firstName} ${offer.member.lastName} `
-    document.querySelector("#type").innerHTML = `Type : ${offer.item.item_type}`
-    document.querySelector("#description").innerHTML = `Description : ${offer.item.item_description}`
-    document.querySelector("#availabilities").innerHTML = `Disponibilités : ${offer.time_slot}`
+    document.querySelector("#offerer").innerHTML = `Offre proposée par : ${offer.item.member.firstName} ${offer.item.member.lastName} `
+    document.querySelector("#type").innerHTML = `Type : ${offer.item.itemType.itemType}`
+    document.querySelector("#description").innerHTML = `Description : ${offer.item.itemDescription}`
+    document.querySelector("#availabilities").innerHTML = `Disponibilités : ${offer.timeSlot}`
     document.querySelector("#pubDate").innerHTML = `Date de publication : ${date}`
   } catch (err) {
     console.error(err);

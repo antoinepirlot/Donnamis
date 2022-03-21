@@ -2,6 +2,8 @@ package be.vinci.pae.biz.offer.objects;
 
 import be.vinci.pae.biz.item.interfaces.Item;
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
+import be.vinci.pae.biz.member.interfaces.Member;
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.interfaces.Offer;
 import java.sql.Date;
 
@@ -62,7 +64,7 @@ public class OfferImpl implements Offer {
     return "OfferImpl{" +
         "idOffer=" + idOffer +
         ", date=" + date +
-        ", time_slot='" + time_slot + '\'' +
+        ", time_slot='" + timeSlot + '\'' +
         ", item=" + item +
         '}';
   }

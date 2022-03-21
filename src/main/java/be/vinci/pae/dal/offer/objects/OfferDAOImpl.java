@@ -1,10 +1,13 @@
-package be.vinci.pae.dal;
+package be.vinci.pae.dal.offer.objects;
 
-import be.vinci.pae.biz.AddressDTO;
-import be.vinci.pae.biz.Factory;
-import be.vinci.pae.biz.ItemDTO;
-import be.vinci.pae.biz.MemberDTO;
-import be.vinci.pae.biz.OfferDTO;
+import be.vinci.pae.biz.address.interfaces.AddressDTO;
+import be.vinci.pae.biz.factory.interfaces.Factory;
+import be.vinci.pae.biz.item.interfaces.ItemDTO;
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.offer.interfaces.OfferDTO;
+import be.vinci.pae.dal.offer.interfaces.OfferDAO;
+import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,17 +43,18 @@ public class OfferDAOImpl implements OfferDAO {
   public List<OfferDTO> getLatestOffers() {
     System.out.println("getLatestOffers");
     List<OfferDTO> offersToReturn = new ArrayList<>();
-    try {
-      String query =
-          "SELECT offers.id_offer, offers.date, offers.time_slot, items.id_item, items.item_description, items.id_item_type, items.id_member, items.photo, items.title, items.offer_status\n"
-              + "FROM project_pae.offers offers\n"
-              + "         LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item\n"
-              + "ORDER BY offers.date DESC ";
-      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
-      System.out.println("Préparation du statement");
+    String query =
+        "SELECT offers.id_offer, offers.date, offers.time_slot, items.id_item, "
+            + "items.item_description, items.id_item_type, items.id_member, items.photo, "
+            + "items.title, items.offer_status "
+            + "FROM project_pae.offers offers "
+            + "LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item "
+            + "ORDER BY offers.date DESC;";
+    System.out.println("Préparation du statement");
+    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)){
       try (ResultSet rs = preparedStatement.executeQuery()) {
         while (rs.next()) {
-          OfferDTO offerDTO = createOfferInstance(rs);
+          OfferDTO offerDTO = ObjectsInstanceCreator.createOfferInstance(this.factory, rs);
           offersToReturn.add(offerDTO);
         }
       }
@@ -66,16 +70,17 @@ public class OfferDAOImpl implements OfferDAO {
   public List<OfferDTO> getAllOffers() {
     System.out.println("getAllOffers");
     List<OfferDTO> offersToReturn = new ArrayList<>();
-    try {
-      String query =
-          "SELECT offers.id_offer, offers.date, offers.time_slot, items.id_item, items.item_description, items.id_item_type, items.id_member, items.photo, items.title, items.offer_status\n"
-              + "FROM project_pae.offers offers\n"
-              + "         LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item";
-      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
-      System.out.println("Préparation du statement");
+    String query =
+        "SELECT offers.id_offer, offers.date, offers.time_slot, items.id_item, "
+            + "items.item_description, items.id_item_type, items.id_member, items.photo, "
+            + "items.title, items.offer_status "
+            + "FROM project_pae.offers offers "
+            + "LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item;";
+    System.out.println("Préparation du statement");
+    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)){
       try (ResultSet rs = preparedStatement.executeQuery()) {
         while (rs.next()) {
-          OfferDTO offerDTO = createOfferInstance(rs);
+          OfferDTO offerDTO = ObjectsInstanceCreator.createOfferInstance(this.factory, rs);
           offersToReturn.add(offerDTO);
         }
       }
@@ -92,9 +97,11 @@ public class OfferDAOImpl implements OfferDAO {
     System.out.println("Get one offer by ID");
     String query =
 
-        "SELECT item.id_item, item.id_item_type, item.photo, item.offer_status, item.title, item.id_member,"
-        + "       item.item_description, item_type.item_type,offer.id_offer,offer.date, offer.time_slot,"
-        + "       member.first_name, member.last_name"
+        "SELECT item.id_item, item.photo, item.offer_status, item.title, "
+            + "item.id_member, item.item_description, "
+            + "item_type.item_type, item_type.id_type, "
+            + "offer.id_offer,offer.date, offer.time_slot,"
+            + "member.first_name, member.last_name, member.username "
         + " FROM project_pae.items item, project_pae.items_types item_type, project_pae.offers offer, project_pae.members member"
         + " WHERE item.id_item_type = item_type.id_type AND"
         + "       item.id_item = offer.id_item AND"
@@ -106,7 +113,7 @@ public class OfferDAOImpl implements OfferDAO {
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) { //We know only one is returned by the db
           System.out.println("OFFER FOUNDED");
-          return createOfferInstance(rs);
+          return ObjectsInstanceCreator.createOfferInstance(this.factory, rs);
         }
       }
     } catch (SQLException e) {
@@ -128,7 +135,7 @@ public class OfferDAOImpl implements OfferDAO {
         PreparedStatement ps = dalServices.getPreparedStatement(query)
     ) {
       ps.setDate(1, offerDTO.getDate());
-      ps.setString(2, StringEscapeUtils.escapeHtml4(offerDTO.getTime_slot()));
+      ps.setString(2, StringEscapeUtils.escapeHtml4(offerDTO.getTimeSlot()));
       ps.setInt(3, offerDTO.getItem().getId());
 
       try {
@@ -160,12 +167,12 @@ public class OfferDAOImpl implements OfferDAO {
     try (
         PreparedStatement ps = dalServices.getPreparedStatement(query)
     ) {
-      ps.setString(1, StringEscapeUtils.escapeHtml4(itemDTO.getItem_description()));
-      ps.setInt(2, itemDTO.getId_item_type());
-      ps.setInt(3, itemDTO.getId_member());
+      ps.setString(1, StringEscapeUtils.escapeHtml4(itemDTO.getItemDescription()));
+      ps.setInt(2, itemDTO.getItemType().getIdType());
+      ps.setInt(3, itemDTO.getMember().getId());
       ps.setString(4, StringEscapeUtils.escapeHtml4(itemDTO.getPhoto()));
       ps.setString(5, StringEscapeUtils.escapeHtml4(itemDTO.getTitle()));
-      ps.setString(6, StringEscapeUtils.escapeHtml4(itemDTO.getOffer_status()));
+      ps.setString(6, StringEscapeUtils.escapeHtml4(itemDTO.getOfferStatus()));
       int result = ps.executeUpdate();
       if (result != 0) {
         System.out.println("Ajout de l'item réussi");
@@ -179,26 +186,4 @@ public class OfferDAOImpl implements OfferDAO {
 
   //****************************** UTILS *******************************
 
-  /**
-   * Create an Offer instance.
-   *
-   * @param rs the result set that contains sql result
-   * @return a new instance of offer based on what rs contains
-   * @throws SQLException if there's an issue while getting data from the result set
-   */
-  private OfferDTO createOfferInstance(ResultSet rs) throws SQLException {
-    System.out.println("Offer instance creation");
-    OfferDTO offerDTO = factory.getOffer();
-    offerDTO.setIdOffer(rs.getInt("id_offer"));
-    offerDTO.setDate(rs.getDate("date"));
-    offerDTO.setTime_slot(rs.getString("time_slot"));
-    offerDTO.setItem(this.createItemInstance(rs));
-    offerDTO.setMember(this.createMemberInstance(rs));
-    System.out.println("date set");
-    offerDTO.setTimeSlot(rs.getString("time_slot"));
-    System.out.println("tile_slot set");
-    offerDTO.setItem(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
-
-    return offerDTO;
-  }
 }
