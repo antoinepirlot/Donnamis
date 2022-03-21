@@ -23,7 +23,7 @@ const loginFormHtml = `
       <label class="form-check-label" >Se souvenir de moi</label>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
-    <div class="form-error-message" id="loginMessage"></div>
+    <div class="message" id="loginMessage"></div>
   </form>
 </div>
 `;

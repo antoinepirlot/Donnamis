@@ -1,6 +1,10 @@
 package be.vinci.pae.biz.interest.objects;
 
+import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.member.interfaces.MemberUCC;
+import be.vinci.pae.biz.member.objects.MemberUCCImpl;
 import be.vinci.pae.dal.interest.interfaces.InterestDAO;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
@@ -9,6 +13,9 @@ public class InterestUCCImpl implements InterestUCC {
 
   @Inject
   private InterestDAO interestDAO;
+
+  @Inject
+  private MemberUCC memberUCC;
 
   /**
    * Mark the interest in an offer.
@@ -21,6 +28,14 @@ public class InterestUCCImpl implements InterestUCC {
   @Override
   public int markInterest(int idMember, int idOffer, boolean callWanted) {
     LocalDate date = LocalDate.now();
+    System.out.println("MARK INTEREST -----------");
+    if(callWanted){
+      MemberDTO memberDTO = memberUCC.getOneMember(idMember);
+      System.out.println("PHONE NUMB : " + memberDTO.getPhoneNumber());
+      if(memberDTO.getPhoneNumber() == null){
+        return 0;
+      }
+    }
     return interestDAO.markInterest(idMember, idOffer, callWanted, date);
   }
 
