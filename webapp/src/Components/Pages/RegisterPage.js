@@ -56,7 +56,7 @@ const registerFormHtml = `
       <input type="text" class="form-control" id="postcodeInput">
     </div>
     
-    <div id="registerMessage"></div>
+    <div class="message" id="registerMessage"></div>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </div>
