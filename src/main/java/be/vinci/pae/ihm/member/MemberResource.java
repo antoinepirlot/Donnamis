@@ -58,7 +58,7 @@ public class MemberResource {
     try {
       return listMemberDTO;
     } catch (Exception e) {
-      LoggerHandler.infoLog(
+      LoggerHandler.severeLog(
           "getAllMembers",
           getClass().toString(),
           "The list can't be created."
@@ -86,7 +86,7 @@ public class MemberResource {
     try {
       return listMemberDTO;
     } catch (Exception e) {
-      LoggerHandler.infoLog(
+      LoggerHandler.severeLog(
           "getAllMembers",
           getClass().toString(),
           "Unable to create list of member."
@@ -114,7 +114,7 @@ public class MemberResource {
     try {
       return listMemberDTO;
     } catch (Exception e) {
-      LoggerHandler.infoLog(
+      LoggerHandler.severeLog(
           "getAllMembers",
           getClass().toString(),
           "Unable to create list of member."
@@ -215,7 +215,7 @@ public class MemberResource {
           .put("token", token)
           .putPOJO("memberDTO", memberDTO);
     } catch (Exception e) {
-      LoggerHandler.infoLog(
+      LoggerHandler.severeLog(
           "getAllMembers",
           getClass().toString(),
           "Unable to create token."
