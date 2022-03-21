@@ -5,7 +5,7 @@ import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.itemstype.interfaces.ItemTypeDTO;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
-import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -17,13 +17,13 @@ import java.util.List;
 public class ItemDAOImpl implements ItemDAO {
 
 
+  private static final String DEFAULT_OFFER_STATUS = "donated";
   @Inject
   private Factory factory;
   @Inject
-  private DALServices dalServices;
+  private DALBackendService dalBackendService;
   @Inject
   private MemberDAO memberDAO;
-  private static final String DEFAULT_OFFER_STATUS = "donated";
 
   /**
    * Get the latest items from the database.
@@ -46,7 +46,7 @@ public class ItemDAOImpl implements ItemDAO {
           + "         LEFT OUTER JOIN project_pae.offers offers\n"
           + "                         ON items.id_item = offers.id_item\n"
           + "ORDER BY offers.date DESC";
-      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
+      PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query);
       System.out.println("Préparation du statement");
       try (ResultSet rs = preparedStatement.executeQuery()) {
         while (rs.next()) {
@@ -74,7 +74,7 @@ public class ItemDAOImpl implements ItemDAO {
     List<ItemDTO> itemsToReturn = new ArrayList<>();
     try {
       String query = "SELECT * FROM project_pae.items";
-      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
+      PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query);
       System.out.println("Préparation du statement");
       try (ResultSet rs = preparedStatement.executeQuery()) {
         while (rs.next()) {
@@ -99,7 +99,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "m.username, m.last_name, m.first_name "
         + "FROM project_pae.items i, project_pae.items_types it, project_pae.members m "
         + "WHERE i.id_item_type = it.id_type AND i.id_member = m.id_member AND i.offer_status = ?;";
-    try (PreparedStatement ps = this.dalServices.getPreparedStatement(query)) {
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setString(1, DEFAULT_OFFER_STATUS);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
@@ -115,7 +115,7 @@ public class ItemDAOImpl implements ItemDAO {
   @Override
   public ItemDTO getOneItem(int id) {
     String query = "SELECT * FROM project_pae.items i WHERE i.id_item = ?";
-    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
@@ -134,7 +134,7 @@ public class ItemDAOImpl implements ItemDAO {
         "INSERT INTO project_pae.items (item_description, id_item_type, id_member, photo, "
             + "title, offer_status) "
             + "VALUES (?, ?, ?, ?, ?, ?)";
-    try (PreparedStatement ps = dalServices.getPreparedStatement(query)) {
+    try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
       ps.setString(1, itemDTO.getItemDescription());
       ps.setInt(2, itemDTO.getItemType().getId());
       ps.setInt(3, itemDTO.getMember().getId());
@@ -155,7 +155,7 @@ public class ItemDAOImpl implements ItemDAO {
   public ItemDTO cancelOffer(int id) {
     String query = "UPDATE project_pae.items SET offer_status = 'cancelled' WHERE id_item = ? "
         + "RETURNING *";
-    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {

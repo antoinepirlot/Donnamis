@@ -4,7 +4,7 @@ import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.dal.offer.interfaces.OfferDAO;
-import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -17,7 +17,7 @@ import org.apache.commons.text.StringEscapeUtils;
 public class OfferDAOImpl implements OfferDAO {
 
   @Inject
-  private DALServices dalServices;
+  private DALBackendService dalBackendService;
   @Inject
   private Factory factory;
 
@@ -49,7 +49,7 @@ public class OfferDAOImpl implements OfferDAO {
             + "LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item "
             + "ORDER BY offers.date DESC;";
     System.out.println("Préparation du statement");
-    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       try (ResultSet rs = preparedStatement.executeQuery()) {
         while (rs.next()) {
           OfferDTO offerDTO = ObjectsInstanceCreator.createOfferInstance(this.factory, rs);
@@ -75,7 +75,7 @@ public class OfferDAOImpl implements OfferDAO {
             + "FROM project_pae.offers offers "
             + "LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item;";
     System.out.println("Préparation du statement");
-    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       try (ResultSet rs = preparedStatement.executeQuery()) {
         while (rs.next()) {
           OfferDTO offerDTO = ObjectsInstanceCreator.createOfferInstance(this.factory, rs);
@@ -105,7 +105,7 @@ public class OfferDAOImpl implements OfferDAO {
             + "       item.id_item = offer.id_item AND"
             + "       item.id_member = member.id_member AND"
             + "       offer.id_offer = ?";
-    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       System.out.println("Prepared statement successfully generated");
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -130,7 +130,7 @@ public class OfferDAOImpl implements OfferDAO {
   private boolean addOne(OfferDTO offerDTO) {
     String query = "INSERT INTO project_pae.offers (date, time_slot, id_item) VALUES (?, ?, ?)";
     try (
-        PreparedStatement ps = dalServices.getPreparedStatement(query)
+        PreparedStatement ps = dalBackendService.getPreparedStatement(query)
     ) {
       ps.setDate(1, offerDTO.getDate());
       ps.setString(2, StringEscapeUtils.escapeHtml4(offerDTO.getTimeSlot()));
@@ -163,7 +163,7 @@ public class OfferDAOImpl implements OfferDAO {
         + "photo, title, offer_status) "
         + "VALUES (?, ?, ?, ?, ?, ?);";
     try (
-        PreparedStatement ps = dalServices.getPreparedStatement(query)
+        PreparedStatement ps = dalBackendService.getPreparedStatement(query)
     ) {
       ps.setString(1, StringEscapeUtils.escapeHtml4(itemDTO.getItemDescription()));
       ps.setInt(2, itemDTO.getItemType().getId());
