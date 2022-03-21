@@ -18,13 +18,13 @@ const viewOfferHtml = `
 
         <form>
                 <div class="form-check form-switch">
-         <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-          <label class="form-check-label" for="flexSwitchCheckChecked">J'accepte d'être appelé</label>
+         <input class="form-check-input" type="checkbox" id="callWanted">
+         <label class="form-check-label" for="callWanted">J'accepte d'être appelé</label>
         </div>
                <input id="interestButton" type="submit" class="btn btn-primary" value="Je suis interessé(e) !">
        </form>
 
-       <div id="interestMessage"></div>
+       <div class="message" id="interestMessage"></div>
       </div>
     </div>
     <div class="col-md-4">
@@ -52,15 +52,14 @@ async function ViewOfferPage() {
   const button = document.querySelector("#offerCard");
   //get offer's infos with the id in param
   await getOffersInfo(offerId)
-  console.log("TEST")
   //post an interest
   button.addEventListener("submit", postInterest);
-  console.log("TEST")
 
 }
 
 async function getOffersInfo(idOffer) {
   try {
+
     const response = await fetch(`/api/offers/${idOffer}`);
     if (!response.ok) {
       // status code was not 200, error status code
@@ -71,7 +70,6 @@ async function getOffersInfo(idOffer) {
     }
     const offer = await response.json()
     var date = new Date(offer.date);
-    console.log(date.getMonth());
     date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
         + date.getFullYear();
 
@@ -114,14 +112,22 @@ async function postInterest(e) {
             "idMember": memberId
           })
     };
-    const response = await fetch(`api/interests/${offerId}`, request);
-    console.table(response);
+    const callWanted = document.querySelector("#callWanted");
+    let response = null;
+    if(callWanted.checked){
+      response = await fetch(`api/interests/${offerId}?call_wanted=true`, request);
+    }else{
+      response = await fetch(`api/interests/${offerId}`, request);
+    }
     if (response.ok) {
       showError(
           "Votre intérêt pour cet article à été bien été enregistré.",
           "success", interestMessage);
     } else if (response.status === 409) {
       showError("Vous avez déjà mis une marque d'intérêt pour cette offre",
+          "danger", interestMessage);
+    } else if (response.status === 403) {
+      showError("Votre numero de téléphone n'est pas renseigné, veuillez l'ajouter si vous désirez être appelé.",
           "danger", interestMessage);
     }
   } catch (err) {
