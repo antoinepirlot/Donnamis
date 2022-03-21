@@ -1,5 +1,5 @@
 ### get all
-GET {{baseUrl}}/members
+GET {{baseUrl}}/members/list_member
 
 ### Login with default user credentials
 POST {{baseUrl}}/members/login

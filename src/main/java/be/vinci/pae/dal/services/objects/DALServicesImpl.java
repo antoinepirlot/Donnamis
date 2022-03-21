@@ -34,21 +34,21 @@ public class DALServicesImpl implements DALServices, DALBackendService {
    * @return the db connection
    */
   public Connection start() {
-    Connection connection = null;
     try {
       //connection = DriverManager.getConnection(url, user, dbPassword); //postgres password
       //Creating connection
-      connection = basicDataSource.getConnection();
+      Connection connection = basicDataSource.getConnection();
+      System.out.println("Connexion prise par le thread : " + connection);
       //Set the connection in the ThreadLocal Map
       connection.setAutoCommit(false);
       dbThreadLocal.set(connection);
-
+      System.out.println("Connection à la db réussie.");
+      return connection;
     } catch (SQLException e) {
       System.out.println("Impossible de joindre le serveur");
       System.exit(1);
     }
-    System.out.println("Connection à la db réussie.");
-    return connection;
+    return null;
   }
 
   @Override
@@ -100,7 +100,10 @@ public class DALServicesImpl implements DALServices, DALBackendService {
    */
   @Override
   public PreparedStatement getPreparedStatement(String query) throws SQLException {
+    System.out.println("Récupération de la connection du thread courant");
     Connection connection = dbThreadLocal.get();
+    System.out.println(connection);
+    System.out.println("Preparation du query");
     return connection.prepareStatement(query);
   }
 

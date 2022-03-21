@@ -50,12 +50,17 @@ public class OfferDAOImpl implements OfferDAO {
             + "ORDER BY offers.date DESC;";
     System.out.println("Préparation du statement");
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
+      if (preparedStatement == null) {
+        throw new NullPointerException();
+      }
       try (ResultSet rs = preparedStatement.executeQuery()) {
+
         while (rs.next()) {
           OfferDTO offerDTO = ObjectsInstanceCreator.createOfferInstance(this.factory, rs);
           offersToReturn.add(offerDTO);
         }
       }
+
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
