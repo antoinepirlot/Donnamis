@@ -21,10 +21,10 @@ public class LoggerHandler {
   }
 
   public static void severeLog(String method, String className) {
-    severLog(method, className, "");
+    severeLog(method, className, "");
   }
 
-  public static void severLog(String method, String className, String message) {
+  public static void severeLog(String method, String className, String message) {
     logger.log(Level.SEVERE, getLog(method, className, message));
   }
 
