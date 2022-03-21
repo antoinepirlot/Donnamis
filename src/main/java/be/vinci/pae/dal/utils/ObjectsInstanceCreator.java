@@ -24,7 +24,7 @@ public class ObjectsInstanceCreator {
   public static OfferDTO createOfferInstance(Factory factory, ResultSet rs) throws SQLException {
     System.out.println("Offer instance creation");
     OfferDTO offerDTO = factory.getOffer();
-    offerDTO.setIdOffer(rs.getInt("id_offer"));
+    offerDTO.setId(rs.getInt("id_offer"));
     offerDTO.setDate(rs.getDate("date"));
     offerDTO.setTimeSlot(rs.getString("time_slot"));
     offerDTO.setItem(createItemInstance(factory, rs));
@@ -35,14 +35,14 @@ public class ObjectsInstanceCreator {
     return offerDTO;
   }
 
-    /**
-     * Create an item instance with the factory and set all its attributes with data selected from the
-     * db.
-     *
-     * @param factory the factory that gives an item
-     * @param rs      the result set that contains item's data
-     * @return a new item instance with initialized attributes
-     */
+  /**
+   * Create an item instance with the factory and set all its attributes with data selected from the
+   * db.
+   *
+   * @param factory the factory that gives an item
+   * @param rs      the result set that contains item's data
+   * @return a new item instance with initialized attributes
+   */
   public static ItemDTO createItemInstance(Factory factory, ResultSet rs) {
     System.out.println("Setting all item attributes");
     ItemDTO itemDTO = factory.getItem();
