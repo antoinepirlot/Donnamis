@@ -1,6 +1,6 @@
 ### get latest offers
 GET {{baseUrl}}/offers/latest_offers
 
-### get latest offers
+### get all offers
 GET {{baseUrl}}/offers/all_offers
 
