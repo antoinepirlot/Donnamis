@@ -60,7 +60,7 @@ public class MemberResource {
     } catch (Exception e) {
       LoggerHandler.severeLog(
           "getAllMembers",
-          getClass().toString(),
+          getClass(),
           "The list can't be created."
       );
       return null;
@@ -88,7 +88,7 @@ public class MemberResource {
     } catch (Exception e) {
       LoggerHandler.severeLog(
           "getAllMembers",
-          getClass().toString(),
+          getClass(),
           "Unable to create list of member."
       );
       return null;
@@ -116,7 +116,7 @@ public class MemberResource {
     } catch (Exception e) {
       LoggerHandler.severeLog(
           "getAllMembers",
-          getClass().toString(),
+          getClass(),
           "Unable to create list of member."
       );
       return null;
@@ -217,7 +217,7 @@ public class MemberResource {
     } catch (Exception e) {
       LoggerHandler.severeLog(
           "getAllMembers",
-          getClass().toString(),
+          getClass(),
           "Unable to create token."
       );
       return null;
