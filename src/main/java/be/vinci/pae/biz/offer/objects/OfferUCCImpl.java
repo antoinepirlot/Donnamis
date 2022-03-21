@@ -2,7 +2,7 @@ package be.vinci.pae.biz.offer.objects;
 
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
-import dal.offer.interfaces.OfferDAO;
+import be.vinci.pae.dal.offer.interfaces.OfferDAO;
 import jakarta.inject.Inject;
 import java.util.List;
 
@@ -26,5 +26,10 @@ public class OfferUCCImpl implements OfferUCC {
   @Override
   public List<OfferDTO> getAllOffers() {
     return offerDAO.getAllOffers();
+  }
+
+  @Override
+  public OfferDTO getOneOffer(int id) {
+    return offerDAO.getOne(id);
   }
 }

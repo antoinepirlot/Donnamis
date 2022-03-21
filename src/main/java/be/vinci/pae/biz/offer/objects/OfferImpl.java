@@ -2,26 +2,29 @@ package be.vinci.pae.biz.offer.objects;
 
 import be.vinci.pae.biz.item.interfaces.Item;
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
+import be.vinci.pae.biz.member.interfaces.Member;
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.interfaces.Offer;
 import java.sql.Date;
 
 public class OfferImpl implements Offer {
 
-  private int idOffer;
+  private int id;
   private Date date;
-  private String time_slot;
+  private String timeSlot;
   private Item item;
+  private Member member;
 
   public OfferImpl() {
     this.date = new Date(System.currentTimeMillis());
   }
 
-  public int getIdOffer() {
-    return idOffer;
+  public int getId() {
+    return id;
   }
 
-  public void setIdOffer(int idOffer) {
-    this.idOffer = idOffer;
+  public void setId(int id) {
+    this.id = id;
   }
 
   public Date getDate() {
@@ -32,12 +35,12 @@ public class OfferImpl implements Offer {
     this.date = date;
   }
 
-  public String getTime_slot() {
-    return time_slot;
+  public String getTimeSlot() {
+    return timeSlot;
   }
 
-  public void setTime_slot(String time_slot) {
-    this.time_slot = time_slot;
+  public void setTimeSlot(String timeSlot) {
+    this.timeSlot = timeSlot;
   }
 
   public ItemDTO getItem() {
@@ -46,5 +49,23 @@ public class OfferImpl implements Offer {
 
   public void setItem(ItemDTO itemDTO) {
     this.item = (Item) itemDTO;
+  }
+
+  public Member getMember() {
+    return member;
+  }
+
+  public void setMember(MemberDTO memberDTO) {
+    this.member = (Member) memberDTO;
+  }
+
+  @Override
+  public String toString() {
+    return "OfferImpl{" +
+        "idOffer=" + id +
+        ", date=" + date +
+        ", time_slot='" + timeSlot + '\'' +
+        ", item=" + item +
+        '}';
   }
 }

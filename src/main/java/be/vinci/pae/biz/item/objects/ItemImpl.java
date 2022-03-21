@@ -1,8 +1,8 @@
 package be.vinci.pae.biz.item.objects;
 
 import be.vinci.pae.biz.item.interfaces.Item;
-import be.vinci.pae.biz.items_type.interfaces.ItemType;
-import be.vinci.pae.biz.items_type.interfaces.ItemTypeDTO;
+import be.vinci.pae.biz.itemstype.interfaces.ItemType;
+import be.vinci.pae.biz.itemstype.interfaces.ItemTypeDTO;
 import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import java.util.Objects;
@@ -72,8 +72,8 @@ public class ItemImpl implements Item {
     return offerStatus;
   }
 
-  public void setOfferStatus(String offers_status) {
-    this.offerStatus = offers_status;
+  public void setOfferStatus(String offersStatus) {
+    this.offerStatus = offersStatus;
   }
 
   @Override

@@ -3,7 +3,7 @@ package be.vinci.pae.biz.member.objects;
 import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
-import dal.member.interfaces.MemberDAO;
+import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import jakarta.inject.Inject;
 import java.util.List;
 
@@ -83,16 +83,6 @@ public class MemberUCCImpl implements MemberUCC {
       return null;
     }
     return memberDAO.denyMember(id);
-  }
-
-  /**
-   * ONLY FOR MY TESTS
-   *
-   * @param id test
-   * @return test
-   */
-  public MemberDTO registerTESTMember(int id) {
-    return memberDAO.registerTESTMember(id);
   }
 
   /**

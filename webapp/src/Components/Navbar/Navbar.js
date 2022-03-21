@@ -81,18 +81,25 @@ const allOfferedItemsLinkHtml = `
           </li>
 `;
 
+const offersDetail = `
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-uri="/offer?id=1">Offer detail</a>
+          </li>
+`;
+
 const Navbar = async () => {
   const navbarWrapper = document.querySelector("#navbarWrapper");
   navbarWrapper.innerHTML = navBarHtml;
   const memberDTO = getObject("memberDTO");
   const links = document.querySelector("#navbarLinks");
   if (memberDTO) {
-    links.innerHTML += logoutLinkHtml;
     links.innerHTML += listMemberLinkHtml;
     document.querySelector("#usernameNavbar").innerHTML = memberDTO.username
     links.innerHTML += latestItemsLinkHtml;
     links.innerHTML += allItemsLinkHtml;
     links.innerHTML += allOfferedItemsLinkHtml;
+    links.innerHTML += offersDetail;
+    links.innerHTML += logoutLinkHtml;
   } else {
     links.innerHTML += loginLinkHtml;
     links.innerHTML += registerLinkHtml;

@@ -1,6 +1,8 @@
 package be.vinci.pae.biz.offer.interfaces;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
+import be.vinci.pae.biz.member.interfaces.Member;
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.objects.OfferImpl;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.sql.Date;
@@ -8,19 +10,25 @@ import java.sql.Date;
 @JsonDeserialize(as = OfferImpl.class)
 public interface OfferDTO {
 
-  int getIdOffer();
+  int getId();
 
-  void setIdOffer(int idOffer);
+  void setId(int id);
 
   Date getDate();
 
   void setDate(Date date);
 
-  String getTime_slot();
+  String getTimeSlot();
 
-  void setTime_slot(String time_slot);
+  void setTimeSlot(String timeSlot);
 
   ItemDTO getItem();
 
   void setItem(ItemDTO itemDTO);
+
+  Member getMember();
+
+  void setMember(MemberDTO memberDTO);
+
+  String toString();
 }

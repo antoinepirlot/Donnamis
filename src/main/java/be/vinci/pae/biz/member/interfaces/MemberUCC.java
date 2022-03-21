@@ -48,14 +48,6 @@ public interface MemberUCC {
    */
   MemberDTO denyMember(int id);
 
-  /**
-   * ONLY FOR MY TESTS
-   *
-   * @param id
-   * @return
-   */
-  MemberDTO registerTESTMember(int id);
-
   MemberDTO confirmAdmin(int id);
 
   /**

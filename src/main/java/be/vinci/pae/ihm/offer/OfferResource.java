@@ -2,13 +2,13 @@ package be.vinci.pae.ihm.offer;
 
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
@@ -19,16 +19,19 @@ import java.util.List;
 @Path("offers")
 public class OfferResource {
 
-  private final ObjectMapper jsonMapper = new ObjectMapper();
   @Inject
   private OfferUCC offerUCC;
 
+  /**
+   * Asks UCC to add an offer into the database.
+   * @param offerDTO the offer to add into the database
+   */
   @POST
   @Path("add_offer")
   @Consumes(MediaType.APPLICATION_JSON)
   public void add_offer(OfferDTO offerDTO) {
     // Get and check credentials
-    if (offerDTO.getTime_slot() == null
+    if (offerDTO.getTimeSlot() == null
     ) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
           .entity("Some information required").type("text/plain").build());
@@ -43,8 +46,22 @@ public class OfferResource {
 
   }
 
-  /*
-  Method that get all the latest items offered
+
+  @GET
+  @Path("{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public OfferDTO getOffer(@PathParam("id") int id) {
+    if (offerUCC.getOneOffer(id) == null) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Ressource not found").type("text/plain").build());
+    }
+    return offerUCC.getOneOffer(id);
+  }
+
+  /**
+   * Method that get all the latest items offered.
+   * @return the list of lastest offers if there's at least one offer, otherwise null
    */
   @GET
   @Path("latest_offers")
@@ -67,8 +84,9 @@ public class OfferResource {
   }
 
 
-  /*
-  Method that get all the items offered
+  /**
+   * Method that get all the items offered.
+   * @return the list of all offers if there's at least one offer, otherwise null
    */
   @GET
   @Path("all_offers")

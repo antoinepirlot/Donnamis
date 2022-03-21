@@ -2,7 +2,6 @@ package be.vinci.pae.ihm.item;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -22,12 +21,13 @@ import java.util.List;
 @Path("items")
 public class ItemResource {
 
-  private final ObjectMapper jsonMapper = new ObjectMapper();
   @Inject
   private ItemUCC itemUCC;
 
-  /*
-  Method that get all the latest items offered
+  /**
+   * Method that get all the latest offered items.
+   *
+   * @return a list of the latest offered items
    */
   @GET
   @Path("latest_items")
@@ -50,8 +50,10 @@ public class ItemResource {
   }
 
 
-  /*
-  Method that get all the items offered
+  /**
+   * Method that get all items.
+   *
+   * @return a list of all items
    */
   @GET
   @Path("all_items")
@@ -73,30 +75,39 @@ public class ItemResource {
     }
   }
 
+  /**
+   * Gets all offered items.
+   *
+   * @return a list of all offered items
+   */
   @GET
   @Path("all_offered_items")
   @Produces(MediaType.APPLICATION_JSON)
   public List<ItemDTO> getAllOfferedItems() {
     System.out.println("Get all offered items");
-    List<ItemDTO> itemsDTO = this.itemUCC.getAllOfferedItems();
-    return itemsDTO;
+    return this.itemUCC.getAllOfferedItems();
   }
 
+  /**
+   * Checks the item's integrity and asks the UCC to add it into the database.
+   *
+   * @param itemDTO to add into the database
+   */
   @POST
   @Path("offer")
   @Consumes(MediaType.APPLICATION_JSON)
   public void addItem(ItemDTO itemDTO) {
-    if (itemDTO == null ||
-        itemDTO.getItemDescription() == null || itemDTO.getItemDescription().equals("") ||
-        itemDTO.getItemType() == null || itemDTO.getMember() == null ||
-        itemDTO.getTitle() == null || itemDTO.getTitle().equals("")
+    if (itemDTO == null
+        || itemDTO.getItemDescription() == null || itemDTO.getItemDescription().equals("")
+        || itemDTO.getItemType() == null || itemDTO.getMember() == null
+        || itemDTO.getTitle() == null || itemDTO.getTitle().equals("")
     ) {
       throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
           .entity("Wrong item body")
           .type(MediaType.TEXT_PLAIN_TYPE)
           .build());
     }
-    if(!this.itemUCC.addItem(itemDTO)) {
+    if (!this.itemUCC.addItem(itemDTO)) {
       throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
           .entity("The items can't be added to the db due to a unexpected error")
           .type(MediaType.TEXT_PLAIN_TYPE)
@@ -104,6 +115,12 @@ public class ItemResource {
     }
   }
 
+  /**
+   * Asks the UCC to cancel the item's offer.
+   *
+   * @param id the item's id
+   * @return the canceled item
+   */
   @PUT
   @Path("cancel/{id}")
   @Consumes(MediaType.APPLICATION_JSON)

@@ -110,6 +110,12 @@ public class MemberResource {
     }
   }
 
+  /**
+   * Asks UCC to confirm the member identified by its id.
+   *
+   * @param id the member's id
+   * @return the confirmed member
+   */
   @PUT
   @Path("confirm/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -123,6 +129,12 @@ public class MemberResource {
     return memberUCC.confirmMember(id);
   }
 
+  /**
+   * Asks UCC to confirm an admin identified by its id.
+   *
+   * @param id the member's id
+   * @return the confirmed admin member
+   */
   @PUT
   @Path("confirmAdmin/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -135,6 +147,12 @@ public class MemberResource {
     return memberUCC.confirmAdmin(id);
   }
 
+  /**
+   * Asks UCC to deny the member's inscription.
+   *
+   * @param id the member's id
+   * @return the denied member
+   */
   @PUT
   @Path("denies/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -146,19 +164,6 @@ public class MemberResource {
     }
     return memberUCC.denyMember(id);
   }
-
-  @PUT
-  @Path("registerTEST/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public MemberDTO registerTESTMember(@PathParam("id") int id) {
-    if (memberUCC.getOneMember(id) == null) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Ressource not found").type("text/plain").build());
-    }
-    return memberUCC.registerTESTMember(id);
-  }
-
 
   /**
    * Method that login the member. It verify if the user can be connected by calling ucc.
@@ -221,16 +226,21 @@ public class MemberResource {
         .sign(jwtAlgorithm);
   }
 
+  /**
+   * Asks UCC to register a member.
+   *
+   * @param memberDTO the member to register
+   */
   @POST
   @Path("register")
   @Consumes(MediaType.APPLICATION_JSON)
   public void register(MemberDTO memberDTO) {
     // Verify memberDTO integrity
-    if (memberDTO == null ||
-        memberDTO.getUsername() == null || memberDTO.getUsername().equals("") ||
-        memberDTO.getPassword() == null || memberDTO.getPassword().equals("") ||
-        memberDTO.getFirstName() == null || memberDTO.getFirstName().equals("") ||
-        memberDTO.getLastName() == null || memberDTO.getLastName().equals("")
+    if (memberDTO == null
+        || memberDTO.getUsername() == null || memberDTO.getUsername().equals("")
+        || memberDTO.getPassword() == null || memberDTO.getPassword().equals("")
+        || memberDTO.getFirstName() == null || memberDTO.getFirstName().equals("")
+        || memberDTO.getLastName() == null || memberDTO.getLastName().equals("")
     ) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
           .entity("Missing member information")
@@ -239,11 +249,11 @@ public class MemberResource {
     }
     //Verify addressDTO integrity
     AddressDTO addressDTO = memberDTO.getAddress();
-    if (addressDTO == null ||
-        addressDTO.getStreet() == null || addressDTO.getStreet().equals("") ||
-        addressDTO.getCommune() == null || addressDTO.getCommune().equals("") ||
-        addressDTO.getPostcode() == null || addressDTO.getPostcode().equals("") ||
-        addressDTO.getBuildingNumber() == null || addressDTO.getBuildingNumber().equals("")
+    if (addressDTO == null
+        || addressDTO.getStreet() == null || addressDTO.getStreet().equals("")
+        || addressDTO.getCommune() == null || addressDTO.getCommune().equals("")
+        || addressDTO.getPostcode() == null || addressDTO.getPostcode().equals("")
+        || addressDTO.getBuildingNumber() == null || addressDTO.getBuildingNumber().equals("")
     ) {
       throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
           .entity("Missing address information")

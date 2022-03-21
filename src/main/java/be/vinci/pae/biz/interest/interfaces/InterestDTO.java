@@ -1,24 +1,27 @@
 package be.vinci.pae.biz.interest.interfaces;
 
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.offer.interfaces.Offer;
+import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import java.util.Date;
 
 public interface InterestDTO {
 
-  int getId_interest();
+  int getId();
 
-  void setId_interest(int id_interest);
+  void setId(int id);
 
-  boolean isCall_wanted();
+  boolean isCallWanted();
 
-  void setCall_wanted(boolean call_wanted);
+  void setCallWanted(boolean callWanted);
 
-  int getId_offer();
+  OfferDTO getOffer();
 
-  void setId_offer(int id_offer);
+  void setOffer(OfferDTO offer);
 
-  int getId_member();
+  MemberDTO getMember();
 
-  void setId_member(int id_member);
+  void setMember(MemberDTO idMember);
 
   Date getDate();
 

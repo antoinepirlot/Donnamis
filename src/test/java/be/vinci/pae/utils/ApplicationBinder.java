@@ -2,8 +2,8 @@ package be.vinci.pae.utils;
 
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.biz.member.objects.MemberUCCImpl;
-import dal.member.interfaces.MemberDAO;
-import dal.member.objects.MemberDAOImpl;
+import be.vinci.pae.dal.member.interfaces.MemberDAO;
+import be.vinci.pae.dal.member.objects.MemberDAOImpl;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.ext.Provider;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;

@@ -1,10 +1,10 @@
 package be.vinci.pae.biz.factory.interfaces;
 
-import be.vinci.pae.biz.items_type.interfaces.ItemTypeDTO;
-import be.vinci.pae.biz.item.interfaces.ItemDTO;
-import be.vinci.pae.biz.offer.interfaces.OfferDTO;
-import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.address.interfaces.AddressDTO;
+import be.vinci.pae.biz.item.interfaces.ItemDTO;
+import be.vinci.pae.biz.itemstype.interfaces.ItemTypeDTO;
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 
 public interface Factory {
 
