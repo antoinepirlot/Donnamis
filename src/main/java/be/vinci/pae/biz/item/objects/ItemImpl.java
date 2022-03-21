@@ -5,6 +5,10 @@ import be.vinci.pae.biz.itemstype.interfaces.ItemType;
 import be.vinci.pae.biz.itemstype.interfaces.ItemTypeDTO;
 import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.offer.interfaces.Offer;
+import be.vinci.pae.biz.offer.interfaces.OfferDTO;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class ItemImpl implements Item {
@@ -16,6 +20,7 @@ public class ItemImpl implements Item {
   private String photo;
   private String title;
   private String offerStatus;
+  private List<Offer> offerList = new ArrayList<>();
 
   public ItemImpl() {
   }
@@ -76,6 +81,21 @@ public class ItemImpl implements Item {
     this.offerStatus = offersStatus;
   }
 
+  public List<OfferDTO> getOfferList() {
+    return new ArrayList<>(this.offerList);
+  }
+
+  public void setOfferList(List<OfferDTO> offerList) {
+    List<Offer> temp = new ArrayList<>();
+    temp.forEach(offer -> offerList.add((Offer) offer));
+    this.offerList = temp;
+  }
+
+  @Override
+  public void addOffer(OfferDTO offer) {
+    this.offerList.add((Offer) offer);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -105,6 +125,4 @@ public class ItemImpl implements Item {
         + ", offer_status='" + offerStatus + '\''
         + '}';
   }
-
-
 }
