@@ -50,6 +50,10 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public List<MemberDTO> getAllMembers() {
+    LoggerHandler.severeLog(
+        "getAllMembers",
+        getClass()
+    );
     List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
     if (listMemberDTO == null) {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
@@ -87,7 +91,7 @@ public class MemberResource {
       return listMemberDTO;
     } catch (Exception e) {
       LoggerHandler.severeLog(
-          "getAllMembers",
+          "getMembersRegistered",
           getClass(),
           "Unable to create list of member."
       );
@@ -115,7 +119,7 @@ public class MemberResource {
       return listMemberDTO;
     } catch (Exception e) {
       LoggerHandler.severeLog(
-          "getAllMembers",
+          "getMembersDenied",
           getClass(),
           "Unable to create list of member."
       );
@@ -216,7 +220,7 @@ public class MemberResource {
           .putPOJO("memberDTO", memberDTO);
     } catch (Exception e) {
       LoggerHandler.severeLog(
-          "getAllMembers",
+          "createObjectNode",
           getClass(),
           "Unable to create token."
       );
