@@ -25,6 +25,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import org.apache.commons.text.StringEscapeUtils;
 
 /**
@@ -58,9 +59,8 @@ public class MemberResource {
     try {
       return listMemberDTO;
     } catch (Exception e) {
-      LoggerHandler.severeLog(
-          "getAllMembers",
-          getClass(),
+      LoggerHandler.getLogger().log(
+          Level.SEVERE,
           "The list can't be created."
       );
       return null;
@@ -86,9 +86,8 @@ public class MemberResource {
     try {
       return listMemberDTO;
     } catch (Exception e) {
-      LoggerHandler.severeLog(
-          "getAllMembers",
-          getClass(),
+      LoggerHandler.getLogger().log(
+          Level.SEVERE,
           "Unable to create list of member."
       );
       return null;
@@ -114,9 +113,8 @@ public class MemberResource {
     try {
       return listMemberDTO;
     } catch (Exception e) {
-      LoggerHandler.severeLog(
-          "getAllMembers",
-          getClass(),
+      LoggerHandler.getLogger().log(
+          Level.SEVERE,
           "Unable to create list of member."
       );
       return null;
@@ -215,9 +213,8 @@ public class MemberResource {
           .put("token", token)
           .putPOJO("memberDTO", memberDTO);
     } catch (Exception e) {
-      LoggerHandler.severeLog(
-          "getAllMembers",
-          getClass(),
+      LoggerHandler.getLogger().log(
+          Level.SEVERE,
           "Unable to create token."
       );
       return null;
