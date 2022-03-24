@@ -1,4 +1,4 @@
-package be.vinci.pae.utils.exceptions;
+package be.vinci.pae.exceptions.webapplication;
 
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
