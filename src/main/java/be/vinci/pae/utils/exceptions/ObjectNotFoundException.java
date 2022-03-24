@@ -1,24 +1,28 @@
 package be.vinci.pae.utils.exceptions;
 
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.util.logging.Level;
 
-public class ObjectNotFoundException extends Exception {
+public class ObjectNotFoundException extends WebApplicationException {
 
   public ObjectNotFoundException() {
-    super("Object not found");
+    super(Response.status(Status.NOT_FOUND)
+        .build());
   }
 
   public ObjectNotFoundException(String message) {
-    super(message);
+    super(Response.status(Status.NOT_FOUND)
+        .entity(message)
+        .type(MediaType.TEXT_PLAIN_TYPE)
+        .build());
   }
 
-  public ObjectNotFoundException(String message, Throwable throwable) {
-    super(message, throwable);
-  }
   public ObjectNotFoundException(Throwable throwable) {
-    super(throwable);
+    super(Response.status(Status.NOT_FOUND)
+        .entity(throwable.getMessage())
+        .type(MediaType.TEXT_PLAIN_TYPE)
+        .build());
   }
 }
