@@ -1,4 +1,4 @@
-package be.vinci.pae.utils;
+package be.vinci.pae.ihm.logs;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.util.logging.SimpleFormatter;
 
 public class LoggerHandler {
 
-  private static final String LOG_FILE_PATH = "src/main/java/be/vinci/pae/logs/";
+  private static final String LOG_FILE_PATH = "src/main/java/be/vinci/pae/ihm/logs/data/";
   private static FileHandler fileHandler;
   private static Logger logger;
 
@@ -22,10 +22,9 @@ public class LoggerHandler {
           throw new FileSystemException("Can't create directory");
         }
       }
-      fileHandler = new FileHandler(LOG_FILE_PATH + "logs.log", Integer.MAX_VALUE, 10, true);
+      fileHandler = new FileHandler(LOG_FILE_PATH + "logs.log", 20480, 5, true);
       fileHandler.setFormatter(new SimpleFormatter());
       logger.addHandler(fileHandler);
-      logger.setUseParentHandlers(false);
     } catch (IOException e) {
       e.printStackTrace();
     }

@@ -76,7 +76,7 @@ db.properties
 # Compiled class file
 *.class
 
-# Log file
+# LogLog file
 *.log
 *.log.*
 
@@ -105,4 +105,4 @@ target/
 # End of https://www.toptal.com/developers/gitignore/api/java,eclipse,java-web
 
 # data files
-logs
+data
