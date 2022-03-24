@@ -3,8 +3,11 @@ package be.vinci.pae.ihm.member;
 import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
+import be.vinci.pae.utils.exceptions.ConflictException;
+import be.vinci.pae.utils.exceptions.ObjectNotFoundException;
+import be.vinci.pae.utils.exceptions.WrongBodyDataException;
 import be.vinci.pae.utils.Config;
-import be.vinci.pae.utils.LoggerHandler;
+import be.vinci.pae.ihm.logs.LoggerHandler;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -19,13 +22,11 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.text.StringEscapeUtils;
 
 /**
@@ -34,6 +35,8 @@ import org.apache.commons.text.StringEscapeUtils;
 @Singleton
 @Path("members")
 public class MemberResource {
+
+  private final Logger logger = LoggerHandler.getLogger();
 
   private final ObjectMapper jsonMapper = new ObjectMapper();
 
@@ -51,18 +54,14 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public List<MemberDTO> getAllMembers() {
-    List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
-    if (listMemberDTO == null) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Ressource not found").type("text/plain").build());
-    }
     try {
+      List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
+      if (listMemberDTO == null) {
+        throw new ObjectNotFoundException("No member into the database");
+      }
       return listMemberDTO;
     } catch (Exception e) {
-      LoggerHandler.getLogger().log(
-          Level.SEVERE,
-          "The list can't be created."
-      );
+      this.logger.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -78,18 +77,15 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public List<MemberDTO> getMembersRegistered() {
-    List<MemberDTO> listMemberDTO = memberUCC.getMembersRegistered();
-    if (listMemberDTO == null) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Ressource not found").type("text/plain").build());
-    }
     try {
-      return listMemberDTO;
+      List<MemberDTO> registeredMembers = memberUCC.getMembersRegistered();
+      if (registeredMembers == null) {
+        String message = "Get all registered members but there's no registered members.";
+        throw new ObjectNotFoundException(message);
+      }
+      return registeredMembers;
     } catch (Exception e) {
-      LoggerHandler.getLogger().log(
-          Level.SEVERE,
-          "Unable to create list of member."
-      );
+      this.logger.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -105,18 +101,15 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public List<MemberDTO> getMembersDenied() {
-    List<MemberDTO> listMemberDTO = memberUCC.getMembersDenied();
-    if (listMemberDTO == null) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Ressource not found").type("text/plain").build());
-    }
     try {
-      return listMemberDTO;
+      List<MemberDTO> deniedMembers = memberUCC.getMembersDenied();
+      if (deniedMembers == null) {
+        String message = "Get all denied members but there's no denied members.";
+        throw new ObjectNotFoundException(message);
+      }
+      return deniedMembers;
     } catch (Exception e) {
-      LoggerHandler.getLogger().log(
-          Level.SEVERE,
-          "Unable to create list of member."
-      );
+      this.logger.log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -132,12 +125,18 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public MemberDTO confirmMember(@PathParam("id") int id) {
-    System.out.println("********* Confirm Member *************");
-    if (memberUCC.getOneMember(id) == null) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Ressource not found").type("text/plain").build());
+    try {
+      System.out.println("********* Confirm Member *************");
+      if (memberUCC.getOneMember(id) == null) {
+        throw new ObjectNotFoundException("No member with the id: " + id);
+      }
+      return memberUCC.confirmMember(id);
+    } catch (ObjectNotFoundException ignored) {
+
+    } catch (Exception e) {
+      this.logger.log(Level.INFO, e.getMessage());
     }
-    return memberUCC.confirmMember(id);
+    return null;
   }
 
   /**
@@ -152,8 +151,8 @@ public class MemberResource {
   @Produces(MediaType.APPLICATION_JSON)
   public MemberDTO confirmAdmin(@PathParam("id") int id) {
     if (memberUCC.getOneMember(id) == null) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Ressource not found").type("text/plain").build());
+      String message = "Try to confirm an admin member with an id not in the database. Id: " + id;
+      throw new ObjectNotFoundException(message);
     }
     return memberUCC.confirmAdmin(id);
   }
@@ -170,8 +169,7 @@ public class MemberResource {
   @Produces(MediaType.APPLICATION_JSON)
   public MemberDTO denyMember(@PathParam("id") int id) {
     if (memberUCC.getOneMember(id) == null) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Ressource not found").type("text/plain").build());
+      throw new ObjectNotFoundException("No member with the id: " + id);
     }
     return memberUCC.denyMember(id);
   }
@@ -188,17 +186,20 @@ public class MemberResource {
   @Produces(MediaType.APPLICATION_JSON)
   public ObjectNode login(JsonNode json) {
     // Get and check credentials
-    if (!json.hasNonNull("username") || !json.hasNonNull("password")) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("username or password required").type("text/plain").build());
+    try {
+      if (!json.hasNonNull("username") || !json.hasNonNull("password")) {
+        throw new WrongBodyDataException("Member has wrong attributes for login method");
+      }
+      String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
+      String password = json.get("password").asText();
+      MemberDTO memberDTO = memberUCC.login(username, password);
+      memberDTO.setPassword(null);
+      String token = createToken(memberDTO.getId());
+      return createObjectNode(token, memberDTO);
+    } catch (Exception e) {
+      this.logger.log(Level.SEVERE, e.getMessage());
     }
-    String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
-    String password = json.get("password").asText();
-    MemberDTO memberDTO = memberUCC.login(username, password);
-    memberDTO.setPassword(null);
-    String token = createToken(memberDTO.getId());
-    return createObjectNode(token, memberDTO);
-
+    return null;
   }
 
   /**
@@ -213,10 +214,7 @@ public class MemberResource {
           .put("token", token)
           .putPOJO("memberDTO", memberDTO);
     } catch (Exception e) {
-      LoggerHandler.getLogger().log(
-          Level.SEVERE,
-          "Unable to create token."
-      );
+      LoggerHandler.getLogger().log(Level.SEVERE, e.getMessage());
       return null;
     }
   }
@@ -231,8 +229,6 @@ public class MemberResource {
     Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
     Date date = new Date();
     long duration = 1000 * 60 * 60; //1 hour
-    System.out.println("GetTime() : " + (date.getTime() + duration));
-    System.out.println("Date" + new Date(date.getTime() + duration));
     return JWT.create()
         .withIssuer("auth0")
         .withClaim("id", id)
@@ -256,10 +252,8 @@ public class MemberResource {
         || memberDTO.getFirstName() == null || memberDTO.getFirstName().equals("")
         || memberDTO.getLastName() == null || memberDTO.getLastName().equals("")
     ) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("Missing member information")
-          .type(MediaType.TEXT_PLAIN)
-          .build());
+      String message = "Member miss some informations for registration";
+      throw new WrongBodyDataException(message);
     }
     //Verify addressDTO integrity
     AddressDTO addressDTO = memberDTO.getAddress();
@@ -269,16 +263,14 @@ public class MemberResource {
         || addressDTO.getPostcode() == null || addressDTO.getPostcode().equals("")
         || addressDTO.getBuildingNumber() == null || addressDTO.getBuildingNumber().equals("")
     ) {
-      throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
-          .entity("Missing address information")
-          .type("text/plain")
-          .build());
+      String message = "Member has complete information but doesn't have "
+          + "complete address information";
+      throw new WrongBodyDataException(message);
     }
     // Get and check credentials
     if (!memberUCC.register(memberDTO)) {
-      throw new WebApplicationException(Response.status(Response.Status.CONFLICT)
-          .entity("this resource already exists").type(MediaType.TEXT_PLAIN)
-          .build());
+      String message = "This member already exist in the database";
+      throw new ConflictException(message);
     }
   }
 }
