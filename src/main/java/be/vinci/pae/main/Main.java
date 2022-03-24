@@ -2,7 +2,7 @@ package be.vinci.pae.main;
 
 import be.vinci.pae.utils.ApplicationBinder;
 import be.vinci.pae.utils.Config;
-import be.vinci.pae.utils.LoggerHandler;
+import be.vinci.pae.ihm.logs.LoggerHandler;
 import java.io.IOException;
 import java.net.URI;
 import java.util.logging.Level;
