@@ -1,6 +1,7 @@
 package be.vinci.pae.ihm.interest;
 
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
+import be.vinci.pae.ihm.filter.Authorize;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -34,6 +35,7 @@ public class InterestResource {
   @Path("{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
   public int markInterest(@PathParam("id") int idOffer,
       @QueryParam("call_wanted") boolean callWanted, JsonNode json) {
 

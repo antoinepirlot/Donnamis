@@ -6,6 +6,8 @@ import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
+import be.vinci.pae.ihm.filter.Authorize;
+import be.vinci.pae.ihm.filter.AuthorizeAdmin;
 import be.vinci.pae.utils.Config;
 import be.vinci.pae.ihm.logs.LoggerHandler;
 import com.auth0.jwt.JWT;
@@ -53,6 +55,7 @@ public class MemberResource {
   @Path("list_member")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
   public List<MemberDTO> getAllMembers() {
     try {
       List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
@@ -76,6 +79,7 @@ public class MemberResource {
   @Path("list_registered")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
   public List<MemberDTO> getMembersRegistered() {
     try {
       List<MemberDTO> registeredMembers = memberUCC.getMembersRegistered();
@@ -100,6 +104,7 @@ public class MemberResource {
   @Path("list_denied")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
   public List<MemberDTO> getMembersDenied() {
     try {
       List<MemberDTO> deniedMembers = memberUCC.getMembersDenied();
@@ -124,6 +129,7 @@ public class MemberResource {
   @Path("confirm/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
   public MemberDTO confirmMember(@PathParam("id") int id) {
     try {
       System.out.println("********* Confirm Member *************");
@@ -149,6 +155,7 @@ public class MemberResource {
   @Path("confirmAdmin/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
   public MemberDTO confirmAdmin(@PathParam("id") int id) {
     if (memberUCC.getOneMember(id) == null) {
       String message = "Try to confirm an admin member with an id not in the database. Id: " + id;
@@ -167,6 +174,7 @@ public class MemberResource {
   @Path("denies/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
   public MemberDTO denyMember(@PathParam("id") int id) {
     if (memberUCC.getOneMember(id) == null) {
       throw new ObjectNotFoundException("No member with the id: " + id);
@@ -186,26 +194,24 @@ public class MemberResource {
   @Produces(MediaType.APPLICATION_JSON)
   public ObjectNode login(JsonNode json) {
     // Get and check credentials
-    try {
-      if (!json.hasNonNull("username") || !json.hasNonNull("password")) {
-        throw new WrongBodyDataException("Member has wrong attributes for login method");
-      }
-      String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
-      String password = json.get("password").asText();
-      MemberDTO memberDTO = memberUCC.login(username, password);
-      memberDTO.setPassword(null);
-      String token = createToken(memberDTO.getId());
-      return createObjectNode(token, memberDTO);
-    } catch (Exception e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
+    if (!json.hasNonNull("username") || !json.hasNonNull("password")) {
+      String message = "Member has wrong attributes for login method";
+      this.logger.log(Level.SEVERE, message);
+      throw new WrongBodyDataException(message);
     }
-    return null;
+    String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
+    String password = json.get("password").asText();
+    MemberDTO memberDTO = memberUCC.login(username, password);
+    memberDTO.setPassword(null);
+    String token = createToken(memberDTO.getId());
+    return createObjectNode(token, memberDTO);
   }
 
   /**
    * Create a ObjectNode that contains a token from a String.
    *
-   * @param token that will be add to ObjectNode
+   * @param token that will beBase64.decode(payload);
+ add to ObjectNode
    * @return objectNode that contains the new token
    */
   private ObjectNode createObjectNode(String token, MemberDTO memberDTO) {

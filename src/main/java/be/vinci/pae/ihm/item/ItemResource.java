@@ -2,6 +2,8 @@ package be.vinci.pae.ihm.item;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
+import be.vinci.pae.ihm.filter.Authorize;
+import be.vinci.pae.ihm.filter.AuthorizeAdmin;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -33,6 +35,7 @@ public class ItemResource {
   @Path("latest_items")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
   public List<ItemDTO> getLatestItems() {
     List<ItemDTO> listItemDTO = itemUCC.getLatestItems();
     if (listItemDTO == null) {
@@ -59,6 +62,7 @@ public class ItemResource {
   @Path("all_items")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
   public List<ItemDTO> getAllItems() {
     List<ItemDTO> listItemDTO = itemUCC.getAllItems();
     if (listItemDTO == null) {
@@ -83,6 +87,7 @@ public class ItemResource {
   @GET
   @Path("all_offered_items")
   @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
   public List<ItemDTO> getAllOfferedItems() {
     System.out.println("Get all offered items");
     return this.itemUCC.getAllOfferedItems();
@@ -96,6 +101,7 @@ public class ItemResource {
   @POST
   @Path("offer")
   @Consumes(MediaType.APPLICATION_JSON)
+  @Authorize
   public void addItem(ItemDTO itemDTO) {
     if (itemDTO == null
         || itemDTO.getItemDescription() == null || itemDTO.getItemDescription().equals("")
@@ -125,6 +131,7 @@ public class ItemResource {
   @Path("cancel/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
   public ItemDTO cancelOffer(@PathParam("id") int id) {
     if (itemUCC.getOneItem(id) == null) {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
