@@ -25,6 +25,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import org.apache.commons.text.StringEscapeUtils;
 
 /**
@@ -50,10 +51,6 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public List<MemberDTO> getAllMembers() {
-    LoggerHandler.severeLog(
-        "getAllMembers",
-        getClass()
-    );
     List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
     if (listMemberDTO == null) {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
@@ -62,9 +59,8 @@ public class MemberResource {
     try {
       return listMemberDTO;
     } catch (Exception e) {
-      LoggerHandler.severeLog(
-          "getAllMembers",
-          getClass(),
+      LoggerHandler.getLogger().log(
+          Level.SEVERE,
           "The list can't be created."
       );
       return null;
@@ -90,9 +86,8 @@ public class MemberResource {
     try {
       return listMemberDTO;
     } catch (Exception e) {
-      LoggerHandler.severeLog(
-          "getMembersRegistered",
-          getClass(),
+      LoggerHandler.getLogger().log(
+          Level.SEVERE,
           "Unable to create list of member."
       );
       return null;
@@ -118,9 +113,8 @@ public class MemberResource {
     try {
       return listMemberDTO;
     } catch (Exception e) {
-      LoggerHandler.severeLog(
-          "getMembersDenied",
-          getClass(),
+      LoggerHandler.getLogger().log(
+          Level.SEVERE,
           "Unable to create list of member."
       );
       return null;
@@ -219,9 +213,8 @@ public class MemberResource {
           .put("token", token)
           .putPOJO("memberDTO", memberDTO);
     } catch (Exception e) {
-      LoggerHandler.severeLog(
-          "createObjectNode",
-          getClass(),
+      LoggerHandler.getLogger().log(
+          Level.SEVERE,
           "Unable to create token."
       );
       return null;

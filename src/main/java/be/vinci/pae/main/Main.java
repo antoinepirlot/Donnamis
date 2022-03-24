@@ -2,8 +2,10 @@ package be.vinci.pae.main;
 
 import be.vinci.pae.utils.ApplicationBinder;
 import be.vinci.pae.utils.Config;
+import be.vinci.pae.ihm.logs.LoggerHandler;
 import java.io.IOException;
 import java.net.URI;
+import java.util.logging.Level;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.jackson.JacksonFeature;
@@ -41,11 +43,15 @@ public class Main {
    */
   public static void main(String[] args) throws IOException {
     Config.load("dev.properties");
+    LoggerHandler.init();
+    LoggerHandler.getLogger().log(Level.INFO, "Server is starting.");
     final HttpServer server = startServer();
     System.out.println(String.format("Jersey app started with endpoints available at "
         + "%s%nHit Ctrl-C to stop it...", Config.getProperty("BaseUri")));
     System.in.read();
     server.stop();
+    LoggerHandler.getLogger().log(Level.INFO, "Server is stopped.");
+    LoggerHandler.close();
   }
 }
 

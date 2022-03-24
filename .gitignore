@@ -76,7 +76,7 @@ db.properties
 # Compiled class file
 *.class
 
-# Log file
+# LogLog file
 *.log
 *.log.*
 
