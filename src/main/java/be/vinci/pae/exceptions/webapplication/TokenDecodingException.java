@@ -15,14 +15,14 @@ public class TokenDecodingException extends WebApplicationException {
   public TokenDecodingException(String message) {
     super(Response.status(Status.UNAUTHORIZED)
         .entity(message)
-        .type(MediaType.TEXT_PLAIN_TYPE)
+        .type(MediaType.TEXT_PLAIN)
         .build());
   }
 
   public TokenDecodingException(Throwable throwable) {
     super(Response.status(Status.UNAUTHORIZED)
         .entity(throwable.getMessage())
-        .type(MediaType.TEXT_PLAIN_TYPE)
+        .type(MediaType.TEXT_PLAIN)
         .build());
   }
 }

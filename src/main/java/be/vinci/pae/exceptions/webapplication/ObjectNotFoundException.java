@@ -15,14 +15,14 @@ public class ObjectNotFoundException extends WebApplicationException {
   public ObjectNotFoundException(String message) {
     super(Response.status(Status.NOT_FOUND)
         .entity(message)
-        .type(MediaType.TEXT_PLAIN_TYPE)
+        .type(MediaType.TEXT_PLAIN)
         .build());
   }
 
   public ObjectNotFoundException(Throwable throwable) {
     super(Response.status(Status.NOT_FOUND)
         .entity(throwable.getMessage())
-        .type(MediaType.TEXT_PLAIN_TYPE)
+        .type(MediaType.TEXT_PLAIN)
         .build());
   }
 }

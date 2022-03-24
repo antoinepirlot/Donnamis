@@ -15,14 +15,14 @@ public class WrongBodyDataException extends WebApplicationException {
   public WrongBodyDataException(String message) {
     super(Response.status(Status.BAD_REQUEST)
         .entity(message)
-        .type(MediaType.TEXT_PLAIN_TYPE)
+        .type(MediaType.TEXT_PLAIN)
         .build());
   }
 
   public WrongBodyDataException(Throwable throwable) {
     super(Response.status(Status.BAD_REQUEST)
         .entity(throwable.getMessage())
-        .type(MediaType.TEXT_PLAIN_TYPE)
+        .type(MediaType.TEXT_PLAIN)
         .build());
   }
 }
