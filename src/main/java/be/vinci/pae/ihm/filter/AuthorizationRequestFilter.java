@@ -15,6 +15,10 @@ public class AuthorizationRequestFilter implements ContainerRequestFilter {
   public AuthorizationRequestFilter() {
   }
 
+  /**
+   * Decode token.
+   * @param containerRequestContext the container request
+   */
   @Override
   public void filter(ContainerRequestContext containerRequestContext) throws IOException {
     TokenDecoder.decodeToken(containerRequestContext);

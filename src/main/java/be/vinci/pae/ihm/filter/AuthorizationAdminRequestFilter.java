@@ -13,7 +13,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.Provider;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,9 +30,13 @@ public class AuthorizationAdminRequestFilter implements ContainerRequestFilter {
     logger = LoggerHandler.getLogger();
   }
 
-
+  /**
+   * Decode token then get the member
+   * If the member is admin then, it returns the decoded token, otherwise an abortion is made.
+   * @param containerRequestContext the container request
+   */
   @Override
-  public void filter(ContainerRequestContext containerRequestContext) throws IOException {
+  public void filter(ContainerRequestContext containerRequestContext) {
     DecodedJWT decodedJWT = TokenDecoder.decodeToken(containerRequestContext);
     int id = decodedJWT.getClaim("id").asInt();
     MemberDTO authenticatedMember = memberUCC.getOneMember(id);

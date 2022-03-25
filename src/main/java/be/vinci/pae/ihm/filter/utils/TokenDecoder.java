@@ -24,6 +24,11 @@ public class TokenDecoder {
       .withIssuer("auth0")
       .build();
 
+  /**
+   * Decode the token from the containerRequestContext.
+   * @param containerRequestContext contains token
+   * @return the decoded token
+   */
   public static DecodedJWT decodeToken(ContainerRequestContext containerRequestContext) {
     String token = containerRequestContext.getHeaderString("Authorization");
     DecodedJWT decodedJWT = null;
