@@ -6,7 +6,6 @@ import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
-import be.vinci.pae.ihm.filter.Authorize;
 import be.vinci.pae.ihm.filter.AuthorizeAdmin;
 import be.vinci.pae.utils.Config;
 import be.vinci.pae.ihm.logs.LoggerHandler;
