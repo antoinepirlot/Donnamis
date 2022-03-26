@@ -39,15 +39,15 @@ public class Json<T> {
 
   /**
    * Filter the object's attributes.
-   * @param item the object to filter
+   * @param object the object to filter
    * @return filtered object
    */
-  public T filterPublicJsonView(T item) {
+  public T filterPublicJsonView(T object) {
     try {
       // serialize using JSON Views : public view (all fields not required in the
       // views are not serialized)
       String publicItemAsString = this.jsonMapper.writerWithView(Views.Public.class)
-          .writeValueAsString(item);
+          .writeValueAsString(object);
       // deserialize using JSON Views : Public View (all fields that are not serialized
       // are set to their default values in the POJO)
       return this.jsonMapper.readerWithView(Views.Public.class).forType(type)
