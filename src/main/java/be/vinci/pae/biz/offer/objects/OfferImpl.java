@@ -71,11 +71,11 @@ public class OfferImpl implements Offer {
 
   @Override
   public String toString() {
-    return "OfferImpl{" +
-        "idOffer=" + id +
-        ", date=" + date +
-        ", time_slot='" + timeSlot + '\'' +
-        ", item=" + item +
-        '}';
+    return "OfferImpl{"
+        + "idOffer=" + id
+        + ", date=" + date
+        + ", time_slot='" + timeSlot + '\''
+        + ", item=" + item
+        + '}';
   }
 }
