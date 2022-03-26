@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
-import be.vinci.pae.biz.member.objects.MemberImpl;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.utils.ApplicationBinder;
 import org.glassfish.hk2.api.ServiceLocator;
