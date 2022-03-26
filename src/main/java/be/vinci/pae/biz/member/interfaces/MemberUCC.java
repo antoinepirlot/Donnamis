@@ -4,32 +4,12 @@ import java.util.List;
 
 public interface MemberUCC {
 
-  /**
-   * Get all the members from the db.
-   *
-   * @return list of member
-   */
   List<MemberDTO> getAllMembers();
 
-  /**
-   * Get all the members with the state registered from the db.
-   *
-   * @return list of member registered
-   */
   List<MemberDTO> getMembersRegistered();
 
-  /**
-   * Get all the members with the state denied from the db.
-   *
-   * @return list of member denied
-   */
   List<MemberDTO> getMembersDenied();
 
-  /**
-   * Get One Member by id.
-   *
-   * @return Member or null
-   */
   MemberDTO getOneMember(int id);
 
   /**
@@ -48,6 +28,12 @@ public interface MemberUCC {
    */
   MemberDTO denyMember(int id);
 
+  /**
+   * Verify the state of the member and then change the state of the member to confirmed.
+   *
+   * @param id of the member
+   * @return True if success
+   */
   MemberDTO confirmAdmin(int id);
 
   /**
