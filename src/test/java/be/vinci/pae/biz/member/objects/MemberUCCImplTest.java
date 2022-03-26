@@ -1,4 +1,4 @@
-package be.vinci.pae.biz.member;
+package be.vinci.pae.biz.member.objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
