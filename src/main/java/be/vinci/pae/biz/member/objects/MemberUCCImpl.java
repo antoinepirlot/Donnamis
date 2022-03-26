@@ -52,6 +52,12 @@ public class MemberUCCImpl implements MemberUCC {
     return memberDAO.denyMember(id);
   }
 
+  /**
+   * Verify the state of the member and then change the state of the member to confirmed.
+   *
+   * @param id of the member
+   * @return True if success
+   */
   public MemberDTO confirmAdmin(int id) {
     Member member = (Member) getOneMember(id);
     if (!member.verifyState("registered") && !member.verifyState("denied")) {
