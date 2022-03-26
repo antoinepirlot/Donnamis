@@ -25,22 +25,23 @@ class ItemUCCImplTest {
   private final ItemDAO itemDAO = locator.getService(ItemDAO.class);
   private final ItemUCC itemUCC = locator.getService(ItemUCC.class);
   private final List<ItemDTO> itemDTOList = new ArrayList<>();
-  private final ItemDTO itemDTO = new ItemImpl();
+  private final ItemDTO goodItem = new ItemImpl();
+  private final ItemDTO wrongItem = new ItemImpl();
   private final int notExistingIdItem = 56464;
 
   @BeforeEach
   void setUp() {
     this.itemDTOList.add(new ItemImpl());
     this.itemDTOList.add(new ItemImpl());
-    this.itemDTO.setId(5);
-    this.itemDTO.setItemDescription("Description");
+    this.goodItem.setId(5);
+    this.goodItem.setItemDescription("Description");
     ItemType itemType = new ItemTypeImpl();
     itemType.setId(5);
-    this.itemDTO.setItemType(itemType);
+    this.goodItem.setItemType(itemType);
     MemberDTO memberDTO = new MemberImpl();
     memberDTO.setId(89);
-    this.itemDTO.setMember(memberDTO);
-    this.itemDTO.setTitle("title");
+    this.goodItem.setMember(memberDTO);
+    this.goodItem.setTitle("title");
     this.setMockitos();
   }
 
@@ -48,9 +49,9 @@ class ItemUCCImplTest {
     Mockito.when(this.itemDAO.getLatestItems()).thenReturn(this.itemDTOList);
     Mockito.when(this.itemDAO.getAllItems()).thenReturn(this.itemDTOList);
     Mockito.when(this.itemDAO.getAllOfferedItems()).thenReturn(this.itemDTOList);
-    Mockito.when(this.itemDAO.getOneItem(this.itemDTO.getId())).thenReturn(this.itemDTO);
+    Mockito.when(this.itemDAO.getOneItem(this.goodItem.getId())).thenReturn(this.goodItem);
     Mockito.when(this.itemDAO.getOneItem(this.notExistingIdItem)).thenReturn(null);
-    Mockito.when(this.itemDAO.addItem(this.itemDTO)).thenReturn(true);
+    Mockito.when(this.itemDAO.addItem(this.goodItem)).thenReturn(true);
     Mockito.when(this.itemDAO.addItem(null)).thenReturn(false);
   }
 
@@ -75,12 +76,30 @@ class ItemUCCImplTest {
   @DisplayName("Test get one item")
   @Test
   void testGetOneItem() {
-    assertEquals(this.itemDTO, this.itemUCC.getOneItem(this.itemDTO.getId()));
+    assertEquals(this.goodItem, this.itemUCC.getOneItem(this.goodItem.getId()));
   }
 
   @DisplayName("Test get one item with not existing id item")
   @Test
   void testGetOneItemWithNotExistingIdItem() {
     assertNull(this.itemUCC.getOneItem(this.notExistingIdItem));
+  }
+
+  @DisplayName("Test add item with good item")
+  @Test
+  void testAddItemWithGoodItem() {
+    assertTrue(this.itemUCC.addItem(this.goodItem));
+  }
+
+  @DisplayName("Test add item with wrong item")
+  @Test
+  void testAddItemWithWrongItem() {
+    assertFalse(this.itemUCC.addItem(this.wrongItem));
+  }
+
+  @DisplayName("Test add item with null item")
+  @Test
+  void testAddItemWithNullItem() {
+    assertFalse(this.itemUCC.addItem(null));
   }
 }
