@@ -147,7 +147,9 @@ class InterestUCCImplTest {
   @DisplayName("Test interest exists with not existing offer id and existing member")
   @Test
   void testInterestExistsWithNotExistingOfferIdAndExistingMember() {
-    assertFalse(this.interestUCC.interestExist(this.notExistingIdOffer, this.memberWithoutPhoneNumber));
+    assertFalse(this.interestUCC
+        .interestExist(this.notExistingIdOffer, this.memberWithoutPhoneNumber)
+    );
   }
 
   @DisplayName("Test interest exists with existing offer id and not existing member")
