@@ -212,8 +212,7 @@ public class MemberResource {
   /**
    * Create a ObjectNode that contains a token from a String.
    *
-   * @param token that will beBase64.decode(payload);
- add to ObjectNode
+   * @param token that will beBase64.decode(payload); add to ObjectNode
    * @return objectNode that contains the new token
    */
   private ObjectNode createObjectNode(String token, MemberDTO memberDTO) {
