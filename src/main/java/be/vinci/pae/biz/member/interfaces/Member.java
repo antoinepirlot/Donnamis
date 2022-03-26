@@ -10,7 +10,16 @@ public interface Member extends MemberDTO {
    */
   boolean verifyState(String expectedState);
 
+  /**
+   * Check if the password is correct.
+   * @param password the password to check
+   * @param hashedPassword the good password (hashed)
+   * @return true if the password is correct, otherwise false
+   */
   boolean checkPassword(String password, String hashedPassword);
 
+  /**
+   * Crypt the password with BCrypt
+   */
   void hashPassword();
 }
