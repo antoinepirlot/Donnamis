@@ -38,66 +38,82 @@ public class ItemImpl implements Item {
   public ItemImpl() {
   }
 
+  @Override
   public int getId() {
     return id;
   }
 
+  @Override
   public void setId(int id) {
     this.id = id;
   }
 
+  @Override
   public String getItemDescription() {
     return itemDescription;
   }
 
+  @Override
   public void setItemDescription(String itemDescription) {
     this.itemDescription = itemDescription;
   }
 
+  @Override
   public ItemTypeDTO getItemType() {
     return itemType;
   }
 
+  @Override
   public void setItemType(ItemTypeDTO itemType) {
     this.itemType = (ItemType) itemType;
   }
 
+  @Override
   public MemberDTO getMember() {
     return member;
   }
 
+  @Override
   public void setMember(MemberDTO member) {
     this.member = (Member) member;
   }
 
+  @Override
   public String getPhoto() {
     return photo;
   }
 
+  @Override
   public void setPhoto(String photo) {
     this.photo = photo;
   }
 
+  @Override
   public String getTitle() {
     return title;
   }
 
+  @Override
   public void setTitle(String title) {
     this.title = title;
   }
 
+  @Override
   public String getOfferStatus() {
     return offerStatus;
   }
 
+  @Override
   public void setOfferStatus(String offersStatus) {
     this.offerStatus = offersStatus;
   }
 
+  @Override
   public List<OfferDTO> getOfferList() {
     return new ArrayList<>(this.offerList);
   }
 
+  @Override
   public void setOfferList(List<OfferDTO> offerList) {
     List<Offer> temp = new ArrayList<>();
     temp.forEach(offer -> offerList.add((Offer) offer));
