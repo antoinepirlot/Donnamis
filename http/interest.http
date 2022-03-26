@@ -1,15 +1,18 @@
 ### Mark Interest
 POST {{baseUrl}}/interests/3
+Authorization: {{token}}
 Content-Type: application/json
 
 {
-  "idMember": 3
+  "id": 21
 }
 
 ### Mark Interest
 POST {{baseUrl}}/interests/3?call_wanted=true
+Authorization: {{token}}
 Content-Type: application/json
 
 {
-  "idMember": 3
+  "id": 2,
+  "phoneNumber": "04"
 }

@@ -1,6 +1,7 @@
 package be.vinci.pae.ihm.interest;
 
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.ihm.filter.Authorize;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.inject.Inject;
@@ -28,7 +29,7 @@ public class InterestResource {
    *
    * @param idOffer    the id of the offer
    * @param callWanted true if call wanted false if not
-   * @param json        contains the id_member
+   * @param memberDTO  the member that marks interest
    * @return 1 if interest good added -1 if not
    */
   @POST
@@ -37,7 +38,7 @@ public class InterestResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Authorize
   public int markInterest(@PathParam("id") int idOffer,
-      @QueryParam("call_wanted") boolean callWanted, JsonNode json) {
+      @QueryParam("call_wanted") boolean callWanted, MemberDTO memberDTO) {
 
     //Verify if the offer already exist
     if (!interestUCC.offerExist(idOffer)) {
@@ -47,14 +48,13 @@ public class InterestResource {
     }
 
     //Verify the content of the request
-    if (!json.hasNonNull("idMember")) {
+    if (memberDTO.getId() < 1) {
       throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
           .entity("idMember required").type("text/plain").build());
     }
-    int idMember = json.get("idMember").asInt();
 
     //Verify if the member already exist
-    if (!interestUCC.memberExist(idMember)) {
+    if (!interestUCC.memberExist(memberDTO.getId())) {
       System.out.println("member does not exist");
 
       throw new WebApplicationException(Response.status(Status.NOT_FOUND)
@@ -62,13 +62,13 @@ public class InterestResource {
     }
 
     //Verify if the interest already exist
-    if (interestUCC.interestExist(idOffer, idMember)) {
+    if (interestUCC.interestExist(idOffer, memberDTO.getId())) {
       throw new WebApplicationException(Response.status(Status.CONFLICT)
           .entity("interest already exist").type("text/plain").build());
     }
 
     //Add the interest
-    int res = interestUCC.markInterest(idMember, idOffer, callWanted);
+    int res = interestUCC.markInterest(memberDTO.getId(), idOffer, callWanted);
     if(res == 0){
       throw new WebApplicationException(Response.status(Status.FORBIDDEN)
           .entity("no phone number registered for this member").type("text/plain").build());
