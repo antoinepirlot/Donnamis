@@ -136,8 +136,6 @@ public class MemberResource {
       }
       MemberDTO confirmedMember = memberUCC.confirmMember(id);
       return this.jsonUtil.filterPublicJsonView(confirmedMember);
-    } catch (ObjectNotFoundException ignored) {
-
     } catch (Exception e) {
       this.logger.log(Level.INFO, e.getMessage());
     }
