@@ -1,5 +1,6 @@
 package be.vinci.pae.dal.interest.objects;
 
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.dal.interest.interfaces.InterestDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import jakarta.inject.Inject;
@@ -17,14 +18,14 @@ public class InterestDAOImpl implements InterestDAO {
   //private Factory factory;
 
   @Override
-  public int markInterest(int idMember, int idOffer, boolean callWanted, LocalDate date) {
+  public int markInterest(MemberDTO memberDTO, int idOffer, boolean callWanted, LocalDate date) {
     String query =
         "INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date) VALUES"
             + "(?, ?, ?, ?) RETURNING *";
     try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
       preparedStatement.setBoolean(1, callWanted);
       preparedStatement.setInt(2, idOffer);
-      preparedStatement.setInt(3, idMember);
+      preparedStatement.setInt(3, memberDTO.getId());
       preparedStatement.setDate(4, Date.valueOf(date));
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
@@ -44,17 +45,17 @@ public class InterestDAOImpl implements InterestDAO {
   }
 
   @Override
-  public boolean memberExist(int idMember) {
+  public boolean memberExist(MemberDTO memberDTO) {
     String query = "SELECT * FROM project_pae.members WHERE id_member = ?";
-    return executeQueryWithId(idMember, query);
+    return executeQueryWithId(memberDTO.getId(), query);
   }
 
   @Override
-  public boolean interestExist(int idOffer, int idMember) {
+  public boolean interestExist(int idOffer, MemberDTO memberDTO) {
     String query = "SELECT * FROM project_pae.interests WHERE id_offer = ? AND id_member = ?";
     try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
       preparedStatement.setInt(1, idOffer);
-      preparedStatement.setInt(2, idMember);
+      preparedStatement.setInt(2, memberDTO.getId());
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
           return true;
@@ -68,9 +69,9 @@ public class InterestDAOImpl implements InterestDAO {
 
   //*****UTILS******
 
-  private boolean executeQueryWithId(int idMember, String query) {
+  private boolean executeQueryWithId(int id, String query) {
     try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
-      preparedStatement.setInt(1, idMember);
+      preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
           return true;

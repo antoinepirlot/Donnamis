@@ -2,6 +2,7 @@ package be.vinci.pae.biz.interest.objects;
 
 import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
+import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.biz.member.objects.MemberUCCImpl;
@@ -20,23 +21,23 @@ public class InterestUCCImpl implements InterestUCC {
   /**
    * Mark the interest in an offer.
    *
-   * @param idMember   the id of the member
+   * @param memberDTO  the member
    * @param idOffer    the id of the offer
    * @param callWanted true if member want to be call false if not
    * @return 1 if interest good added -1 if not
    */
   @Override
-  public int markInterest(int idMember, int idOffer, boolean callWanted) {
+  public int markInterest(MemberDTO memberDTO, int idOffer, boolean callWanted) {
     LocalDate date = LocalDate.now();
     System.out.println("MARK INTEREST -----------");
     if(callWanted){
-      MemberDTO memberDTO = memberUCC.getOneMember(idMember);
+      memberDTO = memberUCC.getOneMember(memberDTO.getId());
       System.out.println("PHONE NUMB : " + memberDTO.getPhoneNumber());
       if(memberDTO.getPhoneNumber() == null){
         return 0;
       }
     }
-    return interestDAO.markInterest(idMember, idOffer, callWanted, date);
+    return interestDAO.markInterest(memberDTO, idOffer, callWanted, date);
   }
 
   /**
@@ -53,24 +54,24 @@ public class InterestUCCImpl implements InterestUCC {
   /**
    * Verify if the member exist in the DB.
    *
-   * @param idMember the if od the member
+   * @param memberDTO the if od the member
    * @return true if exist in the DB false if not
    */
   @Override
-  public boolean memberExist(int idMember) {
-    return interestDAO.memberExist(idMember);
+  public boolean memberExist(MemberDTO memberDTO) {
+    return interestDAO.memberExist(memberDTO);
   }
 
   /**
    * Verify if the interest exist in the DB.
    *
    * @param idOffer  the id of the offer
-   * @param idMember the id of the member
+   * @param memberDTO the member
    * @return true if exist in the DB false if not
    */
   @Override
-  public boolean interestExist(int idOffer, int idMember) {
-    return interestDAO.interestExist(idOffer, idMember);
+  public boolean interestExist(int idOffer, MemberDTO memberDTO) {
+    return interestDAO.interestExist(idOffer, memberDTO);
   }
 
 }
