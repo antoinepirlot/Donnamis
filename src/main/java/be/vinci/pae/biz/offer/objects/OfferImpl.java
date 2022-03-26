@@ -5,14 +5,24 @@ import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.interfaces.Offer;
+import be.vinci.pae.views.Views;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.sql.Date;
 
+@JsonInclude(Include.NON_NULL)
 public class OfferImpl implements Offer {
 
+  @JsonView(Views.Public.class)
   private int id;
+  @JsonView(Views.Public.class)
   private Date date;
+  @JsonView(Views.Public.class)
   private String timeSlot;
+  @JsonView(Views.Public.class)
   private Item item;
+  @JsonView(Views.Public.class)
   private Member member;
 
   public OfferImpl() {

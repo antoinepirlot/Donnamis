@@ -7,19 +7,32 @@ import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.interfaces.Offer;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
+import be.vinci.pae.views.Views;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@JsonInclude(Include.NON_NULL)
 public class ItemImpl implements Item {
 
+  @JsonView(Views.Public.class)
   private int id;
+  @JsonView(Views.Public.class)
   private String itemDescription;
+  @JsonView(Views.Public.class)
   private ItemType itemType;
+  @JsonView(Views.Public.class)
   private Member member;
+  @JsonView(Views.Public.class)
   private String photo;
+  @JsonView(Views.Public.class)
   private String title;
+  @JsonView(Views.Public.class)
   private String offerStatus;
+  @JsonView(Views.Public.class)
   private List<Offer> offerList = new ArrayList<>();
 
   public ItemImpl() {

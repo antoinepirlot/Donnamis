@@ -3,19 +3,30 @@ package be.vinci.pae.biz.member.objects;
 import be.vinci.pae.biz.address.interfaces.Address;
 import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.member.interfaces.Member;
+import be.vinci.pae.views.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.util.Objects;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class MemberImpl implements Member {
 
+  @JsonView(Views.Public.class)
   private int id;
+  @JsonView(Views.Public.class)
   private String username;
+  @JsonView(Views.Internal.class)
   private String password;
+  @JsonView(Views.Public.class)
   private String lastName;
+  @JsonView(Views.Public.class)
   private String firstName;
+  @JsonView(Views.Public.class)
   private boolean isAdmin;
+  @JsonView(Views.Internal.class)
   private String actualState;
+  @JsonView(Views.Public.class)
   private String phoneNumber;
+  @JsonView(Views.Public.class)
   private Address address;
 
   public MemberImpl() {

@@ -4,6 +4,7 @@ import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
 import be.vinci.pae.ihm.filter.Authorize;
 import be.vinci.pae.ihm.filter.AuthorizeAdmin;
+import be.vinci.pae.ihm.utils.Json;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -25,6 +26,7 @@ public class ItemResource {
 
   @Inject
   private ItemUCC itemUCC;
+  private final Json<ItemDTO> jsonUtil = new Json<>(ItemDTO.class);
 
   /**
    * Method that get all the latest offered items.
@@ -45,7 +47,7 @@ public class ItemResource {
 
     //Convert to ObjectNode
     try {
-      return listItemDTO;
+      return this.jsonUtil.filterPublicJsonViewAsList(listItemDTO);
     } catch (Exception e) {
       System.out.println("Unable to create list of the latest items");
       return null;
@@ -137,6 +139,7 @@ public class ItemResource {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
           .entity("Item not found").type("text/plain").build());
     }
-    return itemUCC.cancelOffer(id);
+    ItemDTO itemDTO = itemUCC.cancelOffer(id);
+    return this.jsonUtil.filterPublicJsonView(itemDTO);
   }
 }
