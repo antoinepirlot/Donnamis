@@ -1,13 +1,9 @@
 package be.vinci.pae.ihm.filter;
 
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
-import be.vinci.pae.dal.member.interfaces.MemberDAO;
-import be.vinci.pae.exceptions.webapplication.UnauthorizedException;
+import be.vinci.pae.biz.member.interfaces.MemberUCC;
+import be.vinci.pae.ihm.filter.utils.TokenDecoder;
 import be.vinci.pae.ihm.logs.LoggerHandler;
-import be.vinci.pae.utils.Config;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -18,7 +14,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.Provider;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,38 +21,30 @@ import java.util.logging.Logger;
 @Provider
 @AuthorizeAdmin
 public class AuthorizationAdminRequestFilter implements ContainerRequestFilter {
-  private final Algorithm jwtAlgorithm;
-  private final JWTVerifier jwtVerifier;
-  private Logger logger;
+
+  private final Logger logger;
+  @Inject
+  private MemberUCC memberUCC;
 
   public AuthorizationAdminRequestFilter() {
-    jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
-    jwtVerifier = JWT.require(this.jwtAlgorithm).withIssuer("auth0").build();
+
     logger = LoggerHandler.getLogger();
   }
 
 
   @Override
   public void filter(ContainerRequestContext containerRequestContext) throws IOException {
-    String token = containerRequestContext.getHeaderString("Authorization");
-    if(token == null) {
-      containerRequestContext.abortWith(Response.status(
-          Status.UNAUTHORIZED)
-          .entity("A token is needed.")
+    DecodedJWT decodedJWT = TokenDecoder.decodeToken(containerRequestContext);
+    int id = decodedJWT.getClaim("id").asInt();
+    MemberDTO authenticatedMember = memberUCC.getOneMember(id);
+    if (!authenticatedMember.isAdmin()) {
+      String message = "The member with id: " + id + " can't access a admin method";
+      this.logger.log(Level.INFO, message);
+      containerRequestContext.abortWith(Response.status(Status.FORBIDDEN)
+          .entity(message)
           .type(MediaType.TEXT_PLAIN)
           .build());
-      String message = "A user try to use a fonction without a valid token";
-      this.logger.log(Level.INFO, message);
-    } else {
-      DecodedJWT decodedJWT = null;
-      try {
-        decodedJWT = this.jwtVerifier.verify(token);
-      } catch (Exception e) {
-        String message = "Malformed token : " + e.getMessage() + "\n"
-            + Arrays.toString(e.getStackTrace());
-        this.logger.log(Level.INFO, message);
-        throw new UnauthorizedException(message);
-      }
     }
+    containerRequestContext.setProperty("authorizedMember", authenticatedMember);
   }
 }
