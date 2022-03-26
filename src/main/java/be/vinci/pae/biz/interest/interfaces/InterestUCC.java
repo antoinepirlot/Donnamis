@@ -1,6 +1,5 @@
 package be.vinci.pae.biz.interest.interfaces;
 
-import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 
 public interface InterestUCC {

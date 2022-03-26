@@ -3,7 +3,6 @@ package be.vinci.pae.ihm.item;
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
 import be.vinci.pae.ihm.filter.Authorize;
-import be.vinci.pae.ihm.filter.AuthorizeAdmin;
 import be.vinci.pae.ihm.utils.Json;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
