@@ -12,7 +12,6 @@ import be.vinci.pae.utils.Config;
 import be.vinci.pae.ihm.logs.LoggerHandler;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
