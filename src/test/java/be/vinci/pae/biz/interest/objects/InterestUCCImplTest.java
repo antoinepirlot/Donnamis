@@ -101,13 +101,13 @@ class InterestUCCImplTest {
 
   @DisplayName("Test offer exist with existing id offer")
   @Test
-  void testOfferExistingWithExistingIdOffer() {
+  void testOfferExistWithExistingIdOffer() {
     assertTrue(this.interestUCC.offerExist(this.existingIdOffer));
   }
 
   @DisplayName("Test offer exist with not existing id offer")
   @Test
-  void testOfferNotExistingWithExistingIdOffer() {
+  void testOfferNotExistsWithExistingIdOffer() {
     assertFalse(this.interestUCC.offerExist(this.notExistingIdOffer));
   }
 }
