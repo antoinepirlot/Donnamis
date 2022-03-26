@@ -52,6 +52,7 @@ class ItemUCCImplTest {
     Mockito.when(this.itemDAO.getOneItem(this.goodItem.getId())).thenReturn(this.goodItem);
     Mockito.when(this.itemDAO.getOneItem(this.notExistingIdItem)).thenReturn(null);
     Mockito.when(this.itemDAO.addItem(this.goodItem)).thenReturn(true);
+    Mockito.when(this.itemDAO.addItem(this.wrongItem)).thenReturn(false);
     Mockito.when(this.itemDAO.addItem(null)).thenReturn(false);
   }
 
