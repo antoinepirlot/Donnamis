@@ -3,6 +3,7 @@ package be.vinci.pae.biz.item.objects;
 import static org.junit.jupiter.api.Assertions.*;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
+import be.vinci.pae.biz.item.interfaces.ItemUCC;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
 import be.vinci.pae.utils.ApplicationBinder;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ class ItemUCCImplTest {
 
   private final ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
   private final ItemDAO itemDAO = locator.getService(ItemDAO.class);
+  private final ItemUCC itemUCC = locator.getService(ItemUCC.class);
   private final List<ItemDTO> itemDTOList = new ArrayList<>();
   private final ItemDTO itemDTO = new ItemImpl();
   private final int notExistingIdItem = 56464;
@@ -36,35 +38,37 @@ class ItemUCCImplTest {
     Mockito.when(this.itemDAO.getAllOfferedItems()).thenReturn(this.itemDTOList);
     Mockito.when(this.itemDAO.getOneItem(this.itemDTO.getId())).thenReturn(this.itemDTO);
     Mockito.when(this.itemDAO.getOneItem(this.notExistingIdItem)).thenReturn(null);
+    Mockito.when(this.itemDAO.addItem(this.itemDTO)).thenReturn(true);
+    Mockito.when(this.itemDAO.addItem(null)).thenReturn(false);
   }
 
   @DisplayName("Test get latest items")
   @Test
   void testGetLatestItems() {
-    assertEquals(this.itemDTOList, this.itemDAO.getLatestItems());
+    assertEquals(this.itemDTOList, this.itemUCC.getLatestItems());
   }
 
   @DisplayName("Test get all items")
   @Test
   void testGetAllItems() {
-    assertEquals(this.itemDTOList, this.itemDAO.getAllItems());
+    assertEquals(this.itemDTOList, this.itemUCC.getAllItems());
   }
 
   @DisplayName("Test get all offered items")
   @Test
   void testGetAllOfferedItems() {
-    assertEquals(this.itemDTOList, this.itemDAO.getAllItems());
+    assertEquals(this.itemDTOList, this.itemUCC.getAllItems());
   }
 
   @DisplayName("Test get one item")
   @Test
   void testGetOneItem() {
-    assertEquals(this.itemDTO, this.itemDAO.getOneItem(this.itemDTO.getId()));
+    assertEquals(this.itemDTO, this.itemUCC.getOneItem(this.itemDTO.getId()));
   }
 
   @DisplayName("Test get one item with not existing id item")
   @Test
   void testGetOneItemWithNotExistingIdItem() {
-    assertNull(this.itemDAO.getOneItem(this.notExistingIdItem));
+    assertNull(this.itemUCC.getOneItem(this.notExistingIdItem));
   }
 }
