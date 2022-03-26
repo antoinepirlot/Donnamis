@@ -28,7 +28,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * Root resource (exposed at "myresource" path).
@@ -201,8 +200,6 @@ public class MemberResource {
       this.logger.log(Level.SEVERE, message);
       throw new WrongBodyDataException(message);
     }
-    String username = StringEscapeUtils.escapeHtml4(memberDTO.getUsername());
-    String password = memberDTO.getPassword();
     memberDTO = memberUCC.login(memberDTO);
     String token = createToken(memberDTO.getId());
     return createObjectNode(token, memberDTO);
