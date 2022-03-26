@@ -112,11 +112,11 @@ public class MemberDAOImpl implements MemberDAO {
   /**
    * Get a specific member identified by its username.
    *
-   * @param username the member's username
+   * @param memberDTO the member who try to log in
    * @return the member got from the db
    */
   @Override
-  public MemberDTO getOne(String username) {
+  public MemberDTO getOne(MemberDTO memberDTO) {
     System.out.println("getOne(String username) in MemberDAO");
     String query = "SELECT m.id_member, m.username, m.password, m.last_name, m.first_name, "
         + "m.is_admin, m.state, m.phone, a.id_address, a.street, a.building_number, a.unit_number,"
@@ -126,7 +126,7 @@ public class MemberDAOImpl implements MemberDAO {
         + "  AND a.id_member = m.id_member";
     try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
       System.out.println("Prepared statement successfully generated");
-      preparedStatement.setString(1, username);
+      preparedStatement.setString(1, memberDTO.getUsername());
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) { //We know only one is returned by the db
           System.out.println("USER FOUNDED");
@@ -246,7 +246,7 @@ public class MemberDAOImpl implements MemberDAO {
    * @return true if the member has been  registered
    */
   public boolean register(MemberDTO memberDTO) {
-    MemberDTO memberDB = this.getOne(memberDTO.getUsername());
+    MemberDTO memberDB = this.getOne(memberDTO);
     if (memberDB != null) { // the user already exists !
       return false;
     }

@@ -7,7 +7,7 @@ public interface MemberDAO {
 
   List<MemberDTO> getAllMembers();
 
-  MemberDTO getOne(String username);
+  MemberDTO getOne(MemberDTO memberDTO);
 
   /**
    * Add a new member to the db if it's not already in the db.

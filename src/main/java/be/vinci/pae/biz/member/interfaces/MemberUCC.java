@@ -53,10 +53,9 @@ public interface MemberUCC {
   /**
    * Get the member from the db, checks its state and password.
    *
-   * @param username of the member
-   * @param password of the member
+   * @param memberToLogIn the member who try to log in
    */
-  MemberDTO login(String username, String password);
+  MemberDTO login(MemberDTO memberToLogIn);
 
   /**
    * Ask DAO to insert the member into the db.

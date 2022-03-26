@@ -188,23 +188,23 @@ public class MemberResource {
   /**
    * Method that login the member. It verify if the user can be connected by calling ucc.
    *
-   * @param json the member login informations
+   * @param memberDTO the member login informations
    * @return token created for the member
    */
   @POST
   @Path("login")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public ObjectNode login(JsonNode json) {
+  public ObjectNode login(MemberDTO memberDTO) {
     // Get and check credentials
-    if (!json.hasNonNull("username") || !json.hasNonNull("password")) {
+    if (memberDTO.getUsername() == null || memberDTO.getPassword() == null) {
       String message = "Member has wrong attributes for login method";
       this.logger.log(Level.SEVERE, message);
       throw new WrongBodyDataException(message);
     }
-    String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
-    String password = json.get("password").asText();
-    MemberDTO memberDTO = memberUCC.login(username, password);
+    String username = StringEscapeUtils.escapeHtml4(memberDTO.getUsername());
+    String password = memberDTO.getPassword();
+    memberDTO = memberUCC.login(memberDTO);
     String token = createToken(memberDTO.getId());
     return createObjectNode(token, memberDTO);
   }

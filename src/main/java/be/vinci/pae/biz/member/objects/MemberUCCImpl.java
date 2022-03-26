@@ -29,8 +29,7 @@ public class MemberUCCImpl implements MemberUCC {
    */
   @Override
   public List<MemberDTO> getMembersRegistered() {
-    List<MemberDTO> listMember = memberDAO.getMembersRegistered();
-    return listMember;
+    return memberDAO.getMembersRegistered();
   }
 
   /**
@@ -40,8 +39,7 @@ public class MemberUCCImpl implements MemberUCC {
    */
   @Override
   public List<MemberDTO> getMembersDenied() {
-    List<MemberDTO> listMember = memberDAO.getMembersDenied();
-    return listMember;
+    return memberDAO.getMembersDenied();
   }
 
   /**
@@ -102,22 +100,22 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   /**
-   * Get the member from the db, checks its state.
+   * Get the member from the db, checks its state and password.
    *
-   * @param username of the member
-   * @param password of the member
+   * @param memberToLogIn the member who try to log in
    */
   @Override
-  public MemberDTO login(String username, String password) {
-    Member member = (Member) memberDAO.getOne(username);
+  public MemberDTO login(MemberDTO memberToLogIn) {
+    Member memberToLogin = (Member) memberToLogIn;
+    Member loggedMember = (Member) memberDAO.getOne(memberToLogin);
     if (
-        member == null
-            || !member.checkPassword(password, member.getPassword())
-            || !member.verifyState("confirmed")
+        loggedMember == null
+            || !loggedMember.checkPassword(memberToLogin.getPassword(), loggedMember.getPassword())
+            || !loggedMember.verifyState("confirmed")
     ) {
       return null;
     }
-    return member;
+    return loggedMember;
   }
 
   /**
