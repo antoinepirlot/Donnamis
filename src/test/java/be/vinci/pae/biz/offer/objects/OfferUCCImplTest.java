@@ -31,6 +31,7 @@ class OfferUCCImplTest {
   private final ItemDTO existingItem = new ItemImpl();
   private final ItemDTO notExistingItem = new ItemImpl();
   private final List<OfferDTO> offerDTOList = new ArrayList<>();
+  private final int notExistingIdOffer = 6464;
 
   @BeforeEach
   void setUp() {
@@ -55,6 +56,10 @@ class OfferUCCImplTest {
     Mockito.when(this.offerDAO.createOffer(null)).thenReturn(false);
     Mockito.when(this.offerDAO.getLatestOffers()).thenReturn(this.offerDTOList);
     Mockito.when(this.offerDAO.getAllOffers()).thenReturn(this.offerDTOList);
+    Mockito.when(this.offerDAO
+            .getOne(this.goodOfferExistingItem.getId()))
+        .thenReturn(this.goodOfferExistingItem);
+    Mockito.when(this.offerDAO.getOne(this.notExistingIdOffer)).thenReturn(null);
   }
 
   @DisplayName("Test create offer with good offer and existing item")
@@ -103,5 +108,20 @@ class OfferUCCImplTest {
   @Test
   void testGetAllOffers() {
     assertEquals(this.offerDTOList, this.offerUCC.getAllOffers());
+  }
+
+  @DisplayName("Test get one offer with existing id offer")
+  @Test
+  void testGetOneOfferWithExistingIdOffer() {
+    assertEquals(
+        this.goodOfferExistingItem,
+        this.offerUCC.getOneOffer(this.goodOfferExistingItem.getId())
+    );
+  }
+
+  @DisplayName("Test get one offer with not existing id offer")
+  @Test
+  void testGetOneOfferWithNotExistingIdOffer() {
+    assertNull(this.offerUCC.getOneOffer(this.notExistingIdOffer));
   }
 }
