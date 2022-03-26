@@ -19,11 +19,13 @@ class ItemUCCImplTest {
   private final ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
   private final ItemDAO itemDAO = locator.getService(ItemDAO.class);
   private final List<ItemDTO> itemDTOList = new ArrayList<>();
+  private final ItemDTO itemDTO = new ItemImpl();
 
   @BeforeEach
   void setUp() {
     this.itemDTOList.add(new ItemImpl());
     this.itemDTOList.add(new ItemImpl());
+    this.itemDTO.setId(5);
     this.setMockitos();
   }
 
@@ -31,6 +33,7 @@ class ItemUCCImplTest {
     Mockito.when(this.itemDAO.getLatestItems()).thenReturn(this.itemDTOList);
     Mockito.when(this.itemDAO.getAllItems()).thenReturn(this.itemDTOList);
     Mockito.when(this.itemDAO.getAllOfferedItems()).thenReturn(this.itemDTOList);
+    Mockito.when(this.itemDAO.getOneItem(this.itemDTO.getId())).thenReturn(this.itemDTO);
   }
 
   @DisplayName("Test get latest items")
@@ -49,5 +52,11 @@ class ItemUCCImplTest {
   @Test
   void testGetAllOfferedItems() {
     assertEquals(this.itemDTOList, this.itemDAO.getAllItems());
+  }
+
+  @DisplayName("Test get one item")
+  @Test
+  void testGetOneItem() {
+    assertEquals(this.itemDTO, this.itemDAO.getOneItem(this.itemDTO.getId()));
   }
 }
