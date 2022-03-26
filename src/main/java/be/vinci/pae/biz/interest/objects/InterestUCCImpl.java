@@ -32,7 +32,6 @@ public class InterestUCCImpl implements InterestUCC {
     System.out.println("MARK INTEREST -----------");
     if(callWanted){
       memberDTO = memberUCC.getOneMember(memberDTO.getId());
-      System.out.println("PHONE NUMB : " + memberDTO.getPhoneNumber());
       if(memberDTO.getPhoneNumber() == null){
         return 0;
       }
