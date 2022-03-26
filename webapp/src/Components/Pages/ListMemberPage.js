@@ -48,7 +48,6 @@ async function viewRegisteredMembers() {
 
   //For Each Member
   members.forEach((member) => {
-
     const line = document.createElement("tr");
     const NameCell = document.createElement("td");
     NameCell.innerText = member.lastName;
@@ -73,9 +72,9 @@ async function viewRegisteredMembers() {
 
       //Confirm the registration (Click on the button)
       if (isAdminButton.checked) {
-        await confirmAdmin();
+        await confirmAdmin(member.id);
       } else {
-        await confirmMember();
+        await confirmMember(member.id);
       }
       location.reload();
     });
@@ -89,7 +88,7 @@ async function viewRegisteredMembers() {
     denyButton.addEventListener("click", async function () {
 
       //Confirm the registration (Click on the button)
-      await denyMember();
+      await denyMember(member.id);
       location.reload();
     });
     denyButtonCell.appendChild(denyButton);
@@ -158,9 +157,9 @@ async function viewDeniedMembers() {
 
       //Confirm the registration (Click on the button)
       if (isAdminButton.checked) {
-        await confirmAdmin();
+        await confirmAdmin(member.id);
       } else {
-        await confirmMember();
+        await confirmMember(member.id);
       }
       location.reload();
     });

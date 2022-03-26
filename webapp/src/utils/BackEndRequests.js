@@ -44,31 +44,14 @@ async function getDeniedMembers() {
   }
 }
 
-async function confirmMember() {
+async function confirmMember(id) {
   const request = {
     method: "PUT",
     headers: {
       "Authorization": getObject("token")
     }
   };
-  const url = "/api/members/confirm/";
-  const response = await fetch(url + await getPayload().id, request);
-  if (!response.ok) {
-    throw new Error(
-        "fetch error : " + response.status + " : " + response.statusText
-    );
-  }
-}
-
-async function confirmAdmin() {
-  const request = {
-    method: "PUT",
-    headers: {
-      "Authorization": getObject("token")
-    }
-  };
-  const payload = await getPayload();
-  const url = "/api/members/confirmAdmin/" + payload.id;
+  const url = `/api/members/confirm/${id}`;
   const response = await fetch(url, request);
   if (!response.ok) {
     throw new Error(
@@ -77,7 +60,24 @@ async function confirmAdmin() {
   }
 }
 
-async function denyMember() {
+async function confirmAdmin(id) {
+  const request = {
+    method: "PUT",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const payload = await getPayload();
+  const url = `/api/members/confirmAdmin/${id}`;
+  const response = await fetch(url, request);
+  if (!response.ok) {
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText
+    );
+  }
+}
+
+async function denyMember(id) {
   try {
     const request = {
       method: "PUT",
@@ -85,7 +85,7 @@ async function denyMember() {
         "Authorization": getObject("token")
       }
     };
-    const url = "/api/members/denies/" + await getPayload().id;
+    const url = `/api/members/denies/${id}`;
     const reponse = await fetch(url, request);
     if (!reponse.ok) {
       throw new Error(
