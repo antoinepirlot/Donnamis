@@ -54,6 +54,7 @@ class OfferUCCImplTest {
     Mockito.when(this.offerDAO.createOffer(this.emptyOffer)).thenReturn(false);
     Mockito.when(this.offerDAO.createOffer(null)).thenReturn(false);
     Mockito.when(this.offerDAO.getLatestOffers()).thenReturn(this.offerDTOList);
+    Mockito.when(this.offerDAO.getAllOffers()).thenReturn(this.offerDTOList);
   }
 
   @DisplayName("Test create offer with good offer and existing item")
@@ -94,7 +95,13 @@ class OfferUCCImplTest {
 
   @DisplayName("Test get latest offers")
   @Test
-  void getLatestOffers() {
+  void testGetLatestOffers() {
     assertEquals(this.offerDTOList, this.offerUCC.getLatestOffers());
+  }
+
+  @DisplayName("Test get all offers")
+  @Test
+  void testGetAllOffers() {
+    assertEquals(this.offerDTOList, this.offerUCC.getAllOffers());
   }
 }
