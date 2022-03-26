@@ -26,6 +26,7 @@ class InterestUCCImplTest {
   private final MemberUCC memberUCC = locator.getService(MemberUCC.class);
   private final MemberDTO memberWithPhoneNumber = new MemberImpl();
   private final MemberDTO memberWithoutPhoneNumber = new MemberImpl();
+  private final MemberDTO memberNotExisting = new MemberImpl();
   private final int existingIdOffer = 5;
   private final int notExistingIdOffer = 5546;
   private final LocalDate date = LocalDate.now();
@@ -36,6 +37,7 @@ class InterestUCCImplTest {
     this.memberWithPhoneNumber.setId(1);
     this.memberWithPhoneNumber.setPhoneNumber("0458694778");
     this.memberWithoutPhoneNumber.setId(2);
+    this.memberNotExisting.setId(646664);
     this.setMockitos();
   }
 
@@ -60,7 +62,8 @@ class InterestUCCImplTest {
         .thenReturn(this.memberWithoutPhoneNumber);
     Mockito.when(this.interestDAO.offerExist(this.existingIdOffer)).thenReturn(true);
     Mockito.when(this.interestDAO.offerExist(this.notExistingIdOffer)).thenReturn(false);
-
+    Mockito.when(this.interestDAO.memberExist(this.memberWithoutPhoneNumber)).thenReturn(true);
+    Mockito.when(this.interestDAO.memberExist(this.memberNotExisting)).thenReturn(false);
   }
 
   @DisplayName("Test mark interst with phone number and no call wanted")
@@ -109,5 +112,17 @@ class InterestUCCImplTest {
   @Test
   void testOfferNotExistsWithExistingIdOffer() {
     assertFalse(this.interestUCC.offerExist(this.notExistingIdOffer));
+  }
+
+  @DisplayName("Test member exist with existing id member")
+  @Test
+  void testMemberExistWithExistingIdMember() {
+    assertTrue(this.interestUCC.memberExist(this.memberWithoutPhoneNumber));
+  }
+
+  @DisplayName("Test member not exist with not existing id member")
+  @Test
+  void testMemberNotExistsWithExistingIdMember() {
+    assertFalse(this.interestUCC.memberExist(this.memberNotExisting));
   }
 }
