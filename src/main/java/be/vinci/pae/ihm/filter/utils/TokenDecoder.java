@@ -26,6 +26,7 @@ public class TokenDecoder {
 
   /**
    * Decode the token from the containerRequestContext.
+   *
    * @param containerRequestContext contains token
    * @return the decoded token
    */
@@ -50,7 +51,7 @@ public class TokenDecoder {
         throw new UnauthorizedException(message);
       }
     }
-    if(decodedJWT == null) {
+    if (decodedJWT == null) {
       String message = "Null is returned by decode token.";
       logger.log(Level.SEVERE, message);
       throw new TokenDecodingException(message);

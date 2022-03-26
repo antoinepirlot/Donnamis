@@ -30,9 +30,9 @@ public class InterestUCCImpl implements InterestUCC {
   public int markInterest(MemberDTO memberDTO, int idOffer, boolean callWanted) {
     LocalDate date = LocalDate.now();
     System.out.println("MARK INTEREST -----------");
-    if(callWanted){
+    if (callWanted) {
       memberDTO = memberUCC.getOneMember(memberDTO.getId());
-      if(memberDTO.getPhoneNumber() == null){
+      if (memberDTO.getPhoneNumber() == null) {
         return 0;
       }
     }
@@ -64,7 +64,7 @@ public class InterestUCCImpl implements InterestUCC {
   /**
    * Verify if the interest exist in the DB.
    *
-   * @param idOffer  the id of the offer
+   * @param idOffer   the id of the offer
    * @param memberDTO the member
    * @return true if exist in the DB false if not
    */

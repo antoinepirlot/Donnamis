@@ -5,7 +5,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.Arrays;
 
-public class ConflictException extends WebApplicationException{
+public class ConflictException extends WebApplicationException {
 
   public ConflictException() {
     super(Response.status(Response.Status.CONFLICT)

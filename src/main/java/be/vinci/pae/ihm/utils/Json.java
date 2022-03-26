@@ -11,7 +11,7 @@ public class Json<T> {
   private final ObjectMapper jsonMapper = new ObjectMapper();
   private final Class<T> type;
 
-  public Json(Class<T> type){
+  public Json(Class<T> type) {
     this.type = type;
   }
 

@@ -69,7 +69,7 @@ public class InterestResource {
 
     //Add the interest
     int res = interestUCC.markInterest(memberDTO, idOffer, callWanted);
-    if(res == 0){
+    if (res == 0) {
       throw new WebApplicationException(Response.status(Status.FORBIDDEN)
           .entity("no phone number registered for this member").type("text/plain").build());
     } else if (res == -1) {
