@@ -20,10 +20,8 @@ public class LoggerHandler {
     logger = Logger.getLogger("LoggerHandler");
     try {
       File file = new File(LOG_FILE_PATH);
-      if (!file.exists()) {
-        if (!file.mkdir()) {
-          throw new FileSystemException("Can't create directory");
-        }
+      if (!file.exists() && !file.mkdir()) {
+        throw new FileSystemException("Can't create directory");
       }
       fileHandler = new FileHandler(LOG_FILE_PATH + "logs.log", 20480, 5, true);
       fileHandler.setFormatter(new SimpleFormatter());
@@ -35,6 +33,7 @@ public class LoggerHandler {
 
   /**
    * return the logger.
+   *
    * @return the logger
    */
   public static Logger getLogger() {
