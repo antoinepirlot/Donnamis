@@ -64,6 +64,18 @@ class InterestUCCImplTest {
     Mockito.when(this.interestDAO.offerExist(this.notExistingIdOffer)).thenReturn(false);
     Mockito.when(this.interestDAO.memberExist(this.memberWithoutPhoneNumber)).thenReturn(true);
     Mockito.when(this.interestDAO.memberExist(this.memberNotExisting)).thenReturn(false);
+    Mockito.when(this.interestDAO
+            .interestExist(this.existingIdOffer, this.memberWithoutPhoneNumber))
+        .thenReturn(true);
+    Mockito.when(this.interestDAO
+            .interestExist(this.existingIdOffer, this.memberNotExisting))
+        .thenReturn(false);
+    Mockito.when(this.interestDAO
+            .interestExist(this.notExistingIdOffer, this.memberWithoutPhoneNumber))
+        .thenReturn(false);
+    Mockito.when(this.interestDAO
+            .interestExist(this.notExistingIdOffer, this.memberNotExisting))
+        .thenReturn(false);
   }
 
   @DisplayName("Test mark interst with phone number and no call wanted")
@@ -124,5 +136,29 @@ class InterestUCCImplTest {
   @Test
   void testMemberNotExistsWithExistingIdMember() {
     assertFalse(this.interestUCC.memberExist(this.memberNotExisting));
+  }
+
+  @DisplayName("Test interest exists with existing offer id and existing member")
+  @Test
+  void testInterestExistsWithExistingOfferIdAndExistingMember() {
+    assertTrue(this.interestUCC.interestExist(this.existingIdOffer, this.memberWithoutPhoneNumber));
+  }
+
+  @DisplayName("Test interest exists with not existing offer id and existing member")
+  @Test
+  void testInterestExistsWithNotExistingOfferIdAndExistingMember() {
+    assertFalse(this.interestUCC.interestExist(this.notExistingIdOffer, this.memberWithoutPhoneNumber));
+  }
+
+  @DisplayName("Test interest exists with existing offer id and not existing member")
+  @Test
+  void testInterestExistsWithExistingOfferIdAndNotExistingMember() {
+    assertFalse(this.interestUCC.interestExist(this.existingIdOffer, this.memberNotExisting));
+  }
+
+  @DisplayName("Test interest exists with not existing offer id and not existing member")
+  @Test
+  void testInterestExistsWithNotExistingOfferIdAndNotExistingMember() {
+    assertFalse(this.interestUCC.interestExist(this.notExistingIdOffer, this.memberNotExisting));
   }
 }
