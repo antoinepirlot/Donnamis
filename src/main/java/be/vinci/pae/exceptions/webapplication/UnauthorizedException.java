@@ -8,6 +8,9 @@ import java.util.Arrays;
 
 public class UnauthorizedException extends WebApplicationException {
 
+  /**
+   * Call super (WebApplicationException) with UNAUTHORIZED status and generic entity.
+   */
   public UnauthorizedException() {
     super(Response.status(Status.UNAUTHORIZED)
         .entity("Unauthorized")
@@ -15,6 +18,11 @@ public class UnauthorizedException extends WebApplicationException {
         .build());
   }
 
+  /**
+   * Call super (WebApplicationException) with UNAUTHORIZED status with a message.
+   *
+   * @param message the message to add in entity
+   */
   public UnauthorizedException(String message) {
     super(Response.status(Status.UNAUTHORIZED)
         .entity(message)
@@ -22,6 +30,11 @@ public class UnauthorizedException extends WebApplicationException {
         .build());
   }
 
+  /**
+   * Call super (WebApplicationException) with UNAUTHORIZED status with throwable information.
+   *
+   * @param throwable the throwable that contains information about the error
+   */
   public UnauthorizedException(Throwable throwable) {
     super(Response.status(Status.UNAUTHORIZED)
         .entity(throwable.getMessage() + "\n" + Arrays.toString(throwable.getStackTrace()))

@@ -13,6 +13,9 @@ public class LoggerHandler {
   private static FileHandler fileHandler;
   private static Logger logger;
 
+  /**
+   * Initialize the LoggerHandler by creating a file handler and the logger.
+   */
   public static void init() {
     logger = Logger.getLogger("LoggerHandler");
     try {
@@ -30,10 +33,17 @@ public class LoggerHandler {
     }
   }
 
+  /**
+   * return the logger.
+   * @return the logger
+   */
   public static Logger getLogger() {
     return logger;
   }
 
+  /**
+   * Close the file handler.
+   */
   public static void close() {
     fileHandler.close();
   }

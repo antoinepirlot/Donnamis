@@ -15,6 +15,11 @@ public class Json<T> {
     this.type = type;
   }
 
+  /**
+   * Filter all attributes from the T class from the list.
+   * @param list the list where objects' attributes must be filtered
+   * @return the filtered object's attributes list
+   */
   public List<T> filterPublicJsonViewAsList(List<T> list) {
     try {
       JavaType type = jsonMapper.getTypeFactory().constructCollectionType(List.class, this.type);
@@ -32,6 +37,11 @@ public class Json<T> {
     }
   }
 
+  /**
+   * Filter the object's attributes.
+   * @param item the object to filter
+   * @return filtered object
+   */
   public T filterPublicJsonView(T item) {
     try {
       // serialize using JSON Views : public view (all fields not required in the

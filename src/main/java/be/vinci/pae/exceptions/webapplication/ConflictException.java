@@ -7,6 +7,9 @@ import java.util.Arrays;
 
 public class ConflictException extends WebApplicationException {
 
+  /**
+   * Call super (WebApplicationException) with CONFLICT status and generic entity.
+   */
   public ConflictException() {
     super(Response.status(Response.Status.CONFLICT)
         .entity("this resource already exists")
@@ -14,6 +17,11 @@ public class ConflictException extends WebApplicationException {
         .build());
   }
 
+  /**
+   * Call super (WebApplicationException) with CONFLICT status with a message.
+   *
+   * @param message the message to add in entity
+   */
   public ConflictException(String message) {
     super(Response.status(Response.Status.CONFLICT)
         .entity(message)
@@ -21,6 +29,11 @@ public class ConflictException extends WebApplicationException {
         .build());
   }
 
+  /**
+   * Call super (WebApplicationException) with CONFLICT status with throwable information.
+   *
+   * @param throwable the throwable that contains information about the error
+   */
   public ConflictException(Throwable throwable) {
     super(Response.status(Response.Status.CONFLICT)
         .entity(throwable.getMessage() + "\n" + Arrays.toString(throwable.getStackTrace()))

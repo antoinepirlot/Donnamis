@@ -50,7 +50,11 @@ public class OfferResource {
 
   }
 
-
+  /**
+   * Asks UCC to get one offer identified by its id.
+   * @param id the offer's id
+   * @return the offer if it exists, otherwise throws a web application exception
+   */
   @GET
   @Path("{id}")
   @Consumes(MediaType.APPLICATION_JSON)
