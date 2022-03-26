@@ -30,6 +30,7 @@ class ItemUCCImplTest {
   private void setMockitos() {
     Mockito.when(this.itemDAO.getLatestItems()).thenReturn(this.itemDTOList);
     Mockito.when(this.itemDAO.getAllItems()).thenReturn(this.itemDTOList);
+    Mockito.when(this.itemDAO.getAllOfferedItems()).thenReturn(this.itemDTOList);
   }
 
   @DisplayName("Test get latest items")
@@ -41,6 +42,12 @@ class ItemUCCImplTest {
   @DisplayName("Test get all items")
   @Test
   void testGetAllItems() {
+    assertEquals(this.itemDTOList, this.itemDAO.getAllItems());
+  }
+
+  @DisplayName("Test get all offered items")
+  @Test
+  void testGetAllOfferedItems() {
     assertEquals(this.itemDTOList, this.itemDAO.getAllItems());
   }
 }
