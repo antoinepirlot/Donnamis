@@ -54,7 +54,7 @@ public class InterestResource {
     }
 
     //Verify if the member already exist
-    if (!interestUCC.memberExist(memberDTO.getId())) {
+    if (!interestUCC.memberExist(memberDTO)) {
       System.out.println("member does not exist");
 
       throw new WebApplicationException(Response.status(Status.NOT_FOUND)
@@ -62,13 +62,13 @@ public class InterestResource {
     }
 
     //Verify if the interest already exist
-    if (interestUCC.interestExist(idOffer, memberDTO.getId())) {
+    if (interestUCC.interestExist(idOffer, memberDTO)) {
       throw new WebApplicationException(Response.status(Status.CONFLICT)
           .entity("interest already exist").type("text/plain").build());
     }
 
     //Add the interest
-    int res = interestUCC.markInterest(memberDTO.getId(), idOffer, callWanted);
+    int res = interestUCC.markInterest(memberDTO, idOffer, callWanted);
     if(res == 0){
       throw new WebApplicationException(Response.status(Status.FORBIDDEN)
           .entity("no phone number registered for this member").type("text/plain").build());
