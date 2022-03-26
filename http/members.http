@@ -2,6 +2,14 @@
 GET {{baseUrl}}/members/list_member
 Authorization: {{token}}
 
+### getAll confired member
+GET {{baseUrl}}/members/list_registered
+Authorization: {{token}}
+
+###get all denied member
+GET {{baseUrl}}/members/list_denied
+Authorization: {{token}}
+
 ### Login with default user credentials
 POST {{baseUrl}}/members/login
 Content-Type: application/json
@@ -24,7 +32,7 @@ PUT {{baseUrl}}/members/denies/3
 ### Confirm Admin
 PUT {{baseUrl}}/members/confirmAdmin/3
 
-### Get All Members
+### Get All Members unauthorized excected
 GET {{baseUrl}}/members/list_member
 
 ### Login "registered" user credentials, forbidden expected
