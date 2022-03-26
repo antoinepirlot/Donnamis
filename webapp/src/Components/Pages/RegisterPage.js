@@ -1,6 +1,7 @@
 import {
   getPayload,
 } from "../../utils/session";
+import {register as registerBackEndRequest} from "../../utils/BackEndRequests";
 import {Redirect} from "../Router/Router";
 import {showError} from "../../utils/ShowError";
 
@@ -92,12 +93,13 @@ async function register(e) {
   const commune = document.querySelector("#communeInput").value;
   const postcode = document.querySelector("#postcodeInput").value;
   //div
-  const registerMessage =  document.querySelector("#registerMessage");
+  const registerMessage = document.querySelector("#registerMessage");
 
-  if(
-    !username|| !password || !firstName || !lastName || !street || !commune ||
-    !buildingNumber || !postcode
-  ){
+  if (
+      !username || !password || !firstName || !lastName || !street || !commune
+      ||
+      !buildingNumber || !postcode
+  ) {
     showError("Tous les champs doivent être complet", "danger", registerMessage)
     return;
   }
@@ -107,31 +109,19 @@ async function register(e) {
     commune: commune,
     postcode: postcode
   };
-  if(unitNumber) {
+  if (unitNumber) {
     // add the unitNumber to address if it exists
     address.unitNumber = unitNumber;
   }
+  const member = {
+    username: username,
+    password: password,
+    firstName: firstName,
+    lastName: lastName,
+    address: address
+  }
   try {
-    const request = {
-      method: "POST",
-      headers: {
-        "Content-Type":
-            "application/json"
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password,
-        firstName: firstName,
-        lastName: lastName,
-        address: address
-      })
-    };
-    const response = await fetch("api/members/register", request);
-    if (!response.ok) {
-      showError("Echec de l'inscription", "danger", registerMessage);
-      return;
-    }
-    showError("Votre inscription à bien été prise en compte. Veuillez patienter la validation de votre compte.", "success", registerMessage)
+    await registerBackEndRequest(member);
   } catch (err) {
     showError("Echec de l'inscription", "danger", registerMessage);
     console.error(err);
