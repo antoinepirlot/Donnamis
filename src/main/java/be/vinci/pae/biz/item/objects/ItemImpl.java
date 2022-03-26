@@ -116,7 +116,7 @@ public class ItemImpl implements Item {
   @Override
   public void setOfferList(List<OfferDTO> offerList) {
     List<Offer> temp = new ArrayList<>();
-    temp.forEach(offer -> offerList.add((Offer) offer));
+    offerList.forEach(offer -> temp.add((Offer) offer));
     this.offerList = temp;
   }
 
