@@ -12,53 +12,28 @@ public class MemberUCCImpl implements MemberUCC {
   @Inject
   private MemberDAO memberDAO;
 
-  /**
-   * Get all the members from the db.
-   *
-   * @return list of member
-   */
+
   @Override
   public List<MemberDTO> getAllMembers() {
     return memberDAO.getAllMembers();
   }
 
-  /**
-   * Get all the members with the state registered from the db.
-   *
-   * @return list of member registered
-   */
+
   @Override
   public List<MemberDTO> getMembersRegistered() {
     return memberDAO.getMembersRegistered();
   }
 
-  /**
-   * Get all the members with the state denied from the db.
-   *
-   * @return list of member denied
-   */
   @Override
   public List<MemberDTO> getMembersDenied() {
     return memberDAO.getMembersDenied();
   }
 
-  /**
-   * Get One Member by id.
-   *
-   * @param id of the member
-   * @return Member or null
-   */
   @Override
   public MemberDTO getOneMember(int id) {
     return memberDAO.getOneMember(id);
   }
 
-  /**
-   * Verify the state of the member and then change the state of the member to confirmed.
-   *
-   * @param id of the member
-   * @return True if success
-   */
   @Override
   public MemberDTO confirmMember(int id) {
     Member member = (Member) getOneMember(id);
@@ -68,12 +43,6 @@ public class MemberUCCImpl implements MemberUCC {
     return memberDAO.confirmMember(id);
   }
 
-  /**
-   * Verify the state of the member and then change the state of the member to denied.
-   *
-   * @param id of the member
-   * @return True if success
-   */
   @Override
   public MemberDTO denyMember(int id) {
     Member member = (Member) getOneMember(id);
@@ -83,13 +52,6 @@ public class MemberUCCImpl implements MemberUCC {
     return memberDAO.denyMember(id);
   }
 
-  /**
-   * Verify the state of the member and then change the state of the member to confirmed and member
-   * is an admin.
-   *
-   * @param id of the member
-   * @return True if success
-   */
   public MemberDTO confirmAdmin(int id) {
     Member member = (Member) getOneMember(id);
     if (!member.verifyState("registered") && !member.verifyState("denied")) {
@@ -99,11 +61,6 @@ public class MemberUCCImpl implements MemberUCC {
     return memberDAO.isAdmin(id);
   }
 
-  /**
-   * Get the member from the db, checks its state and password.
-   *
-   * @param memberToLogIn the member who try to log in
-   */
   @Override
   public MemberDTO login(MemberDTO memberToLogIn) {
     Member memberToLogin = (Member) memberToLogIn;
@@ -118,11 +75,6 @@ public class MemberUCCImpl implements MemberUCC {
     return loggedMember;
   }
 
-  /**
-   * Ask DAO to insert the member into the db.
-   * @param memberDTO member to add in the db
-   * @return true if the member has been  registered
-   */
   @Override
   public boolean register(MemberDTO memberDTO) {
     Member member = (Member) memberDTO;
