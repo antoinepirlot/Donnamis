@@ -6,24 +6,28 @@ public interface MemberUCC {
 
   /**
    * Asks UCC to get a list of all members.
+   *
    * @return the list of all members
    */
   List<MemberDTO> getAllMembers();
 
   /**
-   * Asks UCC to get a list of registered members
+   * Asks UCC to get a list of registered members.
+   *
    * @return the list of registered members
    */
   List<MemberDTO> getMembersRegistered();
 
   /**
    * Asks UCC to get the list of denied members.
+   *
    * @return the list of denied members
    */
   List<MemberDTO> getMembersDenied();
 
   /**
    * Asks the UCC to get the member identified by its id.
+   *
    * @param id the member's id
    * @return the member or null if there's no member with the id
    */
@@ -62,6 +66,7 @@ public interface MemberUCC {
 
   /**
    * Ask DAO to insert the member into the db.
+   *
    * @param memberDTO member to add in the db
    * @return true if the member has been  registered
    */

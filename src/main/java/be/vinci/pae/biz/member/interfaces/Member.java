@@ -19,7 +19,7 @@ public interface Member extends MemberDTO {
   boolean checkPassword(String password, String hashedPassword);
 
   /**
-   * Crypt the password with BCrypt
+   * Crypt the password with BCrypt.
    */
   void hashPassword();
 }
