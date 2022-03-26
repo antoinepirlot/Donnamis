@@ -10,6 +10,8 @@ public class UnauthorizedException extends WebApplicationException {
 
   public UnauthorizedException() {
     super(Response.status(Status.UNAUTHORIZED)
+        .entity("Unauthorized")
+        .type(MediaType.TEXT_PLAIN)
         .build());
   }
 

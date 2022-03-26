@@ -9,6 +9,8 @@ public class WrongBodyDataException extends WebApplicationException {
 
   public WrongBodyDataException() {
     super(Response.status(Status.BAD_REQUEST)
+        .entity("Bad request")
+        .type(MediaType.TEXT_PLAIN)
         .build());
   }
 

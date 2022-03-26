@@ -9,6 +9,8 @@ public class TokenDecodingException extends WebApplicationException {
 
   public TokenDecodingException() {
     super(Response.status(Status.UNAUTHORIZED)
+        .entity("Invalid token")
+        .type(MediaType.TEXT_PLAIN)
         .build());
   }
 
