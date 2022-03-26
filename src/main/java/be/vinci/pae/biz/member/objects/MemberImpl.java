@@ -104,12 +104,6 @@ public class MemberImpl implements Member {
     this.address = (Address) addressDTO;
   }
 
-  /**
-   * Verify if the state of the member is allowed to connect to the website. If the state is
-   * "confirmed" the user can access.
-   *
-   * @return true if the actual state is "confirmed", else return false
-   */
   @Override
   public boolean verifyState(String expectedState) {
     return this.actualState.equals(expectedState);

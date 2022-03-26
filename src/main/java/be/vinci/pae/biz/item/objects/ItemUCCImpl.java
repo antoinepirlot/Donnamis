@@ -11,21 +11,11 @@ public class ItemUCCImpl implements ItemUCC {
   @Inject
   private ItemDAO itemDAO;
 
-  /**
-   * Get the latest items from the database.
-   *
-   * @return List of the latest items offered
-   */
   @Override
   public List<ItemDTO> getLatestItems() {
     return itemDAO.getLatestItems();
   }
 
-  /**
-   * Get the latest items from the database.
-   *
-   * @return List of all items offered
-   */
   @Override
   public List<ItemDTO> getAllItems() {
     return itemDAO.getAllItems();
