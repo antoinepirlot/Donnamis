@@ -20,6 +20,7 @@ class ItemUCCImplTest {
   private final ItemDAO itemDAO = locator.getService(ItemDAO.class);
   private final List<ItemDTO> itemDTOList = new ArrayList<>();
   private final ItemDTO itemDTO = new ItemImpl();
+  private final int notExistingIdItem = 56464;
 
   @BeforeEach
   void setUp() {
@@ -34,6 +35,7 @@ class ItemUCCImplTest {
     Mockito.when(this.itemDAO.getAllItems()).thenReturn(this.itemDTOList);
     Mockito.when(this.itemDAO.getAllOfferedItems()).thenReturn(this.itemDTOList);
     Mockito.when(this.itemDAO.getOneItem(this.itemDTO.getId())).thenReturn(this.itemDTO);
+    Mockito.when(this.itemDAO.getOneItem(this.notExistingIdItem)).thenReturn(null);
   }
 
   @DisplayName("Test get latest items")
@@ -58,5 +60,11 @@ class ItemUCCImplTest {
   @Test
   void testGetOneItem() {
     assertEquals(this.itemDTO, this.itemDAO.getOneItem(this.itemDTO.getId()));
+  }
+
+  @DisplayName("Test get one item with not existing id item")
+  @Test
+  void testGetOneItemWithNotExistingIdItem() {
+    assertNull(this.itemDAO.getOneItem(this.notExistingIdItem));
   }
 }
