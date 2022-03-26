@@ -27,6 +27,9 @@ class ItemUCCImplTest {
   private final List<ItemDTO> itemDTOList = new ArrayList<>();
   private final ItemDTO goodItem = new ItemImpl();
   private final ItemDTO wrongItem = new ItemImpl();
+  private final ItemDTO cancelledItem = new ItemImpl();
+  private final int givenIdItem = 25;
+  private final int assignedIdItem = 280;
   private final int notExistingIdItem = 56464;
 
   @BeforeEach
@@ -35,11 +38,13 @@ class ItemUCCImplTest {
     this.itemDTOList.add(new ItemImpl());
     this.goodItem.setId(5);
     this.goodItem.setItemDescription("Description");
+    this.goodItem.setOfferStatus("donated");
     ItemType itemType = new ItemTypeImpl();
     itemType.setId(5);
     this.goodItem.setItemType(itemType);
     MemberDTO memberDTO = new MemberImpl();
     memberDTO.setId(89);
+    this.cancelledItem.setOfferStatus("cancelled");
     this.goodItem.setMember(memberDTO);
     this.goodItem.setTitle("title");
     this.setMockitos();
@@ -54,6 +59,10 @@ class ItemUCCImplTest {
     Mockito.when(this.itemDAO.addItem(this.goodItem)).thenReturn(true);
     Mockito.when(this.itemDAO.addItem(this.wrongItem)).thenReturn(false);
     Mockito.when(this.itemDAO.addItem(null)).thenReturn(false);
+    Mockito.when(this.itemDAO.cancelOffer(this.goodItem.getId())).thenReturn(this.cancelledItem);
+    Mockito.when(this.itemDAO.cancelOffer(this.notExistingIdItem)).thenReturn(null);
+    Mockito.when(this.itemDAO.cancelOffer(this.givenIdItem)).thenReturn(null);
+    Mockito.when(this.itemDAO.cancelOffer(this.assignedIdItem)).thenReturn(this.cancelledItem);
   }
 
   @DisplayName("Test get latest items")
@@ -102,5 +111,29 @@ class ItemUCCImplTest {
   @Test
   void testAddItemWithNullItem() {
     assertFalse(this.itemUCC.addItem(null));
+  }
+
+  @DisplayName("Test cancel offer with existing item")
+  @Test
+  void testCancelOfferWithExistingItem() {
+    assertEquals(this.cancelledItem, this.itemUCC.cancelOffer(this.goodItem.getId()));
+  }
+
+  @DisplayName("Test cancel offer with not existing item")
+  @Test
+  void testCancelOfferWithNotExistingItem() {
+    assertNull(this.itemUCC.cancelOffer(this.notExistingIdItem));
+  }
+
+  @DisplayName("Test cancel offer with given item")
+  @Test
+  void testCancelOfferWithGivenItem() {
+    assertNull(this.itemUCC.cancelOffer(this.givenIdItem));
+  }
+
+  @DisplayName("Test cancel offer with assigned item")
+  @Test
+  void testCancelOfferWithAssignedItem() {
+    assertEquals(this.cancelledItem, this.itemUCC.cancelOffer(this.assignedIdItem));
   }
 }
