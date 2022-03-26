@@ -1,11 +1,8 @@
 package be.vinci.pae.biz.interest.objects;
 
-import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
-import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
-import be.vinci.pae.biz.member.objects.MemberUCCImpl;
 import be.vinci.pae.dal.interest.interfaces.InterestDAO;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
