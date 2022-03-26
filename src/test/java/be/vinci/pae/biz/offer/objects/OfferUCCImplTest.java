@@ -9,6 +9,8 @@ import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.dal.offer.interfaces.OfferDAO;
 import be.vinci.pae.utils.ApplicationBinder;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,39 +23,43 @@ class OfferUCCImplTest {
   private final ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
   private final OfferDAO offerDAO = locator.getService(OfferDAO.class);
   private final OfferUCC offerUCC = locator.getService(OfferUCC.class);
-  private final OfferDTO goodOfferExistingOffer = new OfferImpl();
+  private final OfferDTO goodOfferExistingItem = new OfferImpl();
   private final OfferDTO goodOfferNotExistingItem = new OfferImpl();
   private final OfferDTO wrongOfferWithExistingItem = new OfferImpl();
   private final OfferDTO wrongOfferWithNotExistingItem = new OfferImpl();
   private final OfferDTO emptyOffer = new OfferImpl();
   private final ItemDTO existingItem = new ItemImpl();
   private final ItemDTO notExistingItem = new ItemImpl();
+  private final List<OfferDTO> offerDTOList = new ArrayList<>();
 
   @BeforeEach
   void setUp() {
-    this.goodOfferExistingOffer.setDate(new Date(25));
-    this.goodOfferExistingOffer.setTimeSlot("Time slot");
+    this.goodOfferExistingItem.setDate(new Date(25));
+    this.goodOfferExistingItem.setTimeSlot("Time slot");
     this.existingItem.setId(5);
-    this.goodOfferExistingOffer.setItem(this.existingItem);
+    this.goodOfferExistingItem.setItem(this.existingItem);
     this.goodOfferNotExistingItem.setItem(this.notExistingItem);
     this.wrongOfferWithExistingItem.setItem(this.existingItem);
     this.wrongOfferWithNotExistingItem.setItem(this.notExistingItem);
+    this.offerDTOList.add(new OfferImpl());
+    this.offerDTOList.add(this.goodOfferExistingItem);
     this.setMockitos();
   }
 
   private void setMockitos() {
-    Mockito.when(this.offerDAO.createOffer(this.goodOfferExistingOffer)).thenReturn(true);
+    Mockito.when(this.offerDAO.createOffer(this.goodOfferExistingItem)).thenReturn(true);
     Mockito.when(this.offerDAO.createOffer(this.goodOfferNotExistingItem)).thenReturn(false);
     Mockito.when(this.offerDAO.createOffer(this.wrongOfferWithExistingItem)).thenReturn(false);
     Mockito.when(this.offerDAO.createOffer(this.wrongOfferWithNotExistingItem)).thenReturn(false);
     Mockito.when(this.offerDAO.createOffer(this.emptyOffer)).thenReturn(false);
     Mockito.when(this.offerDAO.createOffer(null)).thenReturn(false);
+    Mockito.when(this.offerDAO.getLatestOffers()).thenReturn(this.offerDTOList);
   }
 
   @DisplayName("Test create offer with good offer and existing item")
   @Test
   void testCreateOfferWithGoodOfferAndExistingItem() {
-    assertTrue(this.offerUCC.createOffer(this.goodOfferExistingOffer));
+    assertTrue(this.offerUCC.createOffer(this.goodOfferExistingItem));
   }
 
   @DisplayName("Test create offer with good offer and not existing item")
@@ -84,5 +90,11 @@ class OfferUCCImplTest {
   @Test
   void testCreateOfferWithNullOffer() {
     assertFalse(this.offerUCC.createOffer(null));
+  }
+
+  @DisplayName("Test get latest offers")
+  @Test
+  void getLatestOffers() {
+    assertEquals(this.offerDTOList, this.offerUCC.getLatestOffers());
   }
 }
