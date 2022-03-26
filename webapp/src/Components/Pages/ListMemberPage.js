@@ -1,6 +1,7 @@
 /**
  * Render the ListMemberPage
  */
+import {getObject} from "../../utils/session";
 
 const ListMemberPage = async () => {
   const pageDiv = document.querySelector("#page");
@@ -11,9 +12,15 @@ const ListMemberPage = async () => {
 
 async function viewRegisteredMembers() {
   const pageDiv = document.querySelector("#page");
+  const options = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
   try {
     //Membres en attente d'acceptation
-    const response = await fetch("/api/members/list_registered");
+    const response = await fetch("/api/members/list_registered", options);
     if (!response.ok) {
       // status code was not 200, error status code
       throw new Error(
@@ -84,6 +91,9 @@ async function viewRegisteredMembers() {
         try {
           const options = {
             method: "PUT",
+            headers: {
+              "Authorization": getObject("token")
+            }
           };
           console.log(request);
           const reponse = await fetch(
@@ -111,8 +121,10 @@ async function viewRegisteredMembers() {
         try {
           const options = {
             method: "PUT",
+            headers: {
+              "Authorization": getObject("token")
+            }
           };
-
           const reponse = await fetch(
               "/api/members/denies/" + member.id, options);
           if (!reponse.ok) {
@@ -143,9 +155,15 @@ async function viewRegisteredMembers() {
 
 async function viewDeniedMembers() {
   const pageDiv = document.querySelector("#page");
+  const options = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
   try {
     //Membres en attente d'acceptation
-    const response = await fetch("/api/members/list_denied");
+    const response = await fetch("/api/members/list_denied", options);
     if (!response.ok) {
       // status code was not 200, error status code
       throw new Error(
@@ -212,7 +230,11 @@ async function viewDeniedMembers() {
         try {
           const options = {
             method: "PUT",
+            headers: {
+              "Authorization": getObject("token")
+            }
           };
+
 
           const reponse = await fetch(
               request + member.id, options);
