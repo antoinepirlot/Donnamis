@@ -100,11 +100,12 @@ public class OfferDAOImpl implements OfferDAO {
             + "item_type.item_type, item_type.id_type, "
             + "offer.id_offer,offer.date, offer.time_slot,"
             + "member.first_name, member.last_name, member.username "
-            + " FROM project_pae.items item, project_pae.items_types item_type, project_pae.offers offer, project_pae.members member"
-            + " WHERE item.id_item_type = item_type.id_type AND"
-            + "       item.id_item = offer.id_item AND"
-            + "       item.id_member = member.id_member AND"
-            + "       offer.id_offer = ?";
+            + "FROM project_pae.items item, project_pae.items_types item_type, "
+            + "     project_pae.offers offer, project_pae.members member"
+            + "WHERE item.id_item_type = item_type.id_type "
+            + "  AND item.id_item = offer.id_item "
+            + "  AND item.id_member = member.id_member "
+            + "  AND offer.id_offer = ?;";
     try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
       System.out.println("Prepared statement successfully generated");
       preparedStatement.setInt(1, id);
