@@ -4,6 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
+import be.vinci.pae.biz.itemstype.interfaces.ItemType;
+import be.vinci.pae.biz.itemstype.objects.ItemTypeImpl;
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.member.objects.MemberImpl;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
 import be.vinci.pae.utils.ApplicationBinder;
 import java.util.ArrayList;
@@ -29,6 +33,14 @@ class ItemUCCImplTest {
     this.itemDTOList.add(new ItemImpl());
     this.itemDTOList.add(new ItemImpl());
     this.itemDTO.setId(5);
+    this.itemDTO.setItemDescription("Description");
+    ItemType itemType = new ItemTypeImpl();
+    itemType.setId(5);
+    this.itemDTO.setItemType(itemType);
+    MemberDTO memberDTO = new MemberImpl();
+    memberDTO.setId(89);
+    this.itemDTO.setMember(memberDTO);
+    this.itemDTO.setTitle("title");
     this.setMockitos();
   }
 
