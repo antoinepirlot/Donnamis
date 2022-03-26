@@ -1,20 +1,14 @@
 /**
  * Render the LatestItemsOffersPage
  */
+import {getLatestOffers} from "../../utils/BackEndRequests";
 
 const LatestItemsOffersPage = async () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = "Latest items offers";
 
   try {
-    const response = await fetch("/api/offers/latest_offers");
-    if (!response.ok) {
-      // status code was not 200, error status code
-      throw new Error(
-          "fetch error : " + response.status + " : " + response.statusText
-      );
-    }
-    const items = await response.json();
+    const items = await getLatestOffers();
 
     //Create Div and Table
     const tableWrapper = document.createElement("div");

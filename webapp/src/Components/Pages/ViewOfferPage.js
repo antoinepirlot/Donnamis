@@ -51,24 +51,14 @@ async function ViewOfferPage() {
   page.innerHTML = viewOfferHtml;
   const button = document.querySelector("#offerCard");
   //get offer's infos with the id in param
-  await getOffersInfo(offerId)
+  await getOfferInfo(offerId)
   //post an interest
   button.addEventListener("submit", postInterest);
-
 }
 
-async function getOffersInfo(idOffer) {
+async function getOfferInfo(idOffer) {
   try {
-
-    const response = await fetch(`/api/offers/${idOffer}`);
-    if (!response.ok) {
-      // status code was not 200, error status code
-      //TODO say that there are no offer for this id
-      throw new Error(
-          "fetch error : " + response.status + " : " + response.statusText
-      );
-    }
-    const offer = await response.json()
+    const offer = await getOfferInfo(idOffer);
     var date = new Date(offer.date);
     date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
         + date.getFullYear();

@@ -1,14 +1,25 @@
 package be.vinci.pae.biz.address.objects;
 
 import be.vinci.pae.biz.address.interfaces.Address;
+import be.vinci.pae.views.Views;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonView;
 
+@JsonInclude(Include.NON_NULL)
 public class AddressImpl implements Address {
 
+  @JsonView(Views.Public.class)
   private int id;
+  @JsonView(Views.Public.class)
   private String street;
+  @JsonView(Views.Public.class)
   private String buildingNumber;
+  @JsonView(Views.Public.class)
   private String unitNumber;
+  @JsonView(Views.Public.class)
   private String postcode;
+  @JsonView(Views.Public.class)
   private String commune;
 
   @Override

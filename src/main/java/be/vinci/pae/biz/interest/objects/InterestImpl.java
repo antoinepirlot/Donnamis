@@ -6,15 +6,25 @@ import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.interfaces.Offer;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
+import be.vinci.pae.views.Views;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.util.Date;
 import java.util.Objects;
 
+@JsonInclude(Include.NON_NULL)
 public class InterestImpl implements Interest, InterestDTO {
 
+  @JsonView(Views.Public.class)
   private int id;
+  @JsonView(Views.Public.class)
   private boolean callWanted;
+  @JsonView(Views.Public.class)
   private Offer offer;
+  @JsonView(Views.Public.class)
   private Member member;
+  @JsonView(Views.Public.class)
   private Date date;
 
   public InterestImpl() {

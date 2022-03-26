@@ -7,6 +7,7 @@ import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeAdmin;
+import be.vinci.pae.ihm.utils.Json;
 import be.vinci.pae.utils.Config;
 import be.vinci.pae.ihm.logs.LoggerHandler;
 import com.auth0.jwt.JWT;
@@ -38,8 +39,8 @@ import org.apache.commons.text.StringEscapeUtils;
 public class MemberResource {
 
   private final Logger logger = LoggerHandler.getLogger();
-
   private final ObjectMapper jsonMapper = new ObjectMapper();
+  private final Json<MemberDTO> jsonUtil = new Json<>(MemberDTO.class);
 
   @Inject
   private MemberUCC memberUCC;
@@ -61,7 +62,7 @@ public class MemberResource {
       if (listMemberDTO == null) {
         throw new ObjectNotFoundException("No member into the database");
       }
-      return listMemberDTO;
+      return this.jsonUtil.filterPublicJsonViewAsList(listMemberDTO);
     } catch (Exception e) {
       this.logger.log(Level.SEVERE, e.getMessage());
       return null;
@@ -86,7 +87,7 @@ public class MemberResource {
         String message = "Get all registered members but there's no registered members.";
         throw new ObjectNotFoundException(message);
       }
-      return registeredMembers;
+      return this.jsonUtil.filterPublicJsonViewAsList(registeredMembers);
     } catch (Exception e) {
       this.logger.log(Level.SEVERE, e.getMessage());
       return null;
@@ -111,7 +112,7 @@ public class MemberResource {
         String message = "Get all denied members but there's no denied members.";
         throw new ObjectNotFoundException(message);
       }
-      return deniedMembers;
+      return this.jsonUtil.filterPublicJsonViewAsList(deniedMembers);
     } catch (Exception e) {
       this.logger.log(Level.SEVERE, e.getMessage());
       return null;
@@ -135,7 +136,8 @@ public class MemberResource {
       if (memberUCC.getOneMember(id) == null) {
         throw new ObjectNotFoundException("No member with the id: " + id);
       }
-      return memberUCC.confirmMember(id);
+      MemberDTO confirmedMember = memberUCC.confirmMember(id);
+      return this.jsonUtil.filterPublicJsonView(confirmedMember);
     } catch (ObjectNotFoundException ignored) {
 
     } catch (Exception e) {
@@ -160,7 +162,8 @@ public class MemberResource {
       String message = "Try to confirm an admin member with an id not in the database. Id: " + id;
       throw new ObjectNotFoundException(message);
     }
-    return memberUCC.confirmAdmin(id);
+    MemberDTO confirmedAdmin = memberUCC.confirmAdmin(id);
+    return this.jsonUtil.filterPublicJsonView(confirmedAdmin);
   }
 
   /**
@@ -178,7 +181,8 @@ public class MemberResource {
     if (memberUCC.getOneMember(id) == null) {
       throw new ObjectNotFoundException("No member with the id: " + id);
     }
-    return memberUCC.denyMember(id);
+    MemberDTO memberDTO = memberUCC.denyMember(id);
+    return this.jsonUtil.filterPublicJsonView(memberDTO);
   }
 
   /**
@@ -201,7 +205,6 @@ public class MemberResource {
     String username = StringEscapeUtils.escapeHtml4(json.get("username").asText());
     String password = json.get("password").asText();
     MemberDTO memberDTO = memberUCC.login(username, password);
-    memberDTO.setPassword(null);
     String token = createToken(memberDTO.getId());
     return createObjectNode(token, memberDTO);
   }
@@ -217,7 +220,9 @@ public class MemberResource {
     try {
       return jsonMapper.createObjectNode()
           .put("token", token)
-          .putPOJO("memberDTO", memberDTO);
+          .putPOJO("memberDTO", this.jsonUtil
+              .filterPublicJsonView(memberDTO)
+          );
     } catch (Exception e) {
       LoggerHandler.getLogger().log(Level.SEVERE, e.getMessage());
       return null;

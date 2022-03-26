@@ -3,6 +3,7 @@ package be.vinci.pae.ihm.offer;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.ihm.filter.Authorize;
+import be.vinci.pae.ihm.utils.Json;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -22,6 +23,7 @@ public class OfferResource {
 
   @Inject
   private OfferUCC offerUCC;
+  private final Json<OfferDTO> jsonUtil = new Json<>(OfferDTO.class);
 
   /**
    * Asks UCC to add an offer into the database.
@@ -59,7 +61,8 @@ public class OfferResource {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
           .entity("Ressource not found").type("text/plain").build());
     }
-    return offerUCC.getOneOffer(id);
+    OfferDTO offerDTO = offerUCC.getOneOffer(id);
+    return this.jsonUtil.filterPublicJsonView(offerDTO);
   }
 
   /**
@@ -80,7 +83,7 @@ public class OfferResource {
 
     //Convert to ObjectNode
     try {
-      return listOfferDTO;
+      return this.jsonUtil.filterPublicJsonViewAsList(listOfferDTO);
     } catch (Exception e) {
       System.out.println("Unable to create list of the latest items");
       return null;
@@ -106,7 +109,7 @@ public class OfferResource {
 
     //Convert to ObjectNode
     try {
-      return listOfferDTO;
+      return this.jsonUtil.filterPublicJsonViewAsList(listOfferDTO);
     } catch (Exception e) {
       System.out.println("Unable to create list of all the items");
       return null;

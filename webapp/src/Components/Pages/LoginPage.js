@@ -3,6 +3,7 @@ import {
   setLocalObject,
   setSessionObject
 } from "../../utils/session";
+import {login as loginBackEndRequest} from "../../utils/BackEndRequests";
 import {Redirect} from "../Router/Router";
 import Navbar from "../Navbar/Navbar";
 import {showError} from "../../utils/ShowError";
@@ -56,26 +57,7 @@ async function login(e) {
     return;
   }
   try {
-    const request = {
-      method: "POST",
-      headers: {
-        "Content-Type":
-            "application/json"
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password
-      })
-    };
-    const response = await fetch("api/members/login", request);
-
-    console.table(response)
-    if (!response.ok) {
-      showError("Aucun utilisateur pour ce username et ce mot de passe",
-          "danger", loginMessage)
-      return;
-    }
-    const content = await response.json();
+    const content = await loginBackEndRequest(username, password);
     if (rememberMe) {
       setLocalObject("token", content.token);
       setLocalObject("memberDTO", content.memberDTO);
@@ -85,8 +67,8 @@ async function login(e) {
     }
     Redirect("/");
     Navbar();
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error("LoginPage::error: ", error);
   }
 }
 
