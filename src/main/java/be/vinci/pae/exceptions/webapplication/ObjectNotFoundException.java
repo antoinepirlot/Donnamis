@@ -9,6 +9,8 @@ public class ObjectNotFoundException extends WebApplicationException {
 
   public ObjectNotFoundException() {
     super(Response.status(Status.NOT_FOUND)
+        .entity("Resource not found")
+        .type(MediaType.TEXT_PLAIN)
         .build());
   }
 
