@@ -2,72 +2,82 @@
  * Render the ListMemberPage
  */
 import {
-  confirmAdmin, confirmMember, denyMember,
+  confirmAdmin,
+  confirmMember,
+  denyMember,
   getDeniedMembers,
   getRegisteredMembers
 } from "../../utils/BackEndRequests";
 
+const tableHtmlConfirmedMembers = `
+  <div>
+    <h1 class="display-6">Membres en attente d'acceptation</h1>
+    <br>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Nom</th>
+          <th scope="col">Prénom</th>
+          <th scope="col">Administrateur</th>
+          <th scope="col">Confirmation</th>
+          <th scope="col">Refus</th>
+        </tr>
+      </thead>
+      <tbody id="tbody_registered_members">
+      </tbody>
+    </table>
+  </div>
+  <br>
+  <br>
+`;
+
+const tableHtmlDeniedMembers = `
+  <div>
+    <h1 class="display-6">Membres refusés</h1>
+    <br>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Nom</th>
+          <th scope="col">Prénom</th>
+          <th scope="col">Administrateur</th>
+          <th scope="col">Confirmation</th>
+        </tr>
+      </thead>
+      <tbody id="tbody_denied_members">
+      </tbody>
+    </table>
+  </div>
+`;
+
 const ListMemberPage = async () => {
   const pageDiv = document.querySelector("#page");
-  pageDiv.innerHTML = "";
-  viewRegisteredMembers();
-  viewDeniedMembers();
+  pageDiv.innerHTML = tableHtmlConfirmedMembers;
+  pageDiv.innerHTML += tableHtmlDeniedMembers;
+  viewRegisteredMembers(await getRegisteredMembers());
+  viewDeniedMembers(await getDeniedMembers());
 };
 
-async function viewRegisteredMembers() {
-  const pageDiv = document.querySelector("#page");
-
-  //Membres en attente d'acceptation
-  const members = await getRegisteredMembers();
-
-  //Create Div and Table
-  const tableWrapperRegistered = document.createElement("div");
-  tableWrapperRegistered.className = "table-responsive pt-5";
-  tableWrapperRegistered.innerHTML = "Membres en attente d'acceptation";
-  const tableRegistered = document.createElement("table");
-  tableRegistered.className = "table table";
-  tableWrapperRegistered.appendChild(tableRegistered);
-
-  //Create the header of the table
-  const thead = document.createElement("thead");
-  const header = document.createElement("tr");
-  thead.appendChild(header);
-  const header1 = document.createElement("th");
-  header1.innerText = "Nom";
-  const header2 = document.createElement("th");
-  header2.innerText = "Prénom";
-  const header3 = document.createElement("th");
-  header3.innerText = "Administrateur";
-  header.appendChild(header1);
-  header.appendChild(header2);
-  header.appendChild(header3);
-  tableRegistered.appendChild(thead);
-
-  // Create the body of the table
-  const tbody = document.createElement("tbody");
+async function viewRegisteredMembers(members) {
+  const tbody = document.querySelector("#tbody_registered_members");
 
   //For Each Member
   members.forEach((member) => {
-    const line = document.createElement("tr");
-    const NameCell = document.createElement("td");
-    NameCell.innerText = member.lastName;
-    line.appendChild(NameCell);
-    const firstNameCell = document.createElement("td");
-    firstNameCell.innerText = member.firstName;
-    line.appendChild(firstNameCell);
+    tbody.innerHTML += `
+      <tr id="RegisteredLine">
+        <td>${member.firstName}</td>
+        <td>${member.lastName}</td>
+        <td><input class="form-check-input" type="checkbox" value="" id="RegisteredIsAdmin"></td>
+        <td><button type="submit" class="btn btn-primary" id="RegisteredConfirmButton">Confirmer</button></td>
+        <td><button type="submit" class="btn btn-danger" id="RegisteredRefuseButton">Refuser</button></td>
+      </tr>    
+    `;
 
     // Is Admin Button
-    const isAdminButtonCell = document.createElement("td");
-    const isAdminButton = document.createElement("input");
-    isAdminButton.type = "checkbox";
-    isAdminButtonCell.appendChild(isAdminButton);
-    line.appendChild(isAdminButtonCell);
+    const isAdminButton = document.querySelector("#RegisteredIsAdmin");
 
     // Confirm Button
-    const confirmButtonCell = document.createElement("td");
-    const confirmButton = document.createElement("input");
-    confirmButton.type = "submit";
-    confirmButton.value = "Confirmer";
+    const confirmButton = document.querySelector("#RegisteredConfirmButton");
     confirmButton.addEventListener("click", async function () {
 
       //Confirm the registration (Click on the button)
@@ -78,81 +88,39 @@ async function viewRegisteredMembers() {
       }
       location.reload();
     });
-    confirmButtonCell.appendChild(confirmButton);
-    line.appendChild(confirmButtonCell);
 
     //Deny Button
-    const denyButtonCell = document.createElement("td");
-    const denyButton = document.createElement("button");
-    denyButton.innerHTML = "Refuser";
+    const denyButton = document.querySelector("#RegisteredRefuseButton")
     denyButton.addEventListener("click", async function () {
 
       //Confirm the registration (Click on the button)
       await denyMember(member.id);
       location.reload();
     });
-    denyButtonCell.appendChild(denyButton);
-    line.appendChild(denyButtonCell);
-
+    const line = document.querySelector("#RegisteredLine");
     line.dataset.memberId = member.id;
-
-    tbody.appendChild(line);
   });
-  tableRegistered.appendChild(tbody);
-  // add the HTMLTableElement to the main, within the #page div
-
-  pageDiv.appendChild(tableWrapperRegistered);
 }
 
-async function viewDeniedMembers() {
-  const pageDiv = document.querySelector("#page");
-  const members = await getDeniedMembers();
+async function viewDeniedMembers(members) {
+  const tbody = document.querySelector("#tbody_denied_members");
 
-  //Create Div and Table
-  const tableWrapper = document.createElement("div");
-  tableWrapper.className = "table-responsive pt-5";
-  tableWrapper.innerHTML = "Membres refusés";
-  const table = document.createElement("table");
-  table.className = "table table";
-  tableWrapper.appendChild(table);
-
-  //Create the header of the table
-  const thead = document.createElement("thead");
-  const header = document.createElement("tr");
-  thead.appendChild(header);
-  const header1 = document.createElement("th");
-  header1.innerText = "Nom";
-  const header2 = document.createElement("th");
-  header2.innerText = "Prénom";
-  const header3 = document.createElement("th");
-  header3.innerText = "Administrateur";
-  header.appendChild(header1);
-  header.appendChild(header2);
-  header.appendChild(header3);
-  table.appendChild(thead);
-
-  // Create the body of the table
-  const tbody = document.createElement("tbody");
+  //For Each Member
   members.forEach((member) => {
-    const line = document.createElement("tr");
-    const NameCell = document.createElement("td");
-    NameCell.innerText = member.lastName;
-    line.appendChild(NameCell);
-    const firstNameCell = document.createElement("td");
-    firstNameCell.innerText = member.firstName;
-    line.appendChild(firstNameCell);
+    tbody.innerHTML += `
+      <tr id="DeniedLine">
+        <td>${member.firstName}</td>
+        <td>${member.lastName}</td>
+        <td><input class="form-check-input" type="checkbox" value="" id="DeniedIsAdmin"></td>
+        <td><button type="submit" class="btn btn-primary" id="DeniedConfirmButton">Confirmer</button></td>
+      </tr>    
+    `;
 
     // Is Admin Button
-    const isAdminButtonCell = document.createElement("td");
-    const isAdminButton = document.createElement("input");
-    isAdminButton.type = "checkbox";
-    isAdminButtonCell.appendChild(isAdminButton);
-    line.appendChild(isAdminButtonCell);
+    const isAdminButton = document.querySelector("#DeniedIsAdmin");
 
     // Confirm Button
-    const confirmButtonCell = document.createElement("td");
-    const confirmButton = document.createElement("button");
-    confirmButton.innerHTML = "Confirmer";
+    const confirmButton = document.querySelector("#DeniedConfirmButton");
     confirmButton.addEventListener("click", async function () {
 
       //Confirm the registration (Click on the button)
@@ -163,16 +131,10 @@ async function viewDeniedMembers() {
       }
       location.reload();
     });
-    confirmButtonCell.appendChild(confirmButton);
-    line.appendChild(confirmButtonCell);
 
+    const line = document.querySelector("#DeniedLine");
     line.dataset.memberId = member.id;
-    tbody.appendChild(line);
   });
-  table.appendChild(tbody);
-  // add the HTMLTableElement to the main, within the #page div
-  pageDiv.appendChild(tableWrapper);
-
 }
 
 export default ListMemberPage;
