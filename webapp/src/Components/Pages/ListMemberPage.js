@@ -137,6 +137,7 @@ async function viewDeniedMembers(members) {
         await confirmMember(member.id);
       }
       location.reload();
+      //Redirect vers la meme page soit ListMemberPage
     });
 
     const line = document.querySelector("#DeniedLine");

@@ -1,16 +1,18 @@
 import {getItems} from "../../utils/BackEndRequests";
+import {Redirect} from "../Router/Router";
 
 const tableHtml = `
   <div>
     <h1 class="display-3">All offered items</h1>
     <br>
-    <table>
+    <table class="table">
       <thead>
         <tr>
-          <th>Titre</th>
-          <th>Description de l'objet</th>
-          <th>Photo</th>
-          <th>Statut de l'offre</th>
+          <th scope="col">Titre</th>
+          <th scope="col">Description de l'objet</th>
+          <th scope="col">Photo</th>
+          <th scope="col">Statut de l'offre</th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody id="tbody_all_offered_items">
@@ -34,8 +36,13 @@ function showItems(items) {
         <td>${item.itemDescription}</td>
         <td>${item.photo}</td>
         <td>${item.offerStatus}</td>
+        <td><button type="submit" class="btn btn-primary" id="ItemDetails">Voir offre</button></td>
       </tr>    
     `;
+    const OfferDetailsButton = document.querySelector("#ItemDetails");
+    OfferDetailsButton.addEventListener("click", function () {
+      Redirect(`/offer?id=${offer.id}`);
+    })
   });
 }
 
