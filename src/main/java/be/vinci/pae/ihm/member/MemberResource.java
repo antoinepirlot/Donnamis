@@ -193,12 +193,18 @@ public class MemberResource {
   @Produces(MediaType.APPLICATION_JSON)
   public ObjectNode login(MemberDTO memberDTO) {
     // Get and check credentials
-    if (memberDTO.getUsername() == null || memberDTO.getPassword() == null) {
+    if (memberDTO == null
+        || memberDTO.getUsername() == null
+        || memberDTO.getPassword() == null
+    ) {
       String message = "Member has wrong attributes for login method";
       this.logger.log(Level.SEVERE, message);
       throw new WrongBodyDataException(message);
     }
     memberDTO = memberUCC.login(memberDTO);
+    if (memberDTO == null) {
+      throw new ObjectNotFoundException();
+    }
     String token = createToken(memberDTO.getId());
     return createObjectNode(token, memberDTO);
   }
