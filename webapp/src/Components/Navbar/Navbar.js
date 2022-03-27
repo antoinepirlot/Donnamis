@@ -94,9 +94,9 @@ const offerAnItemLinkHtml = `
           </li>
 `;
 
-const myOffersLinkHtml = `
+const myItemsLinkHtml = `
           <li class="nav-item">
-            <a class="nav-link" href="#" data-uri="/my_offers">Mes offres</a>
+            <a class="nav-link" href="#" data-uri="/my_items">Mes offres</a>
           </li>
 `;
 
@@ -117,7 +117,7 @@ const Navbar = async () => {
     links.innerHTML += allOfferedItemsLinkHtml;
     links.innerHTML += offersDetailLinkHtml;
     links.innerHTML += offerAnItemLinkHtml;
-    links.innerHTML += myOffersLinkHtml;
+    links.innerHTML += myItemsLinkHtml;
     links.innerHTML += logoutLinkHtml;
   } else {
     links.innerHTML += loginLinkHtml;

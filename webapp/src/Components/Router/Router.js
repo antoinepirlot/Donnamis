@@ -8,7 +8,7 @@ import RegisterPage from "../Pages/RegisterPage";
 import AllOfferedItemsPage from "../Pages/AllOfferedItemPage";
 import ViewOfferPage from "../Pages/ViewOfferPage";
 import {OfferAnItemPage} from "../Pages/OfferAnItemPage";
-import MyOffersPage from "../Pages/MyOffersPage";
+import MyItemsPage from "../Pages/MyItemsPage";
 
 // Configure your routes here
 const routes = {
@@ -22,7 +22,7 @@ const routes = {
   "/all_offered_items": AllOfferedItemsPage,
   "/offer": ViewOfferPage,
   "/offer_item": OfferAnItemPage,
-  "/my_offers": MyOffersPage
+  "/my_items": MyItemsPage
 };
 
 /**
