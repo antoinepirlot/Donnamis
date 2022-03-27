@@ -43,7 +43,7 @@ public class OfferDAOImpl implements OfferDAO {
     List<OfferDTO> offersToReturn = new ArrayList<>();
     String query =
         "SELECT offers.id_offer, offers.date, offers.time_slot, items.id_item, "
-            + "items.item_description, items.id_item_type, items.id_member, items.photo, "
+            + "items.item_description, items.id_item_type, items.id_type, items.id_member, items.photo, "
             + "items.title, items.offer_status "
             + "FROM project_pae.offers offers "
             + "LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item "
