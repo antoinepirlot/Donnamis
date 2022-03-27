@@ -1,8 +1,10 @@
 import {
+  getObject,
   getPayload,
 } from "../../utils/session";
 import {Redirect} from "../Router/Router";
 import {showError} from "../../utils/ShowError";
+import {getOffer} from "../../utils/BackEndRequests";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3">
@@ -21,7 +23,7 @@ const viewOfferHtml = `
          <input class="form-check-input" type="checkbox" id="callWanted">
          <label class="form-check-label" for="callWanted">J'accepte d'être appelé</label>
         </div>
-               <input id="interestButton" type="submit" class="btn btn-primary" value="Je suis interessé(e) !">
+           <input id="interestButton" type="submit" class="btn btn-primary" value="Je suis interessé(e) !">
        </form>
 
        <div class="message" id="interestMessage"></div>
@@ -58,7 +60,7 @@ async function ViewOfferPage() {
 
 async function getOfferInfo(idOffer) {
   try {
-    const offer = await getOfferInfo(idOffer);
+    const offer = await getOffer(idOffer);
     var date = new Date(offer.date);
     date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
         + date.getFullYear();
@@ -94,21 +96,24 @@ async function postInterest(e) {
     const request = {
       method: "POST",
       headers: {
+        "Authorization" : getObject("token"),
         "Content-Type":
             "application/json"
       },
       body: JSON.stringify(
           {
-            "idMember": memberId
+            "id": memberId
           })
     };
     const callWanted = document.querySelector("#callWanted");
     let response = null;
-    if(callWanted.checked){
-      response = await fetch(`api/interests/${offerId}?call_wanted=true`, request);
-    }else{
+    if (callWanted.checked) {
+      response = await fetch(`api/interests/${offerId}?call_wanted=true`,
+          request);
+    } else {
       response = await fetch(`api/interests/${offerId}`, request);
     }
+    console.table(response)
     if (response.ok) {
       showError(
           "Votre intérêt pour cet article à été bien été enregistré.",
@@ -117,7 +122,8 @@ async function postInterest(e) {
       showError("Vous avez déjà mis une marque d'intérêt pour cette offre",
           "danger", interestMessage);
     } else if (response.status === 403) {
-      showError("Votre numero de téléphone n'est pas renseigné, veuillez l'ajouter si vous désirez être appelé.",
+      showError(
+          "Votre numero de téléphone n'est pas renseigné, veuillez l'ajouter si vous désirez être appelé.",
           "danger", interestMessage);
     }
   } catch (err) {

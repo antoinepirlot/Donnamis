@@ -16,7 +16,31 @@
 #offerCard{
   margin-left: auto;
   margin-right: auto;
-
   margin-top: 5rem;
   max-width: 1000px
+}
+#item-card{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom:0.5rem;
+}
+
+#all_items{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.card-title{
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.card-text{
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

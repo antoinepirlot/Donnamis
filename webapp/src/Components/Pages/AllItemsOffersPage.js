@@ -1,51 +1,41 @@
 import {getOffers} from "../../utils/BackEndRequests";
-import {Redirect} from "../Router/Router";
 
 const tableHtml = `
   <div>
     <h1 class="display-3">All items</h1>
-    <br>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Titre</th>
-          <th scope="col">Description de l'objet</th>
-          <th scope="col">Photo</th>
-          <th scope="col">Statut de l'offre</th>
-          <th scope="col">Disponibilités</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody id="tbody_all_items">
-      </tbody>
-    </table>
+    <div class="row" id="all_items">
+    </div>
   </div>
 `;
 
 const AllOfferedItemsPage = async () => {
   const pageDiv = document.querySelector("#page");
+
   pageDiv.innerHTML = tableHtml;
-  showItems(await getOffers())
+  const offers = await getOffers();
+  showItems(offers)
 };
 
 function showItems(offers) {
-  const tbody = document.querySelector("#tbody_all_items");
+  let tbody = document.querySelector("#all_items");
+  console.table(offers);
   offers.forEach((offer) => {
+
     tbody.innerHTML += `
-      <tr>
-        <td>${offer.item.title}</td>
-        <td>${offer.item.itemDescription}</td>
-        <td>${offer.item.photo}</td>
-        <td>${offer.item.offerStatus}</td>
-        <td>${offer.timeSlot}</td>
-        <td><button type="submit" class="btn btn-primary" id="ItemDetails">Voir offre</button></td>
-      </tr>    
+    <div class="col-sm-3" id="item-card" >
+      <div class="card">
+      <img class="card-img-top" alt="Card image cap">
+        <div class="card-body">
+          <h5 class="card-title">${offer.item.title}</h5>
+          <p class="card-text">${offer.item.itemDescription}</p>
+          <a type="button" href="/offer?id=${offer.id}" class="btn btn-primary" > Voir les détails</a>
+        </div>
+      </div>
+    </div>
     `;
-    const OfferDetailsButton = document.querySelector("#ItemDetails");
-    OfferDetailsButton.addEventListener("click", function () {
-      Redirect(`/offer?id=${offer.id}`);
-    })
   });
+
 }
+
 
 export default AllOfferedItemsPage;
