@@ -64,7 +64,7 @@ async function viewRegisteredMembers(members) {
   //For Each Member
   members.forEach((member) => {
     tbody.innerHTML += `
-      <tr">
+      <tr id="RegisteredLine">
         <td>${member.firstName}</td>
         <td>${member.lastName}</td>
         <td><input class="form-check-input" type="checkbox" value="" id="RegisteredIsAdmin"></td>
@@ -97,8 +97,8 @@ async function viewRegisteredMembers(members) {
       await denyMember(member.id);
       location.reload();
     });
-
-    //line.dataset.memberId = member.id;
+    const line = document.querySelector("#RegisteredLine");
+    line.dataset.memberId = member.id;
   });
 }
 
@@ -108,7 +108,7 @@ async function viewDeniedMembers(members) {
   //For Each Member
   members.forEach((member) => {
     tbody.innerHTML += `
-      <tr>
+      <tr id="DeniedLine">
         <td>${member.firstName}</td>
         <td>${member.lastName}</td>
         <td><input class="form-check-input" type="checkbox" value="" id="DeniedIsAdmin"></td>
@@ -132,7 +132,8 @@ async function viewDeniedMembers(members) {
       location.reload();
     });
 
-    //line.dataset.memberId = member.id;
+    const line = document.querySelector("#DeniedLine");
+    line.dataset.memberId = member.id;
   });
 }
 
