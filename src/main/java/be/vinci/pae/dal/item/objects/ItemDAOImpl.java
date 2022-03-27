@@ -36,7 +36,7 @@ public class ItemDAOImpl implements ItemDAO {
     List<ItemDTO> itemsToReturn = new ArrayList<>();
     String query = "SELECT items.id_item,\n"
         + "       items.item_description,\n"
-        + "       items.id_item_type,\n"
+        + "       items.id_type,\n"
         + "       items.id_member,\n"
         + "       items.photo,\n"
         + "       items.title,\n"
@@ -97,7 +97,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "it.id_type, it.item_type, "
         + "m.username, m.last_name, m.first_name "
         + "FROM project_pae.items i, project_pae.items_types it, project_pae.members m "
-        + "WHERE i.id_item_type = it.id_type AND i.id_member = m.id_member AND i.offer_status = ?;";
+        + "WHERE i.id_type = it.id_type AND i.id_member = m.id_member AND i.offer_status = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setString(1, DEFAULT_OFFER_STATUS);
       try (ResultSet rs = ps.executeQuery()) {
@@ -130,7 +130,7 @@ public class ItemDAOImpl implements ItemDAO {
   @Override
   public boolean addItem(ItemDTO itemDTO) {
     String query =
-        "INSERT INTO project_pae.items (item_description, id_item_type, id_member, photo, "
+        "INSERT INTO project_pae.items (item_description, id_type, id_member, photo, "
             + "title, offer_status) "
             + "VALUES (?, ?, ?, ?, ?, ?)";
     try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
@@ -175,7 +175,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "it.id_type, it.item_type, "
         + "m.username, m.last_name, m.first_name "
         + "FROM project_pae.items i, project_pae.items_types it, project_pae.members m "
-        + "WHERE i.id_item_type = it.id_type AND i.id_member = m.id_member AND i.offer_status = ? AND m.id_member = ?;";
+        + "WHERE i.id_type = it.id_type AND i.id_member = m.id_member AND i.offer_status = ? AND m.id_member = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setString(1, DEFAULT_OFFER_STATUS);
       ps.setInt(2, id);
@@ -205,7 +205,7 @@ public class ItemDAOImpl implements ItemDAO {
 
   private ItemsTypeDTO createItemTypeInstance(ResultSet rs) throws SQLException {
     ItemsTypeDTO itemsTypeDTO = factory.getItemType();
-    itemsTypeDTO.setId(rs.getInt("id_item_type"));
+    itemsTypeDTO.setId(rs.getInt("id_type"));
     itemsTypeDTO.setItemType(rs.getString("item_type"));
     return itemsTypeDTO;
   }
