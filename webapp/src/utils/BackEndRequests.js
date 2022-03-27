@@ -52,9 +52,8 @@ async function isAdmin() {
   const response = await fetch("/api/members/is_admin/", request);
   if (response.status === 200) {
     console.error("Needed a /me request");
-  } else {
-    return response.ok;
   }
+  return response.ok;
 }
 
 async function getRegisteredMembers() {
