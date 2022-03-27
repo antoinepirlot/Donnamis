@@ -41,11 +41,11 @@ public class MemberImpl implements Member {
   }
 
   public String getUsername() {
-    return username.toLowerCase().trim();
+    return username;
   }
 
   public void setUsername(String username) {
-    this.username = username;
+    this.username = username.toLowerCase().trim();
   }
 
   public String getPassword() {
