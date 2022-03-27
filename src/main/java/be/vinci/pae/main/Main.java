@@ -1,5 +1,6 @@
 package be.vinci.pae.main;
 
+import be.vinci.pae.exceptions.Mapper.ExceptionMapper;
 import be.vinci.pae.ihm.logs.LoggerHandler;
 import be.vinci.pae.utils.ApplicationBinder;
 import be.vinci.pae.utils.Config;
@@ -26,7 +27,8 @@ public class Main {
     // in be.vinci package
     final ResourceConfig rc = new ResourceConfig().packages("be.vinci.pae.ihm")
         .register(JacksonFeature.class)
-        .register(ApplicationBinder.class);
+        .register(ApplicationBinder.class)
+        .register(ExceptionMapper.class);
 
     // create and start a new instance of grizzly http server
     // exposing the Jersey application at BASE_URI

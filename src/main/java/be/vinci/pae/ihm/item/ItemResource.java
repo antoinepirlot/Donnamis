@@ -40,8 +40,7 @@ public class ItemResource {
   public List<ItemDTO> getLatestItems() {
     List<ItemDTO> listItemDTO = itemUCC.getLatestItems();
     if (listItemDTO == null) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Ressource not found").type("text/plain").build());
+      throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
     }
 
     //Convert to ObjectNode
@@ -67,8 +66,7 @@ public class ItemResource {
   public List<ItemDTO> getAllItems() {
     List<ItemDTO> listItemDTO = itemUCC.getAllItems();
     if (listItemDTO == null) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Ressource not found").type("text/plain").build());
+      throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
     }
 
     //Convert to ObjectNode
@@ -109,16 +107,11 @@ public class ItemResource {
         || itemDTO.getItemType() == null || itemDTO.getMember() == null
         || itemDTO.getTitle() == null || itemDTO.getTitle().equals("")
     ) {
-      throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
-          .entity("Wrong item body")
-          .type(MediaType.TEXT_PLAIN_TYPE)
-          .build());
+      throw new WebApplicationException("Wrong item body", Status.BAD_REQUEST);
     }
     if (!this.itemUCC.addItem(itemDTO)) {
-      throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
-          .entity("The items can't be added to the db due to a unexpected error")
-          .type(MediaType.TEXT_PLAIN_TYPE)
-          .build());
+      String message = "The items can't be added to the db due to a unexpected error";
+      throw new WebApplicationException(message, Status.BAD_REQUEST);
     }
   }
 
@@ -135,8 +128,7 @@ public class ItemResource {
   @AuthorizeMember
   public ItemDTO cancelOffer(@PathParam("id") int id) {
     if (itemUCC.getOneItem(id) == null) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Item not found").type("text/plain").build());
+      throw new WebApplicationException("Item not found", Status.NOT_FOUND);
     }
     ItemDTO itemDTO = itemUCC.cancelOffer(id);
     return this.jsonUtil.filterPublicJsonView(itemDTO);

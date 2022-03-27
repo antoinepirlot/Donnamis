@@ -13,7 +13,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
 @Singleton
@@ -42,38 +41,33 @@ public class InterestResource {
     //Verify if the offer already exist
     if (!interestUCC.offerExist(idOffer)) {
       System.out.println("offer does not exist");
-      throw new WebApplicationException(Response.status(Status.NOT_FOUND)
-          .entity("offer not found").type("text/plain").build());
+      throw new WebApplicationException("offer not found", Status.NOT_FOUND);
     }
 
     //Verify the content of the request
     if (memberDTO.getId() < 1) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("idMember required").type("text/plain").build());
+      throw new WebApplicationException("idMember required", Status.BAD_REQUEST);
     }
 
     //Verify if the member already exist
     if (!interestUCC.memberExist(memberDTO)) {
       System.out.println("member does not exist");
-
-      throw new WebApplicationException(Response.status(Status.NOT_FOUND)
-          .entity("interest already exist").type("text/plain").build());
+      throw new WebApplicationException("interest already exist", Status.NOT_FOUND);
     }
 
     //Verify if the interest already exist
     if (interestUCC.interestExist(idOffer, memberDTO)) {
-      throw new WebApplicationException(Response.status(Status.CONFLICT)
-          .entity("interest already exist").type("text/plain").build());
+      throw new WebApplicationException("interest already exist", Status.CONFLICT);
     }
 
     //Add the interest
     int res = interestUCC.markInterest(memberDTO, idOffer, callWanted);
     if (res == 0) {
-      throw new WebApplicationException(Response.status(Status.FORBIDDEN)
-          .entity("no phone number registered for this member").type("text/plain").build());
+      throw new WebApplicationException(
+          "no phone number registered for this member",
+          Status.FORBIDDEN);
     } else if (res == -1) {
-      throw new WebApplicationException(Response.status(Status.CONFLICT)
-          .entity("error ").type("text/plain").build());
+      throw new WebApplicationException("error ", Status.CONFLICT);
     }
     return res;
   }

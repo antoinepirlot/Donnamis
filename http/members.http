@@ -40,8 +40,8 @@ POST {{baseUrl}}/members/login
 Content-Type: application/json
 
 {
-  "username": "lepirelot",
-  "password": "password"
+  "username": "hg",
+  "password": "mdpusr.4"
 }
 
 ### Create One memberDTO

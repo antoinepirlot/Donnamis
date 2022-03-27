@@ -16,6 +16,8 @@ import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.member.objects.MemberDAOImpl;
 import be.vinci.pae.dal.offer.interfaces.OfferDAO;
 import be.vinci.pae.dal.offer.objects.OfferDAOImpl;
+import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.dal.services.objects.DALServicesImpl;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.ext.Provider;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -26,6 +28,8 @@ public class ApplicationBinder extends AbstractBinder {
 
   @Override
   protected void configure() {
+    bind(Mockito.mock(DALServicesImpl.class)).to(DALServices.class);
+
     //MemberUCC tests
     bind(MemberUCCImpl.class).to(MemberUCC.class).in(Singleton.class);
     bind(Mockito.mock(MemberDAOImpl.class)).to(MemberDAO.class);
