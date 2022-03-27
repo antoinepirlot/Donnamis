@@ -58,6 +58,9 @@ async function login(e) {
   }
   try {
     const content = await loginBackEndRequest(username, password);
+    if (content == null) {
+      return
+    }
     if (rememberMe) {
       setLocalObject("token", content.token);
       setLocalObject("memberDTO", content.memberDTO);
