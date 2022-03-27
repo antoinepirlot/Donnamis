@@ -1,59 +1,42 @@
-/**
- * Render the LatestItemsOffersPage
- */
 import {getOffers} from "../../utils/BackEndRequests";
 
-const LatestItemsOffersPage = async () => {
+const tableHtml = `
+  <div>
+    <table>
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Description de l'objet</th>
+          <th>Photo</th>
+          <th>Statut de l'offre</th>
+          <th>Disponibilités</th>
+        </tr>
+      </thead>
+      <tbody id="tbody_all_items">
+      </tbody>
+    </table>
+  </div>
+`;
+
+const AllOfferedItemsPage = async () => {
   const pageDiv = document.querySelector("#page");
-  pageDiv.innerHTML = "All items offers";
-
-  try {
-    const items = await getOffers();
-
-    //Create Div and Table
-    const tableWrapper = document.createElement("div");
-    const table = document.createElement("table");
-    tableWrapper.appendChild(table);
-
-    //Create the header of the table
-    const thead = document.createElement("thead");
-    const header = document.createElement("tr");
-    thead.appendChild(header);
-    const header1 = document.createElement("th");
-    header1.innerText = "Id_offer";
-    const header2 = document.createElement("th");
-    header2.innerText = "Date";
-    const header3 = document.createElement("th");
-    header3.innerText = "Title of the item";
-    header.appendChild(header1);
-    header.appendChild(header2);
-    header.appendChild(header3);
-    table.appendChild(thead);
-
-    // Create the body of the table
-    const tbody = document.createElement("tbody");
-    items.forEach((item) => {
-      const line = document.createElement("tr");
-      const Id_ItemCell = document.createElement("td");
-      Id_ItemCell.innerText = item.idOffer;
-      line.appendChild(Id_ItemCell);
-      const Item_DescriptionCell = document.createElement("td");
-      Item_DescriptionCell.innerText = item.date;
-      line.appendChild(Item_DescriptionCell);
-
-      const TitleCell = document.createElement("td");
-      TitleCell.innerText = item.item.title;
-      line.appendChild(TitleCell);
-
-      line.dataset.itemId = item.idOffer;
-      tbody.appendChild(line);
-    });
-    table.appendChild(tbody);
-    // add the HTMLTableElement to the main, within the #page div
-    pageDiv.appendChild(tableWrapper);
-  } catch (error) {
-    console.error("LatestItemsOffersPage::error: ", error);
-  }
+  pageDiv.innerHTML = tableHtml;
+  showItems(await getOffers())
 };
 
-export default LatestItemsOffersPage;
+function showItems(offers) {
+  const tbody = document.querySelector("#tbody_all_items");
+  offers.forEach((offer) => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${offer.item.title}</td>
+        <td>${offer.item.itemDescription}</td>
+        <td>${offer.item.photo}</td>
+        <td>${offer.item.offerStatus}</td>
+        <td>${offer.timeSlot}</td>
+      </tr>    
+    `;
+  });
+}
+
+export default AllOfferedItemsPage;
