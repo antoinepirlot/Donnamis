@@ -23,7 +23,7 @@ public class InterestUCCImpl implements InterestUCC {
     //TODO
     dalServices.start();
     LocalDate date = LocalDate.now();
-    int res = interestDAO.markInterest(idMember, idOffer, callWanted, date);
+    int res = interestDAO.markInterest(memberDTO, idOffer, callWanted, date);
     if (res == -1) {
       dalServices.rollback();
     } else {
