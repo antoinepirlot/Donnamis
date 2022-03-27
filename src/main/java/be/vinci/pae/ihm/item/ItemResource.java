@@ -15,7 +15,6 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.util.List;
 
@@ -23,9 +22,9 @@ import java.util.List;
 @Path("items")
 public class ItemResource {
 
+  private final Json<ItemDTO> jsonUtil = new Json<>(ItemDTO.class);
   @Inject
   private ItemUCC itemUCC;
-  private final Json<ItemDTO> jsonUtil = new Json<>(ItemDTO.class);
 
   /**
    * Method that get all the latest offered items.
@@ -133,4 +132,32 @@ public class ItemResource {
     ItemDTO itemDTO = itemUCC.cancelOffer(id);
     return this.jsonUtil.filterPublicJsonView(itemDTO);
   }
+
+  /**
+   * Method that get all items by the member id.
+   *
+   * @param id the member's id
+   * @return a list of all items
+   */
+  @GET
+  @Path("all_items/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
+  public List<ItemDTO> getAllItemsByMemberId(@PathParam("id") int id) {
+    List<ItemDTO> listItemDTO = itemUCC.getAllItemsByMemberId(id);
+    if (listItemDTO == null) {
+      throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
+    }
+
+    //Convert to ObjectNode
+    try {
+      return listItemDTO;
+    } catch (Exception e) {
+      System.out.println("Unable to create list of the latest items");
+      return null;
+    }
+  }
+
+
 }
