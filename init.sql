@@ -41,7 +41,7 @@ CREATE TABLE project_pae.items
     photo            VARCHAR(500) NULL,
     title            VARCHAR(50)  NOT NULL,
     offer_status     VARCHAR(10)  NOT NULL,
-    FOREIGN KEY (id_item_type) REFERENCES project_pae.items_types (id_type),
+    FOREIGN KEY (id_type) REFERENCES project_pae.items_types (id_type),
     FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
 );
 
