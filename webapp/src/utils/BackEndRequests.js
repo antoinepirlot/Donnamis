@@ -52,7 +52,7 @@ async function isAdmin() {
   }
   const response = await fetch("/api/members/is_admin/", request);
   if (response.status === 200) {
-    console.error("Needed a /me request");
+    console.error("This is not an error. Just to remind to make func to refresh token");
   }
   return response.ok;
 }
