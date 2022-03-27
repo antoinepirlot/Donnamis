@@ -173,11 +173,11 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public MemberDTO denyMember(@PathParam("id") int id) {
+  public MemberDTO denyMember(@PathParam("id") int id, String text_refusals) {
     if (memberUCC.getOneMember(id) == null) {
       throw new ObjectNotFoundException("No member with the id: " + id);
     }
-    MemberDTO memberDTO = memberUCC.denyMember(id);
+    MemberDTO memberDTO = memberUCC.denyMember(id, text_refusals);
     return this.jsonUtil.filterPublicJsonView(memberDTO);
   }
 

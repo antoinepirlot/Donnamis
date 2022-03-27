@@ -24,13 +24,16 @@ Content-Type: application/json
 %}
 
 ### Confirm registration
-PUT {{baseUrl}}/members/confirm/1
+PUT {{baseUrl}}/members/confirm/3
+Authorization: {{token}}
 
 ### Deny member
-PUT {{baseUrl}}/members/denies/3
+PUT {{baseUrl}}/members/denies/2
+Authorization: {{token}}
 
 ### Confirm Admin
-PUT {{baseUrl}}/members/confirmAdmin/3
+PUT {{baseUrl}}/members/confirmAdmin/2
+Authorization: {{token}}
 
 ### Get All Members unauthorized excected
 GET {{baseUrl}}/members/list_member

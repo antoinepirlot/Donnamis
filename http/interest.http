@@ -1,10 +1,10 @@
 ### Mark Interest
-POST {{baseUrl}}/interests/3
+POST {{baseUrl}}/interests/2
 Authorization: {{token}}
 Content-Type: application/json
 
 {
-  "id": 21
+  "id": 1
 }
 
 ### Mark Interest

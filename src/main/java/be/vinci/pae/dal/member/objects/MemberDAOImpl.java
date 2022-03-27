@@ -103,7 +103,7 @@ public class MemberDAOImpl implements MemberDAO {
    * @param id the id of the member
    * @return boolean
    */
-  public MemberDTO denyMember(int id) {
+  public MemberDTO denyMember(int id, String text_refusals) {
     String query = "UPDATE project_pae.members SET state = 'denied' WHERE id_member = ? "
         + "RETURNING *;";
     return executeQueryWithId(id, query);
