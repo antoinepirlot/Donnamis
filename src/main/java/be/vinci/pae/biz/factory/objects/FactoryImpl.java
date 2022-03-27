@@ -5,8 +5,8 @@ import be.vinci.pae.biz.address.objects.AddressImpl;
 import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.objects.ItemImpl;
-import be.vinci.pae.biz.itemstype.interfaces.ItemTypeDTO;
-import be.vinci.pae.biz.itemstype.objects.ItemTypeImpl;
+import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
+import be.vinci.pae.biz.itemstype.objects.ItemsTypeImpl;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.objects.MemberImpl;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
@@ -35,8 +35,8 @@ public class FactoryImpl implements Factory {
   }
 
   @Override
-  public ItemTypeDTO getItemType() {
-    return new ItemTypeImpl();
+  public ItemsTypeDTO getItemType() {
+    return new ItemsTypeImpl();
   }
 }
 

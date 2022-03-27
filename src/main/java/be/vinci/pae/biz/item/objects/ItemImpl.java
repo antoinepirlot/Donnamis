@@ -1,8 +1,8 @@
 package be.vinci.pae.biz.item.objects;
 
 import be.vinci.pae.biz.item.interfaces.Item;
-import be.vinci.pae.biz.itemstype.interfaces.ItemType;
-import be.vinci.pae.biz.itemstype.interfaces.ItemTypeDTO;
+import be.vinci.pae.biz.itemstype.interfaces.ItemsType;
+import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.interfaces.Offer;
@@ -23,7 +23,7 @@ public class ItemImpl implements Item {
   @JsonView(Views.Public.class)
   private String itemDescription;
   @JsonView(Views.Public.class)
-  private ItemType itemType;
+  private ItemsType itemType;
   @JsonView(Views.Public.class)
   private Member member;
   @JsonView(Views.Public.class)
@@ -59,13 +59,13 @@ public class ItemImpl implements Item {
   }
 
   @Override
-  public ItemTypeDTO getItemType() {
+  public ItemsTypeDTO getItemType() {
     return itemType;
   }
 
   @Override
-  public void setItemType(ItemTypeDTO itemType) {
-    this.itemType = (ItemType) itemType;
+  public void setItemType(ItemsTypeDTO itemType) {
+    this.itemType = (ItemsType) itemType;
   }
 
   @Override

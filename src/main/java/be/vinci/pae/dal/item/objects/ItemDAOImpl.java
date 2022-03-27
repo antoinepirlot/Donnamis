@@ -2,7 +2,7 @@ package be.vinci.pae.dal.item.objects;
 
 import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
-import be.vinci.pae.biz.itemstype.interfaces.ItemTypeDTO;
+import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
@@ -181,11 +181,11 @@ public class ItemDAOImpl implements ItemDAO {
     return itemDTO;
   }
 
-  private ItemTypeDTO createItemTypeInstance(ResultSet rs) throws SQLException {
-    ItemTypeDTO itemTypeDTO = factory.getItemType();
-    itemTypeDTO.setId(rs.getInt("id_item_type"));
-    itemTypeDTO.setItemType(rs.getString("item_type"));
-    return itemTypeDTO;
+  private ItemsTypeDTO createItemTypeInstance(ResultSet rs) throws SQLException {
+    ItemsTypeDTO itemsTypeDTO = factory.getItemType();
+    itemsTypeDTO.setId(rs.getInt("id_item_type"));
+    itemsTypeDTO.setItemType(rs.getString("item_type"));
+    return itemsTypeDTO;
   }
 
 }
