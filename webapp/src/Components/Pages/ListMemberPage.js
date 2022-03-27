@@ -6,8 +6,9 @@ import {
   confirmMember,
   denyMember,
   getDeniedMembers,
-  getRegisteredMembers
+  getRegisteredMembers, isAdmin
 } from "../../utils/BackEndRequests";
+import {Redirect} from "../Router/Router";
 
 const tableHtmlConfirmedMembers = `
   <div>
@@ -52,11 +53,15 @@ const tableHtmlDeniedMembers = `
 `;
 
 const ListMemberPage = async () => {
+  if (!await isAdmin()) {
+    Redirect("/");
+    return;
+  }
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtmlConfirmedMembers;
   pageDiv.innerHTML += tableHtmlDeniedMembers;
-  viewRegisteredMembers(await getRegisteredMembers());
-  viewDeniedMembers(await getDeniedMembers());
+  await viewRegisteredMembers(await getRegisteredMembers());
+  await viewDeniedMembers(await getDeniedMembers());
 };
 
 async function viewRegisteredMembers(members) {

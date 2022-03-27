@@ -42,6 +42,21 @@ async function register(member) {
       "success", registerMessage)
 }
 
+async function isAdmin() {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  }
+  const response = await fetch("/api/members/is_admin/", request);
+  if (response.status === 200) {
+    console.error("Needed a /me request");
+  } else {
+    return response.ok;
+  }
+}
+
 async function getRegisteredMembers() {
   try {
     const options = {
@@ -208,6 +223,7 @@ async function getOffer(idOffer) {
 export {
   login,
   register,
+  isAdmin,
   getRegisteredMembers,
   getDeniedMembers,
   confirmMember,

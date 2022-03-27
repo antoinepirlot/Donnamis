@@ -11,6 +11,7 @@
  */
 
 import {getObject} from "../../utils/session";
+import {isAdmin} from "../../utils/BackEndRequests";
 
 const navBarHtml = `
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -93,8 +94,10 @@ const Navbar = async () => {
   const memberDTO = getObject("memberDTO");
   const links = document.querySelector("#navbarLinks");
   if (memberDTO) {
-    links.innerHTML += listMemberLinkHtml;
     document.querySelector("#usernameNavbar").innerHTML = memberDTO.username
+    if (await isAdmin()) {
+      links.innerHTML += listMemberLinkHtml;
+    }
     links.innerHTML += latestItemsLinkHtml;
     links.innerHTML += allItemsLinkHtml;
     links.innerHTML += allOfferedItemsLinkHtml;
