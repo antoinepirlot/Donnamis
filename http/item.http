@@ -6,17 +6,24 @@ GET {{baseUrl}}/items/all_offered_items
 
 ### Offer an item for the first time
 POST {{baseUrl}}/items/offer
+Authorization: {{token}}
 Content-Type: application/json
 
 {
-  "itemDescription": "Logitech G502 Hero",
+  "itemDescription": "itemDescription",
+  "title": "title",
+  "photo": "photo",
   "itemType": {
-    "idType": 1
+    "itemType": "Décoration"
   },
   "member": {
-    "id": 1
+    "id": 2
   },
-  "title": "Hello World"
+  "offerList": [
+    {
+      "timeSlot": "timeSlot"
+    }
+  ]
 }
 
 ### Cancel Offer

@@ -211,3 +211,7 @@ GROUP BY m.last_name,
 ORDER BY m.last_name,
          i.item_description;
 
+
+INSERT INTO project_pae.items (item_description, id_type, id_member, photo,
+title, offer_status)
+VALUES ('', (SELECT id_type FROM project_pae.items_types WHERE item_type = 'Décoration'), 1, NULL, '', '');

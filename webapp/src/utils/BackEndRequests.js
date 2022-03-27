@@ -254,7 +254,7 @@ async function offerAnItem(item) {
         "fetch error : " + response.status + " : " + response.statusText
     );
   }
-  return await response.json();
+  return response.ok;
 }
 
 async function getMyItems(idMember) {

@@ -51,27 +51,35 @@ async function offerItem(e) {
   const itemDescription = document.querySelector("#itemDescriptionForm").value;
   const photo = document.querySelector("#photoForm").value;
   const timeSlot = document.querySelector("#timeSlotForm").value;
-  const itemType = document.querySelector("#itemTypeFormList").value;
+  const itemTypeValue = document.querySelector("#itemTypeFormList").value;
   const payload = await getPayload();
+  const offer = {
+    timeSlot: timeSlot
+  };
+  const offersList = [offer];
   const member = {
     id: payload.id
-  }
+  };
+  const itemType = {
+    itemType: itemTypeValue
+  };
   const item = {
     itemDescription: itemDescription,
     title: title,
     photo: photo,
-    timeSlot: timeSlot,
     itemType: itemType,
-    member: member
-  };
+    member: member,
+    offerList: offersList
+  }
   try {
     await offerAnItem(item);
-    const errorMessageOfferAnItemPage = document.querySelector("#errorMessageOfferAnItemPage");
-    showError("Success", "success", errorMessageOfferAnItemPage);
+    const errorMessageOfferAnItemPage = document.querySelector(
+        "#errorMessageOfferAnItemPage");
+    const message = "Ajout réussi!"
+    showError(message, "success", errorMessageOfferAnItemPage);
   } catch (error) {
     console.error(error);
   }
 }
-
 
 export {OfferAnItemPage};
