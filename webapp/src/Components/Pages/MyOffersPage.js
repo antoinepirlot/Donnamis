@@ -47,18 +47,21 @@ function showItems(items) {
     const OfferDetailsButton = document.querySelector("#ItemDetails");
     OfferDetailsButton.addEventListener("click", function () {
       Redirect(`/offer?id=${item.id}`);
-    })
+    });
 
     const OfferCancelledButton = document.querySelector("#ItemCancelled");
-    OfferCancelledButton.addEventListener("click", async function () {
-      try {
-        await cancelOffer(item.id);
-        showItems(await getItems());
-      } catch (error) {
-        console.error("MyOffersPage::error::deny registration:", error);
-      }
-    })
+    OfferCancelledButton.addEventListener("click", cancelOffer);
   });
+}
+
+async function cancelOffer(e) {
+  e.preventDefault();
+  try {
+    await cancelOffer(item.id);
+    showItems(await getItems());
+  } catch (error) {
+    console.error("MyOffersPage::error::deny registration:", error);
+  }
 }
 
 export default MyOffersPage;
