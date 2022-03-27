@@ -23,4 +23,5 @@ Content-Type: application/json
 PUT {{baseUrl}}/items/cancel/1
 
 ### See all items by member id
-GET {{baseUrl}}/items/all_items/1
+GET {{baseUrl}}/items/all_items/3
+Authorization: {{token}}

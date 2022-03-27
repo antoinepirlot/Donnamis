@@ -257,7 +257,7 @@ async function offerAnItem(item) {
   return await response.json();
 }
 
-async function getMyOffers(idMember) {
+async function getMyItems(idMember) {
   const request = {
     method: "GET",
     headers: {
@@ -303,7 +303,7 @@ export {
   getItems,
   getOffers,
   getLatestOffers,
-  getMyOffers,
+  getMyItems,
   cancelOffer,
   getOffer,
   getItemsTypes,

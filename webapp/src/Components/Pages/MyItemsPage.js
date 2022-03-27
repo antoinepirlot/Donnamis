@@ -1,10 +1,11 @@
 import {
   cancelOffer as cancelOfferBackEnd,
   getItems,
-  getMyOffers
+  getMyItems
 } from "../../utils/BackEndRequests";
 import {Redirect} from "../Router/Router";
 import {getPayload} from "../../utils/session";
+import {showError} from "../../utils/ShowError";
 
 const tableHtml = `
   <div>
@@ -25,13 +26,21 @@ const tableHtml = `
       </tbody>
     </table>
   </div>
+  <div id="errorMessageMyItemsPage"></div>
 `;
 
 const MyItemsPage = async () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtml;
   const payload = await getPayload();
-  showItems(await getMyOffers(payload.id))
+  const items = await getMyItems(payload.id);
+  if (items.length === 0) {
+    const message = "Vous n'avez aucune offre.";
+    const errorMessageMyItemsPage = document.querySelector("#errorMessageMyItemsPage");
+    showError(message, "info", errorMessageMyItemsPage);
+  } else {
+    showItems(items)
+  }
 };
 
 function showItems(items) {
