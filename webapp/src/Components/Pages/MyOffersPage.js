@@ -1,4 +1,4 @@
-import {cancelOffer, getMyOffers} from "../../utils/BackEndRequests";
+import {cancelOffer, getItems, getMyOffers} from "../../utils/BackEndRequests";
 import {Redirect} from "../Router/Router";
 import {getPayload} from "../../utils/session";
 
@@ -32,6 +32,7 @@ const MyOffersPage = async () => {
 
 function showItems(items) {
   const tbody = document.querySelector("#tbody_my_items");
+  tbody.innerHTML = "";
   items.forEach((item) => {
     tbody.innerHTML += `
       <tr>
@@ -49,9 +50,13 @@ function showItems(items) {
     })
 
     const OfferCancelledButton = document.querySelector("#ItemCancelled");
-    OfferCancelledButton.addEventListener("click", function () {
-      cancelOffer(item.id);
-      Redirect("/my_offers");
+    OfferCancelledButton.addEventListener("click", async function () {
+      try {
+        await cancelOffer(item.id);
+        showItems(await getItems());
+      } catch (error) {
+        console.error("MyOffersPage::error::deny registration:", error);
+      }
     })
   });
 }

@@ -52,7 +52,8 @@ async function isAdmin() {
   }
   const response = await fetch("/api/members/is_admin/", request);
   if (response.status === 200) {
-    console.error("This is not an error. Just to remind to make func to refresh token");
+    console.error(
+        "This is not an error. Just to remind to make func to refresh token");
   }
   return response.ok;
 }
@@ -275,22 +276,18 @@ async function getMyOffers(idMember) {
 }
 
 async function cancelOffer(id) {
-  try {
-    const request = {
-      method: "PUT",
-      headers: {
-        "Authorization": getObject("token")
-      }
-    };
-    const url = `/api/items/cancel/${id}`;
-    const reponse = await fetch(url, request);
-    if (!reponse.ok) {
-      throw new Error(
-          "fetch error : " + reponse.status + " : " + reponse.statusText
-      );
+  const request = {
+    method: "PUT",
+    headers: {
+      "Authorization": getObject("token")
     }
-  } catch (error) {
-    console.error("ListMemberPage::error::deny registration:", error);
+  };
+  const url = `/api/items/cancel/${id}`;
+  const reponse = await fetch(url, request);
+  if (!reponse.ok) {
+    throw new Error(
+        "fetch error : " + reponse.status + " : " + reponse.statusText
+    );
   }
 }
 
