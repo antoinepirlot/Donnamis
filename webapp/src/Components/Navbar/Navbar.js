@@ -97,6 +97,7 @@ const Navbar = async () => {
     document.querySelector("#usernameNavbar").innerHTML = memberDTO.username
     if (await isAdmin()) {
       links.innerHTML += listMemberLinkHtml;
+      document.querySelector("#usernameNavbar").innerHTML += " (admin)"
     }
     links.innerHTML += latestItemsLinkHtml;
     links.innerHTML += allItemsLinkHtml;
