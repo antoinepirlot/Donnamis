@@ -51,6 +51,7 @@ function showItems(items) {
     const OfferCancelledButton = document.querySelector("#ItemCancelled");
     OfferCancelledButton.addEventListener("click", function () {
       cancelOffer(item.id);
+      Redirect("/my_offers");
     })
   });
 }
