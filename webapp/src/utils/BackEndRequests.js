@@ -15,8 +15,9 @@ async function login(username, password) {
   };
   const response = await fetch("api/members/login", request);
   if (!response.ok) {
+    const loginMessage = document.querySelector("#loginMessage");
     showError("Aucun utilisateur pour ce username et ce mot de passe",
-        "danger", loginMessage)
+        "danger", loginMessage);
     return;
   }
   return await response.json();
@@ -305,7 +306,6 @@ export {
   getItems,
   getOffers,
   getLatestOffers,
-  getOffer,
   getMyOffers,
   cancelOffer,
   getOffer,
