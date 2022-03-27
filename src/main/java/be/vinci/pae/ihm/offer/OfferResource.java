@@ -20,13 +20,14 @@ import java.util.List;
 @Singleton
 @Path("offers")
 public class OfferResource {
-
+  
+  private final Json<OfferDTO> jsonUtil = new Json<>(OfferDTO.class);
   @Inject
   private OfferUCC offerUCC;
-  private final Json<OfferDTO> jsonUtil = new Json<>(OfferDTO.class);
 
   /**
    * Asks UCC to add an offer into the database.
+   *
    * @param offerDTO the offer to add into the database
    */
   @POST
@@ -52,6 +53,7 @@ public class OfferResource {
 
   /**
    * Asks UCC to get one offer identified by its id.
+   *
    * @param id the offer's id
    * @return the offer if it exists, otherwise throws a web application exception
    */
@@ -71,6 +73,7 @@ public class OfferResource {
 
   /**
    * Method that get all the latest items offered.
+   *
    * @return the list of lastest offers if there's at least one offer, otherwise null
    */
   @GET
@@ -97,6 +100,7 @@ public class OfferResource {
 
   /**
    * Method that get all the items offered.
+   *
    * @return the list of all offers if there's at least one offer, otherwise null
    */
   @GET

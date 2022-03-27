@@ -21,3 +21,6 @@ Content-Type: application/json
 
 ### Cancel Offer
 PUT {{baseUrl}}/items/cancel/1
+
+### See all items by member id
+GET {{baseUrl}}/items/all_items/1

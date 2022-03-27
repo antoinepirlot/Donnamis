@@ -77,4 +77,15 @@ public class ItemUCCImpl implements ItemUCC {
     dalServices.commit();
     return itemDTO;
   }
+
+  @Override
+  public List<ItemDTO> getAllItemsByMemberId(int id) {
+    dalServices.start();
+    List<ItemDTO> listItemDTO = itemDAO.getAllItemsByMemberId(id);
+    if (listItemDTO == null) {
+      dalServices.rollback();
+    }
+    dalServices.commit();
+    return listItemDTO;
+  }
 }
