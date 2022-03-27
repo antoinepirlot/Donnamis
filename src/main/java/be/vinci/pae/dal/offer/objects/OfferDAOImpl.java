@@ -42,13 +42,21 @@ public class OfferDAOImpl implements OfferDAO {
     System.out.println("getLatestOffers");
     List<OfferDTO> offersToReturn = new ArrayList<>();
     String query =
-        "SELECT offers.id_offer, offers.date, offers.time_slot, items.id_item, "
-            + "items.item_description, items.id_type, items.id_member, items.photo, "
-            + "items.title, items.offer_status,"
-            + "it.item_type "
-            + "FROM project_pae.offers offers "
-            + "LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item "
-            + "LEFT OUTER JOIN project_pae.items_types it ON it.id_type = items.id_type "
+        "SELECT offers.id_offer,\n"
+            + "       offers.date,\n"
+            + "       offers.time_slot,\n"
+            + "       items.id_item,\n"
+            + "       items.item_description,\n"
+            + "       items.id_type,\n"
+            + "       items.id_member,\n"
+            + "       items.photo,\n"
+            + "       items.title,\n"
+            + "       items.offer_status,\n"
+            + "       it.item_type\n"
+            + "FROM project_pae.offers offers\n"
+            + "         LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item\n"
+            + "         LEFT OUTER JOIN project_pae.items_types it ON it.id_type = items.id_type\n"
+            + "WHERE items.offer_status = 'donated'\n"
             + "ORDER BY offers.date DESC;";
     System.out.println("Préparation du statement");
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
