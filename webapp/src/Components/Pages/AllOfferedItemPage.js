@@ -9,7 +9,7 @@ const tableHtml = `
         <tr>
           <th>Titre</th>
           <th>Description de l'objet</th>
-          <th>photo</th>
+          <th>Photo</th>
           <th>Statut de l'offre</th>
         </tr>
       </thead>
