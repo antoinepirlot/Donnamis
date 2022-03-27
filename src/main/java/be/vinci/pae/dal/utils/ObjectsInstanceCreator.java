@@ -59,7 +59,6 @@ public class ObjectsInstanceCreator {
       itemDTO.setItemType(createItemTypeInstance(factory, rs));
       itemDTO.setMember(createMemberInstance(factory, rs));
     } catch (SQLException e) {
-      e.printStackTrace();
       return null;
     }
     return itemDTO;
@@ -132,11 +131,10 @@ public class ObjectsInstanceCreator {
       } catch (SQLException e) {
         System.out.println("No address selected for this member");
       }
-      return memberDTO;
     } catch (SQLException e) {
-      e.printStackTrace();
+      return null;
     }
-    return null;
+    return memberDTO;
   }
 
   /**
