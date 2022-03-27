@@ -82,11 +82,18 @@ const allOfferedItemsLinkHtml = `
           </li>
 `;
 
-const offersDetail = `
+const offersDetailLinkHtml = `
           <li class="nav-item">
             <a class="nav-link" href="#" data-uri="/offer?id=1">Offer detail</a>
           </li>
 `;
+
+const offerAnItemLinkHtml = `
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-uri="/offer_item">Offrir un objet</a>
+          </li>
+`;
+
 
 const Navbar = async () => {
   const navbarWrapper = document.querySelector("#navbarWrapper");
@@ -103,7 +110,8 @@ const Navbar = async () => {
     links.innerHTML += latestItemsLinkHtml;
     links.innerHTML += allItemsLinkHtml;
     links.innerHTML += allOfferedItemsLinkHtml;
-    links.innerHTML += offersDetail;
+    links.innerHTML += offersDetailLinkHtml;
+    links.innerHTML += offerAnItemLinkHtml;
     links.innerHTML += logoutLinkHtml;
   } else {
     links.innerHTML += loginLinkHtml;
