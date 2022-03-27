@@ -94,10 +94,11 @@ const Navbar = async () => {
   const memberDTO = getObject("memberDTO");
   const links = document.querySelector("#navbarLinks");
   if (memberDTO) {
-    document.querySelector("#usernameNavbar").innerHTML = memberDTO.username
+    let memberUsername = document.querySelector("#usernameNavbar");
+    memberUsername.innerHTML = memberDTO.username;
     if (await isAdmin()) {
       links.innerHTML += listMemberLinkHtml;
-      document.querySelector("#usernameNavbar").innerHTML += " (admin)"
+      memberUsername.innerHTML += " (admin)"
     }
     links.innerHTML += latestItemsLinkHtml;
     links.innerHTML += allItemsLinkHtml;
