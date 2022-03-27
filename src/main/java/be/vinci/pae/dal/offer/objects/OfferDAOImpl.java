@@ -43,10 +43,12 @@ public class OfferDAOImpl implements OfferDAO {
     List<OfferDTO> offersToReturn = new ArrayList<>();
     String query =
         "SELECT offers.id_offer, offers.date, offers.time_slot, items.id_item, "
-            + "items.item_description, items.id_item_type, items.id_type, items.id_member, items.photo, "
-            + "items.title, items.offer_status "
+            + "items.item_description, items.id_type, items.id_member, items.photo, "
+            + "items.title, items.offer_status,"
+            + "it.item_type "
             + "FROM project_pae.offers offers "
             + "LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item "
+            + "LEFT OUTER JOIN project_pae.items_types it ON it.id_type = items.id_type "
             + "ORDER BY offers.date DESC;";
     System.out.println("Préparation du statement");
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
@@ -57,6 +59,7 @@ public class OfferDAOImpl implements OfferDAO {
 
         while (rs.next()) {
           OfferDTO offerDTO = ObjectsInstanceCreator.createOfferInstance(this.factory, rs);
+          System.out.println("h");
           offersToReturn.add(offerDTO);
         }
       }
@@ -75,7 +78,7 @@ public class OfferDAOImpl implements OfferDAO {
     List<OfferDTO> offersToReturn = new ArrayList<>();
     String query =
         "SELECT offers.id_offer, offers.date, offers.time_slot, items.id_item, "
-            + "items.item_description, items.id_item_type, items.id_member, items.photo, "
+            + "items.item_description, items.id_type, items.id_member, items.photo, "
             + "items.title, items.offer_status "
             + "FROM project_pae.offers offers "
             + "LEFT OUTER JOIN project_pae.items items ON offers.id_item = items.id_item;";
@@ -107,7 +110,7 @@ public class OfferDAOImpl implements OfferDAO {
             + "member.first_name, member.last_name, member.username "
             + "FROM project_pae.items item, project_pae.items_types item_type, "
             + "     project_pae.offers offer, project_pae.members member"
-            + "WHERE item.id_item_type = item_type.id_type "
+            + "WHERE item.id_type = item_type.id_type "
             + "  AND item.id_item = offer.id_item "
             + "  AND item.id_member = member.id_member "
             + "  AND offer.id_offer = ?;";
@@ -165,7 +168,7 @@ public class OfferDAOImpl implements OfferDAO {
    * @return true if the item has been added, otherwise false
    */
   private boolean addItem(ItemDTO itemDTO) {
-    String query = "INSERT INTO project_pae.items (item_description, id_item_type, id_member, "
+    String query = "INSERT INTO project_pae.items (item_description, id_type, id_member, "
         + "photo, title, offer_status) "
         + "VALUES (?, ?, ?, ?, ?, ?);";
     try (

@@ -154,14 +154,14 @@ VALUES ('Vêtements');
 -- 12
 
 -- ITEMS TABLE
-INSERT INTO project_pae.items (item_description, id_item_type, id_member, photo, title,
+INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title,
                                offer_status)
 VALUES ('Décorations de Noël de couleur rouge', 3, 3, 'christmas-1869533_640', 'Titre', 'donated');
-INSERT INTO project_pae.items (item_description, id_item_type, id_member, photo, title,
+INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title,
                                offer_status)
 VALUES ('Cadre représentant un chien noir sur un fond noir.', 3, 3, 'dog-4118585_640', 'Titre',
         'donated');
-INSERT INTO project_pae.items (item_description, id_item_type, id_member, photo, title,
+INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title,
                                offer_status)
 VALUES ('Ancien bureau d’écolier.', 8, 4, 'BureauEcolier-7', 'Titre', 'donated');
 

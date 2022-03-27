@@ -9,6 +9,7 @@ import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.apache.commons.text.StringEscapeUtils;
+import org.postgresql.util.PSQLException;
 
 public class ObjectsInstanceCreator {
 
@@ -31,7 +32,6 @@ public class ObjectsInstanceCreator {
     System.out.println("date set");
     offerDTO.setTimeSlot(rs.getString("time_slot"));
     System.out.println("tile_slot set");
-
     return offerDTO;
   }
 
@@ -60,6 +60,7 @@ public class ObjectsInstanceCreator {
       itemDTO.setMember(createMemberInstance(factory, rs));
     } catch (SQLException e) {
       e.printStackTrace();
+      return null;
     }
     return itemDTO;
   }
@@ -81,6 +82,7 @@ public class ObjectsInstanceCreator {
       itemsTypeDTO.setItemType(StringEscapeUtils.escapeHtml4(rs.getString("item_type")));
     } catch (SQLException e) {
       e.printStackTrace();
+      return null;
     }
     return itemsTypeDTO;
   }
@@ -130,10 +132,11 @@ public class ObjectsInstanceCreator {
       } catch (SQLException e) {
         System.out.println("No address selected for this member");
       }
+      return memberDTO;
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return memberDTO;
+    return null;
   }
 
   /**
