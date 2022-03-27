@@ -21,6 +21,7 @@ const tableHtmlConfirmedMembers = `
           <th scope="col">Administrateur</th>
           <th scope="col">Confirmation</th>
           <th scope="col">Refus</th>
+          <th scope="col"> Message du refus</th>
         </tr>
       </thead>
       <tbody id="tbody_registered_members">
@@ -70,6 +71,7 @@ async function viewRegisteredMembers(members) {
         <td><input class="form-check-input" type="checkbox" value="" id="RegisteredIsAdmin"></td>
         <td><button type="submit" class="btn btn-primary" id="RegisteredConfirmButton">Confirmer</button></td>
         <td><button type="submit" class="btn btn-danger" id="RegisteredRefuseButton">Refuser</button></td>
+        <td><div class="form-floating mb-3"><input type="email" class="form-control" id="floatingInput" placeholder="name@example.com"><label for="floatingInput">Message</label></div></td>
       </tr>    
     `;
 
