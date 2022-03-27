@@ -18,6 +18,7 @@ import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.member.objects.MemberDAOImpl;
 import be.vinci.pae.dal.offer.interfaces.OfferDAO;
 import be.vinci.pae.dal.offer.objects.OfferDAOImpl;
+import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.dal.services.objects.DALServicesImpl;
 import jakarta.inject.Singleton;
@@ -29,8 +30,9 @@ public class ApplicationBinder extends AbstractBinder {
 
   @Override
   protected void configure() {
-    bind(DALServicesImpl.class).to(DALServices.class).in(Singleton.class);
     bind(FactoryImpl.class).to(Factory.class).in(Singleton.class);
+    bind(DALServicesImpl.class).to(DALBackendService.class).to(DALServices.class)
+        .in(Singleton.class);
 
     //Member
     bind(MemberDAOImpl.class).to(MemberDAO.class).in(Singleton.class);

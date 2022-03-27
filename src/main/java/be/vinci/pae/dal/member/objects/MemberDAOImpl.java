@@ -4,7 +4,7 @@ import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
-import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
@@ -16,12 +16,12 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public class MemberDAOImpl implements MemberDAO {
 
-  @Inject
-  private DALServices dalServices;
-  @Inject
-  private Factory factory;
   private static final String DEFAULT_STATE = "registered";
   private static final boolean DEFAULT_IS_ADMIN = false;
+  @Inject
+  private DALBackendService dalBackendService;
+  @Inject
+  private Factory factory;
 
   /**
    * Get all the members in the DB.
@@ -124,7 +124,7 @@ public class MemberDAOImpl implements MemberDAO {
         + "FROM project_pae.members m, project_pae.addresses a "
         + "WHERE m.username = ?"
         + "  AND a.id_member = m.id_member";
-    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       System.out.println("Prepared statement successfully generated");
       preparedStatement.setString(1, memberDTO.getUsername());
       try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -147,7 +147,7 @@ public class MemberDAOImpl implements MemberDAO {
   private void loadMemberId(MemberDTO memberDTO) {
     String query = "SELECT id_member FROM project_pae.members WHERE username = ?";
     try (
-        PreparedStatement ps = dalServices.getPreparedStatement(query)
+        PreparedStatement ps = dalBackendService.getPreparedStatement(query)
     ) {
       ps.setString(1, StringEscapeUtils.escapeHtml4(memberDTO.getUsername()));
       try (
@@ -170,7 +170,7 @@ public class MemberDAOImpl implements MemberDAO {
    * @return a list of member
    */
   private List<MemberDTO> getMembersDTO(List<MemberDTO> listMemberDTO, String query) {
-    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       try (ResultSet rs = preparedStatement.executeQuery()) {
         while (rs.next()) {
           listMemberDTO.add(ObjectsInstanceCreator.createMemberInstance(this.factory, rs));
@@ -191,7 +191,7 @@ public class MemberDAOImpl implements MemberDAO {
    * @return boolean
    */
   private MemberDTO executeQueryWithId(int id, String query) {
-    try (PreparedStatement preparedStatement = dalServices.getPreparedStatement(query)) {
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
@@ -268,7 +268,7 @@ public class MemberDAOImpl implements MemberDAO {
     String query = "INSERT INTO project_pae.members (username, password, last_name, first_name, "
         + "is_admin, state) VALUES (?, ?, ?, ?, ?, ?)";
     try (
-        PreparedStatement ps = dalServices.getPreparedStatement(query)
+        PreparedStatement ps = dalBackendService.getPreparedStatement(query)
     ) {
       ps.setString(1, StringEscapeUtils.escapeHtml4(memberDTO.getUsername()));
       ps.setString(2, memberDTO.getPassword());
@@ -299,7 +299,7 @@ public class MemberDAOImpl implements MemberDAO {
         + "postcode, commune, id_member) "
         + "VALUES (?, ?, ?, ?, ?, ?);";
     try (
-        PreparedStatement ps = dalServices.getPreparedStatement(query)
+        PreparedStatement ps = dalBackendService.getPreparedStatement(query)
     ) {
       ps.setString(1, StringEscapeUtils.escapeHtml4(addressDTO.getStreet()));
       ps.setString(2, StringEscapeUtils.escapeHtml4(addressDTO.getBuildingNumber()));
