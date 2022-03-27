@@ -1,5 +1,5 @@
 ### Mark Interest
-POST {{baseUrl}}/interests/2
+POST {{baseUrl}}/interests/3
 Authorization: {{token}}
 Content-Type: application/json
 

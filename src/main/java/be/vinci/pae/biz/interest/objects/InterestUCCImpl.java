@@ -25,6 +25,7 @@ public class InterestUCCImpl implements InterestUCC {
     int res = interestDAO.markInterest(memberDTO, idOffer, callWanted, date);
     if (res == -1) {
       dalServices.rollback();
+      return -1;
     }
     dalServices.commit();
     return 1;
@@ -46,6 +47,7 @@ public class InterestUCCImpl implements InterestUCC {
     dalServices.start();
     if (!interestDAO.memberExist(memberDTO)) {
       dalServices.rollback();
+      return false;
     }
     dalServices.commit();
     return true;
@@ -56,6 +58,7 @@ public class InterestUCCImpl implements InterestUCC {
     dalServices.start();
     if (!interestDAO.interestExist(idOffer, memberDTO)) {
       dalServices.rollback();
+      return false;
     }
     dalServices.commit();
     return true;
