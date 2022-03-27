@@ -2,7 +2,7 @@ package be.vinci.pae.ihm.interest;
 
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
-import be.vinci.pae.ihm.filter.Authorize;
+import be.vinci.pae.ihm.filter.AuthorizeMember;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -35,7 +35,7 @@ public class InterestResource {
   @Path("{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @Authorize
+  @AuthorizeMember
   public int markInterest(@PathParam("id") int idOffer,
       @QueryParam("call_wanted") boolean callWanted, MemberDTO memberDTO) {
 

@@ -9,7 +9,7 @@ import java.io.IOException;
 
 @Singleton
 @Provider
-@Authorize
+@AuthorizeMember
 public class AuthorizationRequestFilter implements ContainerRequestFilter {
 
   public AuthorizationRequestFilter() {

@@ -6,6 +6,6 @@ import java.lang.annotation.RetentionPolicy;
 
 @NameBinding
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Authorize {
+public @interface AuthorizeMember {
 
 }

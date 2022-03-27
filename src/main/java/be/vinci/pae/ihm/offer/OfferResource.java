@@ -2,7 +2,7 @@ package be.vinci.pae.ihm.offer;
 
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
-import be.vinci.pae.ihm.filter.Authorize;
+import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.utils.Json;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -32,7 +32,7 @@ public class OfferResource {
   @POST
   @Path("add_offer")
   @Consumes(MediaType.APPLICATION_JSON)
-  @Authorize
+  @AuthorizeMember
   public void addOffer(OfferDTO offerDTO) {
     // Get and check credentials
     if (offerDTO.getTimeSlot() == null
@@ -59,7 +59,7 @@ public class OfferResource {
   @Path("{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @Authorize
+  @AuthorizeMember
   public OfferDTO getOffer(@PathParam("id") int id) {
     if (offerUCC.getOneOffer(id) == null) {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
@@ -77,7 +77,7 @@ public class OfferResource {
   @Path("latest_offers")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @Authorize
+  @AuthorizeMember
   public List<OfferDTO> getLatestOffers() {
     List<OfferDTO> listOfferDTO = offerUCC.getLatestOffers();
     if (listOfferDTO == null) {
@@ -103,7 +103,7 @@ public class OfferResource {
   @Path("all_offers")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @Authorize
+  @AuthorizeMember
   public List<OfferDTO> getAllOffers() {
     List<OfferDTO> listOfferDTO = offerUCC.getAllOffers();
     if (listOfferDTO == null) {
