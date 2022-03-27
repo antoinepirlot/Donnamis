@@ -80,7 +80,6 @@ public class ObjectsInstanceCreator {
       itemsTypeDTO.setId(rs.getInt("id_type"));
       itemsTypeDTO.setItemType(StringEscapeUtils.escapeHtml4(rs.getString("item_type")));
     } catch (SQLException e) {
-      e.printStackTrace();
       return null;
     }
     return itemsTypeDTO;
