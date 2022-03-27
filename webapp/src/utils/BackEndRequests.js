@@ -219,6 +219,44 @@ async function getOffer(idOffer) {
   return await response.json()
 }
 
+async function getMyOffers(idMember) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/items/all_items/${idMember}`, request);
+  if (!response.ok) {
+    // status code was not 200, error status code
+    showError("There's no offer with this id");
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText
+    );
+  }
+  return await response.json()
+}
+
+async function cancelOffer(id) {
+  try {
+    const request = {
+      method: "PUT",
+      headers: {
+        "Authorization": getObject("token")
+      }
+    };
+    const url = `/api/items/cancel/${id}`;
+    const reponse = await fetch(url, request);
+    if (!reponse.ok) {
+      throw new Error(
+          "fetch error : " + reponse.status + " : " + reponse.statusText
+      );
+    }
+  } catch (error) {
+    console.error("ListMemberPage::error::deny registration:", error);
+  }
+}
+
 export {
   login,
   register,
@@ -231,5 +269,7 @@ export {
   getItems,
   getOffers,
   getLatestOffers,
-  getOffer
+  getOffer,
+  getMyOffers,
+  cancelOffer
 };

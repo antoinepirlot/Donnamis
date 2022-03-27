@@ -94,6 +94,11 @@ const offerAnItemLinkHtml = `
           </li>
 `;
 
+const myOffersLinkHtml = `
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-uri="/my_offers">Mes offres</a>
+          </li>
+`;
 
 const Navbar = async () => {
   const navbarWrapper = document.querySelector("#navbarWrapper");
@@ -112,6 +117,7 @@ const Navbar = async () => {
     links.innerHTML += allOfferedItemsLinkHtml;
     links.innerHTML += offersDetailLinkHtml;
     links.innerHTML += offerAnItemLinkHtml;
+    links.innerHTML += myOffersLinkHtml;
     links.innerHTML += logoutLinkHtml;
   } else {
     links.innerHTML += loginLinkHtml;
