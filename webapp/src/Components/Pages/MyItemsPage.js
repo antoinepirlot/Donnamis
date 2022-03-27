@@ -39,7 +39,7 @@ const MyItemsPage = async () => {
     const errorMessageMyItemsPage = document.querySelector("#errorMessageMyItemsPage");
     showError(message, "info", errorMessageMyItemsPage);
   } else {
-    showItems(items)
+    showItems(items);
   }
 };
 
