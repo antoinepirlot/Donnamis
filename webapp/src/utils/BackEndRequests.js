@@ -236,6 +236,25 @@ async function getItemsTypes() {
   return await response.json();
 }
 
+async function offerAnItem(item) {
+  const request = {
+    method: "POST",
+    headers: {
+      "Authorization": getObject("token"),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(item)
+  };
+  const response = await fetch("/api/items/offer", request);
+  if (!response.ok) {
+    showError("Can't offer the item");
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText
+    );
+  }
+  return await response.json();
+}
+
 export {
   login,
   register,
@@ -249,5 +268,6 @@ export {
   getOffers,
   getLatestOffers,
   getOffer,
-  getItemsTypes
+  getItemsTypes,
+  offerAnItem
 };
