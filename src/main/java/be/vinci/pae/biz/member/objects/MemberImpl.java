@@ -41,7 +41,7 @@ public class MemberImpl implements Member {
   }
 
   public String getUsername() {
-    return username;
+    return username.toLowerCase().trim();
   }
 
   public void setUsername(String username) {
