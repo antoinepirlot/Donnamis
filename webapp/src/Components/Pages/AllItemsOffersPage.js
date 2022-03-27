@@ -2,6 +2,8 @@ import {getOffers} from "../../utils/BackEndRequests";
 
 const tableHtml = `
   <div>
+    <h1 class="display-3">All items</h1>
+    <br>
     <table>
       <thead>
         <tr>
