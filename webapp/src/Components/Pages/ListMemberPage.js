@@ -6,8 +6,10 @@ import {
   confirmMember,
   denyMember,
   getDeniedMembers,
-  getRegisteredMembers
+  getRegisteredMembers,
+  isAdmin
 } from "../../utils/BackEndRequests";
+import {Redirect} from "../Router/Router";
 
 const tableHtmlConfirmedMembers = `
   <div>
@@ -52,11 +54,15 @@ const tableHtmlDeniedMembers = `
 `;
 
 const ListMemberPage = async () => {
+  if (!await isAdmin()) {
+    Redirect("/");
+    return;
+  }
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtmlConfirmedMembers;
   pageDiv.innerHTML += tableHtmlDeniedMembers;
-  viewRegisteredMembers(await getRegisteredMembers());
-  viewDeniedMembers(await getDeniedMembers());
+  await viewRegisteredMembers(await getRegisteredMembers());
+  await viewDeniedMembers(await getDeniedMembers());
 };
 
 async function viewRegisteredMembers(members) {
@@ -88,7 +94,7 @@ async function viewRegisteredMembers(members) {
       } else {
         await confirmMember(member.id);
       }
-      location.reload();
+      Redirect("/list_member");
     });
 
     //Deny Button
@@ -97,7 +103,7 @@ async function viewRegisteredMembers(members) {
 
       //Confirm the registration (Click on the button)
       await denyMember(member.id);
-      location.reload();
+      Redirect("/list_member");
     });
     const line = document.querySelector("#RegisteredLine");
     line.dataset.memberId = member.id;
@@ -131,7 +137,8 @@ async function viewDeniedMembers(members) {
       } else {
         await confirmMember(member.id);
       }
-      location.reload();
+      Redirect("/list_member");
+      //Redirect vers la meme page soit ListMemberPage
     });
 
     const line = document.querySelector("#DeniedLine");

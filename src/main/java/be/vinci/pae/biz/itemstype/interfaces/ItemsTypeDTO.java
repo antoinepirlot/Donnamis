@@ -1,10 +1,10 @@
 package be.vinci.pae.biz.itemstype.interfaces;
 
-import be.vinci.pae.biz.itemstype.objects.ItemTypeImpl;
+import be.vinci.pae.biz.itemstype.objects.ItemsTypeImpl;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-@JsonDeserialize(as = ItemTypeImpl.class)
-public interface ItemTypeDTO {
+@JsonDeserialize(as = ItemsTypeImpl.class)
+public interface ItemsTypeDTO {
   int getId();
 
   void setId(int id);

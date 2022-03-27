@@ -3,7 +3,7 @@ package be.vinci.pae.dal.utils;
 import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
-import be.vinci.pae.biz.itemstype.interfaces.ItemTypeDTO;
+import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import java.sql.ResultSet;
@@ -73,16 +73,16 @@ public class ObjectsInstanceCreator {
    * @param rs      the result set that contains item type's data
    * @return a new item type instance with initialized attributes
    */
-  private static ItemTypeDTO createItemTypeInstance(Factory factory, ResultSet rs) {
+  private static ItemsTypeDTO createItemTypeInstance(Factory factory, ResultSet rs) {
     System.out.println("Setting all item type attributes");
-    ItemTypeDTO itemTypeDTO = factory.getItemType();
+    ItemsTypeDTO itemsTypeDTO = factory.getItemType();
     try {
-      itemTypeDTO.setId(rs.getInt("id_type"));
-      itemTypeDTO.setItemType(StringEscapeUtils.escapeHtml4(rs.getString("item_type")));
+      itemsTypeDTO.setId(rs.getInt("id_type"));
+      itemsTypeDTO.setItemType(StringEscapeUtils.escapeHtml4(rs.getString("item_type")));
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return itemTypeDTO;
+    return itemsTypeDTO;
   }
 
   /**

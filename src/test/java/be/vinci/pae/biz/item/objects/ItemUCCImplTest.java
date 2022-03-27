@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
-import be.vinci.pae.biz.itemstype.interfaces.ItemType;
-import be.vinci.pae.biz.itemstype.objects.ItemTypeImpl;
+import be.vinci.pae.biz.itemstype.interfaces.ItemsType;
+import be.vinci.pae.biz.itemstype.objects.ItemsTypeImpl;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.objects.MemberImpl;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
@@ -42,7 +42,7 @@ class ItemUCCImplTest {
     this.goodItem.setId(5);
     this.goodItem.setItemDescription("Description");
     this.goodItem.setOfferStatus("donated");
-    ItemType itemType = new ItemTypeImpl();
+    ItemsType itemType = new ItemsTypeImpl();
     itemType.setId(5);
     this.goodItem.setItemType(itemType);
     MemberDTO memberDTO = new MemberImpl();

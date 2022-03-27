@@ -15,7 +15,7 @@ POST {{baseUrl}}/members/login
 Content-Type: application/json
 
 {
-  "username": "bri",
+  "username": "bri ",
   "password": "Rad;293"
 }
 
@@ -37,6 +37,11 @@ Authorization: {{token}}
 
 ### Get All Members unauthorized excected
 GET {{baseUrl}}/members/list_member
+
+###
+GET {{baseUrl}}/members/is_admin
+Authorization: {{token}}
+Content-Type: application/json
 
 ### Login "registered" user credentials, forbidden expected
 POST {{baseUrl}}/members/login

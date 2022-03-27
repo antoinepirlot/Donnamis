@@ -11,6 +11,7 @@
  */
 
 import {getObject} from "../../utils/session";
+import {isAdmin} from "../../utils/BackEndRequests";
 
 const navBarHtml = `
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -81,9 +82,21 @@ const allOfferedItemsLinkHtml = `
           </li>
 `;
 
-const offersDetail = `
+const offersDetailLinkHtml = `
           <li class="nav-item">
             <a class="nav-link" href="#" data-uri="/offer?id=1">Offer detail</a>
+          </li>
+`;
+
+const offerAnItemLinkHtml = `
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-uri="/offer_item">Offrir un objet</a>
+          </li>
+`;
+
+const myOffersLinkHtml = `
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-uri="/my_offers">Mes offres</a>
           </li>
 `;
 
@@ -93,12 +106,18 @@ const Navbar = async () => {
   const memberDTO = getObject("memberDTO");
   const links = document.querySelector("#navbarLinks");
   if (memberDTO) {
-    links.innerHTML += listMemberLinkHtml;
-    document.querySelector("#usernameNavbar").innerHTML = memberDTO.username
+    let memberUsername = document.querySelector("#usernameNavbar");
+    memberUsername.innerHTML = memberDTO.username;
+    if (await isAdmin()) {
+      links.innerHTML += listMemberLinkHtml;
+      memberUsername.innerHTML += " (admin)"
+    }
     links.innerHTML += latestItemsLinkHtml;
     links.innerHTML += allItemsLinkHtml;
     links.innerHTML += allOfferedItemsLinkHtml;
-    links.innerHTML += offersDetail;
+    links.innerHTML += offersDetailLinkHtml;
+    links.innerHTML += offerAnItemLinkHtml;
+    links.innerHTML += myOffersLinkHtml;
     links.innerHTML += logoutLinkHtml;
   } else {
     links.innerHTML += loginLinkHtml;

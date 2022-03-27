@@ -2,7 +2,7 @@ package be.vinci.pae.dal.item.objects;
 
 import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
-import be.vinci.pae.biz.itemstype.interfaces.ItemTypeDTO;
+import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
@@ -168,6 +168,29 @@ public class ItemDAOImpl implements ItemDAO {
     return null;
   }
 
+  @Override
+  public List<ItemDTO> getAllItemsByMemberId(int id) {
+    System.out.println("Get all offered items for a Member (ItemDAOImpl)");
+    List<ItemDTO> itemsDTO = new ArrayList<>();
+    String query = "SELECT i.id_item, i.item_description, i.photo, i.title, i.offer_status, "
+        + "it.id_type, it.item_type, "
+        + "m.username, m.last_name, m.first_name "
+        + "FROM project_pae.items i, project_pae.items_types it, project_pae.members m "
+        + "WHERE i.id_item_type = it.id_type AND i.id_member = m.id_member AND i.offer_status = ? AND m.id_member = ?;";
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setString(1, DEFAULT_OFFER_STATUS);
+      ps.setInt(2, id);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          itemsDTO.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return itemsDTO;
+  }
+
 
   private ItemDTO createItemInstance(ResultSet rs) throws SQLException {
     ItemDTO itemDTO = factory.getItem();
@@ -181,11 +204,11 @@ public class ItemDAOImpl implements ItemDAO {
     return itemDTO;
   }
 
-  private ItemTypeDTO createItemTypeInstance(ResultSet rs) throws SQLException {
-    ItemTypeDTO itemTypeDTO = factory.getItemType();
-    itemTypeDTO.setId(rs.getInt("id_item_type"));
-    itemTypeDTO.setItemType(rs.getString("item_type"));
-    return itemTypeDTO;
+  private ItemsTypeDTO createItemTypeInstance(ResultSet rs) throws SQLException {
+    ItemsTypeDTO itemsTypeDTO = factory.getItemType();
+    itemsTypeDTO.setId(rs.getInt("id_item_type"));
+    itemsTypeDTO.setItemType(rs.getString("item_type"));
+    return itemsTypeDTO;
   }
 
 }

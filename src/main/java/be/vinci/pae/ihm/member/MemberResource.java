@@ -7,6 +7,7 @@ import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeAdmin;
+import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.logs.LoggerHandler;
 import be.vinci.pae.ihm.utils.Json;
 import be.vinci.pae.utils.Config;
@@ -23,11 +24,13 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.glassfish.jersey.server.ContainerRequest;
 
 /**
  * Root resource (exposed at "myresource" path).
@@ -207,6 +210,19 @@ public class MemberResource {
     }
     String token = createToken(memberDTO.getId());
     return createObjectNode(token, memberDTO);
+  }
+
+  /**
+   * Asks UCC to check if the member is admin or not
+   *
+   * @return null (the text is return with
+   */
+  @GET
+  @Path("is_admin")
+  @Produces(MediaType.TEXT_PLAIN)
+  @AuthorizeAdmin
+  public String isAdmin() {
+    return "This member is admin";
   }
 
   /**

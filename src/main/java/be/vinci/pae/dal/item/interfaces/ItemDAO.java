@@ -11,6 +11,7 @@ public interface ItemDAO {
 
   /**
    * Get all offered items from the db.
+   *
    * @return a list of all offered items
    */
   List<ItemDTO> getAllOfferedItems();
@@ -20,4 +21,6 @@ public interface ItemDAO {
   boolean addItem(ItemDTO itemDTO);
 
   ItemDTO cancelOffer(int id);
+
+  List<ItemDTO> getAllItemsByMemberId(int id);
 }
