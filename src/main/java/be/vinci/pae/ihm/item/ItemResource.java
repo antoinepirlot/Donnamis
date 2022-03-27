@@ -104,6 +104,7 @@ public class ItemResource {
     if (itemDTO == null
         || itemDTO.getItemDescription() == null || itemDTO.getItemDescription().equals("")
         || itemDTO.getItemType() == null || itemDTO.getMember() == null
+        || itemDTO.getMember().getId() < 1
         || itemDTO.getTitle() == null || itemDTO.getTitle().equals("")
     ) {
       throw new WebApplicationException("Wrong item body", Status.BAD_REQUEST);

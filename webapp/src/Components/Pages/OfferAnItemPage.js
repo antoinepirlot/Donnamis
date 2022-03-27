@@ -1,3 +1,7 @@
+import {getItemsTypes, offerAnItem} from "../../utils/BackEndRequests";
+import {showError} from "../../utils/ShowError";
+import {getPayload} from "../../utils/session";
+
 const htmlForm = `
   <div>
     <form id="offerItemForm">
@@ -14,11 +18,13 @@ const htmlForm = `
       <textarea id="timeSlotForm" cols="30" rows="3"></textarea><br>
       <br>
       Type de l'objet<span id="asterisk">*</span>:<br>
-      <datalist id="itemTypeForm"></datalist>
+      <input id="itemTypeFormList" list="itemsTypes" placeholder="Séléctionne le type d'objet"><br>
+      <datalist id="itemsTypes"></datalist>
       <br>
       <input type="submit" value="Offrir">
     </form>
   </div>
+  <div id="errorMessageOfferAnItemPage"></div>
 `;
 
 const OfferAnItemPage = async () => {
@@ -30,7 +36,13 @@ const OfferAnItemPage = async () => {
 };
 
 async function showItemsTypes() {
-
+  const itemsTypes = await getItemsTypes();
+  const itemsTypeList = document.querySelector("#itemsTypes")
+  itemsTypes.forEach(itemsType => {
+    itemsTypeList.innerHTML += `
+      <option value="${itemsType.itemType}">
+    `;
+  });
 }
 
 async function offerItem(e) {
@@ -39,7 +51,26 @@ async function offerItem(e) {
   const itemDescription = document.querySelector("#itemDescriptionForm").value;
   const photo = document.querySelector("#photoForm").value;
   const timeSlot = document.querySelector("#timeSlotForm").value;
-  const itemType = document.querySelector("#itemTypeForm").value;
+  const itemType = document.querySelector("#itemTypeFormList").value;
+  const payload = await getPayload();
+  const member = {
+    id: payload.id
+  }
+  const item = {
+    itemDescription: itemDescription,
+    title: title,
+    photo: photo,
+    timeSlot: timeSlot,
+    itemType: itemType,
+    member: member
+  };
+  try {
+    await offerAnItem(item);
+    const errorMessageOfferAnItemPage = document.querySelector("#errorMessageOfferAnItemPage");
+    showError("Success", "success", errorMessageOfferAnItemPage);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 

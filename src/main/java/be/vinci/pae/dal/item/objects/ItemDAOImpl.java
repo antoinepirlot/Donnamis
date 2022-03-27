@@ -34,19 +34,18 @@ public class ItemDAOImpl implements ItemDAO {
   public List<ItemDTO> getLatestItems() {
     System.out.println("getLatestItems");
     List<ItemDTO> itemsToReturn = new ArrayList<>();
-    try {
-      String query = "SELECT items.id_item,\n"
-          + "       items.item_description,\n"
-          + "       items.id_item_type,\n"
-          + "       items.id_member,\n"
-          + "       items.photo,\n"
-          + "       items.title,\n"
-          + "       items.offer_status\n"
-          + "FROM project_pae.items items\n"
-          + "         LEFT OUTER JOIN project_pae.offers offers\n"
-          + "                         ON items.id_item = offers.id_item\n"
-          + "ORDER BY offers.date DESC";
-      PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query);
+    String query = "SELECT items.id_item,\n"
+        + "       items.item_description,\n"
+        + "       items.id_item_type,\n"
+        + "       items.id_member,\n"
+        + "       items.photo,\n"
+        + "       items.title,\n"
+        + "       items.offer_status\n"
+        + "FROM project_pae.items items\n"
+        + "         LEFT OUTER JOIN project_pae.offers offers\n"
+        + "                         ON items.id_item = offers.id_item\n"
+        + "ORDER BY offers.date DESC";
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       System.out.println("Préparation du statement");
       try (ResultSet rs = preparedStatement.executeQuery()) {
         while (rs.next()) {
