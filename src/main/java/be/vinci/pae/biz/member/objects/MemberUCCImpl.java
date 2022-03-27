@@ -68,7 +68,11 @@ public class MemberUCCImpl implements MemberUCC {
   @Override
   public MemberDTO confirmMember(int id) {
     dalServices.start();
-    Member member = (Member) getOneMember(id);
+    Member member = (Member) memberDAO.getOneMember(id);
+    if (member == null) {
+      dalServices.rollback();
+      return null;
+    }
     if (!member.verifyState("registered") && !member.verifyState("denied")) {
       dalServices.rollback();
       return null;
@@ -83,14 +87,18 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public MemberDTO denyMember(int id) {
+  public MemberDTO denyMember(int id, String text_refusals) {
     dalServices.start();
-    Member member = (Member) getOneMember(id);
+    Member member = (Member) memberDAO.getOneMember(id);
+    if (member == null) {
+      dalServices.rollback();
+      return null;
+    }
     if (!member.verifyState("registered")) {
       dalServices.rollback();
       return null;
     }
-    MemberDTO memberDTO = memberDAO.denyMember(id);
+    MemberDTO memberDTO = memberDAO.denyMember(id, text_refusals);
     if (memberDTO == null) {
       dalServices.rollback();
     } else {
@@ -107,7 +115,11 @@ public class MemberUCCImpl implements MemberUCC {
    */
   public MemberDTO confirmAdmin(int id) {
     dalServices.start();
-    Member member = (Member) getOneMember(id);
+    Member member = (Member) memberDAO.getOneMember(id);
+    if (member == null) {
+      dalServices.rollback();
+      return null;
+    }
     if (!member.verifyState("registered") && !member.verifyState("denied")) {
       dalServices.rollback();
       return null;
@@ -117,12 +129,11 @@ public class MemberUCCImpl implements MemberUCC {
       dalServices.rollback();
       return null;
     }
-    memberDTO = memberDAO.confirmMember(id);
+    memberDTO = memberDAO.isAdmin(id);
     if (memberDTO == null) {
       dalServices.rollback();
-    } else {
-      dalServices.commit();
     }
+    dalServices.commit();
     return memberDTO;
   }
 

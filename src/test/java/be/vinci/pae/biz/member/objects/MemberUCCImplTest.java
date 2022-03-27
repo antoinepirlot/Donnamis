@@ -19,11 +19,11 @@ class MemberUCCImplTest {
   private final ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
   private final MemberDAO memberDAO = locator.getService(MemberDAO.class);
   private final MemberUCC memberUCC = locator.getService(MemberUCC.class);
+  private final MemberDTO memberDTO = new MemberImpl();
+  private final MemberDTO memberToLogIn = new MemberImpl();
   private String hashedPassword;
   private String password;
   private String wrongPassword;
-  private final MemberDTO memberDTO = new MemberImpl();
-  private final MemberDTO memberToLogIn = new MemberImpl();
 
   @BeforeEach
   void setUp() {
@@ -46,7 +46,7 @@ class MemberUCCImplTest {
     memberDTO.setActualState(state);
     memberDTO.setId(99);
     Mockito.when(memberDAO.confirmMember(99)).thenReturn(memberDTO);
-    Mockito.when(memberDAO.denyMember(99)).thenReturn(memberDTO);
+    Mockito.when(memberDAO.denyMember(99, "Message refus")).thenReturn(memberDTO);
     Mockito.when(memberDAO.getOneMember(99)).thenReturn(memberDTO);
     Mockito.when(memberDAO.isAdmin(99)).thenReturn(memberDTO);
   }
@@ -80,21 +80,21 @@ class MemberUCCImplTest {
   @Test
   void testDenyMemberWithStateConfirmed() {
     configureMemberDTOState("confirmed");
-    assertNull(memberUCC.denyMember(99));
+    assertNull(memberUCC.denyMember(99, "Message refus"));
   }
 
   @DisplayName("Test Deny Member With the state registered")
   @Test
   void testDenyMemberWithStateRegistered() {
     configureMemberDTOState("registered");
-    assertEquals(memberDTO, memberUCC.denyMember(99));
+    assertEquals(memberDTO, memberUCC.denyMember(99, "Message refus"));
   }
 
   @DisplayName("Test Deny Member With the state denied")
   @Test
   void testDenyMemberWithStateDenied() {
     configureMemberDTOState("denied");
-    assertNull(memberUCC.denyMember(99));
+    assertNull(memberUCC.denyMember(99, "Message refus"));
   }
 
   //Test Confirm Admin

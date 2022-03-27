@@ -54,10 +54,8 @@ public class InterestResource {
 
     //Verify if the member already exist
     if (!interestUCC.memberExist(memberDTO)) {
-      System.out.println("member does not exist");
-
       throw new WebApplicationException(Response.status(Status.NOT_FOUND)
-          .entity("interest already exist").type("text/plain").build());
+          .entity("member doesn't exist").type("text/plain").build());
     }
 
     //Verify if the interest already exist
