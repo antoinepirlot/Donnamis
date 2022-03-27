@@ -219,6 +219,23 @@ async function getOffer(idOffer) {
   return await response.json()
 }
 
+async function getItemsTypes() {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch("/api/items_types/all", request);
+  if (!response.ok) {
+    showError("There's no items type");
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText
+    );
+  }
+  return await response.json();
+}
+
 export {
   login,
   register,
@@ -231,5 +248,6 @@ export {
   getItems,
   getOffers,
   getLatestOffers,
-  getOffer
+  getOffer,
+  getItemsTypes
 };
