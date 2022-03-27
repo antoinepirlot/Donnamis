@@ -150,7 +150,7 @@ public class ObjectsInstanceCreator {
     System.out.println("setting all address attributes");
     AddressDTO addressDTO = factory.getAddress();
     addressDTO.setId(rs.getInt("id_address"));
-    addressDTO.setStreet(StringEscapeUtils.escapeHtml4("street"));
+    addressDTO.setStreet(StringEscapeUtils.escapeHtml4(rs.getString("street")));
     addressDTO.setBuildingNumber(
         StringEscapeUtils.escapeHtml4(rs.getString("building_number"))
     );
@@ -160,6 +160,24 @@ public class ObjectsInstanceCreator {
     addressDTO.setPostcode(StringEscapeUtils.escapeHtml4(rs.getString("postcode")));
     addressDTO.setCommune(StringEscapeUtils.escapeHtml4(rs.getString("commune")));
     return addressDTO;
+  }
+
+  /**
+   * Create an itemsType instance with the factory and set all its attributes with data
+   * selected from the db.
+   *
+   * @param factory the factory that gives an address
+   * @param rs      the result set that contains itemsType 's data
+   * @return a new itemsType instance with initialized attributes
+   * @throws SQLException if an attributes is not in the result set
+   */
+  public static ItemsTypeDTO createItemsTypeInstance(Factory factory, ResultSet rs)
+      throws SQLException{
+    System.out.println("Setting all items type attributes");
+    ItemsTypeDTO itemsTypeDTO = factory.getItemType();
+    itemsTypeDTO.setId(rs.getInt("id_type"));
+    itemsTypeDTO.setItemType(rs.getString("item_type"));
+    return itemsTypeDTO;
   }
 
 }

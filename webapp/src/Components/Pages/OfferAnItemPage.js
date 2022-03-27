@@ -1,3 +1,5 @@
+import {getItemsTypes} from "../../utils/BackEndRequests";
+
 const htmlForm = `
   <div>
     <form id="offerItemForm">
@@ -14,7 +16,8 @@ const htmlForm = `
       <textarea id="timeSlotForm" cols="30" rows="3"></textarea><br>
       <br>
       Type de l'objet<span id="asterisk">*</span>:<br>
-      <datalist id="itemTypeForm"></datalist>
+      <input id="itemTypeFormList" list="itemsTypes" placeholder="Séléctionne le type d'objet"><br>
+      <datalist id="itemsTypes"></datalist>
       <br>
       <input type="submit" value="Offrir">
     </form>
@@ -30,7 +33,13 @@ const OfferAnItemPage = async () => {
 };
 
 async function showItemsTypes() {
-
+  const itemsTypes = await getItemsTypes();
+  const itemsTypeList = document.querySelector("#itemsTypes")
+  itemsTypes.forEach(itemsType => {
+    itemsTypeList.innerHTML += `
+      <option value="${itemsType.itemType}">
+    `;
+  });
 }
 
 async function offerItem(e) {
