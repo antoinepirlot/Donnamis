@@ -36,7 +36,7 @@ public class InterestUCCImpl implements InterestUCC {
         return 0;
       }
     }
-    return interestDAO.markInterest(memberDTO, idOffer, callWanted, date);
+    return res;
   }
 
   @Override
