@@ -181,7 +181,7 @@ public class ItemResource {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
           .entity("Ressource not found").type("text/plain").build());
     }
-    itemDTO.addOffer(this.offerUCC.getLatestItemOffer(itemDTO));
+    this.offerUCC.getAllOffersOf(itemDTO);
     return this.jsonUtil.filterPublicJsonView(itemDTO);
   }
 

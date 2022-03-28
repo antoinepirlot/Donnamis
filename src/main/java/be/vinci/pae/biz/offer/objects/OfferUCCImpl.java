@@ -6,6 +6,7 @@ import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.dal.offer.interfaces.OfferDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import jakarta.inject.Inject;
+import java.sql.SQLException;
 import java.util.List;
 
 public class OfferUCCImpl implements OfferUCC {
@@ -49,24 +50,25 @@ public class OfferUCCImpl implements OfferUCC {
   }
 
   @Override
-  public OfferDTO getLatestItemOffer(ItemDTO itemDTO) {
+  public OfferDTO getOneOffer(int id) {
     dalServices.start();
-    OfferDTO offerDTO = offerDAO.getLatestItemOffer(itemDTO);
+    OfferDTO offerDTO = offerDAO.getOne(id);
     if (offerDTO == null) {
       dalServices.rollback();
+      return null;
     }
     dalServices.commit();
     return offerDTO;
   }
 
   @Override
-  public OfferDTO getOneOffer(int id) {
+  public void getAllOffersOf(ItemDTO itemDTO) {
     dalServices.start();
-    OfferDTO offerDTO = offerDAO.getOne(id);
-    if (offerDTO == null) {
+    try {
+      this.offerDAO.addOffersTo(itemDTO);
+    } catch (SQLException e) {
       dalServices.rollback();
     }
     dalServices.commit();
-    return offerDTO;
   }
 }

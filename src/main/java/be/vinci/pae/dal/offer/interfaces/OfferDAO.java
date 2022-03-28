@@ -2,6 +2,7 @@ package be.vinci.pae.dal.offer.interfaces;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
+import java.sql.SQLException;
 import java.util.List;
 
 public interface OfferDAO {
@@ -20,5 +21,10 @@ public interface OfferDAO {
 
   OfferDTO getOne(int id);
 
-  OfferDTO getLatestItemOffer(ItemDTO itemDTO);
+  /**
+   * Add offers to itemDTO offer list. (no insert into the db)
+   * @param itemDTO the item that need offers to be added
+   * @throws SQLException if something is wrong in the
+   */
+  void addOffersTo(ItemDTO itemDTO) throws SQLException;
 }

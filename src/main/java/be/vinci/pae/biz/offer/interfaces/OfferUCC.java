@@ -27,8 +27,6 @@ public interface OfferUCC {
    */
   List<OfferDTO> getAllOffers();
 
-  OfferDTO getLatestItemOffer(ItemDTO itemDTO);
-
   /**
    * Asks UCC to get one offer identified by its id.
    *
@@ -36,4 +34,6 @@ public interface OfferUCC {
    * @return the offer if it exists, otherwise null
    */
   OfferDTO getOneOffer(int id);
+
+  void getAllOffersOf(ItemDTO itemDTO);
 }
