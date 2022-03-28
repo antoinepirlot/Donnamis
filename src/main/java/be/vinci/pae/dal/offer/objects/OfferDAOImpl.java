@@ -139,8 +139,8 @@ public class OfferDAOImpl implements OfferDAO {
   @Override
   public OfferDTO getLatestItemOffer(ItemDTO itemDTO) {
     System.out.println("Get latest item's offer");
-    String query = "SELECT id_offer, date, time_slot "
-        + "FROM project_pae.offers "
+    String query = "SELECT id_offer, date, time_slot, id_item "
+        + "FROM project_pae.offers o "
         + "WHERE id_item = ?;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       System.out.println("Prepared statement successfully generated");
