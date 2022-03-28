@@ -56,6 +56,28 @@ function setLocalObject (storeName, object) {
 }
 
 /**
+ * Remove the local object
+ * @param storeName the path to the object
+ * @returns {string} the removed object
+ */
+function removeLocalObject(storeName) {
+  const removedObject = localStorage.getItem(storeName);
+  localStorage.removeItem(storeName);
+  return removedObject;
+}
+
+/**
+ * Remove the session object
+ * @param storeName the path to the object
+ * @returns {string} the removed object
+ */
+function removeSessionObject(storeName) {
+  const removedObject = sessionStorage.getItem(storeName);
+  sessionStorage.removeItem(storeName);
+  return removedObject;
+}
+
+/**
  * Remove the object in the localStorage under the storeName key
  */
 function disconnect() {
