@@ -18,6 +18,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
@@ -71,7 +72,9 @@ public class ItemResource {
     if (listItemDTO == null) {
       throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
     }
-
+    for(ItemDTO itemDTO : listItemDTO) {
+      this.offerUCC.getAllOffersOf(itemDTO);
+    }
     //Convert to ObjectNode
     try {
       return listItemDTO;
@@ -92,7 +95,11 @@ public class ItemResource {
   @AuthorizeMember
   public List<ItemDTO> getAllOfferedItems() {
     System.out.println("Get all offered items");
-    return this.itemUCC.getAllOfferedItems();
+    List<ItemDTO> itemDTOList = this.itemUCC.getAllOfferedItems();
+    for(ItemDTO itemDTO : itemDTOList) {
+      this.offerUCC.getAllOffersOf(itemDTO);
+    }
+    return itemDTOList;
   }
 
   /**
@@ -154,7 +161,9 @@ public class ItemResource {
     if (listItemDTO == null) {
       throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
     }
-
+    for(ItemDTO itemDTO : listItemDTO) {
+      this.offerUCC.getAllOffersOf(itemDTO);
+    }
     //Convert to ObjectNode
     try {
       return listItemDTO;

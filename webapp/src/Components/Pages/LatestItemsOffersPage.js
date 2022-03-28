@@ -1,4 +1,4 @@
-import {getItem, getLatestOffers} from "../../utils/BackEndRequests";
+import {getItem, getItems, getLatestOffers} from "../../utils/BackEndRequests";
 import {Redirect} from "../Router/Router";
 
 const tableHtml = `
@@ -26,14 +26,16 @@ const tableHtml = `
 const LatestItemsOffersPage = async () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtml;
-  await showItems(await getLatestOffers())
+  await showItems(await getItems())
 };
 
-async function showItems(offers) {
+async function showItems(items) {
   const tbody = document.querySelector("#tbody_all_items");
   tbody.innerHTML = "";
-  for (const offer of offers) {
-    const item = await getItem(offer.idItem);
+  console.log(tbody.innerHTML)
+  items.forEach((item) => {
+    console.log(item)
+    const offer = item.offerList[0];
     tbody.innerHTML += `
       <tr>
         <td>${item.title}</td>
@@ -48,7 +50,7 @@ async function showItems(offers) {
     OfferDetailsButton.addEventListener("click", function () {
       Redirect(`/offer?id=${offer.id}`);
     })
-  }
+  });
 }
 
 export default LatestItemsOffersPage;
