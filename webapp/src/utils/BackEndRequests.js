@@ -203,14 +203,14 @@ async function getLatestOffers() {
   return await response.json();
 }
 
-async function getOffer(idOffer) {
+async function getItem(idItem) {
   const request = {
     method: "GET",
     headers: {
       "Authorization": getObject("token")
     }
   };
-  const response = await fetch(`/api/offers/${idOffer}`, request);
+  const response = await fetch(`/api/items/${idItem}`, request);
   if (!response.ok) {
     // status code was not 200, error status code
     showError("There's no offer with this id");
@@ -305,7 +305,7 @@ export {
   getLatestOffers,
   getMyItems,
   cancelOffer,
-  getOffer,
+  getItem,
   getItemsTypes,
   offerAnItem
 };

@@ -21,7 +21,7 @@ public class OfferImpl implements Offer {
   @JsonView(Views.Public.class)
   private String timeSlot;
   @JsonView(Views.Public.class)
-  private Item item;
+  private int idItem;
   @JsonView(Views.Public.class)
   private Member member;
 
@@ -53,12 +53,12 @@ public class OfferImpl implements Offer {
     this.timeSlot = timeSlot;
   }
 
-  public ItemDTO getItem() {
-    return item;
+  public int getIdItem() {
+    return idItem;
   }
 
-  public void setItem(ItemDTO itemDTO) {
-    this.item = (Item) itemDTO;
+  public void setIdItem(int idItem) {
+    this.idItem = idItem;
   }
 
   public Member getMember() {
@@ -75,7 +75,7 @@ public class OfferImpl implements Offer {
         + "idOffer=" + id
         + ", date=" + date
         + ", time_slot='" + timeSlot + '\''
-        + ", item=" + item
+        + ", item=" + idItem
         + '}';
   }
 }

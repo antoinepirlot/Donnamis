@@ -1,5 +1,6 @@
 package be.vinci.pae.biz.offer.interfaces;
 
+import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import java.util.List;
 
 public interface OfferUCC {
@@ -25,6 +26,8 @@ public interface OfferUCC {
    * @return the list of all offers
    */
   List<OfferDTO> getAllOffers();
+
+  OfferDTO getLatestItemOffer(ItemDTO itemDTO);
 
   /**
    * Asks UCC to get one offer identified by its id.

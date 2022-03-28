@@ -193,7 +193,7 @@ SELECT i.id_item,
 FROM project_pae.items i,
      project_pae.items_types it,
      project_pae.offers o
-WHERE i.id_item_type = it.id_type
+WHERE i.id_type = it.id_type
   AND i.id_item = o.id_item
 GROUP BY i.id_item,
          i.item_description,

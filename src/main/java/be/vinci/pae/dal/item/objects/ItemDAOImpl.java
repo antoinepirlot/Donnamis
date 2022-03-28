@@ -2,9 +2,7 @@ package be.vinci.pae.dal.item.objects;
 
 import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
-import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
-import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
 import jakarta.inject.Inject;
@@ -22,8 +20,6 @@ public class ItemDAOImpl implements ItemDAO {
   private Factory factory;
   @Inject
   private DALBackendService dalBackendService;
-  @Inject
-  private MemberDAO memberDAO;
 
   /**
    * Get the latest items from the database.
@@ -49,7 +45,7 @@ public class ItemDAOImpl implements ItemDAO {
       System.out.println("Préparation du statement");
       try (ResultSet rs = preparedStatement.executeQuery()) {
         while (rs.next()) {
-          ItemDTO itemDTO = createItemInstance(rs);
+          ItemDTO itemDTO = ObjectsInstanceCreator.createItemInstance(factory, rs);
           itemsToReturn.add(itemDTO);
         }
       }
@@ -77,7 +73,7 @@ public class ItemDAOImpl implements ItemDAO {
       System.out.println("Préparation du statement");
       try (ResultSet rs = preparedStatement.executeQuery()) {
         while (rs.next()) {
-          ItemDTO itemDTO = createItemInstance(rs);
+          ItemDTO itemDTO = ObjectsInstanceCreator.createItemInstance(factory, rs);
           itemsToReturn.add(itemDTO);
         }
       }
@@ -113,12 +109,21 @@ public class ItemDAOImpl implements ItemDAO {
 
   @Override
   public ItemDTO getOneItem(int id) {
-    String query = "SELECT * FROM project_pae.items i WHERE i.id_item = ?";
+    String query = ""
+        + "SELECT i.id_item, i.item_description, i.photo, i.title, i.offer_status, "
+        + "       it.id_type, it.item_type, "
+        + "       m.id_member, m.username, m.last_name, m.first_name "
+        + "FROM project_pae.items i, "
+        + "     project_pae.items_types it, "
+        + "     project_pae.members m "
+        + "WHERE i.id_item = ? "
+        + "  AND i.id_type = it.id_type "
+        + "  AND i.id_member = m.id_member;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
-          return createItemInstance(rs);
+          return ObjectsInstanceCreator.createItemInstance(factory, rs);
         }
       }
     } catch (SQLException e) {
@@ -161,7 +166,7 @@ public class ItemDAOImpl implements ItemDAO {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
-          return createItemInstance(rs);
+          return ObjectsInstanceCreator.createItemInstance(factory, rs);
         }
       }
     } catch (SQLException e) {
@@ -191,26 +196,6 @@ public class ItemDAOImpl implements ItemDAO {
       e.printStackTrace();
     }
     return itemsDTO;
-  }
-
-
-  private ItemDTO createItemInstance(ResultSet rs) throws SQLException {
-    ItemDTO itemDTO = factory.getItem();
-    itemDTO.setId(rs.getInt("id_item"));
-    itemDTO.setItemDescription(rs.getString("item_description"));
-    itemDTO.setItemType(createItemTypeInstance(rs));
-    itemDTO.setMember(memberDAO.getOneMember(rs.getInt("id_member")));
-    itemDTO.setPhoto(rs.getString("photo"));
-    itemDTO.setTitle(rs.getString("title"));
-    itemDTO.setOfferStatus(rs.getString("offer_status"));
-    return itemDTO;
-  }
-
-  private ItemsTypeDTO createItemTypeInstance(ResultSet rs) throws SQLException {
-    ItemsTypeDTO itemsTypeDTO = factory.getItemType();
-    itemsTypeDTO.setId(rs.getInt("id_type"));
-    itemsTypeDTO.setItemType(rs.getString("item_type"));
-    return itemsTypeDTO;
   }
 
 }

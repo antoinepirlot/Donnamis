@@ -52,26 +52,6 @@ public class OfferResource {
   }
 
   /**
-   * Asks UCC to get one offer identified by its id.
-   *
-   * @param id the offer's id
-   * @return the offer if it exists, otherwise throws a web application exception
-   */
-  @GET
-  @Path("{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
-  public OfferDTO getOffer(@PathParam("id") int id) {
-    if (offerUCC.getOneOffer(id) == null) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Ressource not found").type("text/plain").build());
-    }
-    OfferDTO offerDTO = offerUCC.getOneOffer(id);
-    return this.jsonUtil.filterPublicJsonView(offerDTO);
-  }
-
-  /**
    * Method that get all the latest items offered.
    *
    * @return the list of lastest offers if there's at least one offer, otherwise null

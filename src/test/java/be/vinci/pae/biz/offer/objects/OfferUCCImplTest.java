@@ -41,10 +41,10 @@ class OfferUCCImplTest {
     this.goodOfferExistingItem.setDate(new Date(25));
     this.goodOfferExistingItem.setTimeSlot("Time slot");
     this.existingItem.setId(5);
-    this.goodOfferExistingItem.setItem(this.existingItem);
-    this.goodOfferNotExistingItem.setItem(this.notExistingItem);
-    this.wrongOfferWithExistingItem.setItem(this.existingItem);
-    this.wrongOfferWithNotExistingItem.setItem(this.notExistingItem);
+    this.goodOfferExistingItem.setIdItem(this.existingItem.getId());
+    this.goodOfferNotExistingItem.setIdItem(this.notExistingItem.getId());
+    this.wrongOfferWithExistingItem.setIdItem(this.existingItem.getId());
+    this.wrongOfferWithNotExistingItem.setIdItem(this.notExistingItem.getId());
     this.offerDTOList.add(new OfferImpl());
     this.offerDTOList.add(this.goodOfferExistingItem);
     this.setMockitos();

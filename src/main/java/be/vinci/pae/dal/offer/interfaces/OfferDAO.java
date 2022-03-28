@@ -1,5 +1,6 @@
 package be.vinci.pae.dal.offer.interfaces;
 
+import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface OfferDAO {
   List<OfferDTO> getAllOffers();
 
   OfferDTO getOne(int id);
+
+  OfferDTO getLatestItemOffer(ItemDTO itemDTO);
 }

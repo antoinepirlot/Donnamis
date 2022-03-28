@@ -1,5 +1,6 @@
 package be.vinci.pae.biz.offer.objects;
 
+import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.dal.offer.interfaces.OfferDAO;
@@ -45,6 +46,17 @@ public class OfferUCCImpl implements OfferUCC {
     }
     dalServices.commit();
     return listOfferDTO;
+  }
+
+  @Override
+  public OfferDTO getLatestItemOffer(ItemDTO itemDTO) {
+    dalServices.start();
+    OfferDTO offerDTO = offerDAO.getLatestItemOffer(itemDTO);
+    if (offerDTO == null) {
+      dalServices.rollback();
+    }
+    dalServices.commit();
+    return offerDTO;
   }
 
   @Override

@@ -1,10 +1,10 @@
 import {
   getObject,
-  getPayload,
+  getPayload, removeLocalObject,
 } from "../../utils/session";
 import {Redirect} from "../Router/Router";
 import {showError} from "../../utils/ShowError";
-import {getOffer} from "../../utils/BackEndRequests";
+import {getItem} from "../../utils/BackEndRequests";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3">
@@ -53,27 +53,28 @@ async function ViewItemPage() {
   page.innerHTML = viewOfferHtml;
   const button = document.querySelector("#offerCard");
   //get offer's infos with the id in param
-  await getOfferInfo(getObject("idItem"));
+  await getItemInfo(getObject("idItem"));
   //post an interest
   button.addEventListener("submit", postInterest);
 }
 
-async function getOfferInfo(idOffer) {
+async function getItemInfo(idOffer) {
   try {
-    const offer = await getOffer(idOffer);
-    var date = new Date(offer.date);
+    const item = await getItem(idOffer);
+    const lastOffer = item.offerList[0];
+    var date = new Date(lastOffer.date);
     date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
         + date.getFullYear();
 
-    document.querySelector("#title").innerHTML = offer.item.title
+    document.querySelector("#title").innerHTML = item.title
     document.querySelector(
-        "#offerer").innerHTML = `Offre proposée par : ${offer.item.member.firstName} ${offer.item.member.lastName} `
+        "#offerer").innerHTML = `Offre proposée par : ${item.member.firstName} ${item.member.lastName} `
     document.querySelector(
-        "#type").innerHTML = `Type : ${offer.item.itemType.itemType}`
+        "#type").innerHTML = `Type : ${item.itemType.itemType}`
     document.querySelector(
-        "#description").innerHTML = `Description : ${offer.item.itemDescription}`
+        "#description").innerHTML = `Description : ${item.itemDescription}`
     document.querySelector(
-        "#availabilities").innerHTML = `Disponibilités : ${offer.timeSlot}`
+        "#availabilities").innerHTML = `Disponibilités : ${lastOffer.timeSlot}`
     document.querySelector(
         "#pubDate").innerHTML = `Date de publication : ${date}`
   } catch (err) {

@@ -5,9 +5,4 @@ import java.util.List;
 
 public interface Item extends ItemDTO {
 
-  List<OfferDTO> getOfferList();
-
-  void setOfferList(List<OfferDTO> offerList);
-
-  void addOffer(OfferDTO offer);
 }

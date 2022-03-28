@@ -3,7 +3,7 @@ import LoginPage from "../Pages/LoginPage";
 import Logout from "../Logout/Logout";
 import ListMemberPage from "../Pages/ListMemberPage";
 import LatestItemsOffersPage from "../Pages/LatestItemsOffersPage"
-import AllItemsOffersPage from "../Pages/AllItemsOffersPage"
+import AllItemsOffersPage from "../Pages/AllItemsPage"
 import RegisterPage from "../Pages/RegisterPage";
 import AllOfferedItemsPage from "../Pages/AllOfferedItemPage";
 import ViewItemPage from "../Pages/ViewItemPage";

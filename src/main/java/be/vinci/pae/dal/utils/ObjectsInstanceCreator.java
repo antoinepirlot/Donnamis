@@ -28,7 +28,6 @@ public class ObjectsInstanceCreator {
     offerDTO.setId(rs.getInt("id_offer"));
     offerDTO.setDate(rs.getDate("date"));
     offerDTO.setTimeSlot(rs.getString("time_slot"));
-    offerDTO.setItem(createItemInstance(factory, rs));
     System.out.println("date set");
     offerDTO.setTimeSlot(rs.getString("time_slot"));
     System.out.println("tile_slot set");
@@ -56,7 +55,7 @@ public class ObjectsInstanceCreator {
       itemDTO.setOfferStatus(
           StringEscapeUtils.escapeHtml4(rs.getString("offer_status"))
       );
-      itemDTO.setItemType(createItemTypeInstance(factory, rs));
+      itemDTO.setItemType(createItemsTypeInstance(factory, rs));
       itemDTO.setMember(createMemberInstance(factory, rs));
     } catch (SQLException e) {
       return null;
@@ -73,7 +72,7 @@ public class ObjectsInstanceCreator {
    * @param rs      the result set that contains item type's data
    * @return a new item type instance with initialized attributes
    */
-  private static ItemsTypeDTO createItemTypeInstance(Factory factory, ResultSet rs) {
+  public static ItemsTypeDTO createItemsTypeInstance(Factory factory, ResultSet rs) {
     System.out.println("Setting all item type attributes");
     ItemsTypeDTO itemsTypeDTO = factory.getItemType();
     try {
@@ -160,24 +159,6 @@ public class ObjectsInstanceCreator {
     addressDTO.setPostcode(StringEscapeUtils.escapeHtml4(rs.getString("postcode")));
     addressDTO.setCommune(StringEscapeUtils.escapeHtml4(rs.getString("commune")));
     return addressDTO;
-  }
-
-  /**
-   * Create an itemsType instance with the factory and set all its attributes with data
-   * selected from the db.
-   *
-   * @param factory the factory that gives an address
-   * @param rs      the result set that contains itemsType 's data
-   * @return a new itemsType instance with initialized attributes
-   * @throws SQLException if an attributes is not in the result set
-   */
-  public static ItemsTypeDTO createItemsTypeInstance(Factory factory, ResultSet rs)
-      throws SQLException{
-    System.out.println("Setting all items type attributes");
-    ItemsTypeDTO itemsTypeDTO = factory.getItemType();
-    itemsTypeDTO.setId(rs.getInt("id_type"));
-    itemsTypeDTO.setItemType(rs.getString("item_type"));
-    return itemsTypeDTO;
   }
 
 }
