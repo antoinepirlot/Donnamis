@@ -43,7 +43,6 @@ public class ObjectsInstanceCreator {
    * @return a new item instance with initialized attributes
    */
   public static ItemDTO createItemInstance(Factory factory, ResultSet rs) {
-    System.out.println("Setting all item attributes");
     ItemDTO itemDTO = factory.getItem();
     try {
       itemDTO.setId(rs.getInt("id_item"));
