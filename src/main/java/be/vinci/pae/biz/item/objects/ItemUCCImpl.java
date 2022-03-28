@@ -39,7 +39,8 @@ public class ItemUCCImpl implements ItemUCC {
   @Override
   public List<ItemDTO> getAllOfferedItems() {
     dalServices.start();
-    List<ItemDTO> listItemDTO = itemDAO.getAllOfferedItems();
+    List<ItemDTO> listItemDTO = itemDAO.getAllItems();
+    System.out.println(listItemDTO);
     if (listItemDTO == null) {
       dalServices.rollback();
     }
