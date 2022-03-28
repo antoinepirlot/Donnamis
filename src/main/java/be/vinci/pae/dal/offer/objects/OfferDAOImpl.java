@@ -67,7 +67,6 @@ public class OfferDAOImpl implements OfferDAO {
 
         while (rs.next()) {
           OfferDTO offerDTO = ObjectsInstanceCreator.createOfferInstance(this.factory, rs);
-          System.out.println("h");
           offersToReturn.add(offerDTO);
         }
       }

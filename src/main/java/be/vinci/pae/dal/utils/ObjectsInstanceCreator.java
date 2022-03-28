@@ -29,7 +29,7 @@ public class ObjectsInstanceCreator {
     offerDTO.setDate(rs.getDate("date"));
     offerDTO.setTimeSlot(rs.getString("time_slot"));
     System.out.println("date set");
-    offerDTO.setTimeSlot(rs.getString("time_slot"));
+    offerDTO.setIdItem(rs.getInt("id_item"));
     System.out.println("tile_slot set");
     return offerDTO;
   }
