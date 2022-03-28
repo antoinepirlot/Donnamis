@@ -32,9 +32,7 @@ const LatestItemsOffersPage = async () => {
 async function showItems(items) {
   const tbody = document.querySelector("#tbody_all_items");
   tbody.innerHTML = "";
-  console.log(tbody.innerHTML)
   items.forEach((item) => {
-    console.log(item)
     const offer = item.offerList[0];
     tbody.innerHTML += `
       <tr>
