@@ -63,7 +63,7 @@ function setLocalObject(storeName, object) {
 function removeLocalObject(storeName) {
   const removedObject = localStorage.getItem(storeName);
   localStorage.removeItem(storeName);
-  return removedObject;
+  return JSON.parse(removedObject);
 }
 
 /**
@@ -74,7 +74,7 @@ function removeLocalObject(storeName) {
 function removeSessionObject(storeName) {
   const removedObject = sessionStorage.getItem(storeName);
   sessionStorage.removeItem(storeName);
-  return removedObject;
+  return JSON.parse(removedObject);
 }
 
 /**
