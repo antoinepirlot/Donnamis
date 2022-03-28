@@ -1,10 +1,8 @@
-import {getItems, getOffers} from "../../utils/BackEndRequests";
-import {Redirect} from "../Router/Router";
-import {setLocalObject} from "../../utils/session";
+import {getItems} from "../../utils/BackEndRequests";
 
 const tableHtml = `
   <div>
-    <h1 class="display-3">All items</h1>
+    <h1 class="display-3">Tous les objets</h1>
     <div class="row" id="all_items">
     </div>
   </div>
@@ -39,6 +37,7 @@ function showItems(item) {
   //const itemButtons = document.querySelectorAll("#seeItemButton");
   //setSeeItemEvent(itemButtons);
 }
+
 //function setSeeItemEvent(itemButtons) {
 //  itemButtons.forEach(itemButton => {
 //    itemButton.addEventListener("click", (e) => {

@@ -4,6 +4,7 @@ import {getPayload} from "../../utils/session";
 
 const htmlForm = `
   <div>
+    <h1 class="display-3">Offrir un objet</h1>
     <form id="offerItemForm">
       Nom de l'objet<span id="asterisk">*</span>: <br>
       <textarea id="titleForm" cols="30" rows="3"></textarea><br>

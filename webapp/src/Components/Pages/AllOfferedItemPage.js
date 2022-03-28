@@ -3,7 +3,7 @@ import {Redirect} from "../Router/Router";
 
 const tableHtml = `
   <div>
-    <h1 class="display-3">All offered items</h1>
+    <h1 class="display-3">Tous les objets offerts</h1>
     <br>
     <table class="table">
       <thead>
