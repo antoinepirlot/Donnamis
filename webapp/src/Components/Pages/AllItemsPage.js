@@ -17,6 +17,7 @@ const AllOfferedItemsPage = async () => {
 
 function showItems(item) {
   let tbody = document.querySelector("#all_items");
+  tbody.innerHTML = "";
   item.forEach((item) => {
     tbody.innerHTML += `
     <div class="col-sm-3" id="item-card" >

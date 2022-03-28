@@ -31,9 +31,9 @@ const LatestItemsOffersPage = async () => {
 
 async function showItems(offers) {
   const tbody = document.querySelector("#tbody_all_items");
+  tbody.innerHTML = "";
   for (const offer of offers) {
     const item = await getItem(offer.idItem);
-    console.log(item)
     tbody.innerHTML += `
       <tr>
         <td>${item.title}</td>

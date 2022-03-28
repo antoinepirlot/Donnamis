@@ -38,7 +38,8 @@ const OfferAnItemPage = async () => {
 
 async function showItemsTypes() {
   const itemsTypes = await getItemsTypes();
-  const itemsTypeList = document.querySelector("#itemsTypes")
+  const itemsTypeList = document.querySelector("#itemsTypes");
+  itemsTypeList.innerHTML = "";
   itemsTypes.forEach(itemsType => {
     itemsTypeList.innerHTML += `
       <option value="${itemsType.itemType}">

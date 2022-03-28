@@ -49,7 +49,6 @@ async function ViewItemPage() {
   const urlParams = new URLSearchParams(queryString);
   const page = document.querySelector("#page");
   const offerId = urlParams.get("id")
-
   page.innerHTML = viewOfferHtml;
   const button = document.querySelector("#offerCard");
   //get offer's infos with the id in param

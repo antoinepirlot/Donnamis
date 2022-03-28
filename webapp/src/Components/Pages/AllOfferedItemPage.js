@@ -29,6 +29,7 @@ const AllOfferedItemsPage = async () => {
 
 function showItems(items) {
   const tbody = document.querySelector("#tbody_all_offered_items");
+  tbody.innerHTML = "";
   items.forEach((item) => {
     tbody.innerHTML += `
       <tr>
