@@ -58,6 +58,8 @@ public class DALServicesImpl implements DALServices, DALBackendService {
       connection.commit();
       connection.setAutoCommit(true);
       connection.close();
+      dbThreadLocal.remove();
+      System.out.println("Connection removed");
     } catch (SQLException e) {
       System.out.println("Impossible de joindre le serveur");
       System.exit(1);
@@ -72,6 +74,7 @@ public class DALServicesImpl implements DALServices, DALBackendService {
       connection.rollback();
       connection.setAutoCommit(true);
       connection.close();
+      dbThreadLocal.remove();
     } catch (SQLException e) {
       System.out.println("Impossible de joindre le serveur");
       System.exit(1);
