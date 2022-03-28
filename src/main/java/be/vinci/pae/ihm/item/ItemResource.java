@@ -167,7 +167,7 @@ public class ItemResource {
   /**
    * Asks UCC to get one offer identified by its id.
    *
-   * @param itemDTO the item's id
+   * @param id the item's id
    * @return the offer if it exists, otherwise throws a web application exception
    */
   @GET
