@@ -13,7 +13,7 @@ function getObject (storeName) {
     return;
   }
   return JSON.parse(retrievedObject);
-};
+}
 
 /**
  * Get the token payload from the local or session storage.
@@ -31,7 +31,7 @@ async function getPayload () {
   payload = JSON.parse(window.atob(payload));
   // we divided by 1000 because jwt token does contains only 10 digit and 13 for Date.now()
   return payload;
-};
+}
 
 /**
  * Set the object in the sessionObject under the storeName key.
@@ -42,7 +42,7 @@ async function getPayload () {
 function setSessionObject (storeName, object) {
   const storageValue = JSON.stringify(object);
   sessionStorage.setItem(storeName, storageValue);
-};
+}
 
 /**
  * Set the object in the localStorage under the storeName key.
@@ -53,7 +53,7 @@ function setSessionObject (storeName, object) {
 function setLocalObject (storeName, object) {
   const storageValue = JSON.stringify(object);
   localStorage.setItem(storeName, storageValue);
-};
+}
 
 /**
  * Remove the object in the localStorage under the storeName key
@@ -61,6 +61,6 @@ function setLocalObject (storeName, object) {
 function disconnect() {
   localStorage.clear();
   sessionStorage.clear();
-};
+}
 
 export {getObject, getPayload, setSessionObject, setLocalObject, disconnect};
