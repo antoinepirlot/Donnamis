@@ -3,7 +3,8 @@ import {Redirect} from "../Router/Router";
 
 const tableHtml = `
   <div>
-    <h1 class="display-3">Latest Items Offer</h1>
+    <h1 class="display-3">Bienvenue sur Donnamis</h1>
+    <h5 class="text-secondary">Voici les derniers objets mis en ligne</h5>
     <br />
     <table class="table">
       <thead>

@@ -53,14 +53,14 @@ async function ViewItemPage() {
   page.innerHTML = viewOfferHtml;
   const button = document.querySelector("#offerCard");
   //get offer's infos with the id in param
-  await getItemInfo(getObject("idItem"));
+  await getItemInfo(offerId);
   //post an interest
   button.addEventListener("submit", postInterest);
 }
 
-async function getItemInfo(idOffer) {
+async function getItemInfo(idItem) {
   try {
-    const item = await getItem(idOffer);
+    const item = await getItem(idItem);
     const lastOffer = item.offerList[0];
     var date = new Date(lastOffer.date);
     date = date.getDate() + "/" + (date.getMonth() + 1) + "/"

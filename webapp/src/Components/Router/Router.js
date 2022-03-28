@@ -12,12 +12,12 @@ import MyItemsPage from "../Pages/MyItemsPage";
 
 // Configure your routes here
 const routes = {
-  "/": HomePage,
+  "/": LatestItemsOffersPage,
   "/login": LoginPage,
   "/register": RegisterPage,
   "/logout": Logout,
   "/list_member": ListMemberPage,
-  "/latest_items": LatestItemsOffersPage,
+  //"/latest_items": LatestItemsOffersPage,
   "/all_items": AllItemsOffersPage,
   "/all_offered_items": AllOfferedItemsPage,
   "/item": ViewItemPage,

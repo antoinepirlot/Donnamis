@@ -28,25 +28,25 @@ function showItems(item) {
           <h5 class="card-title">${item.title}</h5>
           <p class="card-text">${item.itemDescription}</p>
           <div id="seeItemButton">
-            <a type="button" class="btn btn-primary"> Voir les détails</a>
-            <input id="itemIdButton" type="hidden" value="${item.id}">
+            <a href="/item?id=${item.id}" type="button" class="btn btn-primary"> Voir les détails</a>
+            <!--<input id="itemIdButton" type="hidden" value="">-->
           </div>
         </div>
       </div>
     </div>
     `;
   });
-  const itemButtons = document.querySelectorAll("#seeItemButton");
-  setSeeItemEvent(itemButtons);
+  //const itemButtons = document.querySelectorAll("#seeItemButton");
+  //setSeeItemEvent(itemButtons);
 }
-function setSeeItemEvent(itemButtons) {
-  itemButtons.forEach(itemButton => {
-    itemButton.addEventListener("click", (e) => {
-      e.preventDefault();
-      const id = itemButton.querySelector("#itemIdButton").value;
-      setLocalObject("idItem", id);
-      Redirect("/item");
-    });
-  })
-}
+//function setSeeItemEvent(itemButtons) {
+//  itemButtons.forEach(itemButton => {
+//    itemButton.addEventListener("click", (e) => {
+//      e.preventDefault();
+//      const id = itemButton.querySelector("#itemIdButton").value;
+//      //setLocalObject("idItem", id);
+//      Redirect(`/item?id=${id}`);
+//    });
+//  })
+//}
 export default AllOfferedItemsPage;
