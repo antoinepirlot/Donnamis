@@ -1,4 +1,6 @@
-import {getOffers} from "../../utils/BackEndRequests";
+import {getItems, getOffers} from "../../utils/BackEndRequests";
+import {Redirect} from "../Router/Router";
+import {setLocalObject} from "../../utils/session";
 
 const tableHtml = `
   <div>
@@ -10,32 +12,41 @@ const tableHtml = `
 
 const AllOfferedItemsPage = async () => {
   const pageDiv = document.querySelector("#page");
-
   pageDiv.innerHTML = tableHtml;
-  const offers = await getOffers();
-  showItems(offers)
+  const item = await getItems();
+  showItems(item)
 };
 
-function showItems(offers) {
+function showItems(item) {
   let tbody = document.querySelector("#all_items");
-  console.table(offers);
-  offers.forEach((offer) => {
-
+  item.forEach((item) => {
     tbody.innerHTML += `
     <div class="col-sm-3" id="item-card" >
       <div class="card">
       <img class="card-img-top" alt="Card image cap">
         <div class="card-body">
-          <h5 class="card-title">${offer.item.title}</h5>
-          <p class="card-text">${offer.item.itemDescription}</p>
-          <a type="button" href="/offer?id=${offer.id}" class="btn btn-primary" > Voir les détails</a>
+          <h5 class="card-title">${item.title}</h5>
+          <p class="card-text">${item.itemDescription}</p>
+          <div id="seeItemButton">
+            <a type="button" class="btn btn-primary"> Voir les détails</a>
+            <input id="itemIdButton" type="hidden" value="${item.id}">
+          </div>
         </div>
       </div>
     </div>
     `;
   });
-
+  const itemButtons = document.querySelectorAll("#seeItemButton");
+  setSeeItemEvent(itemButtons);
 }
-
-
+function setSeeItemEvent(itemButtons) {
+  itemButtons.forEach(itemButton => {
+    itemButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      const id = itemButton.querySelector("#itemIdButton").value;
+      setLocalObject("idItem", id);
+      Redirect("/item");
+    });
+  })
+}
 export default AllOfferedItemsPage;

@@ -6,7 +6,7 @@ import LatestItemsOffersPage from "../Pages/LatestItemsOffersPage"
 import AllItemsOffersPage from "../Pages/AllItemsOffersPage"
 import RegisterPage from "../Pages/RegisterPage";
 import AllOfferedItemsPage from "../Pages/AllOfferedItemPage";
-import ViewOfferPage from "../Pages/ViewOfferPage";
+import ViewItemPage from "../Pages/ViewItemPage";
 import {OfferAnItemPage} from "../Pages/OfferAnItemPage";
 import MyItemsPage from "../Pages/MyItemsPage";
 
@@ -20,7 +20,7 @@ const routes = {
   "/latest_items": LatestItemsOffersPage,
   "/all_items": AllItemsOffersPage,
   "/all_offered_items": AllOfferedItemsPage,
-  "/offer": ViewOfferPage,
+  "/item": ViewItemPage,
   "/offer_item": OfferAnItemPage,
   "/my_items": MyItemsPage
 };

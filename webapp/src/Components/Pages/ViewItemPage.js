@@ -39,7 +39,7 @@ const viewOfferHtml = `
 /**
  * Render the OfferPage :
  */
-async function ViewOfferPage() {
+async function ViewItemPage() {
   if (!await getPayload()) {
     Redirect("/");
     return;
@@ -53,7 +53,7 @@ async function ViewOfferPage() {
   page.innerHTML = viewOfferHtml;
   const button = document.querySelector("#offerCard");
   //get offer's infos with the id in param
-  await getOfferInfo(offerId)
+  await getOfferInfo(getObject("idItem"));
   //post an interest
   button.addEventListener("submit", postInterest);
 }
@@ -134,4 +134,4 @@ async function postInterest(e) {
 
 }
 
-export default ViewOfferPage;
+export default ViewItemPage;
