@@ -91,15 +91,14 @@ async function postInterest(e) {
   const interestMessage = document.querySelector("#interestMessage");
   //get param from url
   const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const offerId = urlParams.get("id");
+  //const urlParams = new URLSearchParams(queryString);
+  const idItem = getObject("idItem");
   try {
     const request = {
       method: "POST",
       headers: {
         "Authorization" : getObject("token"),
-        "Content-Type":
-            "application/json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(
           {
@@ -109,10 +108,10 @@ async function postInterest(e) {
     const callWanted = document.querySelector("#callWanted");
     let response = null;
     if (callWanted.checked) {
-      response = await fetch(`api/interests/${offerId}?call_wanted=true`,
+      response = await fetch(`api/interests/${idItem}?call_wanted=true`,
           request);
     } else {
-      response = await fetch(`api/interests/${offerId}`, request);
+      response = await fetch(`api/interests/${idItem}`, request);
     }
     console.table(response)
     if (response.ok) {
