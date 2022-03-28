@@ -4,7 +4,7 @@
  * @param {string} storeName
  * @returns the retrived object
  */
-function getObject (storeName) {
+function getObject(storeName) {
   let retrievedObject = localStorage.getItem(storeName);
   if (!retrievedObject) {
     retrievedObject = sessionStorage.getItem(storeName);
@@ -19,7 +19,7 @@ function getObject (storeName) {
  * Get the token payload from the local or session storage.
  * @returns the payload object
  */
-async function getPayload () {
+async function getPayload() {
   let token = localStorage.getItem("token");
   if (!token) {
     token = sessionStorage.getItem("token");
@@ -39,7 +39,7 @@ async function getPayload () {
  * @param {string} storeName
  * @param {Object} object
  */
-function setSessionObject (storeName, object) {
+function setSessionObject(storeName, object) {
   const storageValue = JSON.stringify(object);
   sessionStorage.setItem(storeName, storageValue);
 }
@@ -50,7 +50,7 @@ function setSessionObject (storeName, object) {
  * @param {string} storeName
  * @param {Object} object
  */
-function setLocalObject (storeName, object) {
+function setLocalObject(storeName, object) {
   const storageValue = JSON.stringify(object);
   localStorage.setItem(storeName, storageValue);
 }
@@ -85,4 +85,12 @@ function disconnect() {
   sessionStorage.clear();
 }
 
-export {getObject, getPayload, setSessionObject, setLocalObject, disconnect};
+export {
+  getObject,
+  getPayload,
+  setSessionObject,
+  setLocalObject,
+  disconnect,
+  removeLocalObject,
+  removeSessionObject
+};
