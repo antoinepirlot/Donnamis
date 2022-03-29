@@ -69,8 +69,7 @@ public class ItemDAOImpl implements ItemDAO {
     System.out.println("getAllItems");
     List<ItemDTO> itemsToReturn = new ArrayList<>();
     try {
-      String query = "SELECT * "
-          + "FROM project_pae.items";
+      String query = "SELECT * FROM project_pae.items";
       PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query);
       System.out.println("Préparation du statement");
       try (ResultSet rs = preparedStatement.executeQuery()) {
