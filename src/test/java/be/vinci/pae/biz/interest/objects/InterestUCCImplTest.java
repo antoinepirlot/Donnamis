@@ -6,9 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
-import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.biz.member.objects.MemberImpl;
 import be.vinci.pae.dal.interest.interfaces.InterestDAO;
+import be.vinci.pae.dal.member.interfaces.MemberDAO;
+import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.utils.ApplicationBinder;
 import java.time.LocalDate;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -23,7 +24,8 @@ class InterestUCCImplTest {
   private final ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
   private final InterestDAO interestDAO = locator.getService(InterestDAO.class);
   private final InterestUCC interestUCC = locator.getService(InterestUCC.class);
-  private final MemberUCC memberUCC = locator.getService(MemberUCC.class);
+  private final MemberDAO memberDAO = locator.getService(MemberDAO.class);
+  private final DALServices dalBackendService = locator.getService(DALServices.class);
   private final MemberDTO memberWithPhoneNumber = new MemberImpl();
   private final MemberDTO memberWithoutPhoneNumber = new MemberImpl();
   private final MemberDTO memberNotExisting = new MemberImpl();
@@ -42,6 +44,9 @@ class InterestUCCImplTest {
   }
 
   private void setMockitos() {
+    Mockito.when(this.dalBackendService.start()).thenReturn(null);
+    Mockito.when(this.dalBackendService.rollback()).thenReturn(true);
+    Mockito.when(this.dalBackendService.commit()).thenReturn(true);
     Mockito.when(this.interestDAO
             .markInterest(this.memberWithPhoneNumber, this.existingIdOffer, false, this.date))
         .thenReturn(1);
@@ -54,10 +59,10 @@ class InterestUCCImplTest {
     Mockito.when(this.interestDAO
             .markInterest(this.memberWithoutPhoneNumber, this.existingIdOffer, true, this.date))
         .thenReturn(1);
-    Mockito.when(this.memberUCC
+    Mockito.when(this.memberDAO
             .getOneMember(this.memberWithPhoneNumber.getId()))
         .thenReturn(this.memberWithPhoneNumber);
-    Mockito.when(this.memberUCC
+    Mockito.when(this.memberDAO
             .getOneMember(this.memberWithoutPhoneNumber.getId()))
         .thenReturn(this.memberWithoutPhoneNumber);
     Mockito.when(this.interestDAO.offerExist(this.existingIdOffer)).thenReturn(true);
@@ -109,7 +114,7 @@ class InterestUCCImplTest {
   @Test
   void testMarkInterestWithoutPhoneNumberAndCallWanted() {
     assertEquals(
-        0,
+        1,
         this.interestUCC.markInterest(this.memberWithoutPhoneNumber, this.existingIdOffer, true)
     );
   }
