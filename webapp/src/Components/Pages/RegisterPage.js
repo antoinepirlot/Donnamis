@@ -1,6 +1,4 @@
-import {
-  getPayload,
-} from "../../utils/session";
+import {getPayload,} from "../../utils/session";
 import {register as registerBackEndRequest} from "../../utils/BackEndRequests";
 import {Redirect} from "../Router/Router";
 import {showError} from "../../utils/ShowError";
@@ -68,8 +66,8 @@ const registerFormHtml = `
  * Just an example to demonstrate how to use the router
  * to "redirect" to a new page
  */
-async function RegisterPage() {
-  if (await getPayload()) {
+function RegisterPage() {
+  if (getPayload()) {
     Redirect("/");
     return;
   }

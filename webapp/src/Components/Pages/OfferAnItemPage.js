@@ -54,7 +54,7 @@ async function offerItem(e) {
   const photo = document.querySelector("#photoForm").value;
   const timeSlot = document.querySelector("#timeSlotForm").value;
   const itemTypeValue = document.querySelector("#itemTypeFormList").value;
-  const payload = await getPayload();
+  const payload = getPayload();
   const offer = {
     timeSlot: timeSlot
   };

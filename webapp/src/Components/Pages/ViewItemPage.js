@@ -1,7 +1,4 @@
-import {
-  getObject,
-  getPayload, removeLocalObject,
-} from "../../utils/session";
+import {getObject, getPayload,} from "../../utils/session";
 import {Redirect} from "../Router/Router";
 import {showError} from "../../utils/ShowError";
 import {getItem} from "../../utils/BackEndRequests";
@@ -40,7 +37,7 @@ const viewOfferHtml = `
  * Render the OfferPage :
  */
 async function ViewItemPage() {
-  if (!await getPayload()) {
+  if (!getPayload()) {
     Redirect("/");
     return;
   }
