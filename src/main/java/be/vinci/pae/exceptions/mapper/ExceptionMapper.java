@@ -1,7 +1,4 @@
-package be.vinci.pae.exceptions.Mapper;
-
-import be.vinci.pae.exceptions.webapplication.ConflictException;
-import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
+package be.vinci.pae.exceptions.mapper;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;

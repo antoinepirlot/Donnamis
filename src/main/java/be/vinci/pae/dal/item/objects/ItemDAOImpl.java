@@ -184,7 +184,8 @@ public class ItemDAOImpl implements ItemDAO {
         + "it.id_type, it.item_type, "
         + "m.username, m.last_name, m.first_name "
         + "FROM project_pae.items i, project_pae.items_types it, project_pae.members m "
-        + "WHERE i.id_type = it.id_type AND i.id_member = m.id_member AND i.offer_status = ? AND m.id_member = ?;";
+        + "WHERE i.id_type = it.id_type AND i.id_member = m.id_member AND i.offer_status = ? "
+        + "  AND m.id_member = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setString(1, DEFAULT_OFFER_STATUS);
       ps.setInt(2, id);

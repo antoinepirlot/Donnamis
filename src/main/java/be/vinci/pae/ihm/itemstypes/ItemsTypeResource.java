@@ -22,11 +22,17 @@ public class ItemsTypeResource {
   private ItemsTypeUCC itemsTypeUCC;
   private final Json<ItemDTO> jsonUtil = new Json<>(ItemDTO.class);
 
+  /**
+   * Ask itemsTypeUCC to get all items types. If there's no items types it throws an
+   * ObjectNotFoundException.
+   *
+   * @return a lit of items types
+   */
   @GET
   @Path("all")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public List<ItemsTypeDTO> getAll(){
+  public List<ItemsTypeDTO> getAll() {
     List<ItemsTypeDTO> itemsTypeDTOList = this.itemsTypeUCC.getAll();
     if (itemsTypeDTOList == null) {
       String message = "No items type found.";

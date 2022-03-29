@@ -3,14 +3,14 @@ package be.vinci.pae.exceptions.biz;
 public class TransactionException extends Exception {
 
   /**
-   * Call super (Exception)
+   * Call super (Exception).
    */
   public TransactionException() {
     super();
   }
 
   /**
-   * Call super (Exception) with a message
+   * Call super (Exception) with a message.
    *
    * @param message the message of the exception
    */
@@ -19,7 +19,7 @@ public class TransactionException extends Exception {
   }
 
   /**
-   * Call super (Exception) with the throwable
+   * Call super (Exception) with the throwable.
    *
    * @param throwable the throwable that contains information
    */

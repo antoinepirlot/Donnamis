@@ -31,8 +31,8 @@ public class ItemsTypeDAOImpl implements ItemsTypeDAO {
     List<ItemsTypeDTO> itemsTypesToReturn = new ArrayList<>();
     String query = "SELECT id_type, item_type "
         + "FROM project_pae.items_types;";
-    try (PreparedStatement preparedStatement = this.dalBackendService.getPreparedStatement(query)){
-      try(ResultSet rs = preparedStatement.executeQuery()) {
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           ItemsTypeDTO itemsTypeDTO = ObjectsInstanceCreator
               .createItemsTypeInstance(this.factory, rs);
