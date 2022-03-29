@@ -5,6 +5,7 @@ import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import java.sql.Date;
 import java.util.List;
 
 @JsonDeserialize(as = ItemImpl.class)
@@ -41,6 +42,10 @@ public interface ItemDTO {
   List<OfferDTO> getOfferList();
 
   void setOfferList(List<OfferDTO> offerList);
+
+  Date getLatestOfferDate();
+
+  void setLatestOfferDate(Date latestOfferDate);
 
   void addOffer(OfferDTO offer);
 

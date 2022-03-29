@@ -23,4 +23,12 @@ public interface ItemDAO {
   ItemDTO cancelOffer(int id);
 
   List<ItemDTO> getAllItemsByMemberId(int id);
+
+  /**
+   * Add the latest offer date into the database.
+   *
+   * @param itemDTO the item the latest offer date is added
+   * @return true if this insert was done, otherwise false
+   */
+  boolean updateLatestOfferDate(ItemDTO itemDTO);
 }

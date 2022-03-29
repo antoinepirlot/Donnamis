@@ -69,7 +69,14 @@ public class ItemDAOImpl implements ItemDAO {
     System.out.println("getAllItems");
     List<ItemDTO> itemsToReturn = new ArrayList<>();
     try {
-      String query = "SELECT * FROM project_pae.items";
+      String query = "SELECT i.id_item, "
+          + "                i.item_description, "
+          + "                i.photo, "
+          + "                i.title, "
+          + "                i.offer_status "
+          + "FROM project_pae.items i "
+          + "LEFT OUTER JOIN project_pae.offers o ON i.id_item = o.id_item "
+          + "ORDER BY o.date DESC;";
       PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query);
       System.out.println("Préparation du statement");
       try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -140,8 +147,8 @@ public class ItemDAOImpl implements ItemDAO {
         + "WHERE item_type = '" + itemDTO.getItemType().getItemType() + "'";
     String query =
         "INSERT INTO project_pae.items (item_description, id_type, id_member, photo, "
-            + "title, offer_status) "
-            + "VALUES (?, (" + selectIdTypeQuery + "), ?, ?, ?, ?)";
+            + "title, offer_status, last_offer_date) "
+            + "VALUES (?, (" + selectIdTypeQuery + "), ?, ?, ?, ?, ?)";
     System.out.println(query);
     try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
       ps.setString(1, itemDTO.getItemDescription());
@@ -199,5 +206,19 @@ public class ItemDAOImpl implements ItemDAO {
     }
     return itemsDTO;
   }
+
+  @Override
+  public boolean updateLatestOfferDate(ItemDTO itemDTO) {
+    String query = "UPDATE project_pae.items ON latest_offer_date = ?;";
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setDate(1, itemDTO.getLatestOfferDate());
+      ps.executeUpdate();
+      return true;
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
 
 }

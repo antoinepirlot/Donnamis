@@ -36,11 +36,12 @@ CREATE TABLE project_pae.items
 (
     id_item          SERIAL PRIMARY KEY,
     item_description VARCHAR(500) NOT NULL,
-    id_type     INTEGER      NOT NULL,
+    id_type          INTEGER      NOT NULL,
     id_member        INTEGER      NOT NULL,
     photo            VARCHAR(500) NULL,
     title            VARCHAR(50)  NOT NULL,
     offer_status     VARCHAR(10)  NOT NULL,
+    last_offer_date  DATE         NULL,
     FOREIGN KEY (id_type) REFERENCES project_pae.items_types (id_type),
     FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
 );
