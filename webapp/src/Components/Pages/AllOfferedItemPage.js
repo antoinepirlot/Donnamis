@@ -1,4 +1,4 @@
-import {getItems} from "../../utils/BackEndRequests";
+import {getOfferedItems} from "../../utils/BackEndRequests";
 import {Redirect} from "../Router/Router";
 
 const tableHtml = `
@@ -24,7 +24,7 @@ const tableHtml = `
 const AllOfferedItemsPage = async () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtml;
-  showItems(await getItems())
+  showItems(await getOfferedItems())
 };
 
 function showItems(items) {

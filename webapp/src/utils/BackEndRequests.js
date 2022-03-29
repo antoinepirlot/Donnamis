@@ -162,7 +162,7 @@ async function getItems() {
       "Authorization": getObject("token")
     }
   };
-  const response = await fetch("/api/items/all_offered_items", request);
+  const response = await fetch("/api/items/all_items", request);
   if (!response.ok) {
     throw new Error("Erreur lors du fetch");
   }
@@ -291,6 +291,42 @@ async function cancelOffer(id) {
   }
 }
 
+async function getLatestItems() {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/items/latest_items/`, request);
+  if (!response.ok) {
+    // status code was not 200, error status code
+    showError("There's no offer with this id");
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText
+    );
+  }
+  return await response.json()
+}
+
+async function getOfferedItems() {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/items/all_offered_items/`, request);
+  if (!response.ok) {
+    // status code was not 200, error status code
+    showError("There's no offer with this id");
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText
+    );
+  }
+  return await response.json()
+}
+
 export {
   login,
   register,
@@ -307,5 +343,7 @@ export {
   cancelOffer,
   getItem,
   getItemsTypes,
-  offerAnItem
+  offerAnItem,
+  getLatestItems,
+  getOfferedItems
 };

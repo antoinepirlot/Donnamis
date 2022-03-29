@@ -40,6 +40,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "FROM project_pae.items items\n"
         + "         LEFT OUTER JOIN project_pae.offers offers\n"
         + "                         ON items.id_item = offers.id_item\n"
+        + "WHERE items.offer_status = 'donated'\n"
         + "ORDER BY offers.date DESC";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       System.out.println("Préparation du statement");
@@ -140,7 +141,7 @@ public class ItemDAOImpl implements ItemDAO {
     String query =
         "INSERT INTO project_pae.items (item_description, id_type, id_member, photo, "
             + "title, offer_status) "
-            + "VALUES (?, ("+ selectIdTypeQuery + "), ?, ?, ?, ?)";
+            + "VALUES (?, (" + selectIdTypeQuery + "), ?, ?, ?, ?)";
     System.out.println(query);
     try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
       ps.setString(1, itemDTO.getItemDescription());
