@@ -2,7 +2,7 @@ import {getItems} from "../../utils/BackEndRequests";
 
 const tableHtml = `
   <div>
-    <h1 class="display-3">Tous les objets</h1>
+    <h1 class="display-3" id="all_items_title">Tous les objets</h1>
     <div class="row" id="all_items">
     </div>
   </div>

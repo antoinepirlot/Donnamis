@@ -2,8 +2,10 @@ import {getLatestItems} from "../../utils/BackEndRequests";
 
 const tableHtml = `
   <div>
-    <h1 class="display-3">Bienvenue sur Donnamis</h1>
-    <h5 class="text-secondary">Voici les derniers objets mis en ligne</h5>
+    <div id="all_latest_items_title">
+      <h1 class="display-3">Bienvenue sur Donnamis</h1>
+      <h5 class="text-secondary">Voici les derniers objets mis en ligne</h5>
+    </div>
     <div class="row" id="all_latest_items">
     </div>
   </div>

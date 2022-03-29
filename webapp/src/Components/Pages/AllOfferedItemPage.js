@@ -2,7 +2,7 @@ import {getOfferedItems} from "../../utils/BackEndRequests";
 
 const tableHtml = `
   <div>
-    <h1 class="display-3">Tous les objets offerts</h1>
+    <h1 class="display-3" id="all_offered_items_title">Tous les objets offerts</h1>
     <div class="row" id="all_offered_items">
     </div>
   </div>
