@@ -1,10 +1,10 @@
 import {
   getObject,
-  getPayload,
+  getPayload, removeLocalObject,
 } from "../../utils/session";
 import {Redirect} from "../Router/Router";
 import {showError} from "../../utils/ShowError";
-import {getOffer} from "../../utils/BackEndRequests";
+import {getItem} from "../../utils/BackEndRequests";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3">
@@ -39,7 +39,7 @@ const viewOfferHtml = `
 /**
  * Render the OfferPage :
  */
-async function ViewOfferPage() {
+async function ViewItemPage() {
   if (!await getPayload()) {
     Redirect("/");
     return;
@@ -48,32 +48,32 @@ async function ViewOfferPage() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const page = document.querySelector("#page");
-  const offerId = urlParams.get("id")
-
+  const idItem = urlParams.get("id")
   page.innerHTML = viewOfferHtml;
   const button = document.querySelector("#offerCard");
   //get offer's infos with the id in param
-  await getOfferInfo(offerId)
+  await getItemInfo(idItem);
   //post an interest
   button.addEventListener("submit", postInterest);
 }
 
-async function getOfferInfo(idOffer) {
+async function getItemInfo(idItem) {
   try {
-    const offer = await getOffer(idOffer);
-    var date = new Date(offer.date);
+    const item = await getItem(idItem);
+    const lastOffer = item.offerList[0];
+    var date = new Date(lastOffer.date);
     date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
         + date.getFullYear();
 
-    document.querySelector("#title").innerHTML = offer.item.title
+    document.querySelector("#title").innerHTML = item.title
     document.querySelector(
-        "#offerer").innerHTML = `Offre proposée par : ${offer.item.member.firstName} ${offer.item.member.lastName} `
+        "#offerer").innerHTML = `Offre proposée par : ${item.member.firstName} ${item.member.lastName} `
     document.querySelector(
-        "#type").innerHTML = `Type : ${offer.item.itemType.itemType}`
+        "#type").innerHTML = `Type : ${item.itemType.itemType}`
     document.querySelector(
-        "#description").innerHTML = `Description : ${offer.item.itemDescription}`
+        "#description").innerHTML = `Description : ${item.itemDescription}`
     document.querySelector(
-        "#availabilities").innerHTML = `Disponibilités : ${offer.timeSlot}`
+        "#availabilities").innerHTML = `Disponibilités : ${lastOffer.timeSlot}`
     document.querySelector(
         "#pubDate").innerHTML = `Date de publication : ${date}`
   } catch (err) {
@@ -90,15 +90,14 @@ async function postInterest(e) {
   const interestMessage = document.querySelector("#interestMessage");
   //get param from url
   const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const offerId = urlParams.get("id");
+  //const urlParams = new URLSearchParams(queryString);
+  const idItem = getObject("idItem");
   try {
     const request = {
       method: "POST",
       headers: {
         "Authorization" : getObject("token"),
-        "Content-Type":
-            "application/json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(
           {
@@ -108,10 +107,10 @@ async function postInterest(e) {
     const callWanted = document.querySelector("#callWanted");
     let response = null;
     if (callWanted.checked) {
-      response = await fetch(`api/interests/${offerId}?call_wanted=true`,
+      response = await fetch(`api/interests/${idItem}?call_wanted=true`,
           request);
     } else {
-      response = await fetch(`api/interests/${offerId}`, request);
+      response = await fetch(`api/interests/${idItem}`, request);
     }
     console.table(response)
     if (response.ok) {
@@ -134,4 +133,4 @@ async function postInterest(e) {
 
 }
 
-export default ViewOfferPage;
+export default ViewItemPage;

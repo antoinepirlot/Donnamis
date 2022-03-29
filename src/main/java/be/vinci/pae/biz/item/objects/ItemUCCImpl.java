@@ -40,6 +40,7 @@ public class ItemUCCImpl implements ItemUCC {
   public List<ItemDTO> getAllOfferedItems() {
     dalServices.start();
     List<ItemDTO> listItemDTO = itemDAO.getAllOfferedItems();
+    System.out.println(listItemDTO);
     if (listItemDTO == null) {
       dalServices.rollback();
     }
@@ -53,6 +54,7 @@ public class ItemUCCImpl implements ItemUCC {
     ItemDTO itemDTO = itemDAO.getOneItem(id);
     if (itemDTO == null) {
       dalServices.rollback();
+      return null;
     }
     dalServices.commit();
     return itemDTO;
@@ -73,6 +75,7 @@ public class ItemUCCImpl implements ItemUCC {
     ItemDTO itemDTO = itemDAO.cancelOffer(id);
     if (itemDTO == null) {
       dalServices.rollback();
+      return null;
     }
     dalServices.commit();
     return itemDTO;

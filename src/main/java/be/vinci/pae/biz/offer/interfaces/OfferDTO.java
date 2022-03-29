@@ -22,9 +22,9 @@ public interface OfferDTO {
 
   void setTimeSlot(String timeSlot);
 
-  ItemDTO getItem();
+  int getIdItem();
 
-  void setItem(ItemDTO itemDTO);
+  void setIdItem(int idItem);
 
   Member getMember();
 

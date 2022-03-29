@@ -25,9 +25,9 @@ public class OfferDAOImpl implements OfferDAO {
   @Override
   public boolean createOffer(OfferDTO offerDTO) {
     //Add first the item in the db
-    if (!addItem(offerDTO.getItem())) {
-      return false;
-    }
+    //    if (!addItem(offerDTO)) {
+    //      return false;
+    //    }
     //If the item is correctly added , add the offer in the db with the associated item
     if (!addOne(offerDTO)) {
       return false;
@@ -67,7 +67,6 @@ public class OfferDAOImpl implements OfferDAO {
 
         while (rs.next()) {
           OfferDTO offerDTO = ObjectsInstanceCreator.createOfferInstance(this.factory, rs);
-          System.out.println("h");
           offersToReturn.add(offerDTO);
         }
       }
@@ -137,6 +136,29 @@ public class OfferDAOImpl implements OfferDAO {
     return null;
   }
 
+  @Override
+  public void addOffersTo(ItemDTO itemDTO) throws SQLException {
+    System.out.println("Get latest item's offer");
+    String query = "SELECT id_offer, date, time_slot, id_item "
+        + "FROM project_pae.offers o "
+        + "WHERE id_item = ? "
+        + "ORDER BY date DESC;";
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
+      System.out.println("Prepared statement successfully generated");
+      preparedStatement.setInt(1, itemDTO.getId());
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        if (rs.next()) { //We know only one is returned by the db
+          System.out.println("OFFER FOUNDED");
+          OfferDTO offerDTO = ObjectsInstanceCreator.createOfferInstance(this.factory, rs);
+          itemDTO.addOffer(offerDTO);
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+      throw e;
+    }
+  }
+
 
   /**
    * Add the offer to the db.
@@ -151,7 +173,7 @@ public class OfferDAOImpl implements OfferDAO {
     ) {
       ps.setDate(1, offerDTO.getDate());
       ps.setString(2, StringEscapeUtils.escapeHtml4(offerDTO.getTimeSlot()));
-      ps.setInt(3, offerDTO.getItem().getId());
+      ps.setInt(3, offerDTO.getIdItem());
 
       try {
         int result = ps.executeUpdate();
@@ -169,35 +191,35 @@ public class OfferDAOImpl implements OfferDAO {
     return false;
   }
 
-  /**
-   * Add the item associated with the offer'id to the DB.
-   *
-   * @param itemDTO the item to add into the db
-   * @return true if the item has been added, otherwise false
-   */
-  private boolean addItem(ItemDTO itemDTO) {
-    String query = "INSERT INTO project_pae.items (item_description, id_type, id_member, "
-        + "photo, title, offer_status) "
-        + "VALUES (?, ?, ?, ?, ?, ?);";
-    try (
-        PreparedStatement ps = dalBackendService.getPreparedStatement(query)
-    ) {
-      ps.setString(1, StringEscapeUtils.escapeHtml4(itemDTO.getItemDescription()));
-      ps.setInt(2, itemDTO.getItemType().getId());
-      ps.setInt(3, itemDTO.getMember().getId());
-      ps.setString(4, StringEscapeUtils.escapeHtml4(itemDTO.getPhoto()));
-      ps.setString(5, StringEscapeUtils.escapeHtml4(itemDTO.getTitle()));
-      ps.setString(6, StringEscapeUtils.escapeHtml4(itemDTO.getOfferStatus()));
-      int result = ps.executeUpdate();
-      if (result != 0) {
-        System.out.println("Ajout de l'item réussi");
-        return true;
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return false;
-  }
+  //  /**
+  //   * Add the item associated with the offer'id to the DB.
+  //   *
+  //   * @param itemDTO the item to add into the db
+  //   * @return true if the item has been added, otherwise false
+  //   */
+  //  private boolean addItem(ItemDTO itemDTO) {
+  //    String query = "INSERT INTO project_pae.items (item_description, id_type, id_member, "
+  //        + "photo, title, offer_status) "
+  //        + "VALUES (?, ?, ?, ?, ?, ?);";
+  //    try (
+  //        PreparedStatement ps = dalBackendService.getPreparedStatement(query)
+  //    ) {
+  //      ps.setString(1, StringEscapeUtils.escapeHtml4(itemDTO.getItemDescription()));
+  //      ps.setInt(2, itemDTO.getItemType().getId());
+  //      ps.setInt(3, itemDTO.getMember().getId());
+  //      ps.setString(4, StringEscapeUtils.escapeHtml4(itemDTO.getPhoto()));
+  //      ps.setString(5, StringEscapeUtils.escapeHtml4(itemDTO.getTitle()));
+  //      ps.setString(6, StringEscapeUtils.escapeHtml4(itemDTO.getOfferStatus()));
+  //      int result = ps.executeUpdate();
+  //      if (result != 0) {
+  //        System.out.println("Ajout de l'item réussi");
+  //        return true;
+  //      }
+  //    } catch (SQLException e) {
+  //      e.printStackTrace();
+  //    }
+  //    return false;
+  //  }
 
   //****************************** UTILS *******************************
 

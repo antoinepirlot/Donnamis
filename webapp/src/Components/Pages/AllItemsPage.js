@@ -1,25 +1,22 @@
-import {getLatestItems} from "../../utils/BackEndRequests";
+import {getItems} from "../../utils/BackEndRequests";
 
 const tableHtml = `
   <div>
-    <div id="all_latest_items_title">
-      <h1 class="display-3">Bienvenue sur Donnamis</h1>
-      <h5 class="text-secondary">Voici les derniers objets mis en ligne</h5>
-    </div>
-    <div class="row" id="all_latest_items">
+    <h1 class="display-3" id="all_items_title">Tous les objets</h1>
+    <div class="row" id="all_items">
     </div>
   </div>
 `;
 
-const AllOfferedItemsPage = async () => {
+const AllItemsPage = async () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtml;
-  const item = await getLatestItems();
+  const item = await getItems();
   showItems(item)
 };
 
 function showItems(item) {
-  let tbody = document.querySelector("#all_latest_items");
+  let tbody = document.querySelector("#all_items");
   tbody.innerHTML = "";
   item.forEach((item) => {
     tbody.innerHTML += `
@@ -52,4 +49,4 @@ function showItems(item) {
 //    });
 //  })
 //}
-export default AllOfferedItemsPage;
+export default AllItemsPage;

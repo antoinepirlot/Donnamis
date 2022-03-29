@@ -1,26 +1,25 @@
-import HomePage from "../Pages/HomePage";
 import LoginPage from "../Pages/LoginPage";
 import Logout from "../Logout/Logout";
 import ListMemberPage from "../Pages/ListMemberPage";
 import LatestItemsOffersPage from "../Pages/LatestItemsOffersPage"
-import AllItemsOffersPage from "../Pages/AllItemsOffersPage"
+import AllItemsPage from "../Pages/AllItemsPage"
 import RegisterPage from "../Pages/RegisterPage";
 import AllOfferedItemsPage from "../Pages/AllOfferedItemPage";
-import ViewOfferPage from "../Pages/ViewOfferPage";
+import ViewItemPage from "../Pages/ViewItemPage";
 import {OfferAnItemPage} from "../Pages/OfferAnItemPage";
 import MyItemsPage from "../Pages/MyItemsPage";
 
 // Configure your routes here
 const routes = {
-  "/": HomePage,
+  "/": LatestItemsOffersPage,
   "/login": LoginPage,
   "/register": RegisterPage,
   "/logout": Logout,
   "/list_member": ListMemberPage,
-  "/latest_items": LatestItemsOffersPage,
-  "/all_items": AllItemsOffersPage,
+  //"/latest_items": LatestItemsOffersPage,
+  "/all_items": AllItemsPage,
   "/all_offered_items": AllOfferedItemsPage,
-  "/offer": ViewOfferPage,
+  "/item": ViewItemPage,
   "/offer_item": OfferAnItemPage,
   "/my_items": MyItemsPage
 };

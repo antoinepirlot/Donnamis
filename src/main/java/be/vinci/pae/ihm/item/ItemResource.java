@@ -2,6 +2,7 @@ package be.vinci.pae.ihm.item;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
+import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.utils.Json;
 import jakarta.inject.Inject;
@@ -15,6 +16,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import java.util.List;
 
@@ -25,6 +27,8 @@ public class ItemResource {
   private final Json<ItemDTO> jsonUtil = new Json<>(ItemDTO.class);
   @Inject
   private ItemUCC itemUCC;
+  @Inject
+  private OfferUCC offerUCC;
 
   /**
    * Method that get all the latest offered items.
@@ -35,7 +39,7 @@ public class ItemResource {
   @Path("latest_items")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
+  //@AuthorizeMember
   public List<ItemDTO> getLatestItems() {
     List<ItemDTO> listItemDTO = itemUCC.getLatestItems();
     if (listItemDTO == null) {
@@ -67,7 +71,9 @@ public class ItemResource {
     if (listItemDTO == null) {
       throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
     }
-
+    for (ItemDTO itemDTO : listItemDTO) {
+      this.offerUCC.getAllOffersOf(itemDTO);
+    }
     //Convert to ObjectNode
     try {
       return listItemDTO;
@@ -88,7 +94,11 @@ public class ItemResource {
   @AuthorizeMember
   public List<ItemDTO> getAllOfferedItems() {
     System.out.println("Get all offered items");
-    return this.itemUCC.getAllOfferedItems();
+    List<ItemDTO> itemDTOList = this.itemUCC.getAllOfferedItems();
+    for (ItemDTO itemDTO : itemDTOList) {
+      this.offerUCC.getAllOffersOf(itemDTO);
+    }
+    return itemDTOList;
   }
 
   /**
@@ -150,7 +160,9 @@ public class ItemResource {
     if (listItemDTO == null) {
       throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
     }
-
+    for (ItemDTO itemDTO : listItemDTO) {
+      this.offerUCC.getAllOffersOf(itemDTO);
+    }
     //Convert to ObjectNode
     try {
       return listItemDTO;
@@ -158,6 +170,27 @@ public class ItemResource {
       System.out.println("Unable to create list of the latest items");
       return null;
     }
+  }
+
+  /**
+   * Asks UCC to get one offer identified by its id.
+   *
+   * @param id the item's id
+   * @return the offer if it exists, otherwise throws a web application exception
+   */
+  @GET
+  @Path("{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
+  public ItemDTO getItem(@PathParam("id") int id) {
+    ItemDTO itemDTO = itemUCC.getOneItem(id);
+    if (itemDTO == null) {
+      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+          .entity("Ressource not found").type("text/plain").build());
+    }
+    this.offerUCC.getAllOffersOf(itemDTO);
+    return this.jsonUtil.filterPublicJsonView(itemDTO);
   }
 
 

@@ -156,6 +156,7 @@ public class MemberUCCImpl implements MemberUCC {
 
   @Override
   public boolean register(MemberDTO memberDTO) {
+    dalServices.start();
     Member member = (Member) memberDTO;
     member.hashPassword();
     if (!memberDAO.register(member)) {

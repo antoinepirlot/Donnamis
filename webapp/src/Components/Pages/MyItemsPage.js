@@ -1,6 +1,5 @@
 import {
   cancelOffer as cancelOfferBackEnd,
-  getItems,
   getMyItems
 } from "../../utils/BackEndRequests";
 import {Redirect} from "../Router/Router";
@@ -36,7 +35,8 @@ const MyItemsPage = async () => {
   const items = await getMyItems(payload.id);
   if (items.length === 0) {
     const message = "Vous n'avez aucune offre.";
-    const errorMessageMyItemsPage = document.querySelector("#errorMessageMyItemsPage");
+    const errorMessageMyItemsPage = document.querySelector(
+        "#errorMessageMyItemsPage");
     showError(message, "info", errorMessageMyItemsPage);
   } else {
     showItems(items);

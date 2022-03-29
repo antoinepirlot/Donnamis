@@ -4,6 +4,7 @@ import {getPayload} from "../../utils/session";
 
 const htmlForm = `
   <div>
+    <h1 class="display-3">Offrir un objet</h1>
     <form id="offerItemForm">
       Nom de l'objet<span id="asterisk">*</span>: <br>
       <textarea id="titleForm" cols="30" rows="3"></textarea><br>
@@ -37,7 +38,8 @@ const OfferAnItemPage = async () => {
 
 async function showItemsTypes() {
   const itemsTypes = await getItemsTypes();
-  const itemsTypeList = document.querySelector("#itemsTypes")
+  const itemsTypeList = document.querySelector("#itemsTypes");
+  itemsTypeList.innerHTML = "";
   itemsTypes.forEach(itemsType => {
     itemsTypeList.innerHTML += `
       <option value="${itemsType.itemType}">

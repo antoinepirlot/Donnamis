@@ -1,5 +1,6 @@
 package be.vinci.pae.biz.offer.interfaces;
 
+import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import java.util.List;
 
 public interface OfferUCC {
@@ -33,4 +34,6 @@ public interface OfferUCC {
    * @return the offer if it exists, otherwise null
    */
   OfferDTO getOneOffer(int id);
+
+  void getAllOffersOf(ItemDTO itemDTO);
 }

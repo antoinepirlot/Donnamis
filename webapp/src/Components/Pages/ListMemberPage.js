@@ -67,7 +67,7 @@ const ListMemberPage = async () => {
 
 async function viewRegisteredMembers(members) {
   const tbody = document.querySelector("#tbody_registered_members");
-
+  tbody.innerHTML = "";
   //For Each Member
   members.forEach((member) => {
     tbody.innerHTML += `
@@ -112,7 +112,7 @@ async function viewRegisteredMembers(members) {
 
 async function viewDeniedMembers(members) {
   const tbody = document.querySelector("#tbody_denied_members");
-
+  tbody.innerHTML = "";
   //For Each Member
   members.forEach((member) => {
     tbody.innerHTML += `

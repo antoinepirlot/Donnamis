@@ -3,7 +3,9 @@ package be.vinci.pae.biz.item.interfaces;
 import be.vinci.pae.biz.item.objects.ItemImpl;
 import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import java.util.List;
 
 @JsonDeserialize(as = ItemImpl.class)
 public interface ItemDTO {
@@ -35,5 +37,11 @@ public interface ItemDTO {
   String getOfferStatus();
 
   void setOfferStatus(String offersStatus);
+
+  List<OfferDTO> getOfferList();
+
+  void setOfferList(List<OfferDTO> offerList);
+
+  void addOffer(OfferDTO offer);
 
 }

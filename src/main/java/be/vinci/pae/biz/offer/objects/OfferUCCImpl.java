@@ -1,10 +1,12 @@
 package be.vinci.pae.biz.offer.objects;
 
+import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.dal.offer.interfaces.OfferDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import jakarta.inject.Inject;
+import java.sql.SQLException;
 import java.util.List;
 
 public class OfferUCCImpl implements OfferUCC {
@@ -53,8 +55,20 @@ public class OfferUCCImpl implements OfferUCC {
     OfferDTO offerDTO = offerDAO.getOne(id);
     if (offerDTO == null) {
       dalServices.rollback();
+      return null;
     }
     dalServices.commit();
     return offerDTO;
+  }
+
+  @Override
+  public void getAllOffersOf(ItemDTO itemDTO) {
+    dalServices.start();
+    try {
+      this.offerDAO.addOffersTo(itemDTO);
+    } catch (SQLException e) {
+      dalServices.rollback();
+    }
+    dalServices.commit();
   }
 }
