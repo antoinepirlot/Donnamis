@@ -12,7 +12,6 @@ public class ExceptionMapper implements jakarta.ws.rs.ext.ExceptionMapper<Throwa
   @Override
   public Response toResponse(Throwable throwable) {
     throwable.printStackTrace();
-    Response response;
     if (throwable instanceof WebApplicationException) {
       System.out.println("Hey");
       return ((WebApplicationException) throwable).getResponse(); //the response is already prepared

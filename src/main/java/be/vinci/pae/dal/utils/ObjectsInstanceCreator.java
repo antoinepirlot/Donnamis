@@ -9,7 +9,6 @@ import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.apache.commons.text.StringEscapeUtils;
-import org.postgresql.util.PSQLException;
 
 public class ObjectsInstanceCreator {
 

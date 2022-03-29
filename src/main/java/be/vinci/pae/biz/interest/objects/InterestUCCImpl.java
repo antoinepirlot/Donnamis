@@ -3,7 +3,6 @@ package be.vinci.pae.biz.interest.objects;
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.dal.interest.interfaces.InterestDAO;
-import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
@@ -14,9 +13,6 @@ public class InterestUCCImpl implements InterestUCC {
   private InterestDAO interestDAO;
   @Inject
   private DALServices dalServices;
-
-  @Inject
-  private MemberDAO memberDAO;
 
   @Override
   public int markInterest(MemberDTO memberDTO, int idOffer, boolean callWanted) {
