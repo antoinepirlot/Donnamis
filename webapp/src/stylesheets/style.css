@@ -46,6 +46,6 @@
   text-overflow: ellipsis;
 }
 
-#all_offered_items_title, #all_items_title, #all_latest_items_title {
+#all_offered_items_title, #all_items_title, #all_latest_items_title, #login_title {
   margin-bottom: 2.5rem;
 }

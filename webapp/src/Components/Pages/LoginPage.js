@@ -9,6 +9,7 @@ import Navbar from "../Navbar/Navbar";
 import {showError} from "../../utils/ShowError";
 
 const loginFormHtml = `
+<h1 class="display-3" id="login_title">Se connecter</h1>
 <div class="form">
   <form  id="loginForm">
     <div class="mb-3">
