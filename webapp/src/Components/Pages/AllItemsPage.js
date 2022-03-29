@@ -8,7 +8,7 @@ const tableHtml = `
   </div>
 `;
 
-const AllOfferedItemsPage = async () => {
+const AllItemsPage = async () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtml;
   const item = await getItems();
@@ -49,4 +49,4 @@ function showItems(item) {
 //    });
 //  })
 //}
-export default AllOfferedItemsPage;
+export default AllItemsPage;

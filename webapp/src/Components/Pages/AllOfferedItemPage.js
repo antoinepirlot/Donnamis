@@ -1,50 +1,52 @@
 import {getOfferedItems} from "../../utils/BackEndRequests";
-import {Redirect} from "../Router/Router";
 
 const tableHtml = `
   <div>
     <h1 class="display-3">Tous les objets offerts</h1>
-    <br>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Titre</th>
-          <th scope="col">Description de l'objet</th>
-          <th scope="col">Photo</th>
-          <th scope="col">Statut de l'offre</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody id="tbody_all_offered_items">
-      </tbody>
-    </table>
+    <div class="row" id="all_offered_items">
+    </div>
   </div>
 `;
 
 const AllOfferedItemsPage = async () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtml;
-  showItems(await getOfferedItems())
+  const item = await getOfferedItems();
+  showItems(item)
 };
 
-function showItems(items) {
-  const tbody = document.querySelector("#tbody_all_offered_items");
+function showItems(item) {
+  let tbody = document.querySelector("#all_offered_items");
   tbody.innerHTML = "";
-  items.forEach((item) => {
+  item.forEach((item) => {
     tbody.innerHTML += `
-      <tr>
-        <td>${item.title}</td>
-        <td>${item.itemDescription}</td>
-        <td>${item.photo}</td>
-        <td>${item.offerStatus}</td>
-        <td><button type="submit" class="btn btn-primary" id="ItemDetails">Voir offre</button></td>
-      </tr>    
+    <div class="col-sm-3" id="item-card" >
+      <div class="card">
+      <img class="card-img-top" alt="Card image cap">
+        <div class="card-body">
+          <h5 class="card-title">${item.title}</h5>
+          <p class="card-text">${item.itemDescription}</p>
+          <div id="seeItemButton">
+            <a href="/item?id=${item.id}" type="button" class="btn btn-primary"> Voir les détails</a>
+            <!--<input id="itemIdButton" type="hidden" value="">-->
+          </div>
+        </div>
+      </div>
+    </div>
     `;
-    const OfferDetailsButton = document.querySelector("#ItemDetails");
-    OfferDetailsButton.addEventListener("click", function () {
-      Redirect(`/offer?id=${offer.id}`);
-    })
   });
+  //const itemButtons = document.querySelectorAll("#seeItemButton");
+  //setSeeItemEvent(itemButtons);
 }
 
+//function setSeeItemEvent(itemButtons) {
+//  itemButtons.forEach(itemButton => {
+//    itemButton.addEventListener("click", (e) => {
+//      e.preventDefault();
+//      const id = itemButton.querySelector("#itemIdButton").value;
+//      //setLocalObject("idItem", id);
+//      Redirect(`/item?id=${id}`);
+//    });
+//  })
+//}
 export default AllOfferedItemsPage;
