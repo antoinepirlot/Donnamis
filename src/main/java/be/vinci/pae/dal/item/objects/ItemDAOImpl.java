@@ -153,7 +153,9 @@ public class ItemDAOImpl implements ItemDAO {
     try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
       ps.setString(1, itemDTO.getItemDescription());
       ps.setInt(2, itemDTO.getMember().getId());
-      ps.setString(3, itemDTO.getPhoto());
+      if (itemDTO.getPhoto() != null) {
+        ps.setString(3, null);
+      }
       ps.setString(4, itemDTO.getTitle());
       ps.setString(5, DEFAULT_OFFER_STATUS);
       ps.setDate(6, itemDTO.getLastOfferDate());
