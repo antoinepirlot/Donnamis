@@ -47,6 +47,7 @@ public class ObjectsInstanceCreator {
       itemDTO.setId(rs.getInt("id_item"));
       itemDTO.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("title")));
       itemDTO.setPhoto(StringEscapeUtils.escapeHtml4(rs.getString("photo")));
+      itemDTO.setLastOfferDate(rs.getDate("last_offer_date"));
       itemDTO.setItemDescription(
           StringEscapeUtils.escapeHtml4(rs.getString("item_description"))
       );
