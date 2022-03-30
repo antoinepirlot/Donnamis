@@ -52,7 +52,10 @@ async function offerItem(e) {
   e.preventDefault();
   const title = document.querySelector("#titleForm").value;
   const itemDescription = document.querySelector("#itemDescriptionForm").value;
-  const photo = document.querySelector("#photoForm").value;
+  let photo = document.querySelector("#photoForm").value;
+  if (photo === "") {
+    photo = null;
+  }
   const timeSlot = document.querySelector("#timeSlotForm").value;
   const itemTypeValue = document.querySelector("#itemTypeFormList").value;
   const payload = getPayload();

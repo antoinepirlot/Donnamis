@@ -18,7 +18,7 @@ public interface ItemDAO {
 
   ItemDTO getOneItem(int id);
 
-  boolean addItem(ItemDTO itemDTO);
+  int addItem(ItemDTO itemDTO);
 
   ItemDTO cancelOffer(int id);
 

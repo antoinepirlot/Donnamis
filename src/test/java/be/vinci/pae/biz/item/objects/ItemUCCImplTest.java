@@ -1,9 +1,7 @@
 package be.vinci.pae.biz.item.objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
@@ -61,9 +59,9 @@ class ItemUCCImplTest {
     Mockito.when(this.itemDAO.getAllOfferedItems()).thenReturn(this.itemDTOList);
     Mockito.when(this.itemDAO.getOneItem(this.goodItem.getId())).thenReturn(this.goodItem);
     Mockito.when(this.itemDAO.getOneItem(this.notExistingIdItem)).thenReturn(null);
-    Mockito.when(this.itemDAO.addItem(this.goodItem)).thenReturn(true);
-    Mockito.when(this.itemDAO.addItem(this.wrongItem)).thenReturn(false);
-    Mockito.when(this.itemDAO.addItem(null)).thenReturn(false);
+    Mockito.when(this.itemDAO.addItem(this.goodItem)).thenReturn(this.goodItem.getId());
+    Mockito.when(this.itemDAO.addItem(this.wrongItem)).thenReturn(-1);
+    Mockito.when(this.itemDAO.addItem(null)).thenReturn(-1);
     Mockito.when(this.itemDAO.cancelOffer(this.goodItem.getId())).thenReturn(this.cancelledItem);
     Mockito.when(this.itemDAO.cancelOffer(this.notExistingIdItem)).thenReturn(null);
     Mockito.when(this.itemDAO.cancelOffer(this.givenIdItem)).thenReturn(null);
@@ -115,21 +113,21 @@ class ItemUCCImplTest {
   @Test
   void testAddItemWithGoodItem() {
     this.setDALServices(true);
-    assertTrue(this.itemUCC.addItem(this.goodItem));
+    assertEquals(this.goodItem.getId(), this.itemUCC.addItem(this.goodItem));
   }
 
   @DisplayName("Test add item with wrong item")
   @Test
   void testAddItemWithWrongItem() {
     this.setDALServices(false);
-    assertFalse(this.itemUCC.addItem(this.wrongItem));
+    assertEquals(-1, this.itemUCC.addItem(this.wrongItem));
   }
 
   @DisplayName("Test add item with null item")
   @Test
   void testAddItemWithNullItem() {
     this.setDALServices(false);
-    assertFalse(this.itemUCC.addItem(null));
+    assertEquals(-1, this.itemUCC.addItem(null));
   }
 
   @DisplayName("Test cancel offer with existing item")

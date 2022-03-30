@@ -95,6 +95,7 @@ CREATE TABLE project_pae.recipients
     FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
 
 );
+
 -------------------INSERT INTO--------------------------
 -- MEMBERS TABLE
 --Mot de passe : password

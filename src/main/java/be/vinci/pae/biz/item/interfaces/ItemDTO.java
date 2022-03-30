@@ -49,4 +49,6 @@ public interface ItemDTO {
 
   void addOffer(OfferDTO offer);
 
+  OfferDTO getLastOffer();
+
 }

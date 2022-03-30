@@ -141,32 +141,34 @@ public class ItemDAOImpl implements ItemDAO {
   }
 
   @Override
-  public boolean addItem(ItemDTO itemDTO) {
+  public int addItem(ItemDTO itemDTO) {
     String selectIdTypeQuery = "SELECT id_type "
         + "FROM project_pae.items_types "
-        + "WHERE item_type = '" + itemDTO.getItemType().getItemType() + "'";
+        + "WHERE item_type = ? ";
     String query =
         "INSERT INTO project_pae.items (item_description, id_type, id_member, photo, "
             + "title, offer_status, last_offer_date) "
-            + "VALUES (?, (" + selectIdTypeQuery + "), ?, ?, ?, ?, ?)";
-    System.out.println(query);
+            + "VALUES (?, (" + selectIdTypeQuery + "), ?, ?, ?, ?, ? ) "
+            + "RETURNING id_item;";
     try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
+      //Select query
       ps.setString(1, itemDTO.getItemDescription());
-      ps.setInt(2, itemDTO.getMember().getId());
-      if (itemDTO.getPhoto() != null) {
-        ps.setString(3, null);
-      }
-      ps.setString(4, itemDTO.getTitle());
-      ps.setString(5, DEFAULT_OFFER_STATUS);
-      ps.setDate(6, itemDTO.getLastOfferDate());
-      if (ps.executeUpdate() != 0) {
-        System.out.println("Ajout de l'offre réussi.");
-        return true;
+      ps.setString(2, itemDTO.getItemType().getItemType());
+      ps.setInt(3, itemDTO.getMember().getId());
+      ps.setString(4, itemDTO.getPhoto());
+      ps.setString(5, itemDTO.getTitle());
+      ps.setString(6, DEFAULT_OFFER_STATUS);
+      ps.setDate(7, itemDTO.getLastOfferDate());
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          System.out.println("Ajout de l'offre réussi.");
+          return rs.getInt("id_item");
+        }
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return false;
+    return -1;
   }
 
   @Override

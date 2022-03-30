@@ -35,9 +35,9 @@ public interface ItemUCC {
   /**
    * Ask itemDAO to add the item.
    *
-   * @return true if the adding is a success, otherwise false
+   * @return the item id or -1 if it failed
    */
-  boolean addItem(ItemDTO itemDTO);
+  int addItem(ItemDTO itemDTO);
 
   /**
    * Ask itemDAO to cancel the item identified by its id.

@@ -2,6 +2,7 @@ package be.vinci.pae.ihm.item;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
+import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.utils.Json;
@@ -111,17 +112,27 @@ public class ItemResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public void addItem(ItemDTO itemDTO) {
+    System.out.println(itemDTO.getOfferList());
     if (itemDTO == null
-        || itemDTO.getItemDescription() == null || itemDTO.getItemDescription().equals("")
-        || itemDTO.getItemType() == null || itemDTO.getMember() == null
-        || itemDTO.getMember().getId() < 1
-        || itemDTO.getTitle() == null || itemDTO.getTitle().equals("")
+        || itemDTO.getItemDescription() == null || itemDTO.getItemDescription().isBlank()
+        || itemDTO.getItemType() == null || itemDTO.getItemType().getItemType() == null
+        || itemDTO.getItemType().getItemType().isBlank()
+        || itemDTO.getMember() == null || itemDTO.getMember().getId() < 1
+        || itemDTO.getTitle() == null || itemDTO.getTitle().isBlank()
         || itemDTO.getLastOfferDate() == null
+        || itemDTO.getOfferList().get(0) == null
     ) {
       throw new WebApplicationException("Wrong item body", Status.BAD_REQUEST);
     }
-    if (!this.itemUCC.addItem(itemDTO)) {
+    int idItem = this.itemUCC.addItem(itemDTO);
+    if (idItem == -1) {
       String message = "The items can't be added to the db due to a unexpected error";
+      throw new WebApplicationException(message, Status.BAD_REQUEST);
+    }
+    OfferDTO offerDTO = itemDTO.getOfferList().get(0);
+    offerDTO.setIdItem(idItem);
+    if (!this.offerUCC.createOffer(offerDTO)) {
+      String message = "The offer can't be added to the db due to a unexpected error";
       throw new WebApplicationException(message, Status.BAD_REQUEST);
     }
   }

@@ -139,6 +139,14 @@ public class ItemImpl implements Item {
   }
 
   @Override
+  public OfferDTO getLastOffer() {
+    return this.offerList.stream()
+        .filter(offer -> offer.getDate().equals(this.lastOfferDate))
+        .findFirst()
+        .orElse(null);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -159,12 +167,14 @@ public class ItemImpl implements Item {
   public String toString() {
     return "Item{"
         + "id=" + id
-        + ", item_description='" + itemDescription + '\''
-        + ", id_item_type='" + itemType + '\''
-        + ", id_member='" + member + '\''
+        + ", itemDescription='" + itemDescription + '\''
+        + ", idItemType='" + itemType + '\''
+        + ", member='" + member + '\''
         + ", photo='" + photo + '\''
         + ", title=" + title
-        + ", offer_status='" + offerStatus + '\''
+        + ", offerStatus='" + offerStatus + '\''
+        + ", offerList" + offerList
+        + ", lastOfferDate='" + lastOfferDate + '\''
         + '}';
   }
 }

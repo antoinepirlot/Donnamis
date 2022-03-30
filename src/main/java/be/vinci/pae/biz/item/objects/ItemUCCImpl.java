@@ -61,12 +61,14 @@ public class ItemUCCImpl implements ItemUCC {
   }
 
   @Override
-  public boolean addItem(ItemDTO itemDTO) {
+  public int addItem(ItemDTO itemDTO) {
     dalServices.start();
-    if (!itemDAO.addItem(itemDTO)) {
+    int id_item = itemDAO.addItem(itemDTO);
+    if (id_item == -1) {
       dalServices.rollback();
     }
-    return dalServices.commit();
+    dalServices.commit();
+    return id_item;
   }
 
   @Override
