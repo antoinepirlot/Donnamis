@@ -73,10 +73,10 @@ public class ItemDAOImpl implements ItemDAO {
           + "                i.item_description, "
           + "                i.photo, "
           + "                i.title, "
-          + "                i.offer_status,"
-          + "                i.latest_offer_date "
+          + "                i.offer_status, "
+          + "                i.last_offer_date "
           + "FROM project_pae.items i "
-          + "ORDER BY i.latest_offer_date DESC;";
+          + "ORDER BY i.last_offer_date DESC;";
       PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query);
       System.out.println("Préparation du statement");
       try (ResultSet rs = preparedStatement.executeQuery()) {
