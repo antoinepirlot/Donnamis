@@ -95,8 +95,9 @@ public class ItemDAOImpl implements ItemDAO {
   @Override
   public List<ItemDTO> getAllOfferedItems() {
     System.out.println("Get all offered items (ItemDAOImpl)");
-    List<ItemDTO> itemsDTO = new ArrayList<>();
+    List<ItemDTO> itemsDTOList = new ArrayList<>();
     String query = "SELECT i.id_item, i.item_description, i.photo, i.title, i.offer_status, "
+        + "i.last_offer_date, "
         + "it.id_type, it.item_type, "
         + "m.username, m.last_name, m.first_name "
         + "FROM project_pae.items i, project_pae.items_types it, project_pae.members m "
@@ -105,13 +106,13 @@ public class ItemDAOImpl implements ItemDAO {
       ps.setString(1, DEFAULT_OFFER_STATUS);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          itemsDTO.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
+          itemsDTOList.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return itemsDTO;
+    return itemsDTOList;
   }
 
   @Override
