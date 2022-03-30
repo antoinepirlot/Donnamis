@@ -48,10 +48,11 @@ function LoginPage() {
 
 async function login(e) {
   e.preventDefault();
+  const loginMessage = document.querySelector("#loginMessage");
+  showError("Connexion en cours...", "info", loginMessage);
   const username = document.querySelector("#usernameInput").value;
   const password = document.querySelector("#passwordInput").value;
   const rememberMe = document.querySelector("#rememberMeInput").checked;
-  const loginMessage = document.querySelector("#loginMessage");
   if (username === "" ||
       password === "") {
     showError("Tous les champs doivent être complet", "danger", loginMessage)
