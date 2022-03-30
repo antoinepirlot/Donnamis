@@ -116,6 +116,7 @@ public class ItemResource {
         || itemDTO.getItemType() == null || itemDTO.getMember() == null
         || itemDTO.getMember().getId() < 1
         || itemDTO.getTitle() == null || itemDTO.getTitle().equals("")
+        || itemDTO.getLastOfferDate() == null
     ) {
       throw new WebApplicationException("Wrong item body", Status.BAD_REQUEST);
     }

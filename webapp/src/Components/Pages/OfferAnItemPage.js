@@ -48,6 +48,7 @@ async function showItemsTypes() {
 }
 
 async function offerItem(e) {
+  const date = new Date();
   e.preventDefault();
   const title = document.querySelector("#titleForm").value;
   const itemDescription = document.querySelector("#itemDescriptionForm").value;
@@ -71,7 +72,8 @@ async function offerItem(e) {
     photo: photo,
     itemType: itemType,
     member: member,
-    offerList: offersList
+    offerList: offersList,
+    lastOfferDate: date
   }
   try {
     await offerAnItem(item);

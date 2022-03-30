@@ -118,7 +118,7 @@ public class ItemDAOImpl implements ItemDAO {
   public ItemDTO getOneItem(int id) {
     String query = ""
         + "SELECT i.id_item, i.item_description, i.photo, i.title, i.offer_status, "
-        + "       it.id_type, it.item_type, "
+        + "       it.id_type, it.item_type, i.last_offer_date"
         + "       m.id_member, m.username, m.last_name, m.first_name "
         + "FROM project_pae.items i, "
         + "     project_pae.items_types it, "
@@ -155,6 +155,7 @@ public class ItemDAOImpl implements ItemDAO {
       ps.setString(3, itemDTO.getPhoto());
       ps.setString(4, itemDTO.getTitle());
       ps.setString(5, DEFAULT_OFFER_STATUS);
+      ps.setDate(6, itemDTO.getLastOfferDate());
       if (ps.executeUpdate() != 0) {
         System.out.println("Ajout de l'offre réussi.");
         return true;
