@@ -22,26 +22,25 @@ public class ItemDAOImpl implements ItemDAO {
   private DALBackendService dalBackendService;
 
   /**
-   * Get the latest items from the database.
+   * Get the donated items from the database.
    *
-   * @return List of the latest items offered
+   * @return List of the donated items offered
    */
   @Override
-  public List<ItemDTO> getLatestItems() {
+  public List<ItemDTO> getDonatedItems() {
     System.out.println("getLatestItems");
     List<ItemDTO> itemsToReturn = new ArrayList<>();
-    String query = "SELECT items.id_item,\n"
-        + "       items.item_description,\n"
-        + "       items.id_type,\n"
-        + "       items.id_member,\n"
-        + "       items.photo,\n"
-        + "       items.title,\n"
-        + "       items.offer_status\n"
-        + "FROM project_pae.items items\n"
-        + "         LEFT OUTER JOIN project_pae.offers offers\n"
-        + "                         ON items.id_item = offers.id_item\n"
-        + "WHERE items.offer_status = 'donated'\n"
-        + "ORDER BY offers.date DESC";
+    String query = "SELECT id_item, "
+        + "       item_description, "
+        + "       id_type, "
+        + "       id_member, "
+        + "       photo, "
+        + "       title, "
+        + "       offer_status, "
+        + "       last_offer_date "
+        + "FROM project_pae.items "
+        + "WHERE offer_status = 'donated' "
+        + "ORDER BY last_offer_date DESC;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       System.out.println("Préparation du statement");
       try (ResultSet rs = preparedStatement.executeQuery()) {

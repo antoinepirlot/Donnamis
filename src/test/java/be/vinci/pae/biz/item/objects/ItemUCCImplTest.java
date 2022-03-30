@@ -56,7 +56,7 @@ class ItemUCCImplTest {
   }
 
   private void setMockitos() {
-    Mockito.when(this.itemDAO.getLatestItems()).thenReturn(this.itemDTOList);
+    Mockito.when(this.itemDAO.getDonatedItems()).thenReturn(this.itemDTOList);
     Mockito.when(this.itemDAO.getAllItems()).thenReturn(this.itemDTOList);
     Mockito.when(this.itemDAO.getAllOfferedItems()).thenReturn(this.itemDTOList);
     Mockito.when(this.itemDAO.getOneItem(this.goodItem.getId())).thenReturn(this.goodItem);

@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface ItemDAO {
 
-  List<ItemDTO> getLatestItems();
+  List<ItemDTO> getDonatedItems();
 
   List<ItemDTO> getAllItems();
 
