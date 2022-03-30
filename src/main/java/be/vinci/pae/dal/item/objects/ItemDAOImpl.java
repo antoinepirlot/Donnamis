@@ -73,10 +73,10 @@ public class ItemDAOImpl implements ItemDAO {
           + "                i.item_description, "
           + "                i.photo, "
           + "                i.title, "
-          + "                i.offer_status "
+          + "                i.offer_status,"
+          + "                i.latest_offer_date "
           + "FROM project_pae.items i "
-          + "LEFT OUTER JOIN project_pae.offers o ON i.id_item = o.id_item "
-          + "ORDER BY o.date DESC;";
+          + "ORDER BY i.latest_offer_date DESC;";
       PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query);
       System.out.println("Préparation du statement");
       try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -211,7 +211,7 @@ public class ItemDAOImpl implements ItemDAO {
   public boolean updateLatestOfferDate(ItemDTO itemDTO) {
     String query = "UPDATE project_pae.items ON latest_offer_date = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
-      ps.setDate(1, itemDTO.getLatestOfferDate());
+      ps.setDate(1, itemDTO.getLastOfferDate());
       ps.executeUpdate();
       return true;
     } catch (SQLException e) {

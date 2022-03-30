@@ -43,9 +43,9 @@ public interface ItemDTO {
 
   void setOfferList(List<OfferDTO> offerList);
 
-  Date getLatestOfferDate();
+  Date getLastOfferDate();
 
-  void setLatestOfferDate(Date latestOfferDate);
+  void setLastOfferDate(Date lastOfferDate);
 
   void addOffer(OfferDTO offer);
 

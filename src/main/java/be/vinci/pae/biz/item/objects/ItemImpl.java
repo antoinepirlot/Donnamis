@@ -36,7 +36,7 @@ public class ItemImpl implements Item {
   @JsonView(Views.Public.class)
   private List<Offer> offerList = new ArrayList<>();
   @JsonView(Views.Public.class)
-  private Date latestOfferDate;
+  private Date lastOfferDate;
 
   public ItemImpl() {
   }
@@ -124,13 +124,13 @@ public class ItemImpl implements Item {
   }
 
   @Override
-  public Date getLatestOfferDate() {
-    return latestOfferDate;
+  public Date getLastOfferDate() {
+    return lastOfferDate;
   }
 
   @Override
-  public void setLatestOfferDate(Date latestOfferDate) {
-    this.latestOfferDate = latestOfferDate;
+  public void setLastOfferDate(Date lastOfferDate) {
+    this.lastOfferDate = lastOfferDate;
   }
 
   @Override
