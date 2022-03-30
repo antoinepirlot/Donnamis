@@ -79,6 +79,9 @@ function RegisterPage() {
 
 async function register(e) {
   e.preventDefault();
+  //div
+  const registerMessage = document.querySelector("#registerMessage");
+  showError("Inscription en cours...", "info", registerMessage);
   //member
   const username = document.querySelector("#usernameInput").value;
   const password = document.querySelector("#passwordInput").value;
@@ -90,8 +93,6 @@ async function register(e) {
   const unitNumber = document.querySelector("#unitNumberInput").value;
   const commune = document.querySelector("#communeInput").value;
   const postcode = document.querySelector("#postcodeInput").value;
-  //div
-  const registerMessage = document.querySelector("#registerMessage");
 
   if (
       !username || !password || !firstName || !lastName || !street || !commune
