@@ -202,6 +202,7 @@ public class ItemResource {
           .entity("Ressource not found").type("text/plain").build());
     }
     this.offerUCC.getAllOffersOf(itemDTO);
+    System.out.println(itemDTO);
     return this.jsonUtil.filterPublicJsonView(itemDTO);
   }
 

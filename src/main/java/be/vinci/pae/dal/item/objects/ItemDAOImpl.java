@@ -119,6 +119,7 @@ public class ItemDAOImpl implements ItemDAO {
   public ItemDTO getOneItem(int id) {
     String query = ""
         + "SELECT i.id_item, i.item_description, i.photo, i.title, i.offer_status, "
+        + "       i.last_offer_date, "
         + "       it.id_type, it.item_type, i.last_offer_date, "
         + "       m.id_member, m.username, m.last_name, m.first_name "
         + "FROM project_pae.items i, "

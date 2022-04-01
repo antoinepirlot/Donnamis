@@ -47,8 +47,4 @@ public interface ItemDTO {
 
   void setLastOfferDate(Date lastOfferDate);
 
-  void addOffer(OfferDTO offer);
-
-  OfferDTO getLastOffer();
-
 }
