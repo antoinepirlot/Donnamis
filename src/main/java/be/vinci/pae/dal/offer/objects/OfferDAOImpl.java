@@ -142,7 +142,7 @@ public class OfferDAOImpl implements OfferDAO {
     String query = "SELECT id_offer, date, time_slot, id_item "
         + "FROM project_pae.offers o "
         + "WHERE id_item = ? "
-        + "ORDER BY date DESC"
+        + "ORDER BY date DESC "
         + "LIMIT 1;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       System.out.println("Prepared statement successfully generated");
