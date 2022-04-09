@@ -291,6 +291,24 @@ async function cancelOffer(id) {
   }
 }
 
+async function getProfile(id) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/members/profil/${id}`, request);
+  if (!response.ok) {
+    // status code was not 200, error status code
+    showError("Member not found");
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText
+    );
+  }
+  return await response.json()
+}
+
 export {
   login,
   register,
@@ -307,5 +325,6 @@ export {
   cancelOffer,
   getItem,
   getItemsTypes,
-  offerAnItem
+  offerAnItem,
+  getProfile
 };

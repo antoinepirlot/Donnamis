@@ -1,5 +1,6 @@
 package be.vinci.pae.dal.member.interfaces;
 
+import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import java.util.List;
 
@@ -22,6 +23,8 @@ public interface MemberDAO {
   List<MemberDTO> getMembersDenied();
 
   MemberDTO getOneMember(int id);
+
+  AddressDTO getAddressMember(int id);
 
   MemberDTO confirmMember(int id);
 

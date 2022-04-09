@@ -73,6 +73,21 @@ public class MemberDAOImpl implements MemberDAO {
     return executeQueryWithId(id, query);
   }
 
+  public AddressDTO getAddressMember(int id) {
+    String query = "SELECT * FROM project_pae.addresses a WHERE a.id_member = ?";
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
+      preparedStatement.setInt(1, id);
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        if (rs.next()) {
+          return ObjectsInstanceCreator.createAddressInstance(this.factory, rs);
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return null;
+  }
+
   /**
    * Change the state of the member to confirmed.
    *
@@ -203,41 +218,6 @@ public class MemberDAOImpl implements MemberDAO {
     }
     return null;
   }
-
-  // ************** DELETE ???
-
-  //  /**
-  //   * Add the member to the db.
-  //   *
-  //   * @param memberDTO the member to add into the db
-  //   * @return the added member
-  //   */
-  //  @Override
-  //  public MemberDTO createOne(MemberDTO memberDTO) {
-  //    String query = "INSERT INTO project_pae.members (username, password, last_name, first_name,"
-  //        + "is_admin, state, phone) VALUES (?, ?, ?, ?, ?, ?, ?)";
-  //    try {
-  //      PreparedStatement preparedStatement = dalServices.getPreparedStatement(query);
-  //      preparedStatement.setString(1, memberDTO.getUsername());
-  //      preparedStatement.setString(2, memberDTO.getPassword());
-  //      preparedStatement.setString(3, memberDTO.getLastName());
-  //      preparedStatement.setString(4, memberDTO.getFirstName());
-  //      preparedStatement.setBoolean(5, memberDTO.isAdmin());
-  //      preparedStatement.setString(6, memberDTO.getActualState());
-  //      preparedStatement.setString(7, memberDTO.getPhoneNumber());
-  //      try (ResultSet rs = preparedStatement.executeQuery()) {
-  //        //it adds into the db BUT can't execute getOne(), it returns null
-  //        if (rs.next()) {
-  //          System.out.println("Ajout du membre réussi.");
-  //          return this.getOne(memberDTO.getUsername());
-  //        }
-  //      }
-  //    } catch (SQLException e) {
-  //      System.out.println(e.getMessage());
-  //    }
-  //    return null;
-  //  }
-  //
 
   /**
    * Add a new member to the db if it's not already in the db, then its address.

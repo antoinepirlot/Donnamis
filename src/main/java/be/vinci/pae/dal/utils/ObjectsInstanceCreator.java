@@ -9,7 +9,6 @@ import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.apache.commons.text.StringEscapeUtils;
-import org.postgresql.util.PSQLException;
 
 public class ObjectsInstanceCreator {
 
@@ -143,7 +142,7 @@ public class ObjectsInstanceCreator {
    * @return a new address instance with initialized attributes
    * @throws SQLException if an attributes is not in the result set
    */
-  private static AddressDTO createAddressInstance(Factory factory, ResultSet rs)
+  public static AddressDTO createAddressInstance(Factory factory, ResultSet rs)
       throws SQLException {
     System.out.println("setting all address attributes");
     AddressDTO addressDTO = factory.getAddress();
