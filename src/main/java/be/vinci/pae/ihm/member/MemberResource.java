@@ -24,13 +24,11 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.glassfish.jersey.server.ContainerRequest;
 
 /**
  * Root resource (exposed at "myresource" path).
@@ -61,10 +59,35 @@ public class MemberResource {
     try {
       List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
       if (listMemberDTO == null) {
-        throw new ObjectNotFoundException("No member into the database");
+        String message = "No member into the database";
+        this.logger.log(Level.INFO, message);
+        throw new ObjectNotFoundException();
       }
       return this.jsonUtil.filterPublicJsonViewAsList(listMemberDTO);
     } catch (Exception e) {
+      this.logger.log(Level.SEVERE, e.getMessage());
+      return null;
+    }
+  }
+
+  @GET
+  @Path("profil/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
+  public MemberDTO getMemberById(@PathParam("id") int id) {
+    try {
+      MemberDTO memberDTO = memberUCC.getOneMember(id);
+      if (memberDTO == null) {
+        throw new ObjectNotFoundException("Member not found");
+      }
+      AddressDTO addressDTO = memberUCC.getAddressMember(id);
+      if (addressDTO == null) {
+        throw new ObjectNotFoundException("Address not found");
+      }
+      memberDTO.setAddress(addressDTO);
+      return memberDTO;
+    } catch (Exception e) { //Exception Critique
       this.logger.log(Level.SEVERE, e.getMessage());
       return null;
     }

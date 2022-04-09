@@ -70,3 +70,7 @@ Content-Type: application/json
     "commune": "Waterloo"
   }
 }
+
+### Get One Member
+GET {{baseUrl}}/members/profil/4
+Authorization: {{token}}
