@@ -1,7 +1,6 @@
 package be.vinci.pae.biz.interest.objects;
 
 import be.vinci.pae.biz.interest.interfaces.Interest;
-import be.vinci.pae.biz.interest.interfaces.InterestDTO;
 import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.interfaces.Offer;
@@ -14,7 +13,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @JsonInclude(Include.NON_NULL)
-public class InterestImpl implements Interest, InterestDTO {
+public class InterestImpl implements Interest {
 
   @JsonView(Views.Public.class)
   private int id;
