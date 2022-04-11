@@ -327,6 +327,36 @@ async function getOfferedItems() {
   return await response.json()
 }
 
+/**
+ * Ask backend to mark an interest for an item.
+ * @returns {Promise<boolean>} true if the request has been done otherwise false
+ */
+async function postInterest(interest) {
+  const request = {
+    method: "POST",
+    headers: {
+      "Authorization": getObject("token"),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(interest)
+  };
+  const response = await fetch("api/interests", request);
+  console.table(response);
+  if (response.ok) {
+    showError(
+        "Votre intérêt pour cet article à été bien été enregistré.",
+        "success", interestMessage);
+  } else if (response.status === 409) {
+    showError("Vous avez déjà mis une marque d'intérêt pour cette offre",
+        "danger", interestMessage);
+  } else if (response.status === 403) {
+    showError(
+        "Votre numero de téléphone n'est pas renseigné, veuillez l'ajouter si vous désirez être appelé.",
+        "danger", interestMessage);
+  }
+  return response.ok;
+}
+
 export {
   login,
   register,
@@ -345,5 +375,6 @@ export {
   getItemsTypes,
   offerAnItem,
   getLatestItems,
-  getOfferedItems
+  getOfferedItems,
+  postInterest
 };

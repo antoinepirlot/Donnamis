@@ -2,7 +2,6 @@ package be.vinci.pae.biz.interest.interfaces;
 
 import be.vinci.pae.biz.interest.objects.InterestImpl;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
-import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.util.Date;
 
@@ -17,9 +16,9 @@ public interface InterestDTO {
 
   void setCallWanted(boolean callWanted);
 
-  OfferDTO getOffer();
+  int getIdItem();
 
-  void setOffer(OfferDTO offer);
+  void setIdItem(int idItem);
 
   MemberDTO getMember();
 
