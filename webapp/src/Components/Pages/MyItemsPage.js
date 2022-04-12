@@ -31,8 +31,7 @@ const tableHtml = `
 const MyItemsPage = async () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtml;
-  const payload = getPayload();
-  const items = await getMyItems(payload.id);
+  const items = await getMyItems(getPayload().id);
   if (items.length === 0) {
     const message = "Vous n'avez aucune offre.";
     const errorMessageMyItemsPage = document.querySelector(

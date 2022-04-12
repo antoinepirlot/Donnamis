@@ -113,14 +113,14 @@ public class ItemResource {
   @AuthorizeMember
   public void addItem(ItemDTO itemDTO) {
     System.out.println(itemDTO.getOfferList());
-    if (itemDTO == null
-        || itemDTO.getItemDescription() == null || itemDTO.getItemDescription().isBlank()
-        || itemDTO.getItemType() == null || itemDTO.getItemType().getItemType() == null
-        || itemDTO.getItemType().getItemType().isBlank()
-        || itemDTO.getMember() == null || itemDTO.getMember().getId() < 1
-        || itemDTO.getTitle() == null || itemDTO.getTitle().isBlank()
-        || itemDTO.getLastOfferDate() == null
-        || itemDTO.getOfferList().get(0) == null
+    if (
+        itemDTO.getItemDescription() == null || itemDTO.getItemDescription().isBlank()
+            || itemDTO.getItemType() == null || itemDTO.getItemType().getItemType() == null
+            || itemDTO.getItemType().getItemType().isBlank()
+            || itemDTO.getMember() == null || itemDTO.getMember().getId() < 1
+            || itemDTO.getTitle() == null || itemDTO.getTitle().isBlank()
+            || itemDTO.getLastOfferDate() == null
+            || itemDTO.getOfferList().get(0) == null
     ) {
       throw new WebApplicationException("Wrong item body", Status.BAD_REQUEST);
     }
@@ -169,7 +169,7 @@ public class ItemResource {
   @AuthorizeMember
   public List<ItemDTO> getAllItemsByMemberId(@PathParam("id") int id) {
     List<ItemDTO> listItemDTO = itemUCC.getAllItemsByMemberId(id);
-    if (listItemDTO == null) {
+    if (listItemDTO == null || listItemDTO.isEmpty()) {
       throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
     }
     for (ItemDTO itemDTO : listItemDTO) {

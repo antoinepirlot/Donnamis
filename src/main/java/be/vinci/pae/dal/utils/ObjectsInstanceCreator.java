@@ -56,7 +56,9 @@ public class ObjectsInstanceCreator {
       );
       itemDTO.setItemType(createItemsTypeInstance(factory, rs));
       itemDTO.setMember(createMemberInstance(factory, rs));
+      System.out.println(itemDTO);
     } catch (SQLException e) {
+      e.printStackTrace();
       return null;
     }
     return itemDTO;
