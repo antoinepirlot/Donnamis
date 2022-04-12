@@ -99,7 +99,7 @@ async function postInterest(e) {
   };
   console.table(interest);
   try {
-    await postInterestBackEnd(interest);
+    await postInterestBackEnd(interest, interestMessage);
   } catch (err) {
     showError("Votre marque d'intérêt n'a pas pu être ajoutée", "danger",
         interestMessage);

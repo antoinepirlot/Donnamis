@@ -349,7 +349,7 @@ async function getOfferedItems() {
  * Ask backend to mark an interest for an item.
  * @returns {Promise<boolean>} true if the request has been done otherwise false
  */
-async function postInterest(interest) {
+async function postInterest(interest, interestMessage) {
   const request = {
     method: "POST",
     headers: {
@@ -393,7 +393,6 @@ export {
   getItemsTypes,
   offerAnItem,
   getProfile,
-  offerAnItem,
   getLatestItems,
   getOfferedItems,
   postInterest

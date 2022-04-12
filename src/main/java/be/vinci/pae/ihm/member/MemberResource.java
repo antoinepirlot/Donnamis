@@ -7,6 +7,7 @@ import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeAdmin;
+import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.logs.LoggerHandler;
 import be.vinci.pae.ihm.utils.Json;
 import be.vinci.pae.utils.Config;
