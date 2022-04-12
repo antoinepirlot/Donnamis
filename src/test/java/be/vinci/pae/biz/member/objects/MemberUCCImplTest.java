@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
+import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.utils.ApplicationBinder;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
@@ -19,6 +20,7 @@ class MemberUCCImplTest {
   private final ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
   private final MemberDAO memberDAO = locator.getService(MemberDAO.class);
   private final MemberUCC memberUCC = locator.getService(MemberUCC.class);
+  private final DALServices dalServices = locator.getService(DALServices.class);
   private final MemberDTO memberDTO = new MemberImpl();
   private final MemberDTO memberToLogIn = new MemberImpl();
   private String hashedPassword;
@@ -49,6 +51,9 @@ class MemberUCCImplTest {
     Mockito.when(memberDAO.denyMember(99, "Message refus")).thenReturn(memberDTO);
     Mockito.when(memberDAO.getOneMember(99)).thenReturn(memberDTO);
     Mockito.when(memberDAO.isAdmin(99)).thenReturn(memberDTO);
+    Mockito.when(this.dalServices.start()).thenReturn(null);
+    Mockito.when(this.dalServices.rollback()).thenReturn(true);
+    Mockito.when(this.dalServices.commit()).thenReturn(true);
   }
 
   //Test Confirm Member

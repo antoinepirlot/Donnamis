@@ -7,7 +7,6 @@ import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeAdmin;
-import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.logs.LoggerHandler;
 import be.vinci.pae.ihm.utils.Json;
 import be.vinci.pae.utils.Config;
@@ -199,11 +198,11 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public MemberDTO denyMember(@PathParam("id") int id, String text_refusals) {
+  public MemberDTO denyMember(@PathParam("id") int id, String refusalText) {
     if (memberUCC.getOneMember(id) == null) {
       throw new ObjectNotFoundException("No member with the id: " + id);
     }
-    MemberDTO memberDTO = memberUCC.denyMember(id, text_refusals);
+    MemberDTO memberDTO = memberUCC.denyMember(id, refusalText);
     return this.jsonUtil.filterPublicJsonView(memberDTO);
   }
 
@@ -236,9 +235,9 @@ public class MemberResource {
   }
 
   /**
-   * Asks UCC to check if the member is admin or not
+   * Asks UCC to check if the member is admin or not.
    *
-   * @return null (the text is return with
+   * @return null (the text is return with)
    */
   @GET
   @Path("is_admin")

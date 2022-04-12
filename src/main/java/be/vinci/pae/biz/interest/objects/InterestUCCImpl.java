@@ -3,9 +3,9 @@ package be.vinci.pae.biz.interest.objects;
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.dal.interest.interfaces.InterestDAO;
-import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import jakarta.inject.Inject;
+import java.sql.Date;
 import java.time.LocalDate;
 
 public class InterestUCCImpl implements InterestUCC {
@@ -15,14 +15,11 @@ public class InterestUCCImpl implements InterestUCC {
   @Inject
   private DALServices dalServices;
 
-  @Inject
-  private MemberDAO memberDAO;
-
   @Override
-  public int markInterest(MemberDTO memberDTO, int idOffer, boolean callWanted) {
+  public int markInterest(MemberDTO memberDTO, int idItem, boolean callWanted) {
     dalServices.start();
-    LocalDate date = LocalDate.now();
-    int res = interestDAO.markInterest(memberDTO, idOffer, callWanted, date);
+    Date date = Date.valueOf(LocalDate.now());
+    int res = interestDAO.markInterest(memberDTO, idItem, callWanted, date);
     if (res == -1) {
       dalServices.rollback();
       return -1;
@@ -54,9 +51,9 @@ public class InterestUCCImpl implements InterestUCC {
   }
 
   @Override
-  public boolean interestExist(int idOffer, MemberDTO memberDTO) {
+  public boolean interestExist(int idItem, MemberDTO memberDTO) {
     dalServices.start();
-    if (!interestDAO.interestExist(idOffer, memberDTO)) {
+    if (!interestDAO.interestExist(idItem, memberDTO)) {
       dalServices.rollback();
       return false;
     }

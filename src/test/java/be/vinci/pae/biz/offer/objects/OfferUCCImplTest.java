@@ -10,6 +10,7 @@ import be.vinci.pae.biz.item.objects.ItemImpl;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.dal.offer.interfaces.OfferDAO;
+import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.utils.ApplicationBinder;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ class OfferUCCImplTest {
   private final ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
   private final OfferDAO offerDAO = locator.getService(OfferDAO.class);
   private final OfferUCC offerUCC = locator.getService(OfferUCC.class);
+  private final DALServices dalServices = locator.getService(DALServices.class);
   private final OfferDTO goodOfferExistingItem = new OfferImpl();
   private final OfferDTO goodOfferNotExistingItem = new OfferImpl();
   private final OfferDTO wrongOfferWithExistingItem = new OfferImpl();
@@ -63,59 +65,74 @@ class OfferUCCImplTest {
             .getOne(this.goodOfferExistingItem.getId()))
         .thenReturn(this.goodOfferExistingItem);
     Mockito.when(this.offerDAO.getOne(this.notExistingIdOffer)).thenReturn(null);
+    Mockito.when(this.dalServices.start()).thenReturn(null);
+  }
+
+  private void setDALServices(boolean isWorking) {
+    Mockito.when(this.dalServices.rollback()).thenReturn(isWorking);
+    Mockito.when(this.dalServices.commit()).thenReturn(isWorking);
   }
 
   @DisplayName("Test create offer with good offer and existing item")
   @Test
   void testCreateOfferWithGoodOfferAndExistingItem() {
+    this.setDALServices(true);
     assertTrue(this.offerUCC.createOffer(this.goodOfferExistingItem));
   }
 
   @DisplayName("Test create offer with good offer and not existing item")
   @Test
   void testCreateOfferWithGoodOfferAndNotExistingItem() {
+    this.setDALServices(false);
     assertFalse(this.offerUCC.createOffer(this.goodOfferNotExistingItem));
   }
 
   @DisplayName("Test create offer with wrong offer and existing item")
   @Test
   void testCreateOfferWithWrongOfferAndExistingItem() {
+    this.setDALServices(false);
     assertFalse(this.offerUCC.createOffer(this.wrongOfferWithExistingItem));
   }
 
   @DisplayName("Test create offer with wrong offer and not existing item")
   @Test
   void testCreateOfferWithWrongOfferAndNotExistingItem() {
+    this.setDALServices(false);
     assertFalse(this.offerUCC.createOffer(this.wrongOfferWithNotExistingItem));
   }
 
   @DisplayName("Test create offer with empty offer")
   @Test
   void testCreateOfferWithEmptyOffer() {
+    this.setDALServices(false);
     assertFalse(this.offerUCC.createOffer(this.emptyOffer));
   }
 
   @DisplayName("Test create offer with null offer")
   @Test
   void testCreateOfferWithNullOffer() {
+    this.setDALServices(false);
     assertFalse(this.offerUCC.createOffer(null));
   }
 
   @DisplayName("Test get latest offers")
   @Test
   void testGetLatestOffers() {
+    this.setDALServices(true);
     assertEquals(this.offerDTOList, this.offerUCC.getLatestOffers());
   }
 
   @DisplayName("Test get all offers")
   @Test
   void testGetAllOffers() {
+    this.setDALServices(true);
     assertEquals(this.offerDTOList, this.offerUCC.getAllOffers());
   }
 
   @DisplayName("Test get one offer with existing id offer")
   @Test
   void testGetOneOfferWithExistingIdOffer() {
+    this.setDALServices(true);
     assertEquals(
         this.goodOfferExistingItem,
         this.offerUCC.getOneOffer(this.goodOfferExistingItem.getId())
@@ -125,6 +142,7 @@ class OfferUCCImplTest {
   @DisplayName("Test get one offer with not existing id offer")
   @Test
   void testGetOneOfferWithNotExistingIdOffer() {
+    this.setDALServices(true);
     assertNull(this.offerUCC.getOneOffer(this.notExistingIdOffer));
   }
 }

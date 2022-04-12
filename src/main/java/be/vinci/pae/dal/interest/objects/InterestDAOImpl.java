@@ -8,7 +8,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 
 public class InterestDAOImpl implements InterestDAO {
 
@@ -18,15 +17,16 @@ public class InterestDAOImpl implements InterestDAO {
   //private Factory factory;
 
   @Override
-  public int markInterest(MemberDTO memberDTO, int idOffer, boolean callWanted, LocalDate date) {
+  public int markInterest(MemberDTO memberDTO, int idItem, boolean callWanted, Date date) {
     String query =
-        "INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date) VALUES"
+        "INSERT INTO project_pae.interests (call_wanted, id_item, id_member, date) VALUES"
             + "(?, ?, ?, ?) RETURNING *";
+
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setBoolean(1, callWanted);
-      preparedStatement.setInt(2, idOffer);
+      preparedStatement.setInt(2, idItem);
       preparedStatement.setInt(3, memberDTO.getId());
-      preparedStatement.setDate(4, Date.valueOf(date));
+      preparedStatement.setDate(4, date);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
           return 1;
@@ -51,10 +51,10 @@ public class InterestDAOImpl implements InterestDAO {
   }
 
   @Override
-  public boolean interestExist(int idOffer, MemberDTO memberDTO) {
-    String query = "SELECT * FROM project_pae.interests WHERE id_offer = ? AND id_member = ?";
+  public boolean interestExist(int idItem, MemberDTO memberDTO) {
+    String query = "SELECT * FROM project_pae.interests WHERE id_item = ? AND id_member = ?";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
-      preparedStatement.setInt(1, idOffer);
+      preparedStatement.setInt(1, idItem);
       preparedStatement.setInt(2, memberDTO.getId());
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {

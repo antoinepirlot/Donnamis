@@ -1,6 +1,6 @@
 package be.vinci.pae.main;
 
-import be.vinci.pae.exceptions.Mapper.ExceptionMapper;
+import be.vinci.pae.exceptions.mapper.ExceptionMapper;
 import be.vinci.pae.ihm.logs.LoggerHandler;
 import be.vinci.pae.utils.ApplicationBinder;
 import be.vinci.pae.utils.Config;

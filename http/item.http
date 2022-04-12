@@ -6,6 +6,10 @@ Authorization: {{token}}
 GET {{baseUrl}}/items/all_offered_items
 Authorization: {{token}}
 
+### GET one
+GET {{baseUrl}}/items/1
+Authorization: {{token}}
+
 ### Offer an item for the first time
 POST {{baseUrl}}/items/offer
 Authorization: {{token}}

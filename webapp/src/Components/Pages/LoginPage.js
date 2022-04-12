@@ -9,6 +9,7 @@ import Navbar from "../Navbar/Navbar";
 import {showError} from "../../utils/ShowError";
 
 const loginFormHtml = `
+<h1 class="display-3" id="login_title">Se connecter</h1>
 <div class="form">
   <form  id="loginForm">
     <div class="mb-3">
@@ -34,8 +35,8 @@ const loginFormHtml = `
  * Just an example to demonstrate how to use the router
  * to "redirect" to a new page
  */
-async function LoginPage() {
-  if (await getPayload()) {
+function LoginPage() {
+  if (getPayload()) {
     Redirect("/");
     return;
   }
@@ -47,10 +48,11 @@ async function LoginPage() {
 
 async function login(e) {
   e.preventDefault();
+  const loginMessage = document.querySelector("#loginMessage");
+  showError("Connexion en cours...", "info", loginMessage);
   const username = document.querySelector("#usernameInput").value;
   const password = document.querySelector("#passwordInput").value;
   const rememberMe = document.querySelector("#rememberMeInput").checked;
-  const loginMessage = document.querySelector("#loginMessage");
   if (username === "" ||
       password === "") {
     showError("Tous les champs doivent être complet", "danger", loginMessage)

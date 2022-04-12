@@ -56,7 +56,7 @@ public interface MemberUCC {
    * @param id of the member
    * @return True if success
    */
-  MemberDTO denyMember(int id, String text_refusalss);
+  MemberDTO denyMember(int id, String refusalText);
 
   /**
    * Verify the state of the member and then change the state of the member to confirmed.

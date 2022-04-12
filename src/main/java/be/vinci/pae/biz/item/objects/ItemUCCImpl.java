@@ -17,7 +17,7 @@ public class ItemUCCImpl implements ItemUCC {
   @Override
   public List<ItemDTO> getLatestItems() {
     dalServices.start();
-    List<ItemDTO> listItemDTO = itemDAO.getLatestItems();
+    List<ItemDTO> listItemDTO = itemDAO.getDonatedItems();
     if (listItemDTO == null) {
       dalServices.rollback();
     }
@@ -40,6 +40,7 @@ public class ItemUCCImpl implements ItemUCC {
   public List<ItemDTO> getAllOfferedItems() {
     dalServices.start();
     List<ItemDTO> listItemDTO = itemDAO.getAllOfferedItems();
+    System.out.println(listItemDTO);
     if (listItemDTO == null) {
       dalServices.rollback();
     }
@@ -60,12 +61,14 @@ public class ItemUCCImpl implements ItemUCC {
   }
 
   @Override
-  public boolean addItem(ItemDTO itemDTO) {
+  public int addItem(ItemDTO itemDTO) {
     dalServices.start();
-    if (!itemDAO.addItem(itemDTO)) {
+    int id_item = itemDAO.addItem(itemDTO);
+    if (id_item == -1) {
       dalServices.rollback();
     }
-    return dalServices.commit();
+    dalServices.commit();
+    return id_item;
   }
 
   @Override

@@ -3,7 +3,6 @@ package be.vinci.pae.biz.itemstype.objects;
 import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeUCC;
 import be.vinci.pae.dal.itemstype.interfaces.ItemsTypeDAO;
-import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.ihm.logs.LoggerHandler;
 import jakarta.inject.Inject;
@@ -17,7 +16,7 @@ public class ItemsTypeUCCImpl implements ItemsTypeUCC {
   private ItemsTypeDAO itemsTypeDAO;
   @Inject
   private DALServices dalServices;
-  private Logger logger = LoggerHandler.getLogger();
+  private final Logger logger = LoggerHandler.getLogger();
 
   @Override
   public List<ItemsTypeDTO> getAll() {

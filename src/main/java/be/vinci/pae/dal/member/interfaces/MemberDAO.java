@@ -30,5 +30,5 @@ public interface MemberDAO {
 
   MemberDTO isAdmin(int id);
 
-  MemberDTO denyMember(int id, String text_refusals);
+  MemberDTO denyMember(int id, String refusalText);
 }

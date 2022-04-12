@@ -19,7 +19,7 @@ function getObject(storeName) {
  * Get the token payload from the local or session storage.
  * @returns the payload object
  */
-async function getPayload() {
+function getPayload() {
   let token = localStorage.getItem("token");
   if (!token) {
     token = sessionStorage.getItem("token");

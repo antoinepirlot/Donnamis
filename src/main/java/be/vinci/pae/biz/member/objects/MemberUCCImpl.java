@@ -99,7 +99,7 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public MemberDTO denyMember(int id, String text_refusals) {
+  public MemberDTO denyMember(int id, String refusalText) {
     dalServices.start();
     Member member = (Member) memberDAO.getOneMember(id);
     if (member == null) {
@@ -110,7 +110,7 @@ public class MemberUCCImpl implements MemberUCC {
       dalServices.rollback();
       return null;
     }
-    MemberDTO memberDTO = memberDAO.denyMember(id, text_refusals);
+    MemberDTO memberDTO = memberDAO.denyMember(id, refusalText);
     if (memberDTO == null) {
       dalServices.rollback();
     } else {
@@ -168,6 +168,7 @@ public class MemberUCCImpl implements MemberUCC {
 
   @Override
   public boolean register(MemberDTO memberDTO) {
+    dalServices.start();
     Member member = (Member) memberDTO;
     member.hashPassword();
     if (!memberDAO.register(member)) {

@@ -16,7 +16,7 @@ import {isAdmin} from "../../utils/BackEndRequests";
 const navBarHtml = `
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Donnamis</a>
+      <a class="navbar-brand" data-uri="/" >Donnamis</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -31,7 +31,7 @@ const navBarHtml = `
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul id="navbarLinks" class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="#" data-uri="/">Home</a>
+            <a class="nav-link" aria-current="page" data-uri="/">Acceuil</a>
           </li>
         </ul>
       </div>
@@ -42,49 +42,37 @@ const navBarHtml = `
 
 const loginLinkHtml = `
           <li class="nav-item">
-            <a class="nav-link" href="#" data-uri="/login">Login</a>
+            <a class="nav-link" href="#" data-uri="/login">Se connecter</a>
           </li>
 `;
 
 const registerLinkHtml = `
           <li class="nav-item">
-            <a class="nav-link" href="#" data-uri="/register">Register</a>
+            <a class="nav-link" href="#" data-uri="/register">S'inscrire</a>
           </li>
 `;
 
 const logoutLinkHtml = `
           <li class="nav-item">
-            <a class="nav-link" href="#" data-uri="/logout">Logout</a>
+            <a class="nav-link" href="#" data-uri="/logout">Se déconnecter</a>
           </li>
 `;
 
 const listMemberLinkHtml = `
           <li class="nav-item">
-            <a class="nav-link" href="#" data-uri="/list_member">List Member</a>
-          </li>
-`;
-
-const latestItemsLinkHtml = `
-          <li class="nav-item">
-            <a class="nav-link" href="#" data-uri="/latest_items">Latest Items</a>
+            <a class="nav-link" href="#" data-uri="/list_member">Liste des membres</a>
           </li>
 `;
 
 const allItemsLinkHtml = `
           <li class="nav-item">
-            <a class="nav-link" href="#" data-uri="/all_items">All Items</a>
+            <a class="nav-link" href="#" data-uri="/all_items">Tous les objets</a>
           </li>
 `;
 
 const allOfferedItemsLinkHtml = `
           <li class="nav-item">
-            <a class="nav-link" href="#" data-uri="/all_offered_items">All Offered Items</a>
-          </li>
-`;
-
-const offersDetailLinkHtml = `
-          <li class="nav-item">
-            <a class="nav-link" href="#" data-uri="/offer?id=1">Offer detail</a>
+            <a class="nav-link" href="#" data-uri="/all_offered_items">Tous les objets offerts</a>
           </li>
 `;
 
@@ -110,12 +98,10 @@ const Navbar = async () => {
     memberUsername.innerHTML = memberDTO.username;
     if (await isAdmin()) {
       links.innerHTML += listMemberLinkHtml;
+      links.innerHTML += allItemsLinkHtml;
       memberUsername.innerHTML += " (admin)"
     }
-    links.innerHTML += latestItemsLinkHtml;
-    links.innerHTML += allItemsLinkHtml;
     links.innerHTML += allOfferedItemsLinkHtml;
-    links.innerHTML += offersDetailLinkHtml;
     links.innerHTML += offerAnItemLinkHtml;
     links.innerHTML += myItemsLinkHtml;
     links.innerHTML += logoutLinkHtml;

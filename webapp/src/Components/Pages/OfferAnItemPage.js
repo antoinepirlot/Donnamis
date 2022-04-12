@@ -4,6 +4,7 @@ import {getPayload} from "../../utils/session";
 
 const htmlForm = `
   <div>
+    <h1 class="display-3">Offrir un objet</h1>
     <form id="offerItemForm">
       Nom de l'objet<span id="asterisk">*</span>: <br>
       <textarea id="titleForm" cols="30" rows="3"></textarea><br>
@@ -37,7 +38,8 @@ const OfferAnItemPage = async () => {
 
 async function showItemsTypes() {
   const itemsTypes = await getItemsTypes();
-  const itemsTypeList = document.querySelector("#itemsTypes")
+  const itemsTypeList = document.querySelector("#itemsTypes");
+  itemsTypeList.innerHTML = "";
   itemsTypes.forEach(itemsType => {
     itemsTypeList.innerHTML += `
       <option value="${itemsType.itemType}">
@@ -46,13 +48,17 @@ async function showItemsTypes() {
 }
 
 async function offerItem(e) {
+  const date = new Date();
   e.preventDefault();
   const title = document.querySelector("#titleForm").value;
   const itemDescription = document.querySelector("#itemDescriptionForm").value;
-  const photo = document.querySelector("#photoForm").value;
+  let photo = document.querySelector("#photoForm").value;
+  if (photo === "") {
+    photo = null;
+  }
   const timeSlot = document.querySelector("#timeSlotForm").value;
   const itemTypeValue = document.querySelector("#itemTypeFormList").value;
-  const payload = await getPayload();
+  const payload = getPayload();
   const offer = {
     timeSlot: timeSlot
   };
@@ -69,7 +75,8 @@ async function offerItem(e) {
     photo: photo,
     itemType: itemType,
     member: member,
-    offerList: offersList
+    offerList: offersList,
+    lastOfferDate: date
   }
   try {
     await offerAnItem(item);

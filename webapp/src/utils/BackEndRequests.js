@@ -162,7 +162,7 @@ async function getItems() {
       "Authorization": getObject("token")
     }
   };
-  const response = await fetch("/api/items/all_offered_items", request);
+  const response = await fetch("/api/items/all_items", request);
   if (!response.ok) {
     throw new Error("Erreur lors du fetch");
   }
@@ -309,6 +309,72 @@ async function getProfile(id) {
   return await response.json()
 }
 
+async function getLatestItems() {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/items/latest_items/`, request);
+  if (!response.ok) {
+    // status code was not 200, error status code
+    showError("There's no offer with this id");
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText
+    );
+  }
+  return await response.json()
+}
+
+async function getOfferedItems() {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/items/all_offered_items/`, request);
+  if (!response.ok) {
+    // status code was not 200, error status code
+    showError("There's no offer with this id");
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText
+    );
+  }
+  return await response.json()
+}
+
+/**
+ * Ask backend to mark an interest for an item.
+ * @returns {Promise<boolean>} true if the request has been done otherwise false
+ */
+async function postInterest(interest) {
+  const request = {
+    method: "POST",
+    headers: {
+      "Authorization": getObject("token"),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(interest)
+  };
+  const response = await fetch("api/interests", request);
+  console.table(response);
+  if (response.ok) {
+    showError(
+        "Votre intérêt pour cet article à été bien été enregistré.",
+        "success", interestMessage);
+  } else if (response.status === 409) {
+    showError("Vous avez déjà mis une marque d'intérêt pour cette offre",
+        "danger", interestMessage);
+  } else if (response.status === 403) {
+    showError(
+        "Votre numero de téléphone n'est pas renseigné, veuillez l'ajouter si vous désirez être appelé.",
+        "danger", interestMessage);
+  }
+  return response.ok;
+}
+
 export {
   login,
   register,
@@ -326,5 +392,9 @@ export {
   getItem,
   getItemsTypes,
   offerAnItem,
-  getProfile
+  getProfile,
+  offerAnItem,
+  getLatestItems,
+  getOfferedItems,
+  postInterest
 };

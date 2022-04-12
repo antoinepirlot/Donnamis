@@ -33,9 +33,9 @@ public interface InterestUCC {
   /**
    * Verify if the interest exist in the DB.
    *
-   * @param idOffer  the id of the offer
+   * @param idItem    the id of the offer
    * @param memberDTO the member
    * @return true if exist in the DB false if not
    */
-  boolean interestExist(int idOffer, MemberDTO memberDTO);
+  boolean interestExist(int idItem, MemberDTO memberDTO);
 }

@@ -2,6 +2,7 @@ package be.vinci.pae.ihm.item;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
+import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.utils.Json;
@@ -39,7 +40,7 @@ public class ItemResource {
   @Path("latest_items")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
+  //@AuthorizeMember
   public List<ItemDTO> getLatestItems() {
     List<ItemDTO> listItemDTO = itemUCC.getLatestItems();
     if (listItemDTO == null) {
@@ -71,7 +72,9 @@ public class ItemResource {
     if (listItemDTO == null) {
       throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
     }
-
+    for (ItemDTO itemDTO : listItemDTO) {
+      this.offerUCC.getAllOffersOf(itemDTO);
+    }
     //Convert to ObjectNode
     try {
       return listItemDTO;
@@ -92,7 +95,11 @@ public class ItemResource {
   @AuthorizeMember
   public List<ItemDTO> getAllOfferedItems() {
     System.out.println("Get all offered items");
-    return this.itemUCC.getAllOfferedItems();
+    List<ItemDTO> itemDTOList = this.itemUCC.getAllOfferedItems();
+    for (ItemDTO itemDTO : itemDTOList) {
+      this.offerUCC.getAllOffersOf(itemDTO);
+    }
+    return itemDTOList;
   }
 
   /**
@@ -105,16 +112,27 @@ public class ItemResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public void addItem(ItemDTO itemDTO) {
-    if (itemDTO == null
-        || itemDTO.getItemDescription() == null || itemDTO.getItemDescription().equals("")
-        || itemDTO.getItemType() == null || itemDTO.getMember() == null
-        || itemDTO.getMember().getId() < 1
-        || itemDTO.getTitle() == null || itemDTO.getTitle().equals("")
+    System.out.println(itemDTO.getOfferList());
+    if (
+        itemDTO.getItemDescription() == null || itemDTO.getItemDescription().isBlank()
+            || itemDTO.getItemType() == null || itemDTO.getItemType().getItemType() == null
+            || itemDTO.getItemType().getItemType().isBlank()
+            || itemDTO.getMember() == null || itemDTO.getMember().getId() < 1
+            || itemDTO.getTitle() == null || itemDTO.getTitle().isBlank()
+            || itemDTO.getLastOfferDate() == null
+            || itemDTO.getOfferList().get(0) == null
     ) {
       throw new WebApplicationException("Wrong item body", Status.BAD_REQUEST);
     }
-    if (!this.itemUCC.addItem(itemDTO)) {
+    int idItem = this.itemUCC.addItem(itemDTO);
+    if (idItem == -1) {
       String message = "The items can't be added to the db due to a unexpected error";
+      throw new WebApplicationException(message, Status.BAD_REQUEST);
+    }
+    OfferDTO offerDTO = itemDTO.getOfferList().get(0);
+    offerDTO.setIdItem(idItem);
+    if (!this.offerUCC.createOffer(offerDTO)) {
+      String message = "The offer can't be added to the db due to a unexpected error";
       throw new WebApplicationException(message, Status.BAD_REQUEST);
     }
   }
@@ -151,10 +169,12 @@ public class ItemResource {
   @AuthorizeMember
   public List<ItemDTO> getAllItemsByMemberId(@PathParam("id") int id) {
     List<ItemDTO> listItemDTO = itemUCC.getAllItemsByMemberId(id);
-    if (listItemDTO == null) {
+    if (listItemDTO == null || listItemDTO.isEmpty()) {
       throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
     }
-
+    for (ItemDTO itemDTO : listItemDTO) {
+      this.offerUCC.getAllOffersOf(itemDTO);
+    }
     //Convert to ObjectNode
     try {
       return listItemDTO;
@@ -181,7 +201,8 @@ public class ItemResource {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
           .entity("Ressource not found").type("text/plain").build());
     }
-    itemDTO.addOffer(this.offerUCC.getLatestItemOffer(itemDTO));
+    this.offerUCC.getAllOffersOf(itemDTO);
+    System.out.println(itemDTO);
     return this.jsonUtil.filterPublicJsonView(itemDTO);
   }
 

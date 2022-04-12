@@ -1,7 +1,5 @@
 package be.vinci.pae.biz.offer.objects;
 
-import be.vinci.pae.biz.item.interfaces.Item;
-import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.interfaces.Offer;

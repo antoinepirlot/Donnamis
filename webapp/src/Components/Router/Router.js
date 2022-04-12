@@ -1,9 +1,8 @@
-import HomePage from "../Pages/HomePage";
 import LoginPage from "../Pages/LoginPage";
 import Logout from "../Logout/Logout";
 import ListMemberPage from "../Pages/ListMemberPage";
 import LatestItemsOffersPage from "../Pages/LatestItemsOffersPage"
-import AllItemsOffersPage from "../Pages/AllItemsPage"
+import AllItemsPage from "../Pages/AllItemsPage"
 import RegisterPage from "../Pages/RegisterPage";
 import AllOfferedItemsPage from "../Pages/AllOfferedItemPage";
 import ViewItemPage from "../Pages/ViewItemPage";
@@ -13,13 +12,13 @@ import ProfilePage from "../Pages/Profile";
 
 // Configure your routes here
 const routes = {
-  "/": HomePage,
+  "/": LatestItemsOffersPage,
   "/login": LoginPage,
   "/register": RegisterPage,
   "/logout": Logout,
   "/list_member": ListMemberPage,
-  "/latest_items": LatestItemsOffersPage,
-  "/all_items": AllItemsOffersPage,
+  //"/latest_items": LatestItemsOffersPage,
+  "/all_items": AllItemsPage,
   "/all_offered_items": AllOfferedItemsPage,
   "/item": ViewItemPage,
   "/offer_item": OfferAnItemPage,

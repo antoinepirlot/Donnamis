@@ -3,7 +3,6 @@ package be.vinci.pae.dal.itemstype.objects;
 import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.dal.itemstype.interfaces.ItemsTypeDAO;
-import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
 import be.vinci.pae.ihm.logs.LoggerHandler;
@@ -22,17 +21,15 @@ public class ItemsTypeDAOImpl implements ItemsTypeDAO {
   private Factory factory;
   @Inject
   private DALBackendService dalBackendService;
-  @Inject
-  private MemberDAO memberDAO;
-  private Logger logger = LoggerHandler.getLogger();
+  private final Logger logger = LoggerHandler.getLogger();
 
   @Override
   public List<ItemsTypeDTO> getAll() {
     List<ItemsTypeDTO> itemsTypesToReturn = new ArrayList<>();
     String query = "SELECT id_type, item_type "
         + "FROM project_pae.items_types;";
-    try (PreparedStatement preparedStatement = this.dalBackendService.getPreparedStatement(query)){
-      try(ResultSet rs = preparedStatement.executeQuery()) {
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           ItemsTypeDTO itemsTypeDTO = ObjectsInstanceCreator
               .createItemsTypeInstance(this.factory, rs);

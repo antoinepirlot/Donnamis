@@ -1,6 +1,4 @@
-import {
-  getPayload,
-} from "../../utils/session";
+import {getPayload,} from "../../utils/session";
 import {register as registerBackEndRequest} from "../../utils/BackEndRequests";
 import {Redirect} from "../Router/Router";
 import {showError} from "../../utils/ShowError";
@@ -68,8 +66,8 @@ const registerFormHtml = `
  * Just an example to demonstrate how to use the router
  * to "redirect" to a new page
  */
-async function RegisterPage() {
-  if (await getPayload()) {
+function RegisterPage() {
+  if (getPayload()) {
     Redirect("/");
     return;
   }
@@ -81,6 +79,9 @@ async function RegisterPage() {
 
 async function register(e) {
   e.preventDefault();
+  //div
+  const registerMessage = document.querySelector("#registerMessage");
+  showError("Inscription en cours...", "info", registerMessage);
   //member
   const username = document.querySelector("#usernameInput").value;
   const password = document.querySelector("#passwordInput").value;
@@ -92,8 +93,6 @@ async function register(e) {
   const unitNumber = document.querySelector("#unitNumberInput").value;
   const commune = document.querySelector("#communeInput").value;
   const postcode = document.querySelector("#postcodeInput").value;
-  //div
-  const registerMessage = document.querySelector("#registerMessage");
 
   if (
       !username || !password || !firstName || !lastName || !street || !commune

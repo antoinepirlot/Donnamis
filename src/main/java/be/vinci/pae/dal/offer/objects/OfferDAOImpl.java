@@ -137,11 +137,13 @@ public class OfferDAOImpl implements OfferDAO {
   }
 
   @Override
-  public OfferDTO getLatestItemOffer(ItemDTO itemDTO) {
+  public OfferDTO getLastOfferOf(ItemDTO itemDTO) throws SQLException {
     System.out.println("Get latest item's offer");
     String query = "SELECT id_offer, date, time_slot, id_item "
         + "FROM project_pae.offers o "
-        + "WHERE id_item = ?;";
+        + "WHERE id_item = ? "
+        + "ORDER BY date DESC "
+        + "LIMIT 1;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       System.out.println("Prepared statement successfully generated");
       preparedStatement.setInt(1, itemDTO.getId());
@@ -153,6 +155,7 @@ public class OfferDAOImpl implements OfferDAO {
       }
     } catch (SQLException e) {
       System.out.println(e.getMessage());
+      throw e;
     }
     return null;
   }

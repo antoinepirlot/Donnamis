@@ -31,8 +31,7 @@ const tableHtml = `
 const MyItemsPage = async () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtml;
-  const payload = await getPayload();
-  const items = await getMyItems(payload.id);
+  const items = await getMyItems(getPayload().id);
   if (items.length === 0) {
     const message = "Vous n'avez aucune offre.";
     const errorMessageMyItemsPage = document.querySelector(
@@ -53,14 +52,10 @@ function showItems(items) {
         <td>${item.itemDescription}</td>
         <td>${item.photo}</td>
         <td>${item.offerStatus}</td>
-        <td><button type="submit" class="btn btn-primary" id="ItemDetails">Voir offre</button></td>
+        <td><a id="ItemDetails" href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir offre</a></td>
         <td><button type="submit" class="btn btn-danger" id="ItemCancelled">Annuler l'offre</button></td>
       </tr>    
     `;
-    const OfferDetailsButton = document.querySelector("#ItemDetails");
-    OfferDetailsButton.addEventListener("click", function () {
-      Redirect(`/offer?id=${item.id}`);
-    });
 
     const OfferCancelledButton = document.querySelector("#ItemCancelled");
     OfferCancelledButton.addEventListener("click", async (e) => {
