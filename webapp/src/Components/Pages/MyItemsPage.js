@@ -2,7 +2,6 @@ import {
   cancelOffer as cancelOfferBackEnd,
   getMyItems
 } from "../../utils/BackEndRequests";
-import {Redirect} from "../Router/Router";
 import {getPayload} from "../../utils/session";
 import {showError} from "../../utils/ShowError";
 
@@ -52,17 +51,17 @@ function showItems(items) {
         <td>${item.itemDescription}</td>
         <td>${item.photo}</td>
         <td>${item.offerStatus}</td>
-        <td><a id="ItemDetails" href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir offre</a></td>
-        <td><button type="submit" class="btn btn-danger" id="ItemCancelled">Annuler l'offre</button></td>
+        <td><a id="itemDetails" href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir offre</a></td>
+        <td><button id="itemCancelled" class="btn btn-danger">Annuler l'offre</button></td>
       </tr>    
     `;
-
-    const OfferCancelledButton = document.querySelector("#ItemCancelled");
-    OfferCancelledButton.addEventListener("click", async (e) => {
+    const offerCancelledButton = document.querySelector("#itemCancelled");
+    offerCancelledButton.addEventListener("click", async (e) => {
+      console.log(item)
       e.preventDefault();
       try {
         await cancelOfferBackEnd(item.id);
-        Redirect("/my_items");
+        await MyItemsPage();
       } catch (error) {
         console.error("MyItemsPage::error::deny registration:", error);
       }

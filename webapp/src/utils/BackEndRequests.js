@@ -283,10 +283,10 @@ async function cancelOffer(id) {
     }
   };
   const url = `/api/items/cancel/${id}`;
-  const reponse = await fetch(url, request);
-  if (!reponse.ok) {
+  const response = await fetch(url, request);
+  if (!response.ok) {
     throw new Error(
-        "fetch error : " + reponse.status + " : " + reponse.statusText
+        "fetch error : " + response.status + " : " + response.statusText
     );
   }
 }
