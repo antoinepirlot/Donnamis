@@ -2,7 +2,6 @@ import {
   cancelOffer as cancelOfferBackEnd,
   getMyItems
 } from "../../utils/BackEndRequests";
-import {Redirect} from "../Router/Router";
 import {getPayload} from "../../utils/session";
 import {showError} from "../../utils/ShowError";
 
@@ -31,8 +30,7 @@ const tableHtml = `
 const MyItemsPage = async () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtml;
-  const payload = getPayload();
-  const items = await getMyItems(payload.id);
+  const items = await getMyItems(getPayload().id);
   if (items.length === 0) {
     const message = "Vous n'avez aucune offre.";
     const errorMessageMyItemsPage = document.querySelector(
@@ -53,24 +51,16 @@ function showItems(items) {
         <td>${item.itemDescription}</td>
         <td>${item.photo}</td>
         <td>${item.offerStatus}</td>
-        <td><button type="submit" class="btn btn-primary" id="ItemDetails">Voir offre</button></td>
-        <td><button type="submit" class="btn btn-danger" id="ItemCancelled">Annuler l'offre</button></td>
-      </tr>    
+        <td><a id="itemDetails" href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir offre</a></td>
+        <td><button id="itemCancelled" class="btn btn-danger" value="${item.id}">Annuler l'offre</button></td>
+      </tr>
     `;
-    const OfferDetailsButton = document.querySelector("#ItemDetails");
-    OfferDetailsButton.addEventListener("click", function () {
-      Redirect(`/offer?id=${item.id}`);
-    });
-
-    const OfferCancelledButton = document.querySelector("#ItemCancelled");
-    OfferCancelledButton.addEventListener("click", async (e) => {
-      e.preventDefault();
-      try {
-        await cancelOfferBackEnd(item.id);
-        Redirect("/my_items");
-      } catch (error) {
-        console.error("MyItemsPage::error::deny registration:", error);
-      }
+  });
+  const cancelButtons = document.querySelectorAll("#itemCancelled");
+  cancelButtons.forEach(cancelButton => {
+    cancelButton.addEventListener("click", async () => {
+      await cancelOfferBackEnd(cancelButton.value);
+      await MyItemsPage()
     });
   });
 }

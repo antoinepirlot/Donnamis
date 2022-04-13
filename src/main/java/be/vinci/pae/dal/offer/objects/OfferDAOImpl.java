@@ -137,26 +137,27 @@ public class OfferDAOImpl implements OfferDAO {
   }
 
   @Override
-  public void addOffersTo(ItemDTO itemDTO) throws SQLException {
+  public OfferDTO getLastOfferOf(ItemDTO itemDTO) throws SQLException {
     System.out.println("Get latest item's offer");
     String query = "SELECT id_offer, date, time_slot, id_item "
         + "FROM project_pae.offers o "
         + "WHERE id_item = ? "
-        + "ORDER BY date DESC;";
+        + "ORDER BY date DESC "
+        + "LIMIT 1;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       System.out.println("Prepared statement successfully generated");
       preparedStatement.setInt(1, itemDTO.getId());
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) { //We know only one is returned by the db
           System.out.println("OFFER FOUNDED");
-          OfferDTO offerDTO = ObjectsInstanceCreator.createOfferInstance(this.factory, rs);
-          itemDTO.addOffer(offerDTO);
+          return ObjectsInstanceCreator.createOfferInstance(this.factory, rs);
         }
       }
     } catch (SQLException e) {
       System.out.println(e.getMessage());
       throw e;
     }
+    return null;
   }
 
 

@@ -2,6 +2,7 @@ package be.vinci.pae.dal.offer.interfaces;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -22,9 +23,12 @@ public interface OfferDAO {
   OfferDTO getOne(int id);
 
   /**
-   * Add offers to itemDTO offer list. (no insert into the db)
+   * Get the last offer of the itemDTO.
+   *
    * @param itemDTO the item that need offers to be added
+   * @return the more recent offer of itemDTO
    * @throws SQLException if something is wrong in the
    */
-  void addOffersTo(ItemDTO itemDTO) throws SQLException;
+  @JsonIgnore
+  OfferDTO getLastOfferOf(ItemDTO itemDTO) throws SQLException;
 }

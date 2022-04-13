@@ -56,8 +56,9 @@ public class ObjectsInstanceCreator {
       );
       itemDTO.setItemType(createItemsTypeInstance(factory, rs));
       itemDTO.setMember(createMemberInstance(factory, rs));
+      System.out.println(itemDTO);
     } catch (SQLException e) {
-      System.out.println("Coucou les enfants: ------> " + itemDTO);
+      e.printStackTrace();
       return null;
     }
     return itemDTO;
@@ -144,7 +145,7 @@ public class ObjectsInstanceCreator {
    * @return a new address instance with initialized attributes
    * @throws SQLException if an attributes is not in the result set
    */
-  private static AddressDTO createAddressInstance(Factory factory, ResultSet rs)
+  public static AddressDTO createAddressInstance(Factory factory, ResultSet rs)
       throws SQLException {
     System.out.println("setting all address attributes");
     AddressDTO addressDTO = factory.getAddress();

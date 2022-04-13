@@ -134,12 +134,12 @@ public class ItemImpl implements Item {
   }
 
   @Override
-  public void addOffer(OfferDTO offer) {
-    this.offerList.add((Offer) offer);
+  public void addOffer(Offer offer) {
+    this.offerList.add(offer);
   }
 
   @Override
-  public OfferDTO getLastOffer() {
+  public Offer getLastOffer() {
     return this.offerList.stream()
         .filter(offer -> offer.getDate().equals(this.lastOfferDate))
         .findFirst()

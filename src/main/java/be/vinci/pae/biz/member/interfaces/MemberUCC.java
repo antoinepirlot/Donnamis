@@ -1,5 +1,6 @@
 package be.vinci.pae.biz.member.interfaces;
 
+import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import java.util.List;
 
 public interface MemberUCC {
@@ -32,6 +33,14 @@ public interface MemberUCC {
    * @return the member or null if there's no member with the id
    */
   MemberDTO getOneMember(int id);
+
+  /**
+   * Asks the UCC to get the adress of the membe identified by its id.
+   *
+   * @param id the member's id
+   * @return the adress or null if there's no member with the id
+   */
+  AddressDTO getAddressMember(int id);
 
   /**
    * Verify the state of the member and then change the state of the member.

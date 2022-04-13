@@ -120,6 +120,7 @@ public class ItemDAOImpl implements ItemDAO {
   public ItemDTO getOneItem(int id) {
     String query = ""
         + "SELECT i.id_item, i.item_description, i.photo, i.title, i.offer_status, "
+        + "       i.last_offer_date, "
         + "       it.id_type, it.item_type, i.last_offer_date, "
         + "       m.id_member, m.username, m.last_name, m.first_name "
         + "FROM project_pae.items i, "
@@ -194,17 +195,19 @@ public class ItemDAOImpl implements ItemDAO {
     System.out.println("Get all offered items for a Member (ItemDAOImpl)");
     List<ItemDTO> itemsDTO = new ArrayList<>();
     String query = "SELECT i.id_item, i.item_description, i.photo, i.title, i.offer_status, "
-        + "it.id_type, it.item_type, "
+        + "i.last_offer_date, it.id_type, it.item_type, "
         + "m.username, m.last_name, m.first_name "
         + "FROM project_pae.items i, project_pae.items_types it, project_pae.members m "
-        + "WHERE i.id_type = it.id_type AND i.id_member = m.id_member AND i.offer_status = ? "
+        + "WHERE i.id_type = it.id_type AND i.id_member = m.id_member "
         + "  AND m.id_member = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
-      ps.setString(1, DEFAULT_OFFER_STATUS);
-      ps.setInt(2, id);
+      ps.setInt(1, id);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          itemsDTO.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
+          ItemDTO itemDTO = ObjectsInstanceCreator.createItemInstance(this.factory, rs);
+          if (itemDTO != null) {
+            itemsDTO.add(itemDTO);
+          }
         }
       }
     } catch (SQLException e) {

@@ -7,6 +7,7 @@ import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeAdmin;
+import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.logs.LoggerHandler;
 import be.vinci.pae.ihm.utils.Json;
 import be.vinci.pae.utils.Config;
@@ -58,10 +59,35 @@ public class MemberResource {
     try {
       List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
       if (listMemberDTO == null) {
-        throw new ObjectNotFoundException("No member into the database");
+        String message = "No member into the database";
+        this.logger.log(Level.INFO, message);
+        throw new ObjectNotFoundException();
       }
       return this.jsonUtil.filterPublicJsonViewAsList(listMemberDTO);
     } catch (Exception e) {
+      this.logger.log(Level.SEVERE, e.getMessage());
+      return null;
+    }
+  }
+
+  @GET
+  @Path("profil/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
+  public MemberDTO getMemberById(@PathParam("id") int id) {
+    try {
+      MemberDTO memberDTO = memberUCC.getOneMember(id);
+      if (memberDTO == null) {
+        throw new ObjectNotFoundException("Member not found");
+      }
+      AddressDTO addressDTO = memberUCC.getAddressMember(id);
+      if (addressDTO == null) {
+        throw new ObjectNotFoundException("Address not found");
+      }
+      memberDTO.setAddress(addressDTO);
+      return memberDTO;
+    } catch (Exception e) { //Exception Critique
       this.logger.log(Level.SEVERE, e.getMessage());
       return null;
     }
