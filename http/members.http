@@ -23,6 +23,10 @@ Content-Type: application/json
   client.global.set("token", response.body.token);
 %}
 
+###
+GET {{baseUrl}}/members/me
+Authorization: {{token}}
+
 ### Confirm registration
 PUT {{baseUrl}}/members/confirm/3
 Authorization: {{token}}

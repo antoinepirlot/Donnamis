@@ -2,8 +2,8 @@ package be.vinci.pae.ihm.filter;
 
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
-import be.vinci.pae.ihm.filter.utils.TokenDecoder;
 import be.vinci.pae.ihm.logs.LoggerHandler;
+import be.vinci.pae.ihm.utils.TokenDecoder;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

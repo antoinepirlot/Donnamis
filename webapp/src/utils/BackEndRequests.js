@@ -1,5 +1,6 @@
-import {getObject, getPayload} from "./session";
+import {getObject} from "./session";
 import {showError} from "./ShowError";
+import {Redirect} from "../Components/Router/Router";
 
 async function login(username, password) {
   const request = {
@@ -19,6 +20,22 @@ async function login(username, password) {
     showError("Aucun utilisateur pour ce username et ce mot de passe",
         "danger", loginMessage);
     return;
+  }
+  return await response.json();
+}
+
+async function me() {
+  const request = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch("api/members/me", request);
+  if (!response.ok) {
+    Redirect("/logout");
+    throw new Error("Problème lors du rafraichissement du token");
   }
   return await response.json();
 }
@@ -125,7 +142,6 @@ async function confirmAdmin(id) {
       "Authorization": getObject("token")
     }
   };
-  const payload = await getPayload();
   const url = `/api/members/confirmAdmin/${id}`;
   const response = await fetch(url, request);
   if (!response.ok) {
@@ -390,6 +406,7 @@ async function postInterest(interest, interestMessage) {
 
 export {
   login,
+  me,
   register,
   isAdmin,
   getRegisteredMembers,
