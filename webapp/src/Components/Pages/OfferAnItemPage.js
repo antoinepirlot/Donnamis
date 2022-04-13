@@ -1,6 +1,7 @@
 import {getItemsTypes, offerAnItem} from "../../utils/BackEndRequests";
 import {showError} from "../../utils/ShowError";
 import {getPayload} from "../../utils/session";
+import {Redirect} from "../Router/Router";
 
 const htmlForm = `
   <div>
@@ -29,6 +30,10 @@ const htmlForm = `
 `;
 
 const OfferAnItemPage = async () => {
+  if (!getPayload()) {
+    Redirect("/");
+    return;
+  }
   const page = document.querySelector("#page");
   page.innerHTML = htmlForm;
   const offerItemForm = document.querySelector("#offerItemForm");

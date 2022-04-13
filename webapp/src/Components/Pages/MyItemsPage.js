@@ -6,6 +6,7 @@ import {
 import {getPayload} from "../../utils/session";
 import {showError} from "../../utils/ShowError";
 import {openModal} from "../../utils/Modals";
+import {Redirect} from "../Router/Router";
 
 const myItemsPageHtml = `
   <div>
@@ -47,6 +48,10 @@ const myItemsPageHtml = `
 let offerAgainItemId;
 
 const MyItemsPage = async () => {
+  if (!getPayload()) {
+    Redirect("/");
+    return;
+  }
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = myItemsPageHtml;
   const items = await getMyItems(getPayload().id);

@@ -1,4 +1,5 @@
-import {getItems} from "../../utils/BackEndRequests";
+import {getItems, isAdmin} from "../../utils/BackEndRequests";
+import {Redirect} from "../Router/Router";
 
 const tableHtml = `
   <div>
@@ -9,6 +10,10 @@ const tableHtml = `
 `;
 
 const AllItemsPage = async () => {
+  if (!await isAdmin()) {
+    Redirect("/");
+    return;
+  }
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtml;
   const item = await getItems();

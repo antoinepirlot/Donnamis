@@ -11,7 +11,7 @@ const tableHtml = `
   </div>
 `;
 
-const AllOfferedItemsPage = async () => {
+const LatestItemsOffersPage = async () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtml;
   const item = await getLatestItems();
@@ -52,4 +52,4 @@ function showItems(item) {
 //    });
 //  })
 //}
-export default AllOfferedItemsPage;
+export default LatestItemsOffersPage;
