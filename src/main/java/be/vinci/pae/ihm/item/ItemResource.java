@@ -46,14 +46,7 @@ public class ItemResource {
     if (listItemDTO == null) {
       throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
     }
-
-    //Convert to ObjectNode
-    try {
-      return this.jsonUtil.filterPublicJsonViewAsList(listItemDTO);
-    } catch (Exception e) {
-      System.out.println("Unable to create list of the latest items");
-      return null;
-    }
+    return this.jsonUtil.filterPublicJsonViewAsList(listItemDTO);
   }
 
 
@@ -75,13 +68,7 @@ public class ItemResource {
     for (ItemDTO itemDTO : listItemDTO) {
       this.offerUCC.getAllOffersOf(itemDTO);
     }
-    //Convert to ObjectNode
-    try {
-      return listItemDTO;
-    } catch (Exception e) {
-      System.out.println("Unable to create list of the latest items");
-      return null;
-    }
+    return listItemDTO;
   }
 
   /**
@@ -176,12 +163,7 @@ public class ItemResource {
       this.offerUCC.getAllOffersOf(itemDTO);
     }
     //Convert to ObjectNode
-    try {
-      return listItemDTO;
-    } catch (Exception e) {
-      System.out.println("Unable to create list of the latest items");
-      return null;
-    }
+    return listItemDTO;
   }
 
   /**
@@ -205,6 +187,4 @@ public class ItemResource {
     System.out.println(itemDTO);
     return this.jsonUtil.filterPublicJsonView(itemDTO);
   }
-
-
 }

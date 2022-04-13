@@ -19,7 +19,7 @@ import java.util.List;
 @Singleton
 @Path("offers")
 public class OfferResource {
-  
+
   private final Json<OfferDTO> jsonUtil = new Json<>(OfferDTO.class);
   @Inject
   private OfferUCC offerUCC;
@@ -66,14 +66,7 @@ public class OfferResource {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
           .entity("Ressource not found").type("text/plain").build());
     }
-
-    //Convert to ObjectNode
-    try {
-      return this.jsonUtil.filterPublicJsonViewAsList(listOfferDTO);
-    } catch (Exception e) {
-      System.out.println("Unable to create list of the latest items");
-      return null;
-    }
+    return this.jsonUtil.filterPublicJsonViewAsList(listOfferDTO);
   }
 
 
@@ -93,14 +86,7 @@ public class OfferResource {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
           .entity("Ressource not found").type("text/plain").build());
     }
-
-    //Convert to ObjectNode
-    try {
-      return this.jsonUtil.filterPublicJsonViewAsList(listOfferDTO);
-    } catch (Exception e) {
-      System.out.println("Unable to create list of all the items");
-      return null;
-    }
+    return this.jsonUtil.filterPublicJsonViewAsList(listOfferDTO);
   }
 
 }

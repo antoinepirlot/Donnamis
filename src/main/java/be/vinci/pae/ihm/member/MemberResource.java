@@ -56,18 +56,13 @@ public class MemberResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<MemberDTO> getAllMembers() {
-    try {
-      List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
-      if (listMemberDTO == null) {
-        String message = "No member into the database";
-        this.logger.log(Level.INFO, message);
-        throw new ObjectNotFoundException();
-      }
-      return this.jsonUtil.filterPublicJsonViewAsList(listMemberDTO);
-    } catch (Exception e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
-      return null;
+    List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
+    if (listMemberDTO == null) {
+      String message = "No member into the database";
+      this.logger.log(Level.INFO, message);
+      throw new ObjectNotFoundException();
     }
+    return this.jsonUtil.filterPublicJsonViewAsList(listMemberDTO);
   }
 
   @GET
@@ -76,21 +71,16 @@ public class MemberResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public MemberDTO getMemberById(@PathParam("id") int id) {
-    try {
-      MemberDTO memberDTO = memberUCC.getOneMember(id);
-      if (memberDTO == null) {
-        throw new ObjectNotFoundException("Member not found");
-      }
-      AddressDTO addressDTO = memberUCC.getAddressMember(id);
-      if (addressDTO == null) {
-        throw new ObjectNotFoundException("Address not found");
-      }
-      memberDTO.setAddress(addressDTO);
-      return memberDTO;
-    } catch (Exception e) { //Exception Critique
-      this.logger.log(Level.SEVERE, e.getMessage());
-      return null;
+    MemberDTO memberDTO = memberUCC.getOneMember(id);
+    if (memberDTO == null) {
+      throw new ObjectNotFoundException("Member not found");
     }
+    AddressDTO addressDTO = memberUCC.getAddressMember(id);
+    if (addressDTO == null) {
+      throw new ObjectNotFoundException("Address not found");
+    }
+    memberDTO.setAddress(addressDTO);
+    return memberDTO;
   }
 
   /**
@@ -105,17 +95,12 @@ public class MemberResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<MemberDTO> getMembersRegistered() {
-    try {
-      List<MemberDTO> registeredMembers = memberUCC.getMembersRegistered();
-      if (registeredMembers == null) {
-        String message = "Get all registered members but there's no registered members.";
-        throw new ObjectNotFoundException(message);
-      }
-      return this.jsonUtil.filterPublicJsonViewAsList(registeredMembers);
-    } catch (Exception e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
-      return null;
+    List<MemberDTO> registeredMembers = memberUCC.getMembersRegistered();
+    if (registeredMembers == null) {
+      String message = "Get all registered members but there's no registered members.";
+      throw new ObjectNotFoundException(message);
     }
+    return this.jsonUtil.filterPublicJsonViewAsList(registeredMembers);
   }
 
   /**
@@ -130,17 +115,12 @@ public class MemberResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<MemberDTO> getMembersDenied() {
-    try {
-      List<MemberDTO> deniedMembers = memberUCC.getMembersDenied();
-      if (deniedMembers == null) {
-        String message = "Get all denied members but there's no denied members.";
-        throw new ObjectNotFoundException(message);
-      }
-      return this.jsonUtil.filterPublicJsonViewAsList(deniedMembers);
-    } catch (Exception e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
-      return null;
+    List<MemberDTO> deniedMembers = memberUCC.getMembersDenied();
+    if (deniedMembers == null) {
+      String message = "Get all denied members but there's no denied members.";
+      throw new ObjectNotFoundException(message);
     }
+    return this.jsonUtil.filterPublicJsonViewAsList(deniedMembers);
   }
 
   /**
@@ -155,17 +135,16 @@ public class MemberResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public MemberDTO confirmMember(@PathParam("id") int id) {
-    try {
-      System.out.println("********* Confirm Member *************");
-      if (memberUCC.getOneMember(id) == null) {
-        throw new ObjectNotFoundException("No member with the id: " + id);
-      }
-      MemberDTO confirmedMember = memberUCC.confirmMember(id);
-      return this.jsonUtil.filterPublicJsonView(confirmedMember);
-    } catch (Exception e) {
-      this.logger.log(Level.INFO, e.getMessage());
+    System.out.println("********* Confirm Member *************");
+    if (memberUCC.getOneMember(id) == null) {
+      throw new ObjectNotFoundException("No member with the id: " + id);
     }
-    return null;
+    MemberDTO confirmedMember = memberUCC.confirmMember(id);
+    if (confirmedMember == null) {
+      String message = "Issue while confirming member.";
+      throw new NullPointerException(message);
+    }
+    return this.jsonUtil.filterPublicJsonView(confirmedMember);
   }
 
   /**
@@ -255,16 +234,11 @@ public class MemberResource {
    * @return objectNode that contains the new token
    */
   private ObjectNode createObjectNode(String token, MemberDTO memberDTO) {
-    try {
-      return jsonMapper.createObjectNode()
-          .put("token", token)
-          .putPOJO("memberDTO", this.jsonUtil
-              .filterPublicJsonView(memberDTO)
-          );
-    } catch (Exception e) {
-      LoggerHandler.getLogger().log(Level.SEVERE, e.getMessage());
-      return null;
-    }
+    return jsonMapper.createObjectNode()
+        .put("token", token)
+        .putPOJO("memberDTO", this.jsonUtil
+            .filterPublicJsonView(memberDTO)
+        );
   }
 
   /**
