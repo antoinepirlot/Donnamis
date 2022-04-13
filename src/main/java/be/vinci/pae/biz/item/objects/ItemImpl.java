@@ -11,7 +11,7 @@ import be.vinci.pae.views.Views;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +36,7 @@ public class ItemImpl implements Item {
   @JsonView(Views.Public.class)
   private List<Offer> offerList = new ArrayList<>();
   @JsonView(Views.Public.class)
-  private Date lastOfferDate;
+  private Timestamp lastOfferDate;
 
   public ItemImpl() {
   }
@@ -124,12 +124,12 @@ public class ItemImpl implements Item {
   }
 
   @Override
-  public Date getLastOfferDate() {
+  public Timestamp getLastOfferDate() {
     return lastOfferDate;
   }
 
   @Override
-  public void setLastOfferDate(Date lastOfferDate) {
+  public void setLastOfferDate(Timestamp lastOfferDate) {
     this.lastOfferDate = lastOfferDate;
   }
 

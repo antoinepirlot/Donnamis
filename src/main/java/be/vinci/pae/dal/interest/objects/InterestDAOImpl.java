@@ -4,10 +4,10 @@ import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.dal.interest.interfaces.InterestDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import jakarta.inject.Inject;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 public class InterestDAOImpl implements InterestDAO {
 
@@ -17,7 +17,7 @@ public class InterestDAOImpl implements InterestDAO {
   //private Factory factory;
 
   @Override
-  public int markInterest(MemberDTO memberDTO, int idItem, boolean callWanted, Date date) {
+  public int markInterest(MemberDTO memberDTO, int idItem, boolean callWanted, Timestamp date) {
     String query =
         "INSERT INTO project_pae.interests (call_wanted, id_item, id_member, date) VALUES"
             + "(?, ?, ?, ?) RETURNING *";
@@ -26,7 +26,7 @@ public class InterestDAOImpl implements InterestDAO {
       preparedStatement.setBoolean(1, callWanted);
       preparedStatement.setInt(2, idItem);
       preparedStatement.setInt(3, memberDTO.getId());
-      preparedStatement.setDate(4, date);
+      preparedStatement.setTimestamp(4, date);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
           return 1;

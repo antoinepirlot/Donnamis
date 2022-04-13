@@ -1,11 +1,11 @@
 package be.vinci.pae.dal.interest.interfaces;
 
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 public interface InterestDAO {
 
-  int markInterest(MemberDTO memberDTO, int idItem, boolean callWanted, Date date);
+  int markInterest(MemberDTO memberDTO, int idItem, boolean callWanted, Timestamp date);
 
   boolean offerExist(int idOffer);
 

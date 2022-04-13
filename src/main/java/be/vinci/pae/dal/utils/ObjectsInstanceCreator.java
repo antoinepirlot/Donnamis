@@ -25,7 +25,7 @@ public class ObjectsInstanceCreator {
     System.out.println("Offer instance creation");
     OfferDTO offerDTO = factory.getOffer();
     offerDTO.setId(rs.getInt("id_offer"));
-    offerDTO.setDate(rs.getDate("date"));
+    offerDTO.setDate(rs.getTimestamp("date"));
     offerDTO.setTimeSlot(rs.getString("time_slot"));
     System.out.println("date set");
     offerDTO.setIdItem(rs.getInt("id_item"));
@@ -47,7 +47,7 @@ public class ObjectsInstanceCreator {
       itemDTO.setId(rs.getInt("id_item"));
       itemDTO.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("title")));
       itemDTO.setPhoto(StringEscapeUtils.escapeHtml4(rs.getString("photo")));
-      itemDTO.setLastOfferDate(rs.getDate("last_offer_date"));
+      itemDTO.setLastOfferDate(rs.getTimestamp("last_offer_date"));
       itemDTO.setItemDescription(
           StringEscapeUtils.escapeHtml4(rs.getString("item_description"))
       );

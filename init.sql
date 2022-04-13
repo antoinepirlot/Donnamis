@@ -41,7 +41,7 @@ CREATE TABLE project_pae.items
     photo            VARCHAR(500) NULL,
     title            VARCHAR(50)  NOT NULL,
     offer_status     VARCHAR(10)  NOT NULL,
-    last_offer_date  DATE         NULL,
+    last_offer_date  TIMESTAMP    NULL,
     FOREIGN KEY (id_type) REFERENCES project_pae.items_types (id_type),
     FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
 );
@@ -59,7 +59,7 @@ CREATE TABLE project_pae.ratings
 CREATE TABLE project_pae.offers
 (
     id_offer  SERIAL PRIMARY KEY,
-    date      DATE        NOT NULL,
+    date      TIMESTAMP   NOT NULL,
     time_slot VARCHAR(50) NOT NULL,
     id_item   INTEGER     NOT NULL,
     FOREIGN KEY (id_item) REFERENCES project_pae.items (id_item)
@@ -68,10 +68,10 @@ CREATE TABLE project_pae.offers
 CREATE TABLE project_pae.interests
 (
     id_interest SERIAL PRIMARY KEY,
-    call_wanted BOOLEAN NOT NULL,
-    id_offer    INTEGER NOT NULL,
-    id_member   INTEGER NOT NULL,
-    date        DATE    NOT NULL,
+    call_wanted BOOLEAN   NOT NULL,
+    id_offer    INTEGER   NOT NULL,
+    id_member   INTEGER   NOT NULL,
+    date        TIMESTAMP NOT NULL,
     FOREIGN KEY (id_offer) REFERENCES project_pae.offers (id_offer),
     FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
 );

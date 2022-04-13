@@ -5,8 +5,8 @@ import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.dal.interest.interfaces.InterestDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import jakarta.inject.Inject;
-import java.sql.Date;
-import java.time.LocalDate;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class InterestUCCImpl implements InterestUCC {
 
@@ -18,7 +18,7 @@ public class InterestUCCImpl implements InterestUCC {
   @Override
   public int markInterest(MemberDTO memberDTO, int idItem, boolean callWanted) {
     dalServices.start();
-    Date date = Date.valueOf(LocalDate.now());
+    Timestamp date = Timestamp.valueOf(LocalDateTime.now());
     int res = interestDAO.markInterest(memberDTO, idItem, callWanted, date);
     if (res == -1) {
       dalServices.rollback();

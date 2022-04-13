@@ -7,7 +7,7 @@ import be.vinci.pae.views.Views;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @JsonInclude(Include.NON_NULL)
@@ -22,7 +22,7 @@ public class InterestImpl implements Interest {
   @JsonView(Views.Public.class)
   private Member member;
   @JsonView(Views.Public.class)
-  private Date date;
+  private Timestamp date;
 
   public InterestImpl() {
 
@@ -69,12 +69,12 @@ public class InterestImpl implements Interest {
   }
 
   @Override
-  public Date getDate() {
+  public Timestamp getDate() {
     return date;
   }
 
   @Override
-  public void setDate(Date date) {
+  public void setDate(Timestamp date) {
     this.date = date;
   }
 

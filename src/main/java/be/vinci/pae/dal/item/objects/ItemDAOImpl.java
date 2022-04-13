@@ -159,7 +159,7 @@ public class ItemDAOImpl implements ItemDAO {
       ps.setString(4, itemDTO.getPhoto());
       ps.setString(5, itemDTO.getTitle());
       ps.setString(6, DEFAULT_OFFER_STATUS);
-      ps.setDate(7, itemDTO.getLastOfferDate());
+      ps.setTimestamp(7, itemDTO.getLastOfferDate());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           System.out.println("Ajout de l'offre réussi.");
@@ -219,7 +219,7 @@ public class ItemDAOImpl implements ItemDAO {
   public boolean updateLatestOfferDate(ItemDTO itemDTO) {
     String query = "UPDATE project_pae.items ON latest_offer_date = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
-      ps.setDate(1, itemDTO.getLastOfferDate());
+      ps.setTimestamp(1, itemDTO.getLastOfferDate());
       ps.executeUpdate();
       return true;
     } catch (SQLException e) {

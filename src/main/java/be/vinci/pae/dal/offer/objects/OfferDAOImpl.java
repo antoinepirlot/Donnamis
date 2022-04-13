@@ -166,16 +166,18 @@ public class OfferDAOImpl implements OfferDAO {
   private boolean addOne(OfferDTO offerDTO) {
     String query = "INSERT INTO project_pae.offers (date, time_slot, id_item) "
         + "VALUES (?, ?, ?); "
-        + "UPDATE project_pae.items SET offer_status = '" + DEFAULT_OFFER_STATUS + "' "
+        + "UPDATE project_pae.items SET offer_status = '" + DEFAULT_OFFER_STATUS + "', "
+        + "last_offer_date  = ? "
         + "WHERE id_item = ?";
     System.out.println(query);
     try (
         PreparedStatement ps = dalBackendService.getPreparedStatement(query)
     ) {
-      ps.setDate(1, offerDTO.getDate());
+      ps.setTimestamp(1, offerDTO.getDate());
       ps.setString(2, StringEscapeUtils.escapeHtml4(offerDTO.getTimeSlot()));
       ps.setInt(3, offerDTO.getIdItem());
-      ps.setInt(4, offerDTO.getIdItem());
+      ps.setTimestamp(4, offerDTO.getDate());
+      ps.setInt(5, offerDTO.getIdItem());
       try {
         int result = ps.executeUpdate();
         //it adds into the db BUT can't execute getOne(), it returns null
