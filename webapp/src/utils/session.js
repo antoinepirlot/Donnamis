@@ -89,12 +89,13 @@ function disconnect() {
 async function checkToken() {
   const payload = getPayload();
   if (payload && payload.exp < Date.now() / 1000) {
-    console.log("me")
     const response = await me();
     if (localStorage.getItem("token")) {
       setLocalObject("token", response.token);
+      setLocalObject("memberDTO", response.memberDTO)
     } else {
       setSessionObject("token", response.token);
+      setSessionObject("memberDTO", response.memberDTO);
     }
   }
 }
