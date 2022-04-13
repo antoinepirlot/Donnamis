@@ -4,6 +4,8 @@
  * @param {string} storeName
  * @returns the retrived object
  */
+import {me} from "./BackEndRequests";
+
 function getObject(storeName) {
   let retrievedObject = localStorage.getItem(storeName);
   if (!retrievedObject) {
@@ -29,7 +31,6 @@ function getPayload() {
   }
   let payload = token.split('.')[1];
   payload = JSON.parse(window.atob(payload));
-  // we divided by 1000 because jwt token does contains only 10 digit and 13 for Date.now()
   return payload;
 }
 
@@ -85,6 +86,19 @@ function disconnect() {
   sessionStorage.clear();
 }
 
+async function checkToken() {
+  const payload = getPayload();
+  if (payload && payload.exp < Date.now() / 1000) {
+    console.log("me")
+    const response = await me();
+    if (localStorage.getItem("token")) {
+      setLocalObject("token", response.token);
+    } else {
+      setSessionObject("token", response.token);
+    }
+  }
+}
+
 export {
   getObject,
   getPayload,
@@ -92,5 +106,6 @@ export {
   setLocalObject,
   disconnect,
   removeLocalObject,
-  removeSessionObject
+  removeSessionObject,
+  checkToken,
 };

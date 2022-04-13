@@ -8,11 +8,12 @@ import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeAdmin;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
+import be.vinci.pae.ihm.filter.utils.Json;
 import be.vinci.pae.ihm.logs.LoggerHandler;
-import be.vinci.pae.ihm.utils.Json;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
@@ -24,6 +25,8 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import java.util.Date;
 import java.util.List;
@@ -40,9 +43,22 @@ public class MemberResource {
   private final Logger logger = LoggerHandler.getLogger();
   private final ObjectMapper jsonMapper = new ObjectMapper();
   private final Json<MemberDTO> jsonUtil = new Json<>(MemberDTO.class);
-
   @Inject
   private MemberUCC memberUCC;
+
+  @GET
+  @Path("/me")
+  @Produces(MediaType.APPLICATION_JSON)
+  public ObjectNode refreshToken(@Context ContainerRequestContext request) {
+    DecodedJWT decodedJWT = JWT.decode(request.getHeaderString("Authorization"));
+    MemberDTO memberDTO = this.memberUCC.getOneMember(decodedJWT.getClaim("id").asInt());
+    if (memberDTO == null) {
+      String message = "This member has not been found.";
+      throw new ObjectNotFoundException(message);
+    }
+    String token = this.createToken(memberDTO.getId());
+    return this.createObjectNode(token, memberDTO);
+  }
 
   /**
    * Method handling HTTP GET requests. The returned object will be sent to the client as

@@ -5,7 +5,7 @@ import be.vinci.pae.biz.item.interfaces.ItemUCC;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
-import be.vinci.pae.ihm.utils.Json;
+import be.vinci.pae.ihm.filter.utils.Json;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
