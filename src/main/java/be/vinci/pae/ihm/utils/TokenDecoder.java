@@ -1,4 +1,4 @@
-package be.vinci.pae.ihm.filter.utils;
+package be.vinci.pae.ihm.utils;
 
 import be.vinci.pae.exceptions.webapplication.TokenDecodingException;
 import be.vinci.pae.exceptions.webapplication.UnauthorizedException;

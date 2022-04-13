@@ -5,6 +5,7 @@
  * @returns the retrived object
  */
 import {me} from "./BackEndRequests";
+import {Redirect} from "../Components/Router/Router";
 
 function getObject(storeName) {
   let retrievedObject = localStorage.getItem(storeName);
@@ -89,13 +90,17 @@ function disconnect() {
 async function checkToken() {
   const payload = getPayload();
   if (payload && payload.exp < Date.now() / 1000) {
-    const response = await me();
-    if (localStorage.getItem("token")) {
-      setLocalObject("token", response.token);
-      setLocalObject("memberDTO", response.memberDTO)
-    } else {
-      setSessionObject("token", response.token);
-      setSessionObject("memberDTO", response.memberDTO);
+    try {
+      const response = await me();
+      if (localStorage.getItem("token")) {
+        setLocalObject("token", response.token);
+        setLocalObject("memberDTO", response.memberDTO)
+      } else {
+        setSessionObject("token", response.token);
+        setSessionObject("memberDTO", response.memberDTO);
+      }
+    } catch (e) {
+      Redirect("/logout");
     }
   }
 }

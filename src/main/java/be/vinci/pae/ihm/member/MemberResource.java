@@ -10,6 +10,7 @@ import be.vinci.pae.ihm.filter.AuthorizeAdmin;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.filter.utils.Json;
 import be.vinci.pae.ihm.logs.LoggerHandler;
+import be.vinci.pae.ihm.utils.TokenDecoder;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -50,7 +51,7 @@ public class MemberResource {
   @Path("/me")
   @Produces(MediaType.APPLICATION_JSON)
   public ObjectNode refreshToken(@Context ContainerRequestContext request) {
-    DecodedJWT decodedJWT = JWT.decode(request.getHeaderString("Authorization"));
+    DecodedJWT decodedJWT = TokenDecoder.decodeToken(request);
     MemberDTO memberDTO = this.memberUCC.getOneMember(decodedJWT.getClaim("id").asInt());
     if (memberDTO == null) {
       String message = "This member has not been found.";
@@ -292,7 +293,7 @@ public class MemberResource {
     System.out.println("Generating token.");
     Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
     Date date = new Date();
-    long duration = 1000 * 5; //1 hour
+    long duration = 1000 * 60 * 60 * 48; //2 day
     return JWT.create()
         .withIssuer("auth0")
         .withClaim("id", id)
