@@ -257,6 +257,19 @@ async function offerAnItem(item) {
   return response.ok;
 }
 
+async function offerAgain(offer) {
+  const request = {
+    method: "POST",
+    headers: {
+      "Authorization": getObject("token"),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(offer)
+  };
+  const response = await fetch(`api/offers/add_offer`, request);
+  return response.ok;
+}
+
 async function getMyItems(idMember) {
   const request = {
     method: "GET",
@@ -392,6 +405,7 @@ export {
   getItem,
   getItemsTypes,
   offerAnItem,
+  offerAgain,
   getProfile,
   getLatestItems,
   getOfferedItems,

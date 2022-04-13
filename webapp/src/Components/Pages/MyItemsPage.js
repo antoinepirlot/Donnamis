@@ -1,11 +1,13 @@
 import {
   cancelOffer as cancelOfferBackEnd,
-  getMyItems
+  getMyItems,
+  offerAgain as offerAgainBackEnd
 } from "../../utils/BackEndRequests";
 import {getPayload} from "../../utils/session";
 import {showError} from "../../utils/ShowError";
+import {openModal} from "../../utils/Modals";
 
-const tableHtml = `
+const myItemsPageHtml = `
   <div>
     <h1 class="display-3">Mes offres</h1>
     <br>
@@ -25,11 +27,28 @@ const tableHtml = `
     </table>
   </div>
   <div id="errorMessageMyItemsPage"></div>
+  
+  <!-- The Modal -->
+<div id="myItemsPageModal" class="modal">
+  <div class="modal-content">
+    <span id="myItemsPageModalCloseButton" class="close">&times;</span>
+    <form id="offerAgainForm">
+      <h5>Pour offrir un objet à nouveau, il faut que vous entrez une nouvelle plage horaire</h5><br>
+      <br>
+      Disponibilités horaire<span id="asterisk">*</span>:<br>
+      <textarea id="timeSlotFormOfferAgain" cols="30" rows="3"></textarea><br>
+      <br>
+      <input type="submit" value="Envoyer">
+    </form>
+  </div>
+</div>
 `;
+
+let offerAgainItemId;
 
 const MyItemsPage = async () => {
   const pageDiv = document.querySelector("#page");
-  pageDiv.innerHTML = tableHtml;
+  pageDiv.innerHTML = myItemsPageHtml;
   const items = await getMyItems(getPayload().id);
   if (items.length === 0) {
     const message = "Vous n'avez aucune offre.";
@@ -52,10 +71,21 @@ function showItems(items) {
         <td>${item.photo}</td>
         <td>${item.offerStatus}</td>
         <td><a id="itemDetails" href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir offre</a></td>
+        <td><button id="offerAgainButton" class="btn btn-primary" value="${item.id}">Offrir à nouveau</button></td>
         <td><button id="itemCancelled" class="btn btn-danger" value="${item.id}">Annuler l'offre</button></td>
       </tr>
     `;
   });
+  const offerAgainButtons = document.querySelectorAll("#offerAgainButton");
+  offerAgainButtons.forEach(async (offerAgainButton) => {
+    offerAgainButton.addEventListener("click", async () => {
+      offerAgainItemId = offerAgainButton.value;
+      openModal("#myItemsPageModal", "#myItemsPageModalCloseButton");
+      const offerAgainForm = document.querySelector("#offerAgainForm");
+      offerAgainForm.addEventListener("submit", await offerAgain);
+    });
+  });
+
   const cancelButtons = document.querySelectorAll("#itemCancelled");
   cancelButtons.forEach(cancelButton => {
     cancelButton.addEventListener("click", async () => {
@@ -63,6 +93,21 @@ function showItems(items) {
       await MyItemsPage()
     });
   });
+}
+
+async function offerAgain(e) {
+  e.preventDefault();
+  const timeSlot = document.querySelector("#timeSlotFormOfferAgain").value;
+  const offer = {
+    idItem: offerAgainItemId,
+    timeSlot: timeSlot
+  }
+  try {
+    await offerAgainBackEnd(offer);
+    await MyItemsPage();
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 export default MyItemsPage;

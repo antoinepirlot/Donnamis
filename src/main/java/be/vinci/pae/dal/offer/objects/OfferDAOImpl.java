@@ -20,6 +20,7 @@ public class OfferDAOImpl implements OfferDAO {
   private DALBackendService dalBackendService;
   @Inject
   private Factory factory;
+  private static final String DEFAULT_OFFER_STATUS = "donated";
 
 
   @Override
@@ -29,11 +30,6 @@ public class OfferDAOImpl implements OfferDAO {
     //      return false;
     //    }
     //If the item is correctly added , add the offer in the db with the associated item
-    if (!addOne(offerDTO)) {
-      return false;
-    }
-    //Add item to the offer
-
     return addOne(offerDTO);
   }
 
@@ -168,14 +164,18 @@ public class OfferDAOImpl implements OfferDAO {
    * @return true if the offer has been added to the DB
    */
   private boolean addOne(OfferDTO offerDTO) {
-    String query = "INSERT INTO project_pae.offers (date, time_slot, id_item) VALUES (?, ?, ?)";
+    String query = "INSERT INTO project_pae.offers (date, time_slot, id_item) "
+        + "VALUES (?, ?, ?); "
+        + "UPDATE project_pae.items SET offer_status = '" + DEFAULT_OFFER_STATUS + "' "
+        + "WHERE id_item = ?";
+    System.out.println(query);
     try (
         PreparedStatement ps = dalBackendService.getPreparedStatement(query)
     ) {
       ps.setDate(1, offerDTO.getDate());
       ps.setString(2, StringEscapeUtils.escapeHtml4(offerDTO.getTimeSlot()));
       ps.setInt(3, offerDTO.getIdItem());
-
+      ps.setInt(4, offerDTO.getIdItem());
       try {
         int result = ps.executeUpdate();
         //it adds into the db BUT can't execute getOne(), it returns null

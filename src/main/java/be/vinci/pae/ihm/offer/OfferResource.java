@@ -2,6 +2,8 @@ package be.vinci.pae.ihm.offer;
 
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
+import be.vinci.pae.exceptions.webapplication.ConflictException;
+import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.utils.Json;
 import jakarta.inject.Inject;
@@ -35,17 +37,19 @@ public class OfferResource {
   @AuthorizeMember
   public void addOffer(OfferDTO offerDTO) {
     // Get and check credentials
-    if (offerDTO.getTimeSlot() == null
-    ) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("Some information required").type("text/plain").build());
+    if (offerDTO == null || offerDTO.getIdItem() < 1) {
+      String message = "";
+      if (offerDTO == null) {
+        message = "offerDTO is null.";
+      } else {
+        message = "item id = " + offerDTO.getIdItem() + " and is not greater than 0.";
+      }
+      throw new WrongBodyDataException(message);
     }
-
     //Try to create an offer
     if (!offerUCC.createOffer(offerDTO)) {
-      throw new WebApplicationException(Response.status(Response.Status.CONFLICT)
-          .entity("this resource already exists").type(MediaType.TEXT_PLAIN)
-          .build());
+      String message = "Add an existing offer.";
+      throw new ConflictException(message);
     }
 
   }
