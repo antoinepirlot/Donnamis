@@ -52,19 +52,15 @@ function showItems(items) {
         <td>${item.photo}</td>
         <td>${item.offerStatus}</td>
         <td><a id="itemDetails" href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir offre</a></td>
-        <td><button id="itemCancelled" class="btn btn-danger">Annuler l'offre</button></td>
-      </tr>    
+        <td><button id="itemCancelled" class="btn btn-danger" value="${item.id}">Annuler l'offre</button></td>
+      </tr>
     `;
-    const offerCancelledButton = document.querySelector("#itemCancelled");
-    offerCancelledButton.addEventListener("click", async (e) => {
-      console.log(item)
-      e.preventDefault();
-      try {
-        await cancelOfferBackEnd(item.id);
-        await MyItemsPage();
-      } catch (error) {
-        console.error("MyItemsPage::error::deny registration:", error);
-      }
+  });
+  const cancelButtons = document.querySelectorAll("#itemCancelled");
+  cancelButtons.forEach(cancelButton => {
+    cancelButton.addEventListener("click", async () => {
+      await cancelOfferBackEnd(cancelButton.value);
+      await MyItemsPage()
     });
   });
 }
