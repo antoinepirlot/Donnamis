@@ -211,6 +211,7 @@ async function getItem(idItem) {
     }
   };
   const response = await fetch(`/api/items/${idItem}`, request);
+  console.table(response)
   if (!response.ok) {
     // status code was not 200, error status code
     showError("There's no offer with this id");

@@ -220,8 +220,8 @@ public class MemberResource {
   public ObjectNode login(MemberDTO memberDTO) {
     // Get and check credentials
     if (memberDTO == null
-        || memberDTO.getUsername() == null
-        || memberDTO.getPassword() == null
+        || memberDTO.getUsername().isBlank()
+        || memberDTO.getPassword().isBlank()
     ) {
       String message = "Member has wrong attributes for login method";
       this.logger.log(Level.SEVERE, message);
@@ -295,10 +295,10 @@ public class MemberResource {
   public void register(MemberDTO memberDTO) {
     // Verify memberDTO integrity
     if (memberDTO == null
-        || memberDTO.getUsername() == null || memberDTO.getUsername().equals("")
-        || memberDTO.getPassword() == null || memberDTO.getPassword().equals("")
-        || memberDTO.getFirstName() == null || memberDTO.getFirstName().equals("")
-        || memberDTO.getLastName() == null || memberDTO.getLastName().equals("")
+        || memberDTO.getUsername() == null || memberDTO.getUsername().isBlank()
+        || memberDTO.getPassword() == null || memberDTO.getPassword().isBlank()
+        || memberDTO.getFirstName() == null || memberDTO.getFirstName().isBlank()
+        || memberDTO.getLastName() == null || memberDTO.getLastName().isBlank()
     ) {
       String message = "Member miss some informations for registration";
       throw new WrongBodyDataException(message);
@@ -306,10 +306,10 @@ public class MemberResource {
     //Verify addressDTO integrity
     AddressDTO addressDTO = memberDTO.getAddress();
     if (addressDTO == null
-        || addressDTO.getStreet() == null || addressDTO.getStreet().equals("")
-        || addressDTO.getCommune() == null || addressDTO.getCommune().equals("")
-        || addressDTO.getPostcode() == null || addressDTO.getPostcode().equals("")
-        || addressDTO.getBuildingNumber() == null || addressDTO.getBuildingNumber().equals("")
+        || addressDTO.getStreet() == null || addressDTO.getStreet().isBlank()
+        || addressDTO.getCommune() == null || addressDTO.getCommune().isBlank()
+        || addressDTO.getPostcode() == null || addressDTO.getPostcode().isBlank()
+        || addressDTO.getBuildingNumber() == null || addressDTO.getBuildingNumber().isBlank()
     ) {
       String message = "Member has complete information but doesn't have "
           + "complete address information";

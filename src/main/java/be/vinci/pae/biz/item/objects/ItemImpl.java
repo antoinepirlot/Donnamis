@@ -37,6 +37,8 @@ public class ItemImpl implements Item {
   private List<Offer> offerList = new ArrayList<>();
   @JsonView(Views.Public.class)
   private Date lastOfferDate;
+  @JsonView(Views.Public.class)
+  private Offer lastOffer;
 
   public ItemImpl() {
   }
