@@ -75,9 +75,9 @@ async function viewRegisteredMembers(members) {
         <td>${member.firstName}</td>
         <td>${member.lastName}</td>
         <td><input class="form-check-input" type="checkbox" value="" id="RegisteredIsAdmin"></td>
-        <td><button type="submit" class="btn btn-primary" id="RegisteredConfirmButton">Confirmer</button></td>
-        <td><button type="submit" class="btn btn-danger" id="RegisteredRefuseButton">Refuser</button></td>
-        <td><div class="form-floating mb-3"><input type="email" class="form-control" id="floatingInput" placeholder="name@example.com"><label for="floatingInput">Message</label></div></td>
+        <td><button type="submit" class="btn btn-primary" id="RegisteredConfirmButton" value=${member.id}>Confirmer</button></td>
+        <td><button type="submit" class="btn btn-danger" id="RegisteredRefuseButton" value=${member.id}>Refuser</button></td>
+        <td><div class="form-floating mb-3"><input type="text" class="form-control" id="floatingInput"><label for="floatingInput">Message</label></div></td>
       </tr>    
     `;
 
@@ -85,25 +85,28 @@ async function viewRegisteredMembers(members) {
     const isAdminButton = document.querySelector("#RegisteredIsAdmin");
 
     // Confirm Button
-    const confirmButton = document.querySelector("#RegisteredConfirmButton");
-    confirmButton.addEventListener("click", async function () {
-
-      //Confirm the registration (Click on the button)
-      if (isAdminButton.checked) {
-        await confirmAdmin(member.id);
-      } else {
-        await confirmMember(member.id);
-      }
-      Redirect("/list_member");
+    const confirmButtons = document.querySelectorAll(
+        "#RegisteredConfirmButton");
+    confirmButtons.forEach(confirmButton => {
+      confirmButton.addEventListener("click", async function () {
+        //Confirm the registration (Click on the button)
+        if (isAdminButton.checked) {
+          await confirmAdmin(confirmButton.value);
+        } else {
+          await confirmMember(confirmButton.value);
+        }
+        Redirect("/list_member");
+      });
     });
 
     //Deny Button
-    const denyButton = document.querySelector("#RegisteredRefuseButton")
-    denyButton.addEventListener("click", async function () {
-
-      //Confirm the registration (Click on the button)
-      await denyMember(member.id);
-      Redirect("/list_member");
+    const denyButtons = document.querySelectorAll("#RegisteredRefuseButton");
+    denyButtons.forEach(denyButton => {
+      denyButton.addEventListener("click", async function () {
+        //Confirm the registration (Click on the button)
+        await denyMember(denyButton.value);
+        Redirect("/list_member");
+      });
     });
     const line = document.querySelector("#RegisteredLine");
     line.dataset.memberId = member.id;
