@@ -19,8 +19,14 @@ public class InterestDAOImpl implements InterestDAO {
   @Override
   public int markInterest(MemberDTO memberDTO, int idItem, boolean callWanted, Timestamp date) {
     String query =
-        "INSERT INTO project_pae.interests (call_wanted, id_item, id_member, date) VALUES"
-            + "(?, ?, ?, ?) RETURNING *";
+        "INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date) VALUES"
+            + "(?, (SELECT o.id_offer "
+            + "     FROM project_pae.offers o "
+            + "     WHERE o.id_item = ? "
+            + "     ORDER BY o.date DESC "
+            + "     LIMIT 1), "
+            + "?, ?) "
+            + "RETURNING *";
 
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setBoolean(1, callWanted);
