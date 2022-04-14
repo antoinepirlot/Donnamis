@@ -68,10 +68,6 @@ async function isAdmin() {
     }
   }
   const response = await fetch("/api/members/is_admin/", request);
-  if (response.status === 200) {
-    console.error(
-        "This is not an error. Just to remind to make func to refresh token");
-  }
   return response.ok;
 }
 
@@ -180,6 +176,9 @@ async function getItems() {
   };
   const response = await fetch("/api/items/all_items", request);
   if (!response.ok) {
+    if (response.status === 401) {
+      Redirect("/logout");
+    }
     throw new Error("Erreur lors du fetch");
   }
   return await response.json();
@@ -194,6 +193,9 @@ async function getOffers() {
   };
   const response = await fetch("/api/offers/all_offers", request);
   if (!response.ok) {
+    if (response.status === 401) {
+      Redirect("/logout");
+    }
     // status code was not 200, error status code
     throw new Error(
         "fetch error : " + response.status + " : " + response.statusText
