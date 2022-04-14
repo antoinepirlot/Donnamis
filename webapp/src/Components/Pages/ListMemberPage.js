@@ -74,7 +74,7 @@ async function viewRegisteredMembers(members) {
       <tr id="RegisteredLine">
         <td>${member.firstName}</td>
         <td>${member.lastName}</td>
-        <td><input class="form-check-input" type="checkbox" value="" id="RegisteredIsAdmin"></td>
+        <td><input class="form-check-input" type="checkbox" value="" id="RegisteredIsAdmin" value="${member.id}"></td>
         <td><button type="submit" class="btn btn-primary" id="RegisteredConfirmButton" value=${member.id}>Confirmer</button></td>
         <td><button type="submit" class="btn btn-danger" id="RegisteredRefuseButton" value=${member.id}>Refuser</button></td>
         <td><div class="form-floating mb-3"><input type="text" class="form-control" id="floatingInput"><label for="floatingInput">Message</label></div></td>
@@ -82,15 +82,21 @@ async function viewRegisteredMembers(members) {
     `;
 
     // Is Admin Button
-    const isAdminButton = document.querySelector("#RegisteredIsAdmin");
+    const isAdminButtons = document.querySelectorAll("#RegisteredIsAdmin");
 
     // Confirm Button
     const confirmButtons = document.querySelectorAll(
         "#RegisteredConfirmButton");
     confirmButtons.forEach(confirmButton => {
       confirmButton.addEventListener("click", async function () {
+        let isAdminButtonChecked;
+        isAdminButtons.forEach(button => {
+          if (button.value === confirmButton.value) {
+            isAdminButtonChecked = button.checked;
+          }
+        });
         //Confirm the registration (Click on the button)
-        if (isAdminButton.checked) {
+        if (isAdminButtonChecked) {
           await confirmAdmin(confirmButton.value);
         } else {
           await confirmMember(confirmButton.value);
@@ -122,26 +128,32 @@ async function viewDeniedMembers(members) {
       <tr id="DeniedLine">
         <td>${member.firstName}</td>
         <td>${member.lastName}</td>
-        <td><input class="form-check-input" type="checkbox" value="" id="DeniedIsAdmin"></td>
-        <td><button type="submit" class="btn btn-primary" id="DeniedConfirmButton">Confirmer</button></td>
+        <td><input class="form-check-input" type="checkbox" value=${member.id} id="DeniedIsAdmin"></td>
+        <td><button type="submit" class="btn btn-primary" id="DeniedConfirmButton" value=${member.id}>Confirmer</button></td>
       </tr>    
     `;
 
     // Is Admin Button
-    const isAdminButton = document.querySelector("#DeniedIsAdmin");
+    const isAdminButtons = document.querySelectorAll("#DeniedIsAdmin");
 
     // Confirm Button
-    const confirmButton = document.querySelector("#DeniedConfirmButton");
-    confirmButton.addEventListener("click", async function () {
-
-      //Confirm the registration (Click on the button)
-      if (isAdminButton.checked) {
-        await confirmAdmin(member.id);
-      } else {
-        await confirmMember(member.id);
-      }
-      Redirect("/list_member");
-      //Redirect vers la meme page soit ListMemberPage
+    const confirmButtons = document.querySelectorAll("#DeniedConfirmButton");
+    confirmButtons.forEach(async confirmButton => {
+      confirmButton.addEventListener("click", async function () {
+        let isAdminButtonChecked;
+        isAdminButtons.forEach(button => {
+          if (button.value === confirmButton.value) {
+            isAdminButtonChecked = button.checked;
+          }
+        });
+        //Confirm the registration (Click on the button)
+        if (isAdminButtonChecked) {
+          await confirmAdmin(confirmButton.value);
+        } else {
+          await confirmMember(confirmButton.value);
+        }
+        Redirect("/list_member");
+      });
     });
 
     const line = document.querySelector("#DeniedLine");
