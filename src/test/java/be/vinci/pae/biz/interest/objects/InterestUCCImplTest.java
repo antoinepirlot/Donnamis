@@ -11,7 +11,7 @@ import be.vinci.pae.dal.interest.interfaces.InterestDAO;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.utils.ApplicationBinder;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
@@ -32,7 +32,7 @@ class InterestUCCImplTest {
   private final MemberDTO memberNotExisting = new MemberImpl();
   private final int existingIdOffer = 5;
   private final int notExistingIdOffer = 5546;
-  private final Date date = Date.valueOf(LocalDate.now());
+  private final Timestamp date = Timestamp.valueOf(String.valueOf(LocalDate.now()));
 
 
   @BeforeEach
