@@ -14,20 +14,6 @@ public interface MemberUCC {
   List<MemberDTO> getAllMembers() throws SQLException;
 
   /**
-   * Asks UCC to get a list of registered members.
-   *
-   * @return the list of registered members
-   */
-  List<MemberDTO> getMembersRegistered() throws SQLException;
-
-  /**
-   * Asks UCC to get the list of denied members.
-   *
-   * @return the list of denied members
-   */
-  List<MemberDTO> getMembersDenied() throws SQLException;
-
-  /**
    * Asks the UCC to get the member identified by its id.
    *
    * @param id the member's id

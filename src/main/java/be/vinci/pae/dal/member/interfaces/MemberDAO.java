@@ -20,10 +20,6 @@ public interface MemberDAO {
    */
   boolean register(MemberDTO memberDTO);
 
-  List<MemberDTO> getMembersRegistered();
-
-  List<MemberDTO> getMembersDenied();
-
   MemberDTO getOneMember(int id);
 
   AddressDTO getAddressMember(int id);

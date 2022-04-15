@@ -5,8 +5,7 @@ import {
   confirmAdmin,
   confirmMember,
   denyMember,
-  getDeniedMembers,
-  getRegisteredMembers,
+  getAllMembers,
   isAdmin
 } from "../../utils/BackEndRequests";
 import {Redirect} from "../Router/Router";
@@ -61,8 +60,9 @@ const ListMemberPage = async () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtmlConfirmedMembers;
   pageDiv.innerHTML += tableHtmlDeniedMembers;
-  await viewRegisteredMembers(await getRegisteredMembers());
-  await viewDeniedMembers(await getDeniedMembers());
+  const members = await getAllMembers();
+  await viewRegisteredMembers(members);
+  await viewDeniedMembers(members);
 };
 
 async function viewRegisteredMembers(members) {
@@ -70,7 +70,8 @@ async function viewRegisteredMembers(members) {
   tbody.innerHTML = "";
   //For Each Member
   members.forEach((member) => {
-    tbody.innerHTML += `
+    if (member.actualState === "registered") {
+      tbody.innerHTML += `
       <tr id="RegisteredLine">
         <td>${member.firstName}</td>
         <td>${member.lastName}</td>
@@ -81,32 +82,33 @@ async function viewRegisteredMembers(members) {
       </tr>    
     `;
 
-    // Is Admin Button
-    const isAdminButton = document.querySelector("#RegisteredIsAdmin");
+      // Is Admin Button
+      const isAdminButton = document.querySelector("#RegisteredIsAdmin");
 
-    // Confirm Button
-    const confirmButton = document.querySelector("#RegisteredConfirmButton");
-    confirmButton.addEventListener("click", async function () {
+      // Confirm Button
+      const confirmButton = document.querySelector("#RegisteredConfirmButton");
+      confirmButton.addEventListener("click", async function () {
 
-      //Confirm the registration (Click on the button)
-      if (isAdminButton.checked) {
-        await confirmAdmin(member.id);
-      } else {
-        await confirmMember(member.id);
-      }
-      Redirect("/list_member");
-    });
+        //Confirm the registration (Click on the button)
+        if (isAdminButton.checked) {
+          await confirmAdmin(member.id);
+        } else {
+          await confirmMember(member.id);
+        }
+        Redirect("/list_member");
+      });
 
-    //Deny Button
-    const denyButton = document.querySelector("#RegisteredRefuseButton")
-    denyButton.addEventListener("click", async function () {
+      //Deny Button
+      const denyButton = document.querySelector("#RegisteredRefuseButton")
+      denyButton.addEventListener("click", async function () {
 
-      //Confirm the registration (Click on the button)
-      await denyMember(member.id);
-      Redirect("/list_member");
-    });
-    const line = document.querySelector("#RegisteredLine");
-    line.dataset.memberId = member.id;
+        //Confirm the registration (Click on the button)
+        await denyMember(member.id);
+        Redirect("/list_member");
+      });
+      const line = document.querySelector("#RegisteredLine");
+      line.dataset.memberId = member.id;
+    }
   });
 }
 
@@ -115,7 +117,8 @@ async function viewDeniedMembers(members) {
   tbody.innerHTML = "";
   //For Each Member
   members.forEach((member) => {
-    tbody.innerHTML += `
+    if (member.actualState === "denied") {
+      tbody.innerHTML += `
       <tr id="DeniedLine">
         <td>${member.firstName}</td>
         <td>${member.lastName}</td>
@@ -124,25 +127,26 @@ async function viewDeniedMembers(members) {
       </tr>    
     `;
 
-    // Is Admin Button
-    const isAdminButton = document.querySelector("#DeniedIsAdmin");
+      // Is Admin Button
+      const isAdminButton = document.querySelector("#DeniedIsAdmin");
 
-    // Confirm Button
-    const confirmButton = document.querySelector("#DeniedConfirmButton");
-    confirmButton.addEventListener("click", async function () {
+      // Confirm Button
+      const confirmButton = document.querySelector("#DeniedConfirmButton");
+      confirmButton.addEventListener("click", async function () {
 
-      //Confirm the registration (Click on the button)
-      if (isAdminButton.checked) {
-        await confirmAdmin(member.id);
-      } else {
-        await confirmMember(member.id);
-      }
-      Redirect("/list_member");
-      //Redirect vers la meme page soit ListMemberPage
-    });
+        //Confirm the registration (Click on the button)
+        if (isAdminButton.checked) {
+          await confirmAdmin(member.id);
+        } else {
+          await confirmMember(member.id);
+        }
+        Redirect("/list_member");
+        //Redirect vers la meme page soit ListMemberPage
+      });
 
-    const line = document.querySelector("#DeniedLine");
-    line.dataset.memberId = member.id;
+      const line = document.querySelector("#DeniedLine");
+      line.dataset.memberId = member.id;
+    }
   });
 }
 

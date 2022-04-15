@@ -22,7 +22,7 @@ public class MemberImpl implements Member {
   private String firstName;
   @JsonView(Views.Public.class)
   private boolean isAdmin;
-  @JsonView(Views.Internal.class)
+  @JsonView(Views.Public.class)
   private String actualState;
   @JsonView(Views.Public.class)
   private String phoneNumber;

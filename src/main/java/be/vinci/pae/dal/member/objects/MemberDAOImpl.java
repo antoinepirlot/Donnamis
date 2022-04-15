@@ -30,33 +30,14 @@ public class MemberDAOImpl implements MemberDAO {
    */
   public List<MemberDTO> getAllMembers() {
     List<MemberDTO> listMemberDTO = new ArrayList<>();
-    String query = "SELECT * FROM project_pae.members";
-
-    //Execute the query
-    return getMembersDTO(listMemberDTO, query);
-  }
-
-  /**
-   * Get all the members in the DB with the state registered.
-   *
-   * @return all the members with the state registered otherwise null
-   */
-  public List<MemberDTO> getMembersRegistered() {
-    List<MemberDTO> listMemberDTO = new ArrayList<>();
-    String query = "SELECT * FROM project_pae.members m WHERE m.state = 'registered'";
-
-    //Execute the query
-    return getMembersDTO(listMemberDTO, query);
-  }
-
-  /**
-   * Get all the members in the DB with the state denied.
-   *
-   * @return all the members with the state denied otherwise null
-   */
-  public List<MemberDTO> getMembersDenied() {
-    List<MemberDTO> listMemberDTO = new ArrayList<>();
-    String query = "SELECT * FROM project_pae.members m WHERE m.state = 'denied'";
+    String query = "SELECT id_member, "
+        + "                username, "
+        + "                last_name, "
+        + "                first_name, "
+        + "                is_admin, "
+        + "                state, "
+        + "                phone "
+        + "FROM project_pae.members";
 
     //Execute the query
     return getMembersDTO(listMemberDTO, query);
