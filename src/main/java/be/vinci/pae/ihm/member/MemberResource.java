@@ -70,7 +70,6 @@ public class MemberResource {
    */
   @GET
   @Path("list_member")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<MemberDTO> getAllMembers() throws SQLException {
@@ -85,7 +84,6 @@ public class MemberResource {
 
   @GET
   @Path("profil/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public MemberDTO getMemberById(@PathParam("id") int id) throws SQLException {
@@ -109,7 +107,6 @@ public class MemberResource {
    */
   @GET
   @Path("list_registered")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<MemberDTO> getMembersRegistered() throws SQLException {
@@ -129,7 +126,6 @@ public class MemberResource {
    */
   @GET
   @Path("list_denied")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<MemberDTO> getMembersDenied() throws SQLException {
@@ -149,7 +145,6 @@ public class MemberResource {
    */
   @PUT
   @Path("confirm/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public MemberDTO confirmMember(@PathParam("id") int id) throws SQLException {
@@ -173,7 +168,6 @@ public class MemberResource {
    */
   @PUT
   @Path("confirmAdmin/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public MemberDTO confirmAdmin(@PathParam("id") int id) throws SQLException {
@@ -193,7 +187,6 @@ public class MemberResource {
    */
   @PUT
   @Path("denies/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public MemberDTO denyMember(@PathParam("id") int id, String refusalText) throws SQLException {
