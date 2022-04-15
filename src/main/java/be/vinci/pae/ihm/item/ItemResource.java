@@ -38,7 +38,6 @@ public class ItemResource {
    */
   @GET
   @Path("latest_items")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   //@AuthorizeMember
   public List<ItemDTO> getLatestItems() {
@@ -57,7 +56,6 @@ public class ItemResource {
    */
   @GET
   @Path("all_items")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public List<ItemDTO> getAllItems() {
@@ -132,7 +130,6 @@ public class ItemResource {
    */
   @PUT
   @Path("cancel/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public ItemDTO cancelOffer(@PathParam("id") int id) {
@@ -151,7 +148,6 @@ public class ItemResource {
    */
   @GET
   @Path("all_items/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public List<ItemDTO> getAllItemsByMemberId(@PathParam("id") int id) {
@@ -174,7 +170,6 @@ public class ItemResource {
    */
   @GET
   @Path("{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public ItemDTO getItem(@PathParam("id") int id) {

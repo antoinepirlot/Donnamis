@@ -13,7 +13,6 @@ import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import java.rmi.UnexpectedException;
 import java.sql.SQLException;
@@ -39,7 +38,6 @@ public class InterestResource {
   @POST
   @Path("")
   @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public void markInterest(InterestDTO interestDTO) throws SQLException, UnexpectedException {
     Timestamp now = Timestamp.valueOf(LocalDateTime.now());
