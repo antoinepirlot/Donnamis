@@ -12,6 +12,7 @@ import be.vinci.pae.biz.member.objects.MemberImpl;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.utils.ApplicationBinder;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -36,7 +37,7 @@ class ItemUCCImplTest {
   private final int notExistingIdItem = 56464;
 
   @BeforeEach
-  void setUp() {
+  void setUp() throws SQLException {
     this.itemDTOList.add(new ItemImpl());
     this.itemDTOList.add(new ItemImpl());
     this.goodItem.setId(5);
@@ -53,10 +54,9 @@ class ItemUCCImplTest {
     this.setMockitos();
   }
 
-  private void setMockitos() {
-    Mockito.when(this.itemDAO.getDonatedItems()).thenReturn(this.itemDTOList);
-    Mockito.when(this.itemDAO.getAllItems()).thenReturn(this.itemDTOList);
-    Mockito.when(this.itemDAO.getAllOfferedItems()).thenReturn(this.itemDTOList);
+  private void setMockitos() throws SQLException {
+    Mockito.when(this.itemDAO.getAllItems("donated")).thenReturn(this.itemDTOList);
+    Mockito.when(this.itemDAO.getAllItems(null)).thenReturn(this.itemDTOList);
     Mockito.when(this.itemDAO.getOneItem(this.goodItem.getId())).thenReturn(this.goodItem);
     Mockito.when(this.itemDAO.getOneItem(this.notExistingIdItem)).thenReturn(null);
     Mockito.when(this.itemDAO.addItem(this.goodItem)).thenReturn(this.goodItem.getId());
@@ -68,93 +68,69 @@ class ItemUCCImplTest {
     Mockito.when(this.itemDAO.cancelOffer(this.assignedIdItem)).thenReturn(this.cancelledItem);
   }
 
-  private void setDALServices(boolean isWorking) {
-    Mockito.when(this.dalServices.start()).thenReturn(null);
-    Mockito.when(this.dalServices.rollback()).thenReturn(isWorking);
-    Mockito.when(this.dalServices.commit()).thenReturn(isWorking);
-  }
-
-  @DisplayName("Test get latest items")
-  @Test
-  void testGetLatestItems() {
-    this.setDALServices(true);
-    assertEquals(this.itemDTOList, this.itemUCC.getLatestItems());
-  }
-
   @DisplayName("Test get all items")
   @Test
-  void testGetAllItems() {
-    this.setDALServices(true);
-    assertEquals(this.itemDTOList, this.itemUCC.getAllItems());
+  void testGetAllItems() throws SQLException {
+    assertEquals(this.itemDTOList, this.itemUCC.getAllItems(null));
   }
 
-  @DisplayName("Test get all offered items")
+  @DisplayName("Test get all donated items")
   @Test
-  void testGetAllOfferedItems() {
-    this.setDALServices(true);
-    assertEquals(this.itemDTOList, this.itemUCC.getAllItems());
+  void testGetAllOfferedItems() throws SQLException {
+    assertEquals(this.itemDTOList, this.itemUCC.getAllItems("donated"));
   }
 
   @DisplayName("Test get one item")
   @Test
-  void testGetOneItem() {
-    this.setDALServices(true);
+  void testGetOneItem() throws SQLException {
     assertEquals(this.goodItem, this.itemUCC.getOneItem(this.goodItem.getId()));
   }
 
   @DisplayName("Test get one item with not existing id item")
   @Test
-  void testGetOneItemWithNotExistingIdItem() {
-    this.setDALServices(false);
+  void testGetOneItemWithNotExistingIdItem() throws SQLException {
     assertNull(this.itemUCC.getOneItem(this.notExistingIdItem));
   }
 
   @DisplayName("Test add item with good item")
   @Test
-  void testAddItemWithGoodItem() {
-    this.setDALServices(true);
+  void testAddItemWithGoodItem() throws SQLException {
     assertEquals(this.goodItem.getId(), this.itemUCC.addItem(this.goodItem));
   }
 
   @DisplayName("Test add item with wrong item")
   @Test
-  void testAddItemWithWrongItem() {
-    this.setDALServices(false);
+  void testAddItemWithWrongItem() throws SQLException {
     assertEquals(-1, this.itemUCC.addItem(this.wrongItem));
   }
 
   @DisplayName("Test add item with null item")
   @Test
-  void testAddItemWithNullItem() {
-    this.setDALServices(false);
+  void testAddItemWithNullItem() throws SQLException {
     assertEquals(-1, this.itemUCC.addItem(null));
   }
 
   @DisplayName("Test cancel offer with existing item")
   @Test
-  void testCancelOfferWithExistingItem() {
-    this.setDALServices(true);
+  void testCancelOfferWithExistingItem() throws SQLException {
     assertEquals(this.cancelledItem, this.itemUCC.cancelOffer(this.goodItem.getId()));
   }
 
   @DisplayName("Test cancel offer with not existing item")
   @Test
-  void testCancelOfferWithNotExistingItem() {
-    this.setDALServices(false);
+  void testCancelOfferWithNotExistingItem() throws SQLException {
     assertNull(this.itemUCC.cancelOffer(this.notExistingIdItem));
   }
 
   @DisplayName("Test cancel offer with given item")
   @Test
-  void testCancelOfferWithGivenItem() {
-    this.setDALServices(false);
+  void testCancelOfferWithGivenItem() throws SQLException {
     assertNull(this.itemUCC.cancelOffer(this.givenIdItem));
   }
 
   @DisplayName("Test cancel offer with assigned item")
   @Test
-  void testCancelOfferWithAssignedItem() {
-    this.setDALServices(true);
+  void testCancelOfferWithAssignedItem() throws SQLException {
     assertEquals(this.cancelledItem, this.itemUCC.cancelOffer(this.assignedIdItem));
   }
 }

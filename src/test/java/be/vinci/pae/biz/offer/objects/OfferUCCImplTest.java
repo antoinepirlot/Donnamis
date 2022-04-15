@@ -13,6 +13,7 @@ import be.vinci.pae.dal.offer.interfaces.OfferDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.utils.ApplicationBinder;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,74 +67,59 @@ class OfferUCCImplTest {
             .getOne(this.goodOfferExistingItem.getId()))
         .thenReturn(this.goodOfferExistingItem);
     Mockito.when(this.offerDAO.getOne(this.notExistingIdOffer)).thenReturn(null);
-    Mockito.when(this.dalServices.start()).thenReturn(null);
-  }
-
-  private void setDALServices(boolean isWorking) {
-    Mockito.when(this.dalServices.rollback()).thenReturn(isWorking);
-    Mockito.when(this.dalServices.commit()).thenReturn(isWorking);
   }
 
   @DisplayName("Test create offer with good offer and existing item")
   @Test
-  void testCreateOfferWithGoodOfferAndExistingItem() {
-    this.setDALServices(true);
+  void testCreateOfferWithGoodOfferAndExistingItem() throws SQLException {
     assertTrue(this.offerUCC.createOffer(this.goodOfferExistingItem));
   }
 
   @DisplayName("Test create offer with good offer and not existing item")
   @Test
-  void testCreateOfferWithGoodOfferAndNotExistingItem() {
-    this.setDALServices(false);
+  void testCreateOfferWithGoodOfferAndNotExistingItem() throws SQLException {
     assertFalse(this.offerUCC.createOffer(this.goodOfferNotExistingItem));
   }
 
   @DisplayName("Test create offer with wrong offer and existing item")
   @Test
-  void testCreateOfferWithWrongOfferAndExistingItem() {
-    this.setDALServices(false);
+  void testCreateOfferWithWrongOfferAndExistingItem() throws SQLException {
     assertFalse(this.offerUCC.createOffer(this.wrongOfferWithExistingItem));
   }
 
   @DisplayName("Test create offer with wrong offer and not existing item")
   @Test
-  void testCreateOfferWithWrongOfferAndNotExistingItem() {
-    this.setDALServices(false);
+  void testCreateOfferWithWrongOfferAndNotExistingItem() throws SQLException {
     assertFalse(this.offerUCC.createOffer(this.wrongOfferWithNotExistingItem));
   }
 
   @DisplayName("Test create offer with empty offer")
   @Test
-  void testCreateOfferWithEmptyOffer() {
-    this.setDALServices(false);
+  void testCreateOfferWithEmptyOffer() throws SQLException {
     assertFalse(this.offerUCC.createOffer(this.emptyOffer));
   }
 
   @DisplayName("Test create offer with null offer")
   @Test
-  void testCreateOfferWithNullOffer() {
-    this.setDALServices(false);
+  void testCreateOfferWithNullOffer() throws SQLException {
     assertFalse(this.offerUCC.createOffer(null));
   }
 
   @DisplayName("Test get latest offers")
   @Test
-  void testGetLatestOffers() {
-    this.setDALServices(true);
+  void testGetLatestOffers() throws SQLException {
     assertEquals(this.offerDTOList, this.offerUCC.getLatestOffers());
   }
 
   @DisplayName("Test get all offers")
   @Test
-  void testGetAllOffers() {
-    this.setDALServices(true);
+  void testGetAllOffers() throws SQLException {
     assertEquals(this.offerDTOList, this.offerUCC.getAllOffers());
   }
 
   @DisplayName("Test get one offer with existing id offer")
   @Test
-  void testGetOneOfferWithExistingIdOffer() {
-    this.setDALServices(true);
+  void testGetOneOfferWithExistingIdOffer() throws SQLException {
     assertEquals(
         this.goodOfferExistingItem,
         this.offerUCC.getOneOffer(this.goodOfferExistingItem.getId())
@@ -142,8 +128,7 @@ class OfferUCCImplTest {
 
   @DisplayName("Test get one offer with not existing id offer")
   @Test
-  void testGetOneOfferWithNotExistingIdOffer() {
-    this.setDALServices(true);
+  void testGetOneOfferWithNotExistingIdOffer() throws SQLException {
     assertNull(this.offerUCC.getOneOffer(this.notExistingIdOffer));
   }
 }

@@ -62,9 +62,6 @@ class InterestUCCImplTest {
   }
 
   private void setMockitos() throws SQLException {
-    Mockito.when(this.dalBackendService.start()).thenReturn(null);
-    Mockito.when(this.dalBackendService.rollback()).thenReturn(true);
-    Mockito.when(this.dalBackendService.commit()).thenReturn(true);
 
     Mockito.when(this.interestDAO.markInterest(this.notExistingInterestWithExistingMemberAndOffer))
         .thenReturn(true);
