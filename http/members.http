@@ -76,5 +76,5 @@ Content-Type: application/json
 }
 
 ### Get One Member
-GET {{baseUrl}}/members/profil/4
+GET {{baseUrl}}/members/7
 Authorization: {{token}}
