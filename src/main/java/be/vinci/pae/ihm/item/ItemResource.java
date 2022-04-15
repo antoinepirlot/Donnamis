@@ -48,7 +48,6 @@ public class ItemResource {
   @Path("all_items/{offer_status}")
   @Consumes(MediaType.TEXT_PLAIN)
   @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
   public List<ItemDTO> getAllItemsByOfferStatus(@PathParam("offer_status") String offerStatus)
       throws SQLException {
     return this.getAllItems(offerStatus, -1);
