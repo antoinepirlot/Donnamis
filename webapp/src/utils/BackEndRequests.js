@@ -1,4 +1,4 @@
-import {getObject} from "./session";
+import {getObject, getPayload} from "./session";
 import {showError} from "./ShowError";
 import {Redirect} from "../Components/Router/Router";
 
@@ -167,14 +167,19 @@ async function denyMember(id) {
   }
 }
 
-async function getItems() {
+async function getAllItemsByOfferStatus(offerStatus) {
   const request = {
     method: "GET",
     headers: {
       "Authorization": getObject("token")
     }
   };
-  const response = await fetch("/api/items/all_items", request);
+  let url = "/api/items/all_items";
+  if (offerStatus) {
+    url += "/" + offerStatus;
+  }
+  console.log(url)
+  const response = await fetch(url, request);
   if (!response.ok) {
     if (response.status === 401) {
       Redirect("/logout");
@@ -288,14 +293,15 @@ async function offerAgain(offer) {
   return response.ok;
 }
 
-async function getMyItems(idMember) {
+async function getMyItems() {
   const request = {
     method: "GET",
     headers: {
       "Authorization": getObject("token")
     }
   };
-  const response = await fetch(`/api/items/all_items/${idMember}`, request);
+  const idMember = getPayload().id;
+  const response = await fetch(`/api/items/member_items/${idMember}`, request);
   if (!response.ok) {
     // status code was not 200, error status code
     showError("There's no offer with this id");
@@ -333,42 +339,6 @@ async function getProfile(id) {
   if (!response.ok) {
     // status code was not 200, error status code
     showError("Member not found");
-    throw new Error(
-        "fetch error : " + response.status + " : " + response.statusText
-    );
-  }
-  return await response.json()
-}
-
-async function getLatestItems() {
-  const request = {
-    method: "GET",
-    headers: {
-      "Authorization": getObject("token")
-    }
-  };
-  const response = await fetch(`/api/items/latest_items/`, request);
-  if (!response.ok) {
-    // status code was not 200, error status code
-    showError("There's no offer with this id");
-    throw new Error(
-        "fetch error : " + response.status + " : " + response.statusText
-    );
-  }
-  return await response.json()
-}
-
-async function getOfferedItems() {
-  const request = {
-    method: "GET",
-    headers: {
-      "Authorization": getObject("token")
-    }
-  };
-  const response = await fetch(`/api/items/all_offered_items/`, request);
-  if (!response.ok) {
-    // status code was not 200, error status code
-    showError("There's no offer with this id");
     throw new Error(
         "fetch error : " + response.status + " : " + response.statusText
     );
@@ -416,7 +386,7 @@ export {
   confirmMember,
   confirmAdmin,
   denyMember,
-  getItems,
+  getAllItemsByOfferStatus,
   getOffers,
   getLatestOffers,
   getMyItems,
@@ -426,7 +396,5 @@ export {
   offerAnItem,
   offerAgain,
   getProfile,
-  getLatestItems,
-  getOfferedItems,
   postInterest
 };

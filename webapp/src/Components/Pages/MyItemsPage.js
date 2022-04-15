@@ -54,7 +54,7 @@ const MyItemsPage = async () => {
   }
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = myItemsPageHtml;
-  const items = await getMyItems(getPayload().id);
+  const items = await getMyItems();
   if (items.length === 0) {
     const message = "Vous n'avez aucune offre.";
     const errorMessageMyItemsPage = document.querySelector(

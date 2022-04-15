@@ -16,6 +16,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.sql.SQLException;
 import java.util.List;
 
 @Singleton
@@ -35,7 +36,7 @@ public class OfferResource {
   @Path("add_offer")
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public void addOffer(OfferDTO offerDTO) {
+  public void addOffer(OfferDTO offerDTO) throws SQLException {
     // Get and check credentials
     if (offerDTO == null || offerDTO.getIdItem() < 1) {
       String message = "";
@@ -64,7 +65,7 @@ public class OfferResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public List<OfferDTO> getLatestOffers() {
+  public List<OfferDTO> getLatestOffers() throws SQLException {
     List<OfferDTO> listOfferDTO = offerUCC.getLatestOffers();
     if (listOfferDTO == null) {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
@@ -84,7 +85,7 @@ public class OfferResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public List<OfferDTO> getAllOffers() {
+  public List<OfferDTO> getAllOffers() throws SQLException {
     List<OfferDTO> listOfferDTO = offerUCC.getAllOffers();
     if (listOfferDTO == null) {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)

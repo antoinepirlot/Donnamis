@@ -36,7 +36,7 @@ const viewOfferHtml = `
 </div>
 `;
 
-let idItem;
+let lastOffer;
 
 /**
  * Render the OfferPage :
@@ -50,7 +50,7 @@ async function ViewItemPage() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const page = document.querySelector("#page");
-  idItem = urlParams.get("id");
+  const idItem = urlParams.get("id");
   page.innerHTML = viewOfferHtml;
   const button = document.querySelector("#offerCard");
   //get offer's infos with the id in param
@@ -62,7 +62,7 @@ async function ViewItemPage() {
 async function getItemInfo(idItem) {
   try {
     const item = await getItem(idItem);
-    const lastOffer = item.offerList[0];
+    lastOffer = item.offerList[0];
     var date = new Date(lastOffer.date);
     date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
         + date.getFullYear();
@@ -94,7 +94,7 @@ async function postInterest(e) {
   };
   const interest = {
     callWanted: callWanted,
-    idItem: idItem,
+    offer: lastOffer,
     member: member
   };
   console.table(interest);

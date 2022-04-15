@@ -1,13 +1,12 @@
 package be.vinci.pae.dal.services.interfaces;
 
-import java.sql.Connection;
+import java.sql.SQLException;
 
 public interface DALServices {
 
-  Connection start();
+  void start() throws SQLException;
 
-  boolean commit();
+  void commit() throws SQLException;
 
-  boolean rollback();
-
+  void rollback();
 }

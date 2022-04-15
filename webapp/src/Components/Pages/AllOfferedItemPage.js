@@ -1,4 +1,4 @@
-import {getOfferedItems} from "../../utils/BackEndRequests";
+import {getAllItemsByOfferStatus} from "../../utils/BackEndRequests";
 
 const tableHtml = `
   <div>
@@ -11,7 +11,7 @@ const tableHtml = `
 const AllOfferedItemsPage = async () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtml;
-  const item = await getOfferedItems();
+  const item = await getAllItemsByOfferStatus("donated");
   showItems(item)
 };
 

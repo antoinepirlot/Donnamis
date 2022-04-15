@@ -3,7 +3,7 @@ GET {{baseUrl}}/items/all_items
 Authorization: {{token}}
 
 ### See all offered items
-GET {{baseUrl}}/items/all_offered_items
+GET {{baseUrl}}/items/all_items/donated
 Authorization: {{token}}
 
 ### GET one
@@ -37,5 +37,5 @@ PUT {{baseUrl}}/items/cancel/2
 Authorization: {{token}}
 
 ### See all items by member id
-GET {{baseUrl}}/items/all_items/3
+GET {{baseUrl}}/items/member_items/1
 Authorization: {{token}}

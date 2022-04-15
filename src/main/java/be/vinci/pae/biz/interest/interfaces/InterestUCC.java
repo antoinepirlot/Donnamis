@@ -1,41 +1,21 @@
 package be.vinci.pae.biz.interest.interfaces;
 
-import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import java.sql.SQLException;
 
 public interface InterestUCC {
 
   /**
    * Mark the interest in an offer.
    *
-   * @param memberDTO   the member
-   * @param idOffer    the id of the offer
-   * @param callWanted true if member want to be call false if not
-   * @return 1 if interest good added -1 if not
+   * @param interestDTO the interest to add
    */
-  int markInterest(MemberDTO memberDTO, int idOffer, boolean callWanted);
-
-  /**
-   * Verify if the offer exist in the DB.
-   *
-   * @param idOffer the if of the offer
-   * @return true if exist in the DB false if not
-   */
-  boolean offerExist(int idOffer);
-
-  /**
-   * Verify if the member exist in the DB.
-   *
-   * @param memberDTO the if od the member
-   * @return true if exist in the DB false if not
-   */
-  boolean memberExist(MemberDTO memberDTO);
+  boolean markInterest(InterestDTO interestDTO) throws SQLException;
 
   /**
    * Verify if the interest exist in the DB.
    *
-   * @param idItem    the id of the offer
-   * @param memberDTO the member
+   * @param interestDTO the interest to check
    * @return true if exist in the DB false if not
    */
-  boolean interestExist(int idItem, MemberDTO memberDTO);
+  boolean interestExist(InterestDTO interestDTO) throws SQLException;
 }

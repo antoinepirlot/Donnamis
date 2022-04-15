@@ -19,18 +19,20 @@ public class OfferUCCImpl implements OfferUCC {
   private DALServices dalServices;
 
   @Override
-  public boolean createOffer(OfferDTO offerDTO) {
+  public boolean createOffer(OfferDTO offerDTO) throws SQLException {
     //Cette ligne n'est nécessaire que si on doit faire appel à une fonction de l'interface Offer
     //Offer offer = (Offer) offerDTO;
     dalServices.start();
     if (!this.offerDAO.createOffer(offerDTO)) {
       dalServices.rollback();
+      return false;
     }
-    return dalServices.commit();
+    dalServices.commit();
+    return true;
   }
 
   @Override
-  public List<OfferDTO> getLatestOffers() {
+  public List<OfferDTO> getLatestOffers() throws SQLException {
     dalServices.start();
     List<OfferDTO> listOfferDTO = offerDAO.getLatestOffers();
     if (listOfferDTO == null) {
@@ -41,7 +43,7 @@ public class OfferUCCImpl implements OfferUCC {
   }
 
   @Override
-  public List<OfferDTO> getAllOffers() {
+  public List<OfferDTO> getAllOffers() throws SQLException {
     dalServices.start();
     List<OfferDTO> listOfferDTO = offerDAO.getAllOffers();
     if (listOfferDTO == null) {
@@ -52,7 +54,7 @@ public class OfferUCCImpl implements OfferUCC {
   }
 
   @Override
-  public OfferDTO getOneOffer(int id) {
+  public OfferDTO getOneOffer(int id) throws SQLException {
     dalServices.start();
     OfferDTO offerDTO = offerDAO.getOne(id);
     if (offerDTO == null) {
@@ -64,7 +66,7 @@ public class OfferUCCImpl implements OfferUCC {
   }
 
   @Override
-  public void getAllOffersOf(ItemDTO itemDTO) {
+  public void getAllOffersOf(ItemDTO itemDTO) throws SQLException {
     Item item = (Item) itemDTO;
     dalServices.start();
     try {
@@ -74,5 +76,16 @@ public class OfferUCCImpl implements OfferUCC {
       dalServices.rollback();
     }
     dalServices.commit();
+  }
+
+  @Override
+  public boolean offerExist(OfferDTO offerDTO) throws SQLException {
+    dalServices.start();
+    if (!this.offerDAO.offerExist(offerDTO)) {
+      dalServices.rollback();
+      return false;
+    }
+    dalServices.commit();
+    return true;
   }
 }
