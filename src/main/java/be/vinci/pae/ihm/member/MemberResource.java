@@ -3,6 +3,7 @@ package be.vinci.pae.ihm.member;
 import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
+import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
@@ -118,19 +119,20 @@ public class MemberResource {
   /**
    * Asks UCC to deny the member's inscription.
    *
-   * @param id the member's id
-   * @return the denied member
+   * @param refusalDTO the refusal information
    */
   @PUT
-  @Path("denies/{id}")
+  @Path("deny")
+  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public MemberDTO denyMember(@PathParam("id") int id, String refusalText) throws SQLException {
-    if (memberUCC.getOneMember(id) == null) {
-      throw new ObjectNotFoundException("No member with the id: " + id);
+  public void denyMember(RefusalDTO refusalDTO) throws SQLException, UnexpectedException {
+    if (!memberUCC.memberExist(refusalDTO.getMember(), -1)) {
+      throw new ObjectNotFoundException("No member with the id: " + refusalDTO.getMember().getId());
     }
-    MemberDTO memberDTO = memberUCC.denyMember(id, refusalText);
-    return this.jsonUtil.filterPublicJsonView(memberDTO);
+    if (!memberUCC.denyMember(refusalDTO)) {
+      throw new UnexpectedException("An unexpected error happened while denying member.");
+    }
   }
 
   /**
