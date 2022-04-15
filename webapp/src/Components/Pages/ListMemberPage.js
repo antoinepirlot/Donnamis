@@ -137,23 +137,23 @@ async function showDeniedMember(member) {
 
   // Confirm Button
   const confirmButtons = document.querySelectorAll("#DeniedConfirmButton");
-  confirmButtons.forEach(async confirmButton => {
-      confirmButton.addEventListener("click", async function () {
-        let isAdminButtonChecked;
-        isAdminButtons.forEach(button => {
-          if (button.value === confirmButton.value) {
-            isAdminButtonChecked = button.checked;
-          }
-        });
-        //Confirm the registration (Click on the button)
-        if (isAdminButtonChecked) {
-          await confirmAdmin(confirmButton.value);
+  for (const confirmButton of confirmButtons) {
+    confirmButton.addEventListener("click", async function () {
+      let isAdminButtonChecked;
+      isAdminButtons.forEach(button => {
+        if (button.value === confirmButton.value) {
+          isAdminButtonChecked = button.checked;
+        }
+      });
+      //Confirm the registration (Click on the button)
+      if (isAdminButtonChecked) {
+        await confirmAdmin(confirmButton.value);
         } else {
           await confirmMember(confirmButton.value);
         }
         Redirect("/list_member");
       });
-  });
+  }
 
   const line = document.querySelector("#DeniedLine");
   line.dataset.memberId = member.id;
