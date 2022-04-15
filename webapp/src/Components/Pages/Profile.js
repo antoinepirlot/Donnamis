@@ -1,5 +1,4 @@
-import {getProfile} from "../../utils/BackEndRequests";
-import {getPayload,} from "../../utils/session";
+import {getObject, getPayload,} from "../../utils/session";
 import {Redirect} from "../Router/Router";
 
 const viewProfileHtml = `
@@ -8,7 +7,7 @@ const viewProfileHtml = `
     <div id="username"></div>
     <div id="name"></div>
     <div id="phone"></div>
-    <div id="adress"></div>
+    <div id="address"></div>
   </div>
 `;
 
@@ -20,29 +19,30 @@ async function ProfilePage() {
 
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML += viewProfileHtml;
+  showProfile();
+}
 
-  try {
-    const payload = await getPayload();
+function showProfile() {
+  const member = getObject("memberDTO");
+  const address = member.address;
+  const phone = member.phoneNumber;
 
-    const profile = await getProfile(payload.id);
-    const address = profile.address;
+  const usernameDiv = document.querySelector("#username");
+  const nameDiv = document.querySelector("#name");
+  const phoneDiv = document.querySelector("#phone");
+  const addressDiv = document.querySelector("#address");
 
-    document.querySelector("#username").innerHTML += profile.username;
-    document.querySelector("#name").innerHTML += profile.lastName + " "
-        + profile.firstName;
-    const phone = profile.phoneNumber;
-    if (phone == null) {
-      document.querySelector("#phone").innerHTML += "Aucun numéro de téléphone";
-    } else {
-      document.querySelector("#phone").innerHTML += phone;
-    }
-    document.querySelector("#adress").innerHTML += address.street + " ";
-    document.querySelector("#adress").innerHTML += address.buildingNumber + " ";
-    document.querySelector("#adress").innerHTML += address.postcode + " ";
-    document.querySelector("#adress").innerHTML += address.commune + " ";
-  } catch (err) {
-    console.error(err);
+  usernameDiv.innerHTML += member.username;
+  nameDiv.innerHTML += member.lastName + " " + member.firstName;
+  if (phone == null) {
+    phoneDiv.innerHTML += "Aucun numéro de téléphone";
+  } else {
+    phoneDiv.innerHTML += phone;
   }
+  addressDiv.innerHTML += address.street + " ";
+  addressDiv.innerHTML += address.buildingNumber + " ";
+  addressDiv.innerHTML += address.postcode + " ";
+  addressDiv.innerHTML += address.commune + " ";
 }
 
 export default ProfilePage;
