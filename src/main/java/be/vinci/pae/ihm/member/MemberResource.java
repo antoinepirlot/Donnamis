@@ -77,7 +77,7 @@ public class MemberResource {
   }
 
   @GET
-  @Path("profil/{id}")
+  @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public MemberDTO getMemberById(@PathParam("id") int id) throws SQLException {
