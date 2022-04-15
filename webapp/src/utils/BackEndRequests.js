@@ -306,24 +306,6 @@ async function cancelOffer(id) {
   }
 }
 
-async function getProfile(id) {
-  const request = {
-    method: "GET",
-    headers: {
-      "Authorization": getObject("token")
-    }
-  };
-  const response = await fetch(`/api/members/profil/${id}`, request);
-  if (!response.ok) {
-    // status code was not 200, error status code
-    showError("Member not found");
-    throw new Error(
-        "fetch error : " + response.status + " : " + response.statusText
-    );
-  }
-  return await response.json()
-}
-
 /**
  * Ask backend to mark an interest for an item.
  * @returns {Promise<boolean>} true if the request has been done otherwise false
@@ -372,6 +354,5 @@ export {
   getItemsTypes,
   offerAnItem,
   offerAgain,
-  getProfile,
   postInterest
 };
