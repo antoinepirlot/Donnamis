@@ -9,7 +9,6 @@ import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeAdmin;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.filter.utils.Json;
-import be.vinci.pae.ihm.logs.LoggerHandler;
 import be.vinci.pae.ihm.utils.TokenDecoder;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
@@ -32,7 +31,6 @@ import jakarta.ws.rs.core.MediaType;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Root resource (exposed at "myresource" path).
@@ -41,7 +39,6 @@ import java.util.logging.Logger;
 @Path("members")
 public class MemberResource {
 
-  private final Logger logger = LoggerHandler.getLogger();
   private final ObjectMapper jsonMapper = new ObjectMapper();
   private final Json<MemberDTO> jsonUtil = new Json<>(MemberDTO.class);
   @Inject
