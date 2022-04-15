@@ -90,7 +90,7 @@ public class MemberResource {
       throw new ObjectNotFoundException("Address not found");
     }
     memberDTO.setAddress(addressDTO);
-    return memberDTO;
+    return this.jsonUtil.filterPublicJsonView(memberDTO);
   }
 
   /**
