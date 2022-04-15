@@ -93,15 +93,16 @@ async function getAllMembers() {
   return await response.json();
 }
 
-async function confirmMember(id) {
+async function confirmInscription(member) {
   const request = {
     method: "PUT",
     headers: {
+      "Content-Type": "application/json",
       "Authorization": getObject("token")
-    }
+    },
+    body: JSON.stringify(member)
   };
-  const url = `/api/members/confirm/${id}`;
-  const response = await fetch(url, request);
+  const response = await fetch("/api/members/confirm", request);
   if (!response.ok) {
     throw new Error(
         "fetch error : " + response.status + " : " + response.statusText
@@ -342,7 +343,7 @@ export {
   register,
   isAdmin,
   getAllMembers,
-  confirmMember,
+  confirmInscription,
   confirmAdmin,
   denyMember,
   getAllItemsByOfferStatus,

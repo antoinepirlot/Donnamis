@@ -55,24 +55,16 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public MemberDTO confirmMember(int id) throws SQLException {
+  public boolean confirmMember(MemberDTO memberDTO) throws SQLException {
     dalServices.start();
-    Member member = (Member) memberDAO.getOneMember(id);
+    Member member = (Member) memberDAO.getOneMember(memberDTO.getId());
     if (member == null) {
       dalServices.rollback();
-      return null;
+      return false;
     }
-    if (!member.verifyState("registered") && !member.verifyState("denied")) {
-      dalServices.rollback();
-      return null;
-    }
-    MemberDTO memberDTO = memberDAO.confirmMember(id);
-    if (memberDTO == null) {
-      dalServices.rollback();
-    } else {
-      dalServices.commit();
-    }
-    return memberDTO;
+    memberDAO.confirmMember(memberDTO);
+    dalServices.commit();
+    return true;
   }
 
   @Override
@@ -93,36 +85,6 @@ public class MemberUCCImpl implements MemberUCC {
     } else {
       dalServices.commit();
     }
-    return memberDTO;
-  }
-
-  /**
-   * Verify the state of the member and then change the state of the member to confirmed.
-   *
-   * @param id of the member
-   * @return True if success
-   */
-  public MemberDTO confirmAdmin(int id) throws SQLException {
-    dalServices.start();
-    Member member = (Member) memberDAO.getOneMember(id);
-    if (member == null) {
-      dalServices.rollback();
-      return null;
-    }
-    if (!member.verifyState("registered") && !member.verifyState("denied")) {
-      dalServices.rollback();
-      return null;
-    }
-    MemberDTO memberDTO = memberDAO.confirmMember(id);
-    if (memberDTO == null) {
-      dalServices.rollback();
-      return null;
-    }
-    memberDTO = memberDAO.isAdmin(id);
-    if (memberDTO == null) {
-      dalServices.rollback();
-    }
-    dalServices.commit();
     return memberDTO;
   }
 

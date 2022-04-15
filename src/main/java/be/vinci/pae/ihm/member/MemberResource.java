@@ -28,6 +28,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import java.rmi.UnexpectedException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -96,43 +97,22 @@ public class MemberResource {
   /**
    * Asks UCC to confirm the member identified by its id.
    *
-   * @param id the member's id
-   * @return the confirmed member
+   * @param memberDTO the member to confirm
    */
   @PUT
-  @Path("confirm/{id}")
-  @Produces(MediaType.APPLICATION_JSON)
+  @Path("confirm")
+  @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public MemberDTO confirmMember(@PathParam("id") int id) throws SQLException {
-    System.out.println("********* Confirm Member *************");
-    if (memberUCC.getOneMember(id) == null) {
-      throw new ObjectNotFoundException("No member with the id: " + id);
+  public void confirmMember(MemberDTO memberDTO) throws SQLException, UnexpectedException {
+    if (memberDTO == null || memberDTO.getId() < 1) {
+      throw new WrongBodyDataException("Confirmation of a incomplete member's information.");
     }
-    MemberDTO confirmedMember = memberUCC.confirmMember(id);
-    if (confirmedMember == null) {
-      String message = "Issue while confirming member.";
-      throw new NullPointerException(message);
+    if (memberUCC.getOneMember(memberDTO.getId()) == null) {
+      throw new ObjectNotFoundException("No member with the id: " + memberDTO.getId());
     }
-    return this.jsonUtil.filterPublicJsonView(confirmedMember);
-  }
-
-  /**
-   * Asks UCC to confirm an admin identified by its id.
-   *
-   * @param id the member's id
-   * @return the confirmed admin member
-   */
-  @PUT
-  @Path("confirmAdmin/{id}")
-  @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
-  public MemberDTO confirmAdmin(@PathParam("id") int id) throws SQLException {
-    if (memberUCC.getOneMember(id) == null) {
-      String message = "Try to confirm an admin member with an id not in the database. Id: " + id;
-      throw new ObjectNotFoundException(message);
+    if (!memberUCC.confirmMember(memberDTO)) {
+      throw new UnexpectedException("An unexpected error happened while confirming member.");
     }
-    MemberDTO confirmedAdmin = memberUCC.confirmAdmin(id);
-    return this.jsonUtil.filterPublicJsonView(confirmedAdmin);
   }
 
   /**

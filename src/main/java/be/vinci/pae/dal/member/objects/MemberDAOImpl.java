@@ -72,13 +72,21 @@ public class MemberDAOImpl implements MemberDAO {
   /**
    * Change the state of the member to confirmed.
    *
-   * @param id the id of the member
+   * @param memberDTO the member to confirm
    * @return boolean
    */
-  public MemberDTO confirmMember(int id) {
-    String query = "UPDATE project_pae.members SET state = 'confirmed' WHERE id_member = ? "
-        + "RETURNING *;";
-    return executeQueryWithId(id, query);
+  public boolean confirmMember(MemberDTO memberDTO) throws SQLException {
+    String query = "UPDATE project_pae.members "
+        + "SET state = 'confirmed', is_admin = ? "
+        + "WHERE id_member = ?;";
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
+      preparedStatement.setBoolean(1, memberDTO.isAdmin());
+      preparedStatement.setInt(2, memberDTO.getId());
+      if (preparedStatement.executeUpdate() != 0) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**

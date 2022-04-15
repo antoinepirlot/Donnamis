@@ -30,12 +30,12 @@ public interface MemberUCC {
   AddressDTO getAddressMember(int id) throws SQLException;
 
   /**
-   * Verify the state of the member and then change the state of the member.
+   * Confirm the inscription of a member.
    *
-   * @param id of the member
+   * @param memberDTO the member to confirm
    * @return True if success
    */
-  MemberDTO confirmMember(int id) throws SQLException;
+  boolean confirmMember(MemberDTO memberDTO) throws SQLException;
 
   /**
    * Verify the state of the member and then change the state of the member to denied.
@@ -44,14 +44,6 @@ public interface MemberUCC {
    * @return True if success
    */
   MemberDTO denyMember(int id, String refusalText) throws SQLException;
-
-  /**
-   * Verify the state of the member and then change the state of the member to confirmed.
-   *
-   * @param id of the member
-   * @return True if success
-   */
-  MemberDTO confirmAdmin(int id) throws SQLException;
 
   /**
    * Verify if the member exist in the DB.

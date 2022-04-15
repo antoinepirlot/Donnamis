@@ -2,8 +2,7 @@
  * Render the ListMemberPage
  */
 import {
-  confirmAdmin,
-  confirmMember,
+  confirmInscription,
   denyMember,
   getAllMembers,
   isAdmin
@@ -77,7 +76,7 @@ async function showRegisteredMember(member) {
       <tr id="RegisteredLine">
         <td>${member.firstName}</td>
         <td>${member.lastName}</td>
-        <td><input class="form-check-input" type="checkbox" value="" id="RegisteredIsAdmin" value="${member.id}"></td>
+        <td><input class="form-check-input" type="checkbox" id="RegisteredIsAdmin" value="${member.id}"></td>
         <td><button type="submit" class="btn btn-primary" id="RegisteredConfirmButton" value=${member.id}>Confirmer</button></td>
         <td><button type="submit" class="btn btn-danger" id="RegisteredRefuseButton" value=${member.id}>Refuser</button></td>
         <td><div class="form-floating mb-3"><input type="text" class="form-control" id="floatingInput"><label for="floatingInput">Message</label></div></td>
@@ -89,33 +88,34 @@ async function showRegisteredMember(member) {
 
   // Confirm Button
   const confirmButtons = document.querySelectorAll(
-        "#RegisteredConfirmButton");
-    confirmButtons.forEach(confirmButton => {
-      confirmButton.addEventListener("click", async function () {
-        let isAdminButtonChecked;
-        isAdminButtons.forEach(button => {
-          if (button.value === confirmButton.value) {
-            isAdminButtonChecked = button.checked;
-          }
-        });
-        //Confirm the registration (Click on the button)
-        if (isAdminButtonChecked) {
-          await confirmAdmin(confirmButton.value);
-        } else {
-          await confirmMember(confirmButton.value);
+      "#RegisteredConfirmButton");
+  confirmButtons.forEach(confirmButton => {
+    confirmButton.addEventListener("click", async function () {
+      let isAdminButtonChecked;
+      isAdminButtons.forEach(button => {
+        if (button.value === confirmButton.value) {
+          console.log(button.checked)
+          isAdminButtonChecked = button.checked;
         }
-        Redirect("/list_member");
       });
+      const member = {
+        id: confirmButton.value,
+        isAdmin: isAdminButtonChecked
+      };
+      await confirmInscription(member);
+      console.log(member)
+      Redirect("/list_member");
     });
+  });
 
   //Deny Button
   const denyButtons = document.querySelectorAll("#RegisteredRefuseButton");
-    denyButtons.forEach(denyButton => {
-      denyButton.addEventListener("click", async function () {
-        //Confirm the registration (Click on the button)
-        await denyMember(denyButton.value);
-        Redirect("/list_member");
-      });
+  denyButtons.forEach(denyButton => {
+    denyButton.addEventListener("click", async function () {
+      //Confirm the registration (Click on the button)
+      await denyMember(denyButton.value);
+      Redirect("/list_member");
+    });
   });
   const line = document.querySelector("#RegisteredLine");
   line.dataset.memberId = member.id;
@@ -145,14 +145,13 @@ async function showDeniedMember(member) {
           isAdminButtonChecked = button.checked;
         }
       });
-      //Confirm the registration (Click on the button)
-      if (isAdminButtonChecked) {
-        await confirmAdmin(confirmButton.value);
-        } else {
-          await confirmMember(confirmButton.value);
-        }
-        Redirect("/list_member");
-      });
+      const member = {
+        id: confirmButton.value,
+        isAdmin: isAdminButtonChecked
+      };
+      await confirmInscription(member);
+      Redirect("/list_member");
+    });
   }
 
   const line = document.querySelector("#DeniedLine");

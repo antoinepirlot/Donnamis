@@ -2,6 +2,7 @@ package be.vinci.pae.dal.member.interfaces;
 
 import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import java.sql.SQLException;
 import java.util.List;
 
 public interface MemberDAO {
@@ -24,7 +25,7 @@ public interface MemberDAO {
 
   AddressDTO getAddressMember(int id);
 
-  MemberDTO confirmMember(int id);
+  boolean confirmMember(MemberDTO memberDTO) throws SQLException;
 
   MemberDTO isAdmin(int id);
 
