@@ -4,6 +4,7 @@ import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
+import be.vinci.pae.ihm.filter.AuthorizeAdmin;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.filter.utils.Json;
 import jakarta.inject.Inject;
@@ -19,6 +20,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.sql.SQLException;
 import java.util.List;
 
 @Singleton
@@ -31,23 +33,6 @@ public class ItemResource {
   @Inject
   private OfferUCC offerUCC;
 
-  /**
-   * Method that get all the latest offered items.
-   *
-   * @return a list of the latest offered items
-   */
-  @GET
-  @Path("latest_items")
-  @Produces(MediaType.APPLICATION_JSON)
-  //@AuthorizeMember
-  public List<ItemDTO> getLatestItems() {
-    List<ItemDTO> listItemDTO = itemUCC.getLatestItems();
-    if (listItemDTO == null) {
-      throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
-    }
-    return this.jsonUtil.filterPublicJsonViewAsList(listItemDTO);
-  }
-
 
   /**
    * Method that get all items.
@@ -55,11 +40,25 @@ public class ItemResource {
    * @return a list of all items
    */
   @GET
-  @Path("all_items")
+  @Path("all_items/{offer_status}")
+  @Consumes(MediaType.TEXT_PLAIN)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public List<ItemDTO> getAllItems() {
-    List<ItemDTO> listItemDTO = itemUCC.getAllItems();
+  public List<ItemDTO> getAllItems(@PathParam("offer_status") String offerStatus)
+      throws SQLException {
+    return this.getAllItemsByOfferStatus(offerStatus);
+  }
+
+  @GET
+  @Path("all_items")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<ItemDTO> getAllOfferedItems() throws SQLException {
+    return this.getAllItems(null);
+  }
+
+  private List<ItemDTO> getAllItemsByOfferStatus(String offerStatus) throws SQLException {
+    List<ItemDTO> listItemDTO = itemUCC.getAllItems(offerStatus);
     if (listItemDTO == null) {
       throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
     }
@@ -67,24 +66,6 @@ public class ItemResource {
       this.offerUCC.getAllOffersOf(itemDTO);
     }
     return listItemDTO;
-  }
-
-  /**
-   * Gets all offered items.
-   *
-   * @return a list of all offered items
-   */
-  @GET
-  @Path("all_offered_items")
-  @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
-  public List<ItemDTO> getAllOfferedItems() {
-    System.out.println("Get all offered items");
-    List<ItemDTO> itemDTOList = this.itemUCC.getAllOfferedItems();
-    for (ItemDTO itemDTO : itemDTOList) {
-      this.offerUCC.getAllOffersOf(itemDTO);
-    }
-    return itemDTOList;
   }
 
   /**
@@ -96,7 +77,7 @@ public class ItemResource {
   @Path("offer")
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public void addItem(ItemDTO itemDTO) {
+  public void addItem(ItemDTO itemDTO) throws SQLException {
     System.out.println(itemDTO.getOfferList());
     if (
         itemDTO.getItemDescription() == null || itemDTO.getItemDescription().isBlank()
@@ -132,7 +113,7 @@ public class ItemResource {
   @Path("cancel/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public ItemDTO cancelOffer(@PathParam("id") int id) {
+  public ItemDTO cancelOffer(@PathParam("id") int id) throws SQLException {
     if (itemUCC.getOneItem(id) == null) {
       throw new WebApplicationException("Item not found", Status.NOT_FOUND);
     }
@@ -143,15 +124,16 @@ public class ItemResource {
   /**
    * Method that get all items by the member id.
    *
-   * @param id the member's id
+   * @param idMember the member's id
    * @return a list of all items
    */
   @GET
-  @Path("all_items/{id}")
+  @Path("all_items/{idMember}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public List<ItemDTO> getAllItemsByMemberId(@PathParam("id") int id) {
-    List<ItemDTO> listItemDTO = itemUCC.getAllItemsByMemberId(id);
+  public List<ItemDTO> getAllItemsByMemberId(@PathParam("idMember") int idMember)
+      throws SQLException {
+    List<ItemDTO> listItemDTO = itemUCC.getAllItemsOfAMember(idMember);
     if (listItemDTO == null || listItemDTO.isEmpty()) {
       throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
     }
@@ -172,7 +154,7 @@ public class ItemResource {
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public ItemDTO getItem(@PathParam("id") int id) {
+  public ItemDTO getItem(@PathParam("id") int id) throws SQLException {
     ItemDTO itemDTO = itemUCC.getOneItem(id);
     if (itemDTO == null) {
       throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)

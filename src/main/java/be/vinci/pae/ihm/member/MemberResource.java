@@ -29,6 +29,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -50,7 +51,7 @@ public class MemberResource {
   @GET
   @Path("/me")
   @Produces(MediaType.APPLICATION_JSON)
-  public ObjectNode refreshToken(@Context ContainerRequestContext request) {
+  public ObjectNode refreshToken(@Context ContainerRequestContext request) throws SQLException {
     DecodedJWT decodedJWT = TokenDecoder.decodeToken(request);
     MemberDTO memberDTO = this.memberUCC.getOneMember(decodedJWT.getClaim("id").asInt());
     if (memberDTO == null) {
@@ -72,7 +73,7 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public List<MemberDTO> getAllMembers() {
+  public List<MemberDTO> getAllMembers() throws SQLException {
     List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
     if (listMemberDTO == null) {
       String message = "No member into the database";
@@ -87,7 +88,7 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public MemberDTO getMemberById(@PathParam("id") int id) {
+  public MemberDTO getMemberById(@PathParam("id") int id) throws SQLException {
     MemberDTO memberDTO = memberUCC.getOneMember(id);
     if (memberDTO == null) {
       throw new ObjectNotFoundException("Member not found");
@@ -111,7 +112,7 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public List<MemberDTO> getMembersRegistered() {
+  public List<MemberDTO> getMembersRegistered() throws SQLException {
     List<MemberDTO> registeredMembers = memberUCC.getMembersRegistered();
     if (registeredMembers == null) {
       String message = "Get all registered members but there's no registered members.";
@@ -131,7 +132,7 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public List<MemberDTO> getMembersDenied() {
+  public List<MemberDTO> getMembersDenied() throws SQLException {
     List<MemberDTO> deniedMembers = memberUCC.getMembersDenied();
     if (deniedMembers == null) {
       String message = "Get all denied members but there's no denied members.";
@@ -151,7 +152,7 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public MemberDTO confirmMember(@PathParam("id") int id) {
+  public MemberDTO confirmMember(@PathParam("id") int id) throws SQLException {
     System.out.println("********* Confirm Member *************");
     if (memberUCC.getOneMember(id) == null) {
       throw new ObjectNotFoundException("No member with the id: " + id);
@@ -175,7 +176,7 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public MemberDTO confirmAdmin(@PathParam("id") int id) {
+  public MemberDTO confirmAdmin(@PathParam("id") int id) throws SQLException {
     if (memberUCC.getOneMember(id) == null) {
       String message = "Try to confirm an admin member with an id not in the database. Id: " + id;
       throw new ObjectNotFoundException(message);
@@ -195,7 +196,7 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public MemberDTO denyMember(@PathParam("id") int id, String refusalText) {
+  public MemberDTO denyMember(@PathParam("id") int id, String refusalText) throws SQLException {
     if (memberUCC.getOneMember(id) == null) {
       throw new ObjectNotFoundException("No member with the id: " + id);
     }
@@ -213,19 +214,18 @@ public class MemberResource {
   @Path("login")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public ObjectNode login(MemberDTO memberDTO) {
+  public ObjectNode login(MemberDTO memberDTO) throws SQLException {
     // Get and check credentials
     if (memberDTO == null
         || memberDTO.getUsername() == null
         || memberDTO.getPassword() == null
     ) {
       String message = "Member has wrong attributes for login method";
-      this.logger.log(Level.SEVERE, message);
       throw new WrongBodyDataException(message);
     }
     memberDTO = memberUCC.login(memberDTO);
     if (memberDTO == null) {
-      throw new ObjectNotFoundException();
+      throw new ObjectNotFoundException("Member is null");
     }
     String token = createToken(memberDTO.getId());
     return createObjectNode(token, memberDTO);
@@ -283,7 +283,7 @@ public class MemberResource {
   @POST
   @Path("register")
   @Consumes(MediaType.APPLICATION_JSON)
-  public void register(MemberDTO memberDTO) {
+  public void register(MemberDTO memberDTO) throws SQLException {
     // Verify memberDTO integrity
     if (memberDTO == null
         || memberDTO.getUsername() == null || memberDTO.getUsername().equals("")

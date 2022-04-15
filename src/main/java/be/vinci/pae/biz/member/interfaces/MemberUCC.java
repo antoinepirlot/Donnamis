@@ -1,6 +1,7 @@
 package be.vinci.pae.biz.member.interfaces;
 
 import be.vinci.pae.biz.address.interfaces.AddressDTO;
+import java.sql.SQLException;
 import java.util.List;
 
 public interface MemberUCC {
@@ -10,21 +11,21 @@ public interface MemberUCC {
    *
    * @return the list of all members
    */
-  List<MemberDTO> getAllMembers();
+  List<MemberDTO> getAllMembers() throws SQLException;
 
   /**
    * Asks UCC to get a list of registered members.
    *
    * @return the list of registered members
    */
-  List<MemberDTO> getMembersRegistered();
+  List<MemberDTO> getMembersRegistered() throws SQLException;
 
   /**
    * Asks UCC to get the list of denied members.
    *
    * @return the list of denied members
    */
-  List<MemberDTO> getMembersDenied();
+  List<MemberDTO> getMembersDenied() throws SQLException;
 
   /**
    * Asks the UCC to get the member identified by its id.
@@ -32,7 +33,7 @@ public interface MemberUCC {
    * @param id the member's id
    * @return the member or null if there's no member with the id
    */
-  MemberDTO getOneMember(int id);
+  MemberDTO getOneMember(int id) throws SQLException;
 
   /**
    * Asks the UCC to get the adress of the membe identified by its id.
@@ -40,7 +41,7 @@ public interface MemberUCC {
    * @param id the member's id
    * @return the adress or null if there's no member with the id
    */
-  AddressDTO getAddressMember(int id);
+  AddressDTO getAddressMember(int id) throws SQLException;
 
   /**
    * Verify the state of the member and then change the state of the member.
@@ -48,7 +49,7 @@ public interface MemberUCC {
    * @param id of the member
    * @return True if success
    */
-  MemberDTO confirmMember(int id);
+  MemberDTO confirmMember(int id) throws SQLException;
 
   /**
    * Verify the state of the member and then change the state of the member to denied.
@@ -56,7 +57,7 @@ public interface MemberUCC {
    * @param id of the member
    * @return True if success
    */
-  MemberDTO denyMember(int id, String refusalText);
+  MemberDTO denyMember(int id, String refusalText) throws SQLException;
 
   /**
    * Verify the state of the member and then change the state of the member to confirmed.
@@ -64,7 +65,7 @@ public interface MemberUCC {
    * @param id of the member
    * @return True if success
    */
-  MemberDTO confirmAdmin(int id);
+  MemberDTO confirmAdmin(int id) throws SQLException;
 
   /**
    * Verify if the member exist in the DB.
@@ -72,14 +73,14 @@ public interface MemberUCC {
    * @param memberDTO the if od the member
    * @return true if exist in the DB false if not
    */
-  boolean memberExist(MemberDTO memberDTO);
+  boolean memberExist(MemberDTO memberDTO) throws SQLException;
 
   /**
    * Get the member from the db, checks its state and password.
    *
    * @param memberToLogIn the member who try to log in
    */
-  MemberDTO login(MemberDTO memberToLogIn);
+  MemberDTO login(MemberDTO memberToLogIn) throws SQLException;
 
   /**
    * Ask DAO to insert the member into the db.
@@ -87,5 +88,5 @@ public interface MemberUCC {
    * @param memberDTO member to add in the db
    * @return true if the member has been  registered
    */
-  boolean register(MemberDTO memberDTO);
+  boolean register(MemberDTO memberDTO) throws SQLException;
 }

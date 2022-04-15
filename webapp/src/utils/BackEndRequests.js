@@ -171,14 +171,19 @@ async function denyMember(id) {
   }
 }
 
-async function getItems() {
+async function getAllItemsByOfferStatus(offerStatus) {
   const request = {
     method: "GET",
     headers: {
       "Authorization": getObject("token")
     }
   };
-  const response = await fetch("/api/items/all_items", request);
+  let url = "/api/items/all_items";
+  if (offerStatus) {
+    url += "/" + offerStatus;
+  }
+  console.log(url)
+  const response = await fetch(url, request);
   if (!response.ok) {
     throw new Error("Erreur lors du fetch");
   }
@@ -338,42 +343,6 @@ async function getProfile(id) {
   return await response.json()
 }
 
-async function getLatestItems() {
-  const request = {
-    method: "GET",
-    headers: {
-      "Authorization": getObject("token")
-    }
-  };
-  const response = await fetch(`/api/items/latest_items/`, request);
-  if (!response.ok) {
-    // status code was not 200, error status code
-    showError("There's no offer with this id");
-    throw new Error(
-        "fetch error : " + response.status + " : " + response.statusText
-    );
-  }
-  return await response.json()
-}
-
-async function getOfferedItems() {
-  const request = {
-    method: "GET",
-    headers: {
-      "Authorization": getObject("token")
-    }
-  };
-  const response = await fetch(`/api/items/all_offered_items/`, request);
-  if (!response.ok) {
-    // status code was not 200, error status code
-    showError("There's no offer with this id");
-    throw new Error(
-        "fetch error : " + response.status + " : " + response.statusText
-    );
-  }
-  return await response.json()
-}
-
 /**
  * Ask backend to mark an interest for an item.
  * @returns {Promise<boolean>} true if the request has been done otherwise false
@@ -414,7 +383,7 @@ export {
   confirmMember,
   confirmAdmin,
   denyMember,
-  getItems,
+  getAllItemsByOfferStatus,
   getOffers,
   getLatestOffers,
   getMyItems,
@@ -424,7 +393,5 @@ export {
   offerAnItem,
   offerAgain,
   getProfile,
-  getLatestItems,
-  getOfferedItems,
   postInterest
 };

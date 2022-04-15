@@ -10,6 +10,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import java.sql.SQLException;
 import java.util.List;
 
 @Singleton
@@ -29,7 +30,7 @@ public class ItemsTypeResource {
   @Path("all")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public List<ItemsTypeDTO> getAll() {
+  public List<ItemsTypeDTO> getAll() throws SQLException {
     List<ItemsTypeDTO> itemsTypeDTOList = this.itemsTypeUCC.getAll();
     if (itemsTypeDTOList == null) {
       String message = "No items type found.";

@@ -6,6 +6,7 @@ import be.vinci.pae.dal.itemstype.interfaces.ItemsTypeDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.ihm.logs.LoggerHandler;
 import jakarta.inject.Inject;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +20,7 @@ public class ItemsTypeUCCImpl implements ItemsTypeUCC {
   private final Logger logger = LoggerHandler.getLogger();
 
   @Override
-  public List<ItemsTypeDTO> getAll() {
+  public List<ItemsTypeDTO> getAll() throws SQLException {
     this.dalServices.start();
     List<ItemsTypeDTO> itemsTypeDTOList = this.itemsTypeDAO.getAll();
     if (itemsTypeDTOList == null) {

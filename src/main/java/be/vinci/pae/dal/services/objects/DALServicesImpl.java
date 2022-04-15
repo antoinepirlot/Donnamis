@@ -31,33 +31,25 @@ public class DALServicesImpl implements DALServices, DALBackendService {
   /**
    * Try to connect to the db.
    */
-  public void start() {
+  public void start() throws SQLException {
     //connection = DriverManager.getConnection(url, user, dbPassword); //postgres password
     //Creating connection
-    try (Connection connection = basicDataSource.getConnection()) {
-      System.out.println("Connexion prise par le thread : " + connection);
-      //Set the connection in the ThreadLocal Map
-      connection.setAutoCommit(false);
-      dbThreadLocal.set(connection);
-      System.out.println("Connection à la db réussie.");
-    } catch (SQLException e) {
-      System.out.println("Impossible de joindre le serveur");
-      System.exit(1);
-    }
+    Connection connection = basicDataSource.getConnection();
+    System.out.println("Connexion prise par le thread : " + connection);
+    //Set the connection in the ThreadLocal Map
+    connection.setAutoCommit(false);
+    dbThreadLocal.set(connection);
+    System.out.println("Connection à la db réussie.");
   }
 
   @Override
-  public void commit() {
-    try (Connection connection = dbThreadLocal.get()) {
-      connection.commit();
-      connection.setAutoCommit(true);
-      connection.close();
-      dbThreadLocal.remove();
-      System.out.println("Connection removed");
-    } catch (SQLException e) {
-      System.out.println("Impossible de joindre le serveur");
-      System.exit(1);
-    }
+  public void commit() throws SQLException {
+    Connection connection = dbThreadLocal.get();
+    connection.commit();
+    connection.setAutoCommit(true);
+    connection.close();
+    dbThreadLocal.remove();
+    System.out.println("Connection removed");
   }
 
   @Override

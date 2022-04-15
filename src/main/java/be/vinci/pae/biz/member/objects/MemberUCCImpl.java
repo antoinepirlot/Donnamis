@@ -7,6 +7,7 @@ import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import jakarta.inject.Inject;
+import java.sql.SQLException;
 import java.util.List;
 
 public class MemberUCCImpl implements MemberUCC {
@@ -18,7 +19,7 @@ public class MemberUCCImpl implements MemberUCC {
 
 
   @Override
-  public List<MemberDTO> getAllMembers() {
+  public List<MemberDTO> getAllMembers() throws SQLException {
     dalServices.start();
     List<MemberDTO> memberDTOList = memberDAO.getAllMembers();
     if (memberDTOList == null) {
@@ -30,7 +31,7 @@ public class MemberUCCImpl implements MemberUCC {
 
 
   @Override
-  public List<MemberDTO> getMembersRegistered() {
+  public List<MemberDTO> getMembersRegistered() throws SQLException {
     dalServices.start();
     List<MemberDTO> listMember = memberDAO.getMembersRegistered();
     if (listMember == null) {
@@ -42,7 +43,7 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public List<MemberDTO> getMembersDenied() {
+  public List<MemberDTO> getMembersDenied() throws SQLException {
     dalServices.start();
     List<MemberDTO> listMember = memberDAO.getMembersDenied();
     if (listMember == null) {
@@ -54,7 +55,7 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public MemberDTO getOneMember(int id) {
+  public MemberDTO getOneMember(int id) throws SQLException {
     dalServices.start();
     MemberDTO memberDTO = memberDAO.getOneMember(id);
     if (memberDTO == null) {
@@ -66,7 +67,7 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public AddressDTO getAddressMember(int id) {
+  public AddressDTO getAddressMember(int id) throws SQLException {
     dalServices.start();
     AddressDTO addressDTO = memberDAO.getAddressMember(id);
     if (addressDTO == null) {
@@ -78,7 +79,7 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public MemberDTO confirmMember(int id) {
+  public MemberDTO confirmMember(int id) throws SQLException {
     dalServices.start();
     Member member = (Member) memberDAO.getOneMember(id);
     if (member == null) {
@@ -99,7 +100,7 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public MemberDTO denyMember(int id, String refusalText) {
+  public MemberDTO denyMember(int id, String refusalText) throws SQLException {
     dalServices.start();
     Member member = (Member) memberDAO.getOneMember(id);
     if (member == null) {
@@ -125,7 +126,7 @@ public class MemberUCCImpl implements MemberUCC {
    * @param id of the member
    * @return True if success
    */
-  public MemberDTO confirmAdmin(int id) {
+  public MemberDTO confirmAdmin(int id) throws SQLException {
     dalServices.start();
     Member member = (Member) memberDAO.getOneMember(id);
     if (member == null) {
@@ -150,7 +151,7 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public boolean memberExist(MemberDTO memberDTO) {
+  public boolean memberExist(MemberDTO memberDTO) throws SQLException {
     dalServices.start();
     if (!this.memberDAO.memberExist(memberDTO)) {
       dalServices.rollback();
@@ -161,7 +162,7 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public MemberDTO login(MemberDTO memberToLogIn) {
+  public MemberDTO login(MemberDTO memberToLogIn) throws SQLException {
     dalServices.start();
     Member memberToLogin = (Member) memberToLogIn;
     Member loggedMember = (Member) memberDAO.getOne(memberToLogin);
@@ -178,7 +179,7 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public boolean register(MemberDTO memberDTO) {
+  public boolean register(MemberDTO memberDTO) throws SQLException {
     dalServices.start();
     Member member = (Member) memberDTO;
     member.hashPassword();

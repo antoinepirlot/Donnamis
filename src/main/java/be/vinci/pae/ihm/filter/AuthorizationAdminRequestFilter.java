@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.Provider;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,7 +40,12 @@ public class AuthorizationAdminRequestFilter implements ContainerRequestFilter {
   public void filter(ContainerRequestContext containerRequestContext) {
     DecodedJWT decodedJWT = TokenDecoder.decodeToken(containerRequestContext);
     int id = decodedJWT.getClaim("id").asInt();
-    MemberDTO authenticatedMember = memberUCC.getOneMember(id);
+    MemberDTO authenticatedMember = null;
+    try {
+      authenticatedMember = memberUCC.getOneMember(id);
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
     if (!authenticatedMember.isAdmin()) {
       String message = "The member with id: " + id + " can't access a admin method";
       this.logger.log(Level.INFO, message);

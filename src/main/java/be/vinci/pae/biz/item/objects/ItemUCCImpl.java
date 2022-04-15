@@ -5,6 +5,7 @@ import be.vinci.pae.biz.item.interfaces.ItemUCC;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import jakarta.inject.Inject;
+import java.sql.SQLException;
 import java.util.List;
 
 public class ItemUCCImpl implements ItemUCC {
@@ -15,9 +16,9 @@ public class ItemUCCImpl implements ItemUCC {
   private DALServices dalServices;
 
   @Override
-  public List<ItemDTO> getLatestItems() {
+  public List<ItemDTO> getAllItems(String offerStatus) throws SQLException {
     dalServices.start();
-    List<ItemDTO> listItemDTO = itemDAO.getDonatedItems();
+    List<ItemDTO> listItemDTO = itemDAO.getAllItems(offerStatus);
     if (listItemDTO == null) {
       dalServices.rollback();
     }
@@ -26,30 +27,7 @@ public class ItemUCCImpl implements ItemUCC {
   }
 
   @Override
-  public List<ItemDTO> getAllItems() {
-    dalServices.start();
-    List<ItemDTO> listItemDTO = itemDAO.getAllItems();
-    if (listItemDTO == null) {
-      dalServices.rollback();
-    }
-    dalServices.commit();
-    return listItemDTO;
-  }
-
-  @Override
-  public List<ItemDTO> getAllOfferedItems() {
-    dalServices.start();
-    List<ItemDTO> listItemDTO = itemDAO.getAllOfferedItems();
-    System.out.println(listItemDTO);
-    if (listItemDTO == null) {
-      dalServices.rollback();
-    }
-    dalServices.commit();
-    return listItemDTO;
-  }
-
-  @Override
-  public ItemDTO getOneItem(int id) {
+  public ItemDTO getOneItem(int id) throws SQLException {
     dalServices.start();
     ItemDTO itemDTO = itemDAO.getOneItem(id);
     if (itemDTO == null) {
@@ -61,7 +39,7 @@ public class ItemUCCImpl implements ItemUCC {
   }
 
   @Override
-  public int addItem(ItemDTO itemDTO) {
+  public int addItem(ItemDTO itemDTO) throws SQLException {
     dalServices.start();
     int id_item = itemDAO.addItem(itemDTO);
     if (id_item == -1) {
@@ -72,7 +50,7 @@ public class ItemUCCImpl implements ItemUCC {
   }
 
   @Override
-  public ItemDTO cancelOffer(int id) {
+  public ItemDTO cancelOffer(int id) throws SQLException {
     dalServices.start();
     ItemDTO itemDTO = itemDAO.cancelOffer(id);
     if (itemDTO == null) {
@@ -84,9 +62,9 @@ public class ItemUCCImpl implements ItemUCC {
   }
 
   @Override
-  public List<ItemDTO> getAllItemsByMemberId(int id) {
+  public List<ItemDTO> getAllItemsOfAMember(int idMember) throws SQLException {
     dalServices.start();
-    List<ItemDTO> listItemDTO = itemDAO.getAllItemsByMemberId(id);
+    List<ItemDTO> listItemDTO = itemDAO.getAllItemsOfAMember(idMember);
     if (listItemDTO == null) {
       dalServices.rollback();
     }
