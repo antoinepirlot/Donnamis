@@ -6,8 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
+import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
+import be.vinci.pae.biz.refusal.objects.RefusalImpl;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
-import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.utils.ApplicationBinder;
 import java.sql.SQLException;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -22,9 +23,9 @@ class MemberUCCImplTest {
   private final ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
   private final MemberDAO memberDAO = locator.getService(MemberDAO.class);
   private final MemberUCC memberUCC = locator.getService(MemberUCC.class);
-  private final DALServices dalServices = locator.getService(DALServices.class);
   private final MemberDTO memberDTO = new MemberImpl();
   private final MemberDTO memberToLogIn = new MemberImpl();
+  private final RefusalDTO refusalDTO = new RefusalImpl();
   private String hashedPassword;
   private String password;
   private String wrongPassword;
@@ -43,6 +44,9 @@ class MemberUCCImplTest {
     this.memberDTO.setUsername("nico");
     this.memberToLogIn.setUsername("nico");
     this.memberToLogIn.setPassword(password);
+    this.refusalDTO.setIdRefusal(1);
+    this.refusalDTO.setMember(this.memberDTO);
+    this.refusalDTO.setText("Refus");
     Mockito.when(this.memberDAO.getOne(this.memberToLogIn))
         .thenReturn(this.memberDTO);
   }
@@ -51,7 +55,7 @@ class MemberUCCImplTest {
     memberDTO.setActualState(state);
     memberDTO.setId(99);
     Mockito.when(memberDAO.confirmMember(this.memberDTO)).thenReturn(true);
-    Mockito.when(memberDAO.denyMember(99, "Message refus")).thenReturn(memberDTO);
+    Mockito.when(memberDAO.denyMember(this.refusalDTO)).thenReturn(true);
     Mockito.when(memberDAO.getOneMember(99)).thenReturn(memberDTO);
     Mockito.when(memberDAO.isAdmin(99)).thenReturn(memberDTO);
   }
@@ -85,21 +89,21 @@ class MemberUCCImplTest {
   @Test
   void testDenyMemberWithStateConfirmed() throws SQLException {
     configureMemberDTOState("confirmed");
-    assertNull(memberUCC.denyMember(99, "Message refus"));
+    assertTrue(memberUCC.denyMember(this.refusalDTO));
   }
 
   @DisplayName("Test Deny Member With the state registered")
   @Test
   void testDenyMemberWithStateRegistered() throws SQLException {
     configureMemberDTOState("registered");
-    assertEquals(memberDTO, memberUCC.denyMember(99, "Message refus"));
+    assertTrue(this.memberUCC.denyMember(this.refusalDTO));
   }
 
   @DisplayName("Test Deny Member With the state denied")
   @Test
   void testDenyMemberWithStateDenied() throws SQLException {
     configureMemberDTOState("denied");
-    assertNull(memberUCC.denyMember(99, "Message refus"));
+    assertTrue(memberUCC.denyMember(this.refusalDTO));
   }
 
   //Test Confirm Admin

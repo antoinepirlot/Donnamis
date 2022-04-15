@@ -2,6 +2,7 @@ package be.vinci.pae.dal.member.interfaces;
 
 import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -29,5 +30,11 @@ public interface MemberDAO {
 
   MemberDTO isAdmin(int id);
 
-  MemberDTO denyMember(int id, String refusalText);
+  /**
+   * Change the state of the member to denied.
+   *
+   * @param refusalDTO the refusal information
+   * @return true if deny complete, otherwise false
+   */
+  boolean denyMember(RefusalDTO refusalDTO) throws SQLException;
 }

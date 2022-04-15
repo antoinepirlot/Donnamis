@@ -79,7 +79,7 @@ async function showRegisteredMember(member) {
         <td><input class="form-check-input" type="checkbox" id="RegisteredIsAdmin" value="${member.id}"></td>
         <td><button type="submit" class="btn btn-primary" id="RegisteredConfirmButton" value=${member.id}>Confirmer</button></td>
         <td><button type="submit" class="btn btn-danger" id="RegisteredRefuseButton" value=${member.id}>Refuser</button></td>
-        <td><div class="form-floating mb-3"><input type="text" class="form-control" id="floatingInput"><label for="floatingInput">Message</label></div></td>
+        <td><div class="form-floating mb-3"><input type="text" class="form-control" id="refusalText"><label for="refusalText">Message</label></div></td>
       </tr>    
     `;
 
@@ -103,7 +103,6 @@ async function showRegisteredMember(member) {
         isAdmin: isAdminButtonChecked
       };
       await confirmInscription(member);
-      console.log(member)
       Redirect("/list_member");
     });
   });
@@ -112,8 +111,13 @@ async function showRegisteredMember(member) {
   const denyButtons = document.querySelectorAll("#RegisteredRefuseButton");
   denyButtons.forEach(denyButton => {
     denyButton.addEventListener("click", async function () {
+      const refusalText = document.querySelector("#refusalText").value;
       //Confirm the registration (Click on the button)
-      await denyMember(denyButton.value);
+      const refusal = {
+        member: member,
+        text: refusalText
+      };
+      await denyMember(refusal);
       Redirect("/list_member");
     });
   });

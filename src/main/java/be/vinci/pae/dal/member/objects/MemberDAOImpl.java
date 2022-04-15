@@ -3,6 +3,7 @@ package be.vinci.pae.dal.member.objects;
 import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
@@ -101,16 +102,18 @@ public class MemberDAOImpl implements MemberDAO {
     return executeQueryWithId(id, query);
   }
 
-  /**
-   * Change the state of the member to denied.
-   *
-   * @param id the id of the member
-   * @return boolean
-   */
-  public MemberDTO denyMember(int id, String refusalText) {
-    String query = "UPDATE project_pae.members SET state = 'denied' WHERE id_member = ? "
-        + "RETURNING *;";
-    return executeQueryWithId(id, query);
+  public boolean denyMember(RefusalDTO refusalDTO) throws SQLException {
+    String query = "UPDATE project_pae.members SET state = 'denied' WHERE id_member = ?;"
+        + "INSERT INTO project_pae.refusals (text, id_member) VALUES (?, ?);";
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
+      preparedStatement.setInt(1, refusalDTO.getMember().getId());
+      preparedStatement.setString(2,
+          StringEscapeUtils.escapeHtml4(refusalDTO.getText())
+      );
+      preparedStatement.setInt(3, refusalDTO.getMember().getId());
+      preparedStatement.executeUpdate();
+      return true;
+    }
   }
 
   /**

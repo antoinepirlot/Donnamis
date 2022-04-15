@@ -4,6 +4,7 @@ import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
+import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import jakarta.inject.Inject;
@@ -68,24 +69,16 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public MemberDTO denyMember(int id, String refusalText) throws SQLException {
+  public boolean denyMember(RefusalDTO refusalDTO) throws SQLException {
     dalServices.start();
-    Member member = (Member) memberDAO.getOneMember(id);
-    if (member == null) {
+    try {
+      memberDAO.denyMember(refusalDTO);
+    } catch (SQLException e) {
       dalServices.rollback();
-      return null;
+      throw e;
     }
-    if (!member.verifyState("registered")) {
-      dalServices.rollback();
-      return null;
-    }
-    MemberDTO memberDTO = memberDAO.denyMember(id, refusalText);
-    if (memberDTO == null) {
-      dalServices.rollback();
-    } else {
-      dalServices.commit();
-    }
-    return memberDTO;
+    dalServices.commit();
+    return true;
   }
 
   @Override

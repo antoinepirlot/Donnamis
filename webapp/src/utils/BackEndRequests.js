@@ -126,16 +126,17 @@ async function confirmAdmin(id) {
   }
 }
 
-async function denyMember(id) {
+async function denyMember(refusal) {
   try {
     const request = {
       method: "PUT",
       headers: {
+        "Content-Type": "application/json",
         "Authorization": getObject("token")
-      }
+      },
+      body: JSON.stringify(refusal)
     };
-    const url = `/api/members/denies/${id}`;
-    const reponse = await fetch(url, request);
+    const reponse = await fetch("/api/members/deny", request);
     if (!reponse.ok) {
       throw new Error(
           "fetch error : " + reponse.status + " : " + reponse.statusText

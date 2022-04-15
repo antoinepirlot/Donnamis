@@ -1,6 +1,7 @@
 package be.vinci.pae.biz.member.interfaces;
 
 import be.vinci.pae.biz.address.interfaces.AddressDTO;
+import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -40,10 +41,10 @@ public interface MemberUCC {
   /**
    * Verify the state of the member and then change the state of the member to denied.
    *
-   * @param id of the member
-   * @return True if success
+   * @param refusalDTO the refusal information
+   * @return true if deny is complete, otherwise false
    */
-  MemberDTO denyMember(int id, String refusalText) throws SQLException;
+  boolean denyMember(RefusalDTO refusalDTO) throws SQLException;
 
   /**
    * Verify if the member exist in the DB.
