@@ -67,6 +67,14 @@ public interface MemberUCC {
   MemberDTO confirmAdmin(int id);
 
   /**
+   * Verify if the member exist in the DB.
+   *
+   * @param memberDTO the if od the member
+   * @return true if exist in the DB false if not
+   */
+  boolean memberExist(MemberDTO memberDTO);
+
+  /**
    * Get the member from the db, checks its state and password.
    *
    * @param memberToLogIn the member who try to log in

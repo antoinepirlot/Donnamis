@@ -133,6 +133,22 @@ public class OfferDAOImpl implements OfferDAO {
   }
 
   @Override
+  public boolean offerExist(OfferDTO offerDTO) {
+    String query = "SELECT id_offer FROM project_pae.offers WHERE id_offer = ?";
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
+      preparedStatement.setInt(1, offerDTO.getId());
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        if (rs.next()) {
+          return true;
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return false;
+  }
+
+  @Override
   public OfferDTO getLastOfferOf(ItemDTO itemDTO) throws SQLException {
     System.out.println("Get latest item's offer");
     String query = "SELECT id_offer, date, time_slot, id_item "

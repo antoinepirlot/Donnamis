@@ -10,6 +10,8 @@ public interface MemberDAO {
 
   MemberDTO getOne(MemberDTO memberDTO);
 
+  boolean memberExist(MemberDTO memberDTO);
+
   /**
    * Add a new member to the db if it's not already in the db.
    *

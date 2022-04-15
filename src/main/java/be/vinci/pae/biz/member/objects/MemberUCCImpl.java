@@ -150,6 +150,17 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
+  public boolean memberExist(MemberDTO memberDTO) {
+    dalServices.start();
+    if (!this.memberDAO.memberExist(memberDTO)) {
+      dalServices.rollback();
+      return false;
+    }
+    dalServices.commit();
+    return true;
+  }
+
+  @Override
   public MemberDTO login(MemberDTO memberToLogIn) {
     dalServices.start();
     Member memberToLogin = (Member) memberToLogIn;

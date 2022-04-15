@@ -22,6 +22,8 @@ public interface OfferDAO {
 
   OfferDTO getOne(int id);
 
+  boolean offerExist(OfferDTO offerDTO);
+
   /**
    * Get the last offer of the itemDTO.
    *

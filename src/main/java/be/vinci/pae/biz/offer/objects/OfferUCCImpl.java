@@ -75,4 +75,15 @@ public class OfferUCCImpl implements OfferUCC {
     }
     dalServices.commit();
   }
+
+  @Override
+  public boolean offerExist(OfferDTO offerDTO) {
+    dalServices.start();
+    if (!this.offerDAO.offerExist(offerDTO)) {
+      dalServices.rollback();
+      return false;
+    }
+    dalServices.commit();
+    return true;
+  }
 }

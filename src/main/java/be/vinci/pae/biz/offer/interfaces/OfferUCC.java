@@ -36,4 +36,12 @@ public interface OfferUCC {
   OfferDTO getOneOffer(int id);
 
   void getAllOffersOf(ItemDTO itemDTO);
+
+  /**
+   * Verify if the offer exist in the DB.
+   *
+   * @param offerDTO the offer to check
+   * @return true if exist in the DB false if not
+   */
+  boolean offerExist(OfferDTO offerDTO);
 }
