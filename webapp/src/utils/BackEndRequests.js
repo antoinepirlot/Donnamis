@@ -71,48 +71,26 @@ async function isAdmin() {
   return response.ok;
 }
 
-async function getRegisteredMembers() {
-  try {
-    const options = {
-      method: "GET",
-      headers: {
-        "Authorization": getObject("token")
-      }
-    };
-
-    const response = await fetch("/api/members/list_registered", options);
-    if (!response.ok) {
-      // status code was not 200, error status code
-      throw new Error(
-          "fetch error : " + response.status + " : " + response.statusText
-      );
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("ListMemberPage::error: ", error);
-  }
-}
-
-async function getDeniedMembers() {
+/**
+ * Get all members from the database
+ * @returns all members
+ */
+async function getAllMembers() {
   const options = {
     method: "GET",
     headers: {
       "Authorization": getObject("token")
     }
   };
-  try {
-    //Membres en attente d'acceptation
-    const response = await fetch("/api/members/list_denied", options);
-    if (!response.ok) {
-      // status code was not 200, error status code
-      throw new Error(
-          "fetch error : " + response.status + " : " + response.statusText
-      );
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("ListMemberPage::error: ", error);
+
+  const response = await fetch("/api/members", options);
+  if (!response.ok) {
+    // status code was not 200, error status code
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText
+    );
   }
+  return await response.json();
 }
 
 async function confirmMember(id) {
@@ -381,8 +359,7 @@ export {
   me,
   register,
   isAdmin,
-  getRegisteredMembers,
-  getDeniedMembers,
+  getAllMembers,
   confirmMember,
   confirmAdmin,
   denyMember,

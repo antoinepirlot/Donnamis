@@ -32,7 +32,6 @@ import jakarta.ws.rs.core.MediaType;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -69,23 +68,19 @@ public class MemberResource {
    * @return list of member
    */
   @GET
-  @Path("list_member")
-  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<MemberDTO> getAllMembers() throws SQLException {
     List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
-    if (listMemberDTO == null) {
-      String message = "No member into the database";
-      this.logger.log(Level.INFO, message);
-      throw new ObjectNotFoundException();
+    if (listMemberDTO == null || listMemberDTO.isEmpty()) {
+      throw new ObjectNotFoundException("No member into the database");
     }
     return this.jsonUtil.filterPublicJsonViewAsList(listMemberDTO);
   }
 
   @GET
   @Path("profil/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public MemberDTO getMemberById(@PathParam("id") int id) throws SQLException {
@@ -102,46 +97,6 @@ public class MemberResource {
   }
 
   /**
-   * Method handling HTTP GET requests. The returned object will be sent to the client as
-   * "text/plain" media type.
-   *
-   * @return list of member
-   */
-  @GET
-  @Path("list_registered")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
-  public List<MemberDTO> getMembersRegistered() throws SQLException {
-    List<MemberDTO> registeredMembers = memberUCC.getMembersRegistered();
-    if (registeredMembers == null) {
-      String message = "Get all registered members but there's no registered members.";
-      throw new ObjectNotFoundException(message);
-    }
-    return this.jsonUtil.filterPublicJsonViewAsList(registeredMembers);
-  }
-
-  /**
-   * Method handling HTTP GET requests. The returned object will be sent to the client as
-   * "text/plain" media type.
-   *
-   * @return list of member
-   */
-  @GET
-  @Path("list_denied")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
-  public List<MemberDTO> getMembersDenied() throws SQLException {
-    List<MemberDTO> deniedMembers = memberUCC.getMembersDenied();
-    if (deniedMembers == null) {
-      String message = "Get all denied members but there's no denied members.";
-      throw new ObjectNotFoundException(message);
-    }
-    return this.jsonUtil.filterPublicJsonViewAsList(deniedMembers);
-  }
-
-  /**
    * Asks UCC to confirm the member identified by its id.
    *
    * @param id the member's id
@@ -149,7 +104,6 @@ public class MemberResource {
    */
   @PUT
   @Path("confirm/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public MemberDTO confirmMember(@PathParam("id") int id) throws SQLException {
@@ -173,7 +127,6 @@ public class MemberResource {
    */
   @PUT
   @Path("confirmAdmin/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public MemberDTO confirmAdmin(@PathParam("id") int id) throws SQLException {
@@ -193,7 +146,6 @@ public class MemberResource {
    */
   @PUT
   @Path("denies/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public MemberDTO denyMember(@PathParam("id") int id, String refusalText) throws SQLException {

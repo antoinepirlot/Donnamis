@@ -5,8 +5,7 @@ import {
   confirmAdmin,
   confirmMember,
   denyMember,
-  getDeniedMembers,
-  getRegisteredMembers,
+  getAllMembers,
   isAdmin
 } from "../../utils/BackEndRequests";
 import {Redirect} from "../Router/Router";
@@ -61,16 +60,20 @@ const ListMemberPage = async () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtmlConfirmedMembers;
   pageDiv.innerHTML += tableHtmlDeniedMembers;
-  await viewRegisteredMembers(await getRegisteredMembers());
-  await viewDeniedMembers(await getDeniedMembers());
+  const members = await getAllMembers();
+  for (const member of members) {
+    if (member.actualState === "registered") {
+      await showRegisteredMember(member);
+    } else if (member.actualState === "denied") {
+      await showDeniedMember(member);
+    }
+  }
 };
 
-async function viewRegisteredMembers(members) {
+async function showRegisteredMember(member) {
   const tbody = document.querySelector("#tbody_registered_members");
-  tbody.innerHTML = "";
   //For Each Member
-  members.forEach((member) => {
-    tbody.innerHTML += `
+  tbody.innerHTML += `
       <tr id="RegisteredLine">
         <td>${member.firstName}</td>
         <td>${member.lastName}</td>
@@ -81,11 +84,11 @@ async function viewRegisteredMembers(members) {
       </tr>    
     `;
 
-    // Is Admin Button
-    const isAdminButtons = document.querySelectorAll("#RegisteredIsAdmin");
+  // Is Admin Button
+  const isAdminButtons = document.querySelectorAll("#RegisteredIsAdmin");
 
-    // Confirm Button
-    const confirmButtons = document.querySelectorAll(
+  // Confirm Button
+  const confirmButtons = document.querySelectorAll(
         "#RegisteredConfirmButton");
     confirmButtons.forEach(confirmButton => {
       confirmButton.addEventListener("click", async function () {
@@ -105,26 +108,22 @@ async function viewRegisteredMembers(members) {
       });
     });
 
-    //Deny Button
-    const denyButtons = document.querySelectorAll("#RegisteredRefuseButton");
+  //Deny Button
+  const denyButtons = document.querySelectorAll("#RegisteredRefuseButton");
     denyButtons.forEach(denyButton => {
       denyButton.addEventListener("click", async function () {
         //Confirm the registration (Click on the button)
         await denyMember(denyButton.value);
         Redirect("/list_member");
       });
-    });
-    const line = document.querySelector("#RegisteredLine");
-    line.dataset.memberId = member.id;
   });
+  const line = document.querySelector("#RegisteredLine");
+  line.dataset.memberId = member.id;
 }
 
-async function viewDeniedMembers(members) {
+async function showDeniedMember(member) {
   const tbody = document.querySelector("#tbody_denied_members");
-  tbody.innerHTML = "";
-  //For Each Member
-  members.forEach((member) => {
-    tbody.innerHTML += `
+  tbody.innerHTML += `
       <tr id="DeniedLine">
         <td>${member.firstName}</td>
         <td>${member.lastName}</td>
@@ -133,12 +132,12 @@ async function viewDeniedMembers(members) {
       </tr>    
     `;
 
-    // Is Admin Button
-    const isAdminButtons = document.querySelectorAll("#DeniedIsAdmin");
+  // Is Admin Button
+  const isAdminButtons = document.querySelectorAll("#DeniedIsAdmin");
 
-    // Confirm Button
-    const confirmButtons = document.querySelectorAll("#DeniedConfirmButton");
-    confirmButtons.forEach(async confirmButton => {
+  // Confirm Button
+  const confirmButtons = document.querySelectorAll("#DeniedConfirmButton");
+  confirmButtons.forEach(async confirmButton => {
       confirmButton.addEventListener("click", async function () {
         let isAdminButtonChecked;
         isAdminButtons.forEach(button => {
@@ -154,11 +153,10 @@ async function viewDeniedMembers(members) {
         }
         Redirect("/list_member");
       });
-    });
-
-    const line = document.querySelector("#DeniedLine");
-    line.dataset.memberId = member.id;
   });
+
+  const line = document.querySelector("#DeniedLine");
+  line.dataset.memberId = member.id;
 }
 
 export default ListMemberPage;

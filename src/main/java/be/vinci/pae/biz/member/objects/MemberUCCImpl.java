@@ -24,34 +24,10 @@ public class MemberUCCImpl implements MemberUCC {
     List<MemberDTO> memberDTOList = memberDAO.getAllMembers();
     if (memberDTOList == null) {
       dalServices.rollback();
+      return null;
     }
     dalServices.commit();
     return memberDTOList;
-  }
-
-
-  @Override
-  public List<MemberDTO> getMembersRegistered() throws SQLException {
-    dalServices.start();
-    List<MemberDTO> listMember = memberDAO.getMembersRegistered();
-    if (listMember == null) {
-      dalServices.rollback();
-    } else {
-      dalServices.commit();
-    }
-    return listMember;
-  }
-
-  @Override
-  public List<MemberDTO> getMembersDenied() throws SQLException {
-    dalServices.start();
-    List<MemberDTO> listMember = memberDAO.getMembersDenied();
-    if (listMember == null) {
-      dalServices.rollback();
-    } else {
-      dalServices.commit();
-    }
-    return listMember;
   }
 
   @Override
