@@ -13,7 +13,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 public class DALServicesImpl implements DALServices, DALBackendService {
 
 
-  private final ThreadLocal<Connection> dbThreadLocal = new ThreadLocal<Connection>();
+  private final ThreadLocal<Connection> dbThreadLocal = new ThreadLocal<>();
   private final BasicDataSource basicDataSource = setBasicDataSource();
 
   private BasicDataSource setBasicDataSource() {
@@ -30,31 +30,25 @@ public class DALServicesImpl implements DALServices, DALBackendService {
 
   /**
    * Try to connect to the db.
-   *
-   * @return the db connection
    */
-  public Connection start() {
-    try {
-      //connection = DriverManager.getConnection(url, user, dbPassword); //postgres password
-      //Creating connection
-      Connection connection = basicDataSource.getConnection();
+  public void start() {
+    //connection = DriverManager.getConnection(url, user, dbPassword); //postgres password
+    //Creating connection
+    try (Connection connection = basicDataSource.getConnection()) {
       System.out.println("Connexion prise par le thread : " + connection);
       //Set the connection in the ThreadLocal Map
       connection.setAutoCommit(false);
       dbThreadLocal.set(connection);
       System.out.println("Connection à la db réussie.");
-      return connection;
     } catch (SQLException e) {
       System.out.println("Impossible de joindre le serveur");
       System.exit(1);
     }
-    return null;
   }
 
   @Override
-  public boolean commit() {
-    Connection connection = dbThreadLocal.get();
-    try {
+  public void commit() {
+    try (Connection connection = dbThreadLocal.get()) {
       connection.commit();
       connection.setAutoCommit(true);
       connection.close();
@@ -64,13 +58,11 @@ public class DALServicesImpl implements DALServices, DALBackendService {
       System.out.println("Impossible de joindre le serveur");
       System.exit(1);
     }
-    return true;
   }
 
   @Override
-  public boolean rollback() {
-    Connection connection = dbThreadLocal.get();
-    try {
+  public void rollback() {
+    try (Connection connection = dbThreadLocal.get()) {
       connection.rollback();
       connection.setAutoCommit(true);
       connection.close();
@@ -79,7 +71,6 @@ public class DALServicesImpl implements DALServices, DALBackendService {
       System.out.println("Impossible de joindre le serveur");
       System.exit(1);
     }
-    return true;
   }
 
   /**
