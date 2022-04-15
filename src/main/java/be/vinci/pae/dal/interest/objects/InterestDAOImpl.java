@@ -12,8 +12,6 @@ public class InterestDAOImpl implements InterestDAO {
 
   @Inject
   private DALBackendService dalBackendService;
-  //@Inject
-  //private Factory factory;
 
   @Override
   public boolean markInterest(InterestDTO interestDTO) throws SQLException {
@@ -45,22 +43,6 @@ public class InterestDAOImpl implements InterestDAO {
           return true;
         }
       }
-    }
-    return false;
-  }
-
-  //*****UTILS******
-
-  private boolean executeQueryWithId(int id, String query) {
-    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
-      preparedStatement.setInt(1, id);
-      try (ResultSet rs = preparedStatement.executeQuery()) {
-        if (rs.next()) {
-          return true;
-        }
-      }
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
     }
     return false;
   }
