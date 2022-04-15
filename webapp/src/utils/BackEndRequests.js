@@ -1,4 +1,4 @@
-import {getObject} from "./session";
+import {getObject, getPayload} from "./session";
 import {showError} from "./ShowError";
 import {Redirect} from "../Components/Router/Router";
 
@@ -291,14 +291,15 @@ async function offerAgain(offer) {
   return response.ok;
 }
 
-async function getMyItems(idMember) {
+async function getMyItems() {
   const request = {
     method: "GET",
     headers: {
       "Authorization": getObject("token")
     }
   };
-  const response = await fetch(`/api/items/all_items/${idMember}`, request);
+  const idMember = getPayload().id;
+  const response = await fetch(`/api/items/member_items/${idMember}`, request);
   if (!response.ok) {
     // status code was not 200, error status code
     showError("There's no offer with this id");

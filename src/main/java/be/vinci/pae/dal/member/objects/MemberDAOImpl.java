@@ -178,10 +178,14 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   @Override
-  public boolean memberExist(MemberDTO memberDTO) {
+  public boolean memberExist(MemberDTO memberDTO, int idMember) {
     String query = "SELECT id_member FROM project_pae.members WHERE id_member = ?";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
-      preparedStatement.setInt(1, memberDTO.getId());
+      if (memberDTO == null) {
+        preparedStatement.setInt(1, idMember);
+      } else {
+        preparedStatement.setInt(1, memberDTO.getId());
+      }
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
           return true;

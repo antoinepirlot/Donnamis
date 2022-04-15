@@ -2,8 +2,11 @@ package be.vinci.pae.ihm.item;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
+import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
+import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
+import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeAdmin;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.filter.utils.Json;
@@ -32,6 +35,8 @@ public class ItemResource {
   private ItemUCC itemUCC;
   @Inject
   private OfferUCC offerUCC;
+  @Inject
+  private MemberUCC memberUCC;
 
 
   /**
@@ -44,21 +49,26 @@ public class ItemResource {
   @Consumes(MediaType.TEXT_PLAIN)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public List<ItemDTO> getAllItems(@PathParam("offer_status") String offerStatus)
+  public List<ItemDTO> getAllItemsByOfferStatus(@PathParam("offer_status") String offerStatus)
       throws SQLException {
-    return this.getAllItemsByOfferStatus(offerStatus);
+    return this.getAllItems(offerStatus, -1);
   }
 
   @GET
   @Path("all_items")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public List<ItemDTO> getAllOfferedItems() throws SQLException {
-    return this.getAllItems(null);
+  public List<ItemDTO> getAllItems() throws SQLException {
+    return this.getAllItems(null, -1);
   }
 
-  private List<ItemDTO> getAllItemsByOfferStatus(String offerStatus) throws SQLException {
-    List<ItemDTO> listItemDTO = itemUCC.getAllItems(offerStatus);
+  private List<ItemDTO> getAllItems(String offerStatus, int idMember) throws SQLException {
+    List<ItemDTO> listItemDTO;
+    if (idMember > 0) {
+      listItemDTO = itemUCC.getAllItemsOfAMember(idMember);
+    } else {
+      listItemDTO = itemUCC.getAllItems(offerStatus);
+    }
     if (listItemDTO == null) {
       throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
     }
@@ -79,15 +89,11 @@ public class ItemResource {
   @AuthorizeMember
   public void addItem(ItemDTO itemDTO) throws SQLException {
     System.out.println(itemDTO.getOfferList());
-    if (
-        itemDTO.getItemDescription() == null || itemDTO.getItemDescription().isBlank()
-            || itemDTO.getItemType() == null || itemDTO.getItemType().getItemType() == null
-            || itemDTO.getItemType().getItemType().isBlank()
-            || itemDTO.getMember() == null || itemDTO.getMember().getId() < 1
-            || itemDTO.getTitle() == null || itemDTO.getTitle().isBlank()
-            || itemDTO.getLastOfferDate() == null
-            || itemDTO.getOfferList().get(0) == null
-    ) {
+    if (itemDTO.getItemDescription() == null || itemDTO.getItemDescription().isBlank()
+        || itemDTO.getItemType() == null || itemDTO.getItemType().getItemType() == null
+        || itemDTO.getItemType().getItemType().isBlank() || itemDTO.getMember() == null
+        || itemDTO.getMember().getId() < 1 || itemDTO.getTitle() == null || itemDTO.getTitle()
+        .isBlank() || itemDTO.getLastOfferDate() == null || itemDTO.getOfferList().get(0) == null) {
       throw new WebApplicationException("Wrong item body", Status.BAD_REQUEST);
     }
     int idItem = this.itemUCC.addItem(itemDTO);
@@ -128,20 +134,18 @@ public class ItemResource {
    * @return a list of all items
    */
   @GET
-  @Path("all_items/{idMember}")
+  @Path("member_items/{idMember}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public List<ItemDTO> getAllItemsByMemberId(@PathParam("idMember") int idMember)
       throws SQLException {
-    List<ItemDTO> listItemDTO = itemUCC.getAllItemsOfAMember(idMember);
-    if (listItemDTO == null || listItemDTO.isEmpty()) {
-      throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
+    if (idMember < 1) {
+      throw new WrongBodyDataException("The idMember must be grater than 1");
     }
-    for (ItemDTO itemDTO : listItemDTO) {
-      this.offerUCC.getAllOffersOf(itemDTO);
+    if (!this.memberUCC.memberExist(null, idMember)) {
+      throw new ObjectNotFoundException("This member doesn't exists.");
     }
-    //Convert to ObjectNode
-    return listItemDTO;
+    return this.getAllItems(null, idMember);
   }
 
   /**
@@ -157,8 +161,9 @@ public class ItemResource {
   public ItemDTO getItem(@PathParam("id") int id) throws SQLException {
     ItemDTO itemDTO = itemUCC.getOneItem(id);
     if (itemDTO == null) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Ressource not found").type("text/plain").build());
+      throw new WebApplicationException(
+          Response.status(Response.Status.NOT_FOUND).entity("Ressource not found")
+              .type("text/plain").build());
     }
     this.offerUCC.getAllOffersOf(itemDTO);
     System.out.println(itemDTO);

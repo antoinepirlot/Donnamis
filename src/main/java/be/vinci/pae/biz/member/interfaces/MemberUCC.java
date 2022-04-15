@@ -73,7 +73,7 @@ public interface MemberUCC {
    * @param memberDTO the if od the member
    * @return true if exist in the DB false if not
    */
-  boolean memberExist(MemberDTO memberDTO) throws SQLException;
+  boolean memberExist(MemberDTO memberDTO, int idMember) throws SQLException;
 
   /**
    * Get the member from the db, checks its state and password.

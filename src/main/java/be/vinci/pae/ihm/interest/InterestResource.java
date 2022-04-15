@@ -55,7 +55,7 @@ public class InterestResource {
     }
 
     //Verify if the member already exist
-    if (!this.memberUCC.memberExist(interestDTO.getMember())) {
+    if (!this.memberUCC.memberExist(interestDTO.getMember(), -1)) {
       throw new ObjectNotFoundException("member doesn't exist");
     }
 

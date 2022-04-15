@@ -151,9 +151,9 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public boolean memberExist(MemberDTO memberDTO) throws SQLException {
+  public boolean memberExist(MemberDTO memberDTO, int idMember) throws SQLException {
     dalServices.start();
-    if (!this.memberDAO.memberExist(memberDTO)) {
+    if (!this.memberDAO.memberExist(memberDTO, idMember)) {
       dalServices.rollback();
       return false;
     }
