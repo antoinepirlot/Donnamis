@@ -48,6 +48,21 @@ public class MemberResource {
   private MemberUCC memberUCC;
 
   /////////////////////////////////////////////////////////
+  ///////////////////////HEAD//////////////////////////////
+  /////////////////////////////////////////////////////////
+
+  /**
+   * Asks UCC to check if the member is admin or not.
+   */
+  @HEAD
+  @Path("is_admin")
+  @Produces(MediaType.TEXT_PLAIN)
+  @AuthorizeAdmin
+  public void isAdmin() {
+    //@AuthorizeAdmin checks if the member is admin or not
+  }
+
+  /////////////////////////////////////////////////////////
   ///////////////////////GET///////////////////////////////
   /////////////////////////////////////////////////////////
 
@@ -167,17 +182,6 @@ public class MemberResource {
       String message = "This member already exist in the database";
       throw new ConflictException(message);
     }
-  }
-
-  /**
-   * Asks UCC to check if the member is admin or not.
-   */
-  @HEAD
-  @Path("is_admin")
-  @Produces(MediaType.TEXT_PLAIN)
-  @AuthorizeAdmin
-  public void isAdmin() {
-    //@AuthorizeAdmin checks if the member is admin or not
   }
 
   /////////////////////////////////////////////////////////
