@@ -47,7 +47,6 @@ public class TokenDecoder {
       } catch (Exception e) {
         String message = "Malformed token : " + e.getMessage() + "\n"
             + Arrays.toString(e.getStackTrace());
-        logger.log(Level.INFO, message);
         throw new UnauthorizedException(message);
       }
     }
