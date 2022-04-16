@@ -21,6 +21,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HEAD;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -46,19 +47,24 @@ public class MemberResource {
   @Inject
   private MemberUCC memberUCC;
 
-  @GET
-  @Path("/me")
-  @Produces(MediaType.APPLICATION_JSON)
-  public ObjectNode refreshToken(@Context ContainerRequestContext request) throws SQLException {
-    DecodedJWT decodedJWT = TokenDecoder.decodeToken(request);
-    MemberDTO memberDTO = this.memberUCC.getOneMember(decodedJWT.getClaim("id").asInt());
-    if (memberDTO == null) {
-      String message = "This member has not been found.";
-      throw new ObjectNotFoundException(message);
-    }
-    String token = this.createToken(memberDTO.getId());
-    return this.createObjectNode(token, memberDTO);
+  /////////////////////////////////////////////////////////
+  ///////////////////////HEAD//////////////////////////////
+  /////////////////////////////////////////////////////////
+
+  /**
+   * Asks UCC to check if the member is admin or not.
+   */
+  @HEAD
+  @Path("is_admin")
+  @Produces(MediaType.TEXT_PLAIN)
+  @AuthorizeAdmin
+  public void isAdmin() {
+    //@AuthorizeAdmin checks if the member is admin or not
   }
+
+  /////////////////////////////////////////////////////////
+  ///////////////////////GET///////////////////////////////
+  /////////////////////////////////////////////////////////
 
   @PUT
   @Path("modify/{id}")
@@ -96,6 +102,20 @@ public class MemberResource {
   }
 
   @GET
+  @Path("/me")
+  @Produces(MediaType.APPLICATION_JSON)
+  public ObjectNode refreshToken(@Context ContainerRequestContext request) throws SQLException {
+    DecodedJWT decodedJWT = TokenDecoder.decodeToken(request);
+    MemberDTO memberDTO = this.memberUCC.getOneMember(decodedJWT.getClaim("id").asInt());
+    if (memberDTO == null) {
+      String message = "This member has not been found.";
+      throw new ObjectNotFoundException(message);
+    }
+    String token = this.createToken(memberDTO.getId());
+    return this.createObjectNode(token, memberDTO);
+  }
+
+  @GET
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
@@ -111,6 +131,79 @@ public class MemberResource {
     memberDTO.setAddress(addressDTO);
     return this.jsonUtil.filterPublicJsonView(memberDTO);
   }
+
+  /////////////////////////////////////////////////////////
+  ///////////////////////POST//////////////////////////////
+  /////////////////////////////////////////////////////////
+
+  /**
+   * Method that login the member. It verify if the user can be connected by calling ucc.
+   *
+   * @param memberDTO the member login informations
+   * @return token created for the member
+   */
+  @POST
+  @Path("login")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public ObjectNode login(MemberDTO memberDTO) throws SQLException {
+    // Get and check credentials
+    if (memberDTO == null
+        || memberDTO.getUsername() == null
+        || memberDTO.getPassword() == null
+    ) {
+      String message = "Member has wrong attributes for login method";
+      throw new WrongBodyDataException(message);
+    }
+    memberDTO = memberUCC.login(memberDTO);
+    if (memberDTO == null) {
+      throw new ObjectNotFoundException("Member is null");
+    }
+    String token = createToken(memberDTO.getId());
+    return createObjectNode(token, memberDTO);
+  }
+
+  /**
+   * Asks UCC to register a member.
+   *
+   * @param memberDTO the member to register
+   */
+  @POST
+  @Path("register")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public void register(MemberDTO memberDTO) throws SQLException {
+    // Verify memberDTO integrity
+    if (memberDTO == null
+        || memberDTO.getUsername() == null || memberDTO.getUsername().equals("")
+        || memberDTO.getPassword() == null || memberDTO.getPassword().equals("")
+        || memberDTO.getFirstName() == null || memberDTO.getFirstName().equals("")
+        || memberDTO.getLastName() == null || memberDTO.getLastName().equals("")
+    ) {
+      String message = "Member miss some informations for registration";
+      throw new WrongBodyDataException(message);
+    }
+    //Verify addressDTO integrity
+    AddressDTO addressDTO = memberDTO.getAddress();
+    if (addressDTO == null
+        || addressDTO.getStreet() == null || addressDTO.getStreet().equals("")
+        || addressDTO.getCommune() == null || addressDTO.getCommune().equals("")
+        || addressDTO.getPostcode() == null || addressDTO.getPostcode().equals("")
+        || addressDTO.getBuildingNumber() == null || addressDTO.getBuildingNumber().equals("")
+    ) {
+      String message = "Member has complete information but doesn't have "
+          + "complete address information";
+      throw new WrongBodyDataException(message);
+    }
+    // Get and check credentials
+    if (!memberUCC.register(memberDTO)) {
+      String message = "This member already exist in the database";
+      throw new ConflictException(message);
+    }
+  }
+
+  /////////////////////////////////////////////////////////
+  ///////////////////////PUT///////////////////////////////
+  /////////////////////////////////////////////////////////
 
   /**
    * Asks UCC to confirm the member identified by its id.
@@ -152,45 +245,9 @@ public class MemberResource {
     }
   }
 
-  /**
-   * Method that login the member. It verify if the user can be connected by calling ucc.
-   *
-   * @param memberDTO the member login informations
-   * @return token created for the member
-   */
-  @POST
-  @Path("login")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public ObjectNode login(MemberDTO memberDTO) throws SQLException {
-    // Get and check credentials
-    if (memberDTO == null
-        || memberDTO.getUsername() == null
-        || memberDTO.getPassword() == null
-    ) {
-      String message = "Member has wrong attributes for login method";
-      throw new WrongBodyDataException(message);
-    }
-    memberDTO = memberUCC.login(memberDTO);
-    if (memberDTO == null) {
-      throw new ObjectNotFoundException("Member is null");
-    }
-    String token = createToken(memberDTO.getId());
-    return createObjectNode(token, memberDTO);
-  }
-
-  /**
-   * Asks UCC to check if the member is admin or not.
-   *
-   * @return null (the text is return with)
-   */
-  @GET
-  @Path("is_admin")
-  @Produces(MediaType.TEXT_PLAIN)
-  @AuthorizeAdmin
-  public String isAdmin() {
-    return "This member is admin";
-  }
+  /////////////////////////////////////////////////////////
+  ///////////////////////UTILS/////////////////////////////
+  /////////////////////////////////////////////////////////
 
   /**
    * Create a ObjectNode that contains a token from a String.
@@ -215,49 +272,11 @@ public class MemberResource {
     System.out.println("Generating token.");
     Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
     Date date = new Date();
-    long duration = 1000 * 60 * 60 * 48; //2 day
+    long duration = 1000 * 60 * 60 * 48; //2 days
     return JWT.create()
         .withIssuer("auth0")
         .withClaim("id", id)
         .withExpiresAt(new Date(date.getTime() + duration))
         .sign(jwtAlgorithm);
-  }
-
-  /**
-   * Asks UCC to register a member.
-   *
-   * @param memberDTO the member to register
-   */
-  @POST
-  @Path("register")
-  @Consumes(MediaType.APPLICATION_JSON)
-  public void register(MemberDTO memberDTO) throws SQLException {
-    // Verify memberDTO integrity
-    if (memberDTO == null
-        || memberDTO.getUsername() == null || memberDTO.getUsername().equals("")
-        || memberDTO.getPassword() == null || memberDTO.getPassword().equals("")
-        || memberDTO.getFirstName() == null || memberDTO.getFirstName().equals("")
-        || memberDTO.getLastName() == null || memberDTO.getLastName().equals("")
-    ) {
-      String message = "Member miss some informations for registration";
-      throw new WrongBodyDataException(message);
-    }
-    //Verify addressDTO integrity
-    AddressDTO addressDTO = memberDTO.getAddress();
-    if (addressDTO == null
-        || addressDTO.getStreet() == null || addressDTO.getStreet().equals("")
-        || addressDTO.getCommune() == null || addressDTO.getCommune().equals("")
-        || addressDTO.getPostcode() == null || addressDTO.getPostcode().equals("")
-        || addressDTO.getBuildingNumber() == null || addressDTO.getBuildingNumber().equals("")
-    ) {
-      String message = "Member has complete information but doesn't have "
-          + "complete address information";
-      throw new WrongBodyDataException(message);
-    }
-    // Get and check credentials
-    if (!memberUCC.register(memberDTO)) {
-      String message = "This member already exist in the database";
-      throw new ConflictException(message);
-    }
   }
 }

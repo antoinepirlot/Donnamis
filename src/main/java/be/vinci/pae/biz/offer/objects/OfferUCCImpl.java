@@ -32,20 +32,9 @@ public class OfferUCCImpl implements OfferUCC {
   }
 
   @Override
-  public List<OfferDTO> getLatestOffers() throws SQLException {
+  public List<OfferDTO> getAllOffers(String offerStatus) throws SQLException {
     dalServices.start();
-    List<OfferDTO> listOfferDTO = offerDAO.getLatestOffers();
-    if (listOfferDTO == null) {
-      dalServices.rollback();
-    }
-    dalServices.commit();
-    return listOfferDTO;
-  }
-
-  @Override
-  public List<OfferDTO> getAllOffers() throws SQLException {
-    dalServices.start();
-    List<OfferDTO> listOfferDTO = offerDAO.getAllOffers();
+    List<OfferDTO> listOfferDTO = offerDAO.getAllOffers(offerStatus);
     if (listOfferDTO == null) {
       dalServices.rollback();
     }

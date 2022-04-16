@@ -43,9 +43,8 @@ Authorization: {{token}}
 GET {{baseUrl}}/members/list_member
 
 ###
-GET {{baseUrl}}/members/is_admin
+HEAD {{baseUrl}}/members/is_admin
 Authorization: {{token}}
-Content-Type: application/json
 
 ### Create One memberDTO
 POST {{baseUrl}}/members/register

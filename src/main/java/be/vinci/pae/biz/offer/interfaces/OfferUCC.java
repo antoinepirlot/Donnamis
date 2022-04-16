@@ -15,18 +15,11 @@ public interface OfferUCC {
   boolean createOffer(OfferDTO offerDTO) throws SQLException;
 
   /**
-   * Asks UCC to get a list of the latest offers.
-   *
-   * @return the list of the latest offers
-   */
-  List<OfferDTO> getLatestOffers() throws SQLException;
-
-  /**
    * Asks UCC to get a list of all offers.
    *
    * @return the list of all offers
    */
-  List<OfferDTO> getAllOffers() throws SQLException;
+  List<OfferDTO> getAllOffers(String offerStatus) throws SQLException;
 
   /**
    * Asks UCC to get one offer identified by its id.

@@ -38,6 +38,16 @@ public class ItemResource {
   @Inject
   private MemberUCC memberUCC;
 
+  /////////////////////////////////////////////////////////
+  ///////////////////////GET///////////////////////////////
+  /////////////////////////////////////////////////////////
+  @GET
+  @Path("all_items")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<ItemDTO> getAllItems() throws SQLException {
+    return this.getAllItems(null, -1);
+  }
 
   /**
    * Method that get all items.
@@ -51,79 +61,6 @@ public class ItemResource {
   public List<ItemDTO> getAllItemsByOfferStatus(@PathParam("offer_status") String offerStatus)
       throws SQLException {
     return this.getAllItems(offerStatus, -1);
-  }
-
-  @GET
-  @Path("all_items")
-  @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
-  public List<ItemDTO> getAllItems() throws SQLException {
-    return this.getAllItems(null, -1);
-  }
-
-  private List<ItemDTO> getAllItems(String offerStatus, int idMember) throws SQLException {
-    List<ItemDTO> listItemDTO;
-    if (idMember > 0) {
-      listItemDTO = itemUCC.getAllItemsOfAMember(idMember);
-    } else {
-      listItemDTO = itemUCC.getAllItems(offerStatus);
-    }
-    if (listItemDTO == null) {
-      throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
-    }
-    for (ItemDTO itemDTO : listItemDTO) {
-      this.offerUCC.getAllOffersOf(itemDTO);
-    }
-    return listItemDTO;
-  }
-
-  /**
-   * Checks the item's integrity and asks the UCC to add it into the database.
-   *
-   * @param itemDTO to add into the database
-   */
-  @POST
-  @Path("offer")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
-  public void addItem(ItemDTO itemDTO) throws SQLException {
-    System.out.println(itemDTO.getOfferList());
-    if (itemDTO.getItemDescription() == null || itemDTO.getItemDescription().isBlank()
-        || itemDTO.getItemType() == null || itemDTO.getItemType().getItemType() == null
-        || itemDTO.getItemType().getItemType().isBlank() || itemDTO.getMember() == null
-        || itemDTO.getMember().getId() < 1 || itemDTO.getTitle() == null || itemDTO.getTitle()
-        .isBlank() || itemDTO.getLastOfferDate() == null || itemDTO.getOfferList().get(0) == null) {
-      throw new WebApplicationException("Wrong item body", Status.BAD_REQUEST);
-    }
-    int idItem = this.itemUCC.addItem(itemDTO);
-    if (idItem == -1) {
-      String message = "The items can't be added to the db due to a unexpected error";
-      throw new WebApplicationException(message, Status.BAD_REQUEST);
-    }
-    OfferDTO offerDTO = itemDTO.getOfferList().get(0);
-    offerDTO.setIdItem(idItem);
-    if (!this.offerUCC.createOffer(offerDTO)) {
-      String message = "The offer can't be added to the db due to a unexpected error";
-      throw new WebApplicationException(message, Status.BAD_REQUEST);
-    }
-  }
-
-  /**
-   * Asks the UCC to cancel the item's offer.
-   *
-   * @param id the item's id
-   * @return the canceled item
-   */
-  @PUT
-  @Path("cancel/{id}")
-  @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
-  public ItemDTO cancelOffer(@PathParam("id") int id) throws SQLException {
-    if (itemUCC.getOneItem(id) == null) {
-      throw new WebApplicationException("Item not found", Status.NOT_FOUND);
-    }
-    ItemDTO itemDTO = itemUCC.cancelOffer(id);
-    return this.jsonUtil.filterPublicJsonView(itemDTO);
   }
 
   /**
@@ -167,5 +104,82 @@ public class ItemResource {
     this.offerUCC.getAllOffersOf(itemDTO);
     System.out.println(itemDTO);
     return this.jsonUtil.filterPublicJsonView(itemDTO);
+  }
+
+  /////////////////////////////////////////////////////////
+  ///////////////////////POST//////////////////////////////
+  /////////////////////////////////////////////////////////
+
+  /**
+   * Checks the item's integrity and asks the UCC to add it into the database.
+   *
+   * @param itemDTO to add into the database
+   */
+  @POST
+  @Path("offer")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
+  public void addItem(ItemDTO itemDTO) throws SQLException {
+    System.out.println(itemDTO.getOfferList());
+    if (itemDTO.getItemDescription() == null || itemDTO.getItemDescription().isBlank()
+        || itemDTO.getItemType() == null || itemDTO.getItemType().getItemType() == null
+        || itemDTO.getItemType().getItemType().isBlank() || itemDTO.getMember() == null
+        || itemDTO.getMember().getId() < 1 || itemDTO.getTitle() == null || itemDTO.getTitle()
+        .isBlank() || itemDTO.getLastOfferDate() == null || itemDTO.getOfferList().get(0) == null) {
+      throw new WebApplicationException("Wrong item body", Status.BAD_REQUEST);
+    }
+    int idItem = this.itemUCC.addItem(itemDTO);
+    if (idItem == -1) {
+      String message = "The items can't be added to the db due to a unexpected error";
+      throw new WebApplicationException(message, Status.BAD_REQUEST);
+    }
+    OfferDTO offerDTO = itemDTO.getOfferList().get(0);
+    offerDTO.setIdItem(idItem);
+    if (!this.offerUCC.createOffer(offerDTO)) {
+      String message = "The offer can't be added to the db due to a unexpected error";
+      throw new WebApplicationException(message, Status.BAD_REQUEST);
+    }
+  }
+
+  /////////////////////////////////////////////////////////
+  ///////////////////////PUT///////////////////////////////
+  /////////////////////////////////////////////////////////
+
+  /**
+   * Asks the UCC to cancel the item's offer.
+   *
+   * @param id the item's id
+   * @return the canceled item
+   */
+  @PUT
+  @Path("cancel/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
+  public ItemDTO cancelOffer(@PathParam("id") int id) throws SQLException {
+    if (itemUCC.getOneItem(id) == null) {
+      throw new WebApplicationException("Item not found", Status.NOT_FOUND);
+    }
+    ItemDTO itemDTO = itemUCC.cancelOffer(id);
+    return this.jsonUtil.filterPublicJsonView(itemDTO);
+  }
+
+  /////////////////////////////////////////////////////////
+  ///////////////////////UTILS/////////////////////////////
+  /////////////////////////////////////////////////////////
+
+  private List<ItemDTO> getAllItems(String offerStatus, int idMember) throws SQLException {
+    List<ItemDTO> listItemDTO;
+    if (idMember > 0) {
+      listItemDTO = itemUCC.getAllItemsOfAMember(idMember);
+    } else {
+      listItemDTO = itemUCC.getAllItems(offerStatus);
+    }
+    if (listItemDTO == null) {
+      throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
+    }
+    for (ItemDTO itemDTO : listItemDTO) {
+      this.offerUCC.getAllOffersOf(itemDTO);
+    }
+    return listItemDTO;
   }
 }
