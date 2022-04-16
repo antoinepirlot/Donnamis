@@ -38,6 +38,20 @@ public class OfferResource {
    * @return the list of all offers if there's at least one offer, otherwise null
    */
   @GET
+  @Path("all_offers")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<OfferDTO> getAllOffers()
+      throws SQLException {
+    return this.getAllOffers(null);
+  }
+
+  /**
+   * Method that get all offers with specified offer status.
+   *
+   * @return the list of all offers if there's at least one offer, otherwise null
+   */
+  @GET
   @Path("all_offers/{offer_status}")
   @Consumes(MediaType.TEXT_PLAIN)
   @Produces(MediaType.APPLICATION_JSON)
