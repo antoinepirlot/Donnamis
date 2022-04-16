@@ -12,9 +12,9 @@ import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.dal.offer.interfaces.OfferDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.utils.ApplicationBinder;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -42,7 +42,7 @@ class OfferUCCImplTest {
 
   @BeforeEach
   void setUp() throws SQLException {
-    this.goodOfferExistingItem.setDate(Timestamp.valueOf(String.valueOf(new Date(25))));
+    this.goodOfferExistingItem.setDate(Timestamp.valueOf(LocalDateTime.now()));
     this.goodOfferExistingItem.setTimeSlot("Time slot");
     this.existingItem.setId(5);
     this.goodOfferExistingItem.setIdItem(this.existingItem.getId());
