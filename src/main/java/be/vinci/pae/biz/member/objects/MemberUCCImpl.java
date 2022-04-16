@@ -56,6 +56,18 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
+  public MemberDTO modifyMember(int id, MemberDTO memberDTO) throws SQLException {
+    dalServices.start();
+    MemberDTO modifyMember = memberDAO.modifyMember(id, memberDTO);
+    if (modifyMember == null) {
+      dalServices.rollback();
+      return null;
+    }
+    dalServices.commit();
+    return modifyMember;
+  }
+
+  @Override
   public boolean confirmMember(MemberDTO memberDTO) throws SQLException {
     dalServices.start();
     Member member = (Member) memberDAO.getOneMember(memberDTO.getId());

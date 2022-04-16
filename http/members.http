@@ -75,6 +75,19 @@ Content-Type: application/json
   }
 }
 
+### Modify Member
+PUT {{baseUrl}}/members/modify/3
+Content-Type: application/json
+
+{
+  "username": "Swapiz",
+  "password": "Password",
+  "lastName": "Hernaut",
+  "firstName": "Loïc",
+  "phone": "0477810590"
+}
+
 ### Get One Member
 GET {{baseUrl}}/members/7
+GET {{baseUrl}}/members/profil/3
 Authorization: {{token}}

@@ -60,6 +60,23 @@ public class MemberResource {
     return this.createObjectNode(token, memberDTO);
   }
 
+  @PUT
+  @Path("modify/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
+  public MemberDTO modifyMember(@PathParam("id") int id, MemberDTO memberDTO) {
+    try {
+      MemberDTO modifyMember = memberUCC.modifyMember(id, memberDTO);
+      if (modifyMember == null) {
+        throw new ObjectNotFoundException("Member not found");
+      }
+      return modifyMember;
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
   /**
    * Method handling HTTP GET requests. The returned object will be sent to the client as
    * "text/plain" media type.

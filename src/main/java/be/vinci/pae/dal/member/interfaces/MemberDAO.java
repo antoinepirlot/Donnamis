@@ -12,8 +12,6 @@ public interface MemberDAO {
 
   MemberDTO getOne(MemberDTO memberDTO);
 
-  boolean memberExist(MemberDTO memberDTO, int idMember);
-
   /**
    * Add a new member to the db if it's not already in the db.
    *
@@ -30,6 +28,8 @@ public interface MemberDAO {
 
   MemberDTO isAdmin(int id);
 
+  MemberDTO modifyMember(int id, MemberDTO memberDTO);
+
   /**
    * Change the state of the member to denied.
    *
@@ -37,4 +37,6 @@ public interface MemberDAO {
    * @return true if deny complete, otherwise false
    */
   boolean denyMember(RefusalDTO refusalDTO) throws SQLException;
+
+  boolean memberExist(MemberDTO memberDTO, int idMember);
 }

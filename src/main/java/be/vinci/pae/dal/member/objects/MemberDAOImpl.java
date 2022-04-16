@@ -51,17 +51,38 @@ public class MemberDAOImpl implements MemberDAO {
    * @return the members in the DB with the corresponding id otherwise null
    */
   public MemberDTO getOneMember(int id) {
-    String query = "SELECT * FROM project_pae.members m WHERE m.id_member = ?";
+    String query = "SELECT * FROM project_pae.members m WHERE m.id_member = ?;";
     return executeQueryWithId(id, query);
   }
 
   public AddressDTO getAddressMember(int id) {
-    String query = "SELECT * FROM project_pae.addresses a WHERE a.id_member = ?";
+    String query = "SELECT * FROM project_pae.addresses a WHERE a.id_member = ?;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
           return ObjectsInstanceCreator.createAddressInstance(this.factory, rs);
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+    return null;
+  }
+
+  public MemberDTO modifyMember(int id, MemberDTO memberDTO) {
+    String query = "UPDATE project_pae.members SET username = ?, password = ?, last_name = ?, "
+        + "first_name = ?, phone = ? WHERE id_member = ?;";
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
+      preparedStatement.setString(1, memberDTO.getUsername());
+      preparedStatement.setString(2, memberDTO.getPassword());
+      preparedStatement.setString(3, memberDTO.getLastName());
+      preparedStatement.setString(4, memberDTO.getFirstName());
+      preparedStatement.setString(5, memberDTO.getPhoneNumber());
+      preparedStatement.setInt(6, id);
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        if (rs.next()) {
+          return ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
         }
       }
     } catch (SQLException e) {
@@ -169,7 +190,6 @@ public class MemberDAOImpl implements MemberDAO {
     }
   }
 
-  @Override
   public boolean memberExist(MemberDTO memberDTO, int idMember) {
     String query = "SELECT id_member FROM project_pae.members WHERE id_member = ?";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
