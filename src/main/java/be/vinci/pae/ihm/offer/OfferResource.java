@@ -51,6 +51,25 @@ public class OfferResource {
     return this.jsonUtil.filterPublicJsonViewAsList(listOfferDTO);
   }
 
+  /**
+   * Method that get one offer identified by its id.
+   *
+   * @return the offer
+   * @throws ObjectNotFoundException if the offer does not exist
+   */
+  @GET
+  @Path("{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
+  public OfferDTO getOneOffer(@PathParam("id") int id)
+      throws SQLException {
+    OfferDTO offerDTO = offerUCC.getOneOffer(id);
+    if (offerDTO == null) {
+      throw new ObjectNotFoundException("No offers into the database.");
+    }
+    return this.jsonUtil.filterPublicJsonView(offerDTO);
+  }
+
   /////////////////////////////////////////////////////////
   ///////////////////////POST//////////////////////////////
   /////////////////////////////////////////////////////////
