@@ -38,7 +38,7 @@ public class OfferResource {
   public void addOffer(OfferDTO offerDTO) throws SQLException {
     // Get and check credentials
     if (offerDTO == null || offerDTO.getIdItem() < 1) {
-      String message = "";
+      String message;
       if (offerDTO == null) {
         message = "offerDTO is null.";
       } else {
