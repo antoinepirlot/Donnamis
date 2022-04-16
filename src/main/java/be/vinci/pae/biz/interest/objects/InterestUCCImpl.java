@@ -15,31 +15,28 @@ public class InterestUCCImpl implements InterestUCC {
   private DALServices dalServices;
 
   @Override
-  public boolean markInterest(InterestDTO interestDTO)
-      throws SQLException {
-    dalServices.start();
-    boolean isDone;
+  public boolean markInterest(InterestDTO interestDTO) throws SQLException {
     try {
-      isDone = interestDAO.markInterest(interestDTO);
+      dalServices.start();
+      boolean isDone = interestDAO.markInterest(interestDTO);
+      dalServices.commit();
+      return isDone;
     } catch (SQLException e) {
       dalServices.rollback();
       throw e;
     }
-    dalServices.commit();
-    return isDone;
   }
 
   @Override
   public boolean interestExist(InterestDTO interestDTO) throws SQLException {
-    dalServices.start();
-    boolean interestExist = false;
     try {
-      interestExist = this.interestDAO.interestExist(interestDTO);
+      dalServices.start();
+      boolean interestExist = this.interestDAO.interestExist(interestDTO);
+      dalServices.commit();
+      return interestExist;
     } catch (SQLException e) {
       dalServices.rollback();
       throw e;
     }
-    dalServices.commit();
-    return interestExist;
   }
 }

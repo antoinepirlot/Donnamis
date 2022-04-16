@@ -8,7 +8,6 @@ import be.vinci.pae.ihm.logs.LoggerHandler;
 import jakarta.inject.Inject;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ItemsTypeUCCImpl implements ItemsTypeUCC {
@@ -21,15 +20,14 @@ public class ItemsTypeUCCImpl implements ItemsTypeUCC {
 
   @Override
   public List<ItemsTypeDTO> getAll() throws SQLException {
-    this.dalServices.start();
-    List<ItemsTypeDTO> itemsTypeDTOList = this.itemsTypeDAO.getAll();
-    if (itemsTypeDTOList == null) {
-      this.dalServices.rollback();
-      String message = "ERROR while getting all itemsType";
-      this.logger.log(Level.INFO, message);
-    } else {
+    try {
+      this.dalServices.start();
+      List<ItemsTypeDTO> itemsTypeDTOList = this.itemsTypeDAO.getAll();
       this.dalServices.commit();
+      return itemsTypeDTOList;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
     }
-    return itemsTypeDTOList;
   }
 }

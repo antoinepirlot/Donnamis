@@ -21,117 +21,129 @@ public class MemberUCCImpl implements MemberUCC {
 
   @Override
   public List<MemberDTO> getAllMembers() throws SQLException {
-    dalServices.start();
-    List<MemberDTO> memberDTOList = memberDAO.getAllMembers();
-    if (memberDTOList == null) {
-      dalServices.rollback();
-      return null;
-    }
-    dalServices.commit();
-    return memberDTOList;
-  }
-
-  @Override
-  public MemberDTO getOneMember(int id) throws SQLException {
-    dalServices.start();
-    MemberDTO memberDTO = memberDAO.getOneMember(id);
-    if (memberDTO == null) {
-      dalServices.rollback();
-      return null;
-    }
-    dalServices.commit();
-    return memberDTO;
-  }
-
-  @Override
-  public AddressDTO getAddressMember(int id) throws SQLException {
-    dalServices.start();
-    AddressDTO addressDTO = memberDAO.getAddressMember(id);
-    if (addressDTO == null) {
-      dalServices.rollback();
-      return null;
-    }
-    dalServices.commit();
-    return addressDTO;
-  }
-
-  @Override
-  public MemberDTO modifyMember(int id, MemberDTO memberDTO) throws SQLException {
-    dalServices.start();
-    MemberDTO modifyMember = memberDAO.modifyMember(id, memberDTO);
-    if (modifyMember == null) {
-      dalServices.rollback();
-      return null;
-    }
-    dalServices.commit();
-    return modifyMember;
-  }
-
-  @Override
-  public boolean confirmMember(MemberDTO memberDTO) throws SQLException {
-    dalServices.start();
-    Member member = (Member) memberDAO.getOneMember(memberDTO.getId());
-    if (member == null) {
-      dalServices.rollback();
-      return false;
-    }
-    memberDAO.confirmMember(memberDTO);
-    dalServices.commit();
-    return true;
-  }
-
-  @Override
-  public boolean denyMember(RefusalDTO refusalDTO) throws SQLException {
-    dalServices.start();
     try {
-      memberDAO.denyMember(refusalDTO);
+      dalServices.start();
+      List<MemberDTO> memberDTOList = memberDAO.getAllMembers();
+      dalServices.commit();
+      return memberDTOList;
     } catch (SQLException e) {
       dalServices.rollback();
       throw e;
     }
-    dalServices.commit();
-    return true;
+  }
+
+  @Override
+  public MemberDTO getOneMember(int id) throws SQLException {
+    try {
+      dalServices.start();
+      MemberDTO memberDTO = memberDAO.getOneMember(id);
+      dalServices.commit();
+      return memberDTO;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public AddressDTO getAddressMember(int id) throws SQLException {
+    try {
+      dalServices.start();
+      AddressDTO addressDTO = memberDAO.getAddressMember(id);
+      dalServices.commit();
+      return addressDTO;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public MemberDTO modifyMember(int id, MemberDTO memberDTO) throws SQLException {
+    try {
+      dalServices.start();
+      MemberDTO modifyMember = memberDAO.modifyMember(id, memberDTO);
+      dalServices.commit();
+      return modifyMember;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public boolean confirmMember(MemberDTO memberDTO) throws SQLException {
+    try {
+      dalServices.start();
+      boolean isConfirmed = memberDAO.confirmMember(memberDTO);
+      dalServices.commit();
+      return isConfirmed;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public boolean denyMember(RefusalDTO refusalDTO) throws SQLException {
+    try {
+      dalServices.start();
+      boolean isDenied = memberDAO.denyMember(refusalDTO);
+      dalServices.commit();
+      return isDenied;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
+    }
   }
 
   @Override
   public boolean memberExist(MemberDTO memberDTO, int idMember) throws SQLException {
-    dalServices.start();
-    if (!this.memberDAO.memberExist(memberDTO, idMember)) {
+    try {
+      dalServices.start();
+      boolean doesExist = this.memberDAO.memberExist(memberDTO, idMember);
+      dalServices.commit();
+      return doesExist;
+    } catch (SQLException e) {
       dalServices.rollback();
-      return false;
+      throw e;
     }
-    dalServices.commit();
-    return true;
   }
 
   @Override
   public MemberDTO login(MemberDTO memberToLogIn) throws SQLException {
-    dalServices.start();
     Member memberToLogin = (Member) memberToLogIn;
-    Member loggedMember = (Member) memberDAO.getOne(memberToLogin);
-    if (
-        loggedMember == null
-            || !loggedMember.checkPassword(memberToLogin.getPassword(), loggedMember.getPassword())
-            || !loggedMember.verifyState("confirmed")
-    ) {
+    try {
+      dalServices.start();
+      Member loggedMember = (Member) memberDAO.getOne(memberToLogin);
+      dalServices.commit();
+      if (
+          loggedMember == null
+              || !loggedMember.checkPassword(memberToLogin.getPassword(),
+              loggedMember.getPassword())
+              || !loggedMember.verifyState("confirmed")
+      ) {
+        return null;
+      }
+      return loggedMember;
+    } catch (SQLException e) {
       dalServices.rollback();
-      return null;
+      throw e;
     }
-    dalServices.commit();
-    return loggedMember;
   }
 
   @Override
   public boolean register(MemberDTO memberDTO) throws SQLException {
-    dalServices.start();
     Member member = (Member) memberDTO;
     member.hashPassword();
-    if (!memberDAO.register(member)) {
-      dalServices.rollback();
-      return false;
-    } else {
+    try {
+      dalServices.start();
+      boolean isRegistered = memberDAO.register(member);
       dalServices.commit();
-      return true;
+      return isRegistered;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
     }
   }
 }

@@ -17,58 +17,66 @@ public class ItemUCCImpl implements ItemUCC {
 
   @Override
   public List<ItemDTO> getAllItems(String offerStatus) throws SQLException {
-    dalServices.start();
-    List<ItemDTO> listItemDTO = itemDAO.getAllItems(offerStatus);
-    if (listItemDTO == null) {
+    try {
+      dalServices.start();
+      List<ItemDTO> listItemDTO = itemDAO.getAllItems(offerStatus);
+      dalServices.commit();
+      return listItemDTO;
+    } catch (SQLException e) {
       dalServices.rollback();
+      throw e;
     }
-    dalServices.commit();
-    return listItemDTO;
   }
 
   @Override
   public ItemDTO getOneItem(int id) throws SQLException {
-    dalServices.start();
-    ItemDTO itemDTO = itemDAO.getOneItem(id);
-    if (itemDTO == null) {
+    try {
+      dalServices.start();
+      ItemDTO itemDTO = itemDAO.getOneItem(id);
+      dalServices.commit();
+      return itemDTO;
+    } catch (SQLException e) {
       dalServices.rollback();
-      return null;
+      throw e;
     }
-    dalServices.commit();
-    return itemDTO;
   }
 
   @Override
   public int addItem(ItemDTO itemDTO) throws SQLException {
-    dalServices.start();
-    int id_item = itemDAO.addItem(itemDTO);
-    if (id_item == -1) {
+    try {
+      dalServices.start();
+      int id_item = itemDAO.addItem(itemDTO);
+      dalServices.commit();
+      return id_item;
+    } catch (SQLException e) {
       dalServices.rollback();
+      throw e;
     }
-    dalServices.commit();
-    return id_item;
   }
 
   @Override
   public ItemDTO cancelOffer(int id) throws SQLException {
-    dalServices.start();
-    ItemDTO itemDTO = itemDAO.cancelOffer(id);
-    if (itemDTO == null) {
+    try {
+      dalServices.start();
+      ItemDTO itemDTO = itemDAO.cancelOffer(id);
+      dalServices.commit();
+      return itemDTO;
+    } catch (SQLException e) {
       dalServices.rollback();
-      return null;
+      throw e;
     }
-    dalServices.commit();
-    return itemDTO;
   }
 
   @Override
   public List<ItemDTO> getAllItemsOfAMember(int idMember) throws SQLException {
-    dalServices.start();
-    List<ItemDTO> listItemDTO = itemDAO.getAllItemsOfAMember(idMember);
-    if (listItemDTO == null) {
+    try {
+      dalServices.start();
+      List<ItemDTO> listItemDTO = itemDAO.getAllItemsOfAMember(idMember);
+      dalServices.commit();
+      return listItemDTO;
+    } catch (SQLException e) {
       dalServices.rollback();
+      throw e;
     }
-    dalServices.commit();
-    return listItemDTO;
   }
 }
