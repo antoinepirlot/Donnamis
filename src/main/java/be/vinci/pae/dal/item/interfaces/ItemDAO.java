@@ -13,19 +13,11 @@ public interface ItemDAO {
    */
   List<ItemDTO> getAllItems(String offerStatus) throws SQLException;
 
-  ItemDTO getOneItem(int id);
+  List<ItemDTO> getAllItemsOfAMember(int id) throws SQLException;
 
-  int addItem(ItemDTO itemDTO);
+  ItemDTO getOneItem(int id) throws SQLException;
 
-  ItemDTO cancelOffer(int id);
+  int addItem(ItemDTO itemDTO) throws SQLException;
 
-  List<ItemDTO> getAllItemsOfAMember(int id);
-
-  /**
-   * Add the latest offer date into the database.
-   *
-   * @param itemDTO the item the latest offer date is added
-   * @return true if this insert was done, otherwise false
-   */
-  boolean updateLatestOfferDate(ItemDTO itemDTO);
+  ItemDTO cancelItem(int id) throws SQLException;
 }

@@ -15,16 +15,14 @@ public class InterestDAOImpl implements InterestDAO {
 
   @Override
   public boolean markInterest(InterestDTO interestDTO) throws SQLException {
-    String query =
-        "INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date) VALUES"
-            + "(?, ?, ?, ?);";
-
-    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
-      preparedStatement.setBoolean(1, interestDTO.isCallWanted());
-      preparedStatement.setInt(2, interestDTO.getOffer().getId());
-      preparedStatement.setInt(3, interestDTO.getMember().getId());
-      preparedStatement.setTimestamp(4, interestDTO.getDate());
-      int res = preparedStatement.executeUpdate();
+    String query = "INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date) "
+        + "VALUES (?, ?, ?, ?);";
+    try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
+      ps.setBoolean(1, interestDTO.isCallWanted());
+      ps.setInt(2, interestDTO.getOffer().getId());
+      ps.setInt(3, interestDTO.getMember().getId());
+      ps.setTimestamp(4, interestDTO.getDate());
+      int res = ps.executeUpdate();
       if (res != 0) {
         return true;
       }
@@ -34,11 +32,14 @@ public class InterestDAOImpl implements InterestDAO {
 
   @Override
   public boolean interestExist(InterestDTO interestDTO) throws SQLException {
-    String query = "SELECT id_interest FROM project_pae.interests WHERE id_offer = ? AND id_member = ?";
-    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
-      preparedStatement.setInt(1, interestDTO.getOffer().getId());
-      preparedStatement.setInt(2, interestDTO.getMember().getId());
-      try (ResultSet rs = preparedStatement.executeQuery()) {
+    String query = "SELECT id_interest "
+        + "FROM project_pae.interests "
+        + "WHERE id_offer = ? "
+        + "  AND id_member = ?";
+    try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
+      ps.setInt(1, interestDTO.getOffer().getId());
+      ps.setInt(2, interestDTO.getMember().getId());
+      try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           return true;
         }

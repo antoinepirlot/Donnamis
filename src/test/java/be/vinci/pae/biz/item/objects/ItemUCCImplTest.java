@@ -62,10 +62,10 @@ class ItemUCCImplTest {
     Mockito.when(this.itemDAO.addItem(this.goodItem)).thenReturn(this.goodItem.getId());
     Mockito.when(this.itemDAO.addItem(this.wrongItem)).thenReturn(-1);
     Mockito.when(this.itemDAO.addItem(null)).thenReturn(-1);
-    Mockito.when(this.itemDAO.cancelOffer(this.goodItem.getId())).thenReturn(this.cancelledItem);
-    Mockito.when(this.itemDAO.cancelOffer(this.notExistingIdItem)).thenReturn(null);
-    Mockito.when(this.itemDAO.cancelOffer(this.givenIdItem)).thenReturn(null);
-    Mockito.when(this.itemDAO.cancelOffer(this.assignedIdItem)).thenReturn(this.cancelledItem);
+    Mockito.when(this.itemDAO.cancelItem(this.goodItem.getId())).thenReturn(this.cancelledItem);
+    Mockito.when(this.itemDAO.cancelItem(this.notExistingIdItem)).thenReturn(null);
+    Mockito.when(this.itemDAO.cancelItem(this.givenIdItem)).thenReturn(null);
+    Mockito.when(this.itemDAO.cancelItem(this.assignedIdItem)).thenReturn(this.cancelledItem);
   }
 
   @DisplayName("Test get all items")
@@ -113,24 +113,24 @@ class ItemUCCImplTest {
   @DisplayName("Test cancel offer with existing item")
   @Test
   void testCancelOfferWithExistingItem() throws SQLException {
-    assertEquals(this.cancelledItem, this.itemUCC.cancelOffer(this.goodItem.getId()));
+    assertEquals(this.cancelledItem, this.itemUCC.cancelItem(this.goodItem.getId()));
   }
 
   @DisplayName("Test cancel offer with not existing item")
   @Test
   void testCancelOfferWithNotExistingItem() throws SQLException {
-    assertNull(this.itemUCC.cancelOffer(this.notExistingIdItem));
+    assertNull(this.itemUCC.cancelItem(this.notExistingIdItem));
   }
 
   @DisplayName("Test cancel offer with given item")
   @Test
   void testCancelOfferWithGivenItem() throws SQLException {
-    assertNull(this.itemUCC.cancelOffer(this.givenIdItem));
+    assertNull(this.itemUCC.cancelItem(this.givenIdItem));
   }
 
   @DisplayName("Test cancel offer with assigned item")
   @Test
   void testCancelOfferWithAssignedItem() throws SQLException {
-    assertEquals(this.cancelledItem, this.itemUCC.cancelOffer(this.assignedIdItem));
+    assertEquals(this.cancelledItem, this.itemUCC.cancelItem(this.assignedIdItem));
   }
 }

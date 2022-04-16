@@ -55,10 +55,10 @@ public class ItemUCCImpl implements ItemUCC {
   }
 
   @Override
-  public ItemDTO cancelOffer(int id) throws SQLException {
+  public ItemDTO cancelItem(int id) throws SQLException {
     try {
       dalServices.start();
-      ItemDTO itemDTO = itemDAO.cancelOffer(id);
+      ItemDTO itemDTO = itemDAO.cancelItem(id);
       dalServices.commit();
       return itemDTO;
     } catch (SQLException e) {

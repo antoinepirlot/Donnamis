@@ -5,8 +5,7 @@ import java.sql.SQLException;
 
 public interface InterestDAO {
 
-  boolean markInterest(InterestDTO interestDTO)
-      throws SQLException;
+  boolean markInterest(InterestDTO interestDTO) throws SQLException;
 
   boolean interestExist(InterestDTO interestDTO) throws SQLException;
 

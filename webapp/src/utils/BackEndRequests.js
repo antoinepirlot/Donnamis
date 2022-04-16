@@ -250,7 +250,7 @@ async function offerAnItem(item) {
     },
     body: JSON.stringify(item)
   };
-  const response = await fetch("/api/items/offer", request);
+  const response = await fetch("/api/items", request);
   if (!response.ok) {
     showError("Can't offer the item");
     throw new Error(
@@ -294,12 +294,12 @@ async function getMyItems() {
 
 async function cancelOffer(id) {
   const request = {
-    method: "PUT",
+    method: "DELETE",
     headers: {
       "Authorization": getObject("token")
     }
   };
-  const url = `/api/items/cancel/${id}`;
+  const url = `/api/items/${id}`;
   const response = await fetch(url, request);
   if (!response.ok) {
     throw new Error(

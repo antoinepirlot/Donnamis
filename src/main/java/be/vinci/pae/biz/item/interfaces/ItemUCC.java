@@ -33,7 +33,7 @@ public interface ItemUCC {
    *
    * @return the cancelled item
    */
-  ItemDTO cancelOffer(int id) throws SQLException;
+  ItemDTO cancelItem(int id) throws SQLException;
 
   /**
    * Ask itemDAO to get all the items identified by the member id.

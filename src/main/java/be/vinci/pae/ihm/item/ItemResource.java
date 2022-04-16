@@ -13,9 +13,9 @@ import be.vinci.pae.ihm.filter.utils.Json;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -116,7 +116,7 @@ public class ItemResource {
    * @param itemDTO to add into the database
    */
   @POST
-  @Path("offer")
+  @Path("")
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public void addItem(ItemDTO itemDTO) throws SQLException {
@@ -142,7 +142,7 @@ public class ItemResource {
   }
 
   /////////////////////////////////////////////////////////
-  ///////////////////////PUT///////////////////////////////
+  ///////////////////////DELETE////////////////////////////
   /////////////////////////////////////////////////////////
 
   /**
@@ -151,15 +151,15 @@ public class ItemResource {
    * @param id the item's id
    * @return the canceled item
    */
-  @PUT
-  @Path("cancel/{id}")
+  @DELETE
+  @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public ItemDTO cancelOffer(@PathParam("id") int id) throws SQLException {
     if (itemUCC.getOneItem(id) == null) {
-      throw new WebApplicationException("Item not found", Status.NOT_FOUND);
+      throw new ObjectNotFoundException("Item not found");
     }
-    ItemDTO itemDTO = itemUCC.cancelOffer(id);
+    ItemDTO itemDTO = itemUCC.cancelItem(id);
     return this.jsonUtil.filterPublicJsonView(itemDTO);
   }
 
