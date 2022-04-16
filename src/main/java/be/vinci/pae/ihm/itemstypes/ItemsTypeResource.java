@@ -20,6 +20,10 @@ public class ItemsTypeResource {
   @Inject
   private ItemsTypeUCC itemsTypeUCC;
 
+  /////////////////////////////////////////////////////////
+  ///////////////////////GET///////////////////////////////
+  /////////////////////////////////////////////////////////
+
   /**
    * Ask itemsTypeUCC to get all items types. If there's no items types it throws an
    * ObjectNotFoundException.
