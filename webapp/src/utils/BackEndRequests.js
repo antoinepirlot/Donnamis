@@ -62,12 +62,12 @@ async function register(member) {
 
 async function isAdmin() {
   const request = {
-    method: "GET",
+    method: "HEAD",
     headers: {
       "Authorization": getObject("token")
     }
   }
-  const response = await fetch("/api/members/is_admin/", request);
+  const response = await fetch("/api/members/is_admin", request);
   return response.ok;
 }
 
