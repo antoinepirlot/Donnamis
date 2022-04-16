@@ -198,7 +198,7 @@ public class MemberResource {
     System.out.println("Generating token.");
     Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
     Date date = new Date();
-    long duration = 1000 * 60 * 60 * 48; //2 day
+    long duration = 1000 * 60 * 60 * 48; //2 days
     return JWT.create()
         .withIssuer("auth0")
         .withClaim("id", id)
