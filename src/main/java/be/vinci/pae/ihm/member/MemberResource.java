@@ -171,8 +171,8 @@ public class MemberResource {
   @Path("is_admin")
   @Produces(MediaType.TEXT_PLAIN)
   @AuthorizeAdmin
-  public String isAdmin() {
-    return "This member is admin";
+  public void isAdmin() {
+    //@AuthorizeAdmin checks if the member is admin or not
   }
 
   /**
