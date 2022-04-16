@@ -41,7 +41,7 @@ class OfferUCCImplTest {
   private final int notExistingIdOffer = 6464;
 
   @BeforeEach
-  void setUp() {
+  void setUp() throws SQLException {
     this.goodOfferExistingItem.setDate(Timestamp.valueOf(String.valueOf(new Date(25))));
     this.goodOfferExistingItem.setTimeSlot("Time slot");
     this.existingItem.setId(5);
@@ -54,15 +54,14 @@ class OfferUCCImplTest {
     this.setMockitos();
   }
 
-  private void setMockitos() {
+  private void setMockitos() throws SQLException {
     Mockito.when(this.offerDAO.createOffer(this.goodOfferExistingItem)).thenReturn(true);
     Mockito.when(this.offerDAO.createOffer(this.goodOfferNotExistingItem)).thenReturn(false);
     Mockito.when(this.offerDAO.createOffer(this.wrongOfferWithExistingItem)).thenReturn(false);
     Mockito.when(this.offerDAO.createOffer(this.wrongOfferWithNotExistingItem)).thenReturn(false);
     Mockito.when(this.offerDAO.createOffer(this.emptyOffer)).thenReturn(false);
     Mockito.when(this.offerDAO.createOffer(null)).thenReturn(false);
-    Mockito.when(this.offerDAO.getLatestOffers()).thenReturn(this.offerDTOList);
-    Mockito.when(this.offerDAO.getAllOffers()).thenReturn(this.offerDTOList);
+    Mockito.when(this.offerDAO.getAllOffers(null)).thenReturn(this.offerDTOList);
     Mockito.when(this.offerDAO
             .getOne(this.goodOfferExistingItem.getId()))
         .thenReturn(this.goodOfferExistingItem);
@@ -108,13 +107,13 @@ class OfferUCCImplTest {
   @DisplayName("Test get latest offers")
   @Test
   void testGetLatestOffers() throws SQLException {
-    assertEquals(this.offerDTOList, this.offerUCC.getLatestOffers());
+    assertEquals(this.offerDTOList, this.offerUCC.getAllOffers(null));
   }
 
   @DisplayName("Test get all offers")
   @Test
   void testGetAllOffers() throws SQLException {
-    assertEquals(this.offerDTOList, this.offerUCC.getAllOffers());
+    assertEquals(this.offerDTOList, this.offerUCC.getAllOffers(null));
   }
 
   @DisplayName("Test get one offer with existing id offer")

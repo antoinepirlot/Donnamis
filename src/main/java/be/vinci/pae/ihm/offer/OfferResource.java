@@ -5,6 +5,7 @@ import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
+import be.vinci.pae.ihm.filter.AuthorizeAdmin;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.filter.utils.Json;
 import jakarta.inject.Inject;
@@ -13,6 +14,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import java.sql.SQLException;
@@ -31,36 +33,18 @@ public class OfferResource {
   /////////////////////////////////////////////////////////
 
   /**
-   * Method that get all the latest items offered.
-   *
-   * @return the list of lastest offers if there's at least one offer, otherwise null
-   */
-  @GET
-  @Path("latest_offers")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
-  public List<OfferDTO> getLatestOffers() throws SQLException {
-    List<OfferDTO> listOfferDTO = offerUCC.getLatestOffers();
-    if (listOfferDTO == null) {
-      throw new ObjectNotFoundException("No offers into the database.");
-    }
-    return this.jsonUtil.filterPublicJsonViewAsList(listOfferDTO);
-  }
-
-
-  /**
-   * Method that get all the items offered.
+   * Method that get all offers.
    *
    * @return the list of all offers if there's at least one offer, otherwise null
    */
   @GET
-  @Path("all_offers")
-  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("all_offers/{offer_status}")
+  @Consumes(MediaType.TEXT_PLAIN)
   @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
-  public List<OfferDTO> getAllOffers() throws SQLException {
-    List<OfferDTO> listOfferDTO = offerUCC.getAllOffers();
+  @AuthorizeAdmin
+  public List<OfferDTO> getAllOffers(@PathParam("offer_status") String offerStatus)
+      throws SQLException {
+    List<OfferDTO> listOfferDTO = offerUCC.getAllOffers(offerStatus);
     if (listOfferDTO == null) {
       throw new ObjectNotFoundException("No offers into the database.");
     }

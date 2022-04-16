@@ -1,8 +1,6 @@
-### get latest offers
-GET {{baseUrl}}/offers/latest_offers
-
 ### get all offers
-GET {{baseUrl}}/offers/all_offers
+GET {{baseUrl}}/offers/all_offers/
+Authorization: {{token}}
 
 ### get offer with id 1
 GET {{baseUrl}}/offers/1
