@@ -26,33 +26,9 @@ public class OfferResource {
   @Inject
   private OfferUCC offerUCC;
 
-  /**
-   * Asks UCC to add an offer into the database.
-   *
-   * @param offerDTO the offer to add into the database
-   */
-  @POST
-  @Path("add_offer")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
-  public void addOffer(OfferDTO offerDTO) throws SQLException {
-    // Get and check credentials
-    if (offerDTO == null || offerDTO.getIdItem() < 1) {
-      String message;
-      if (offerDTO == null) {
-        message = "offerDTO is null.";
-      } else {
-        message = "item id = " + offerDTO.getIdItem() + " and is not greater than 0.";
-      }
-      throw new WrongBodyDataException(message);
-    }
-    //Try to create an offer
-    if (!offerUCC.createOffer(offerDTO)) {
-      String message = "Add an existing offer.";
-      throw new ConflictException(message);
-    }
-
-  }
+  /////////////////////////////////////////////////////////
+  ///////////////////////GET///////////////////////////////
+  /////////////////////////////////////////////////////////
 
   /**
    * Method that get all the latest items offered.
@@ -91,4 +67,34 @@ public class OfferResource {
     return this.jsonUtil.filterPublicJsonViewAsList(listOfferDTO);
   }
 
+  /////////////////////////////////////////////////////////
+  ///////////////////////POST//////////////////////////////
+  /////////////////////////////////////////////////////////
+
+  /**
+   * Asks UCC to add an offer into the database.
+   *
+   * @param offerDTO the offer to add into the database
+   */
+  @POST
+  @Path("add_offer")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
+  public void addOffer(OfferDTO offerDTO) throws SQLException {
+    // Get and check credentials
+    if (offerDTO == null || offerDTO.getIdItem() < 1) {
+      String message;
+      if (offerDTO == null) {
+        message = "offerDTO is null.";
+      } else {
+        message = "item id = " + offerDTO.getIdItem() + " and is not greater than 0.";
+      }
+      throw new WrongBodyDataException(message);
+    }
+    //Try to create an offer
+    if (!offerUCC.createOffer(offerDTO)) {
+      String message = "Add an existing offer.";
+      throw new ConflictException(message);
+    }
+  }
 }
