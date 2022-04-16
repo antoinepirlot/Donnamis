@@ -169,7 +169,7 @@ async function getAllItemsByOfferStatus(offerStatus) {
   return await response.json();
 }
 
-async function getOffers() {
+async function getAllOffers() {
   const request = {
     method: "GET",
     headers: {
@@ -348,7 +348,7 @@ export {
   confirmAdmin,
   denyMember,
   getAllItemsByOfferStatus,
-  getOffers,
+  getAllOffers,
   getLatestOffers,
   getMyItems,
   cancelOffer,
