@@ -53,7 +53,6 @@ public class TokenDecoder {
     }
     if (decodedJWT == null) {
       String message = "Null is returned by decode token.";
-      logger.log(Level.SEVERE, message);
       throw new TokenDecodingException(message);
     }
     return decodedJWT;
