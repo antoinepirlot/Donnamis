@@ -8,6 +8,7 @@ import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
 import jakarta.inject.Inject;
+import java.rmi.UnexpectedException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -45,14 +46,49 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   /**
+   * Get a specific member identified by its username.
+   *
+   * @param memberDTO the member who try to log in
+   * @return the member got from the db
+   */
+  @Override
+  public MemberDTO getOne(MemberDTO memberDTO) throws SQLException {
+    String query = "SELECT m.id_member, m.username, m.password, m.last_name, m.first_name, "
+        + "m.is_admin, m.state, m.phone, a.id_address, a.street, a.building_number, a.unit_number,"
+        + "a.postcode, a.commune "
+        + "FROM project_pae.members m, project_pae.addresses a "
+        + "WHERE a.id_member = m.id_member ";
+    if (memberDTO.getUsername() != null) {
+      query += " AND m.username = ?;";
+    } else {
+      query += " AND m.id_member = ?;";
+    }
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
+      if (memberDTO.getUsername() != null) {
+        preparedStatement.setString(1, StringEscapeUtils
+            .escapeHtml4(memberDTO.getUsername()));
+      } else {
+        preparedStatement.setInt(1, memberDTO.getId());
+      }
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        if (rs.next()) { //We know only one is returned by the db
+          return ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
    * Get the members in the DB with the corresponding id.
    *
    * @param id the id of the member
    * @return the members in the DB with the corresponding id otherwise null
    */
-  public MemberDTO getOneMember(int id) {
-    String query = "SELECT * FROM project_pae.members m WHERE m.id_member = ?;";
-    return executeQueryWithId(id, query);
+  public MemberDTO getOne(int id) throws SQLException {
+    MemberDTO memberDTO = this.factory.getMember();
+    memberDTO.setId(id);
+    return this.getOne(memberDTO);
   }
 
   public AddressDTO getAddressMember(int id) {
@@ -135,36 +171,6 @@ public class MemberDAOImpl implements MemberDAO {
       preparedStatement.executeUpdate();
       return true;
     }
-  }
-
-  /**
-   * Get a specific member identified by its username.
-   *
-   * @param memberDTO the member who try to log in
-   * @return the member got from the db
-   */
-  @Override
-  public MemberDTO getOne(MemberDTO memberDTO) {
-    System.out.println("getOne(String username) in MemberDAO");
-    String query = "SELECT m.id_member, m.username, m.password, m.last_name, m.first_name, "
-        + "m.is_admin, m.state, m.phone, a.id_address, a.street, a.building_number, a.unit_number,"
-        + "a.postcode, a.commune "
-        + "FROM project_pae.members m, project_pae.addresses a "
-        + "WHERE m.username = ?"
-        + "  AND a.id_member = m.id_member";
-    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
-      System.out.println("Prepared statement successfully generated");
-      preparedStatement.setString(1, memberDTO.getUsername());
-      try (ResultSet rs = preparedStatement.executeQuery()) {
-        if (rs.next()) { //We know only one is returned by the db
-          System.out.println("USER FOUNDED");
-          return ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
-        }
-      }
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
-    }
-    return null;
   }
 
   /**
@@ -257,7 +263,7 @@ public class MemberDAOImpl implements MemberDAO {
    * @param memberDTO the member to add in the db
    * @return true if the member has been  registered
    */
-  public boolean register(MemberDTO memberDTO) {
+  public boolean register(MemberDTO memberDTO) throws SQLException {
     MemberDTO memberDB = this.getOne(memberDTO);
     if (memberDB != null) { // the user already exists !
       return false;

@@ -37,7 +37,7 @@ class MemberUCCImplTest {
     wrongPassword = "wrongpassword";
   }
 
-  private void configureMemberDTO(String actualState, String password) {
+  private void configureMemberDTO(String actualState, String password) throws SQLException {
     this.memberDTO.setId(99);
     this.memberDTO.setActualState(actualState);
     this.memberDTO.setPassword(this.hashedPassword);
@@ -56,7 +56,7 @@ class MemberUCCImplTest {
     memberDTO.setId(99);
     Mockito.when(memberDAO.confirmMember(this.memberDTO)).thenReturn(true);
     Mockito.when(memberDAO.denyMember(this.refusalDTO)).thenReturn(true);
-    Mockito.when(memberDAO.getOneMember(99)).thenReturn(memberDTO);
+    Mockito.when(memberDAO.getOne(99)).thenReturn(memberDTO);
     Mockito.when(memberDAO.isAdmin(99)).thenReturn(memberDTO);
   }
 

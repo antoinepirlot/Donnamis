@@ -36,7 +36,7 @@ public class MemberUCCImpl implements MemberUCC {
   public MemberDTO getOneMember(int id) throws SQLException {
     try {
       dalServices.start();
-      MemberDTO memberDTO = memberDAO.getOneMember(id);
+      MemberDTO memberDTO = memberDAO.getOne(id);
       dalServices.commit();
       return memberDTO;
     } catch (SQLException e) {

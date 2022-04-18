@@ -10,7 +10,9 @@ public interface MemberDAO {
 
   List<MemberDTO> getAllMembers();
 
-  MemberDTO getOne(MemberDTO memberDTO);
+  MemberDTO getOne(MemberDTO memberDTO) throws SQLException;
+
+  MemberDTO getOne(int id) throws SQLException;
 
   /**
    * Add a new member to the db if it's not already in the db.
@@ -18,9 +20,7 @@ public interface MemberDAO {
    * @param memberDTO the member to add in the db
    * @return true if the member has been  registered
    */
-  boolean register(MemberDTO memberDTO);
-
-  MemberDTO getOneMember(int id);
+  boolean register(MemberDTO memberDTO) throws SQLException;
 
   AddressDTO getAddressMember(int id);
 
