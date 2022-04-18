@@ -19,6 +19,8 @@ import org.apache.commons.text.StringEscapeUtils;
 public class MemberDAOImpl implements MemberDAO {
 
   private static final String DEFAULT_STATE = "registered";
+  private static final String CONFIRMED_STATE = "confirmed";
+  private static final String DENIED_STATE = "denied";
   private static final boolean DEFAULT_IS_ADMIN = false;
   @Inject
   private DALBackendService dalBackendService;
@@ -135,7 +137,7 @@ public class MemberDAOImpl implements MemberDAO {
    */
   public boolean confirmMember(MemberDTO memberDTO) throws SQLException {
     String query = "UPDATE project_pae.members "
-        + "SET state = 'confirmed', is_admin = ? "
+        + "SET state = '"+CONFIRMED_STATE+"', is_admin = ? "
         + "WHERE id_member = ?;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setBoolean(1, memberDTO.isAdmin());
@@ -160,7 +162,7 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   public boolean denyMember(RefusalDTO refusalDTO) throws SQLException {
-    String query = "UPDATE project_pae.members SET state = 'denied' WHERE id_member = ?;"
+    String query = "UPDATE project_pae.members SET state = '"+DENIED_STATE+"' WHERE id_member = ?;"
         + "INSERT INTO project_pae.refusals (text, id_member) VALUES (?, ?);";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, refusalDTO.getMember().getId());
