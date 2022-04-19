@@ -5,17 +5,21 @@ import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
+import be.vinci.pae.ihm.logs.LoggerHandler;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ItemDAOImpl implements ItemDAO {
 
 
   private static final String DEFAULT_OFFER_STATUS = "donated";
+  private final Logger logger = LoggerHandler.getLogger();
   @Inject
   private Factory factory;
   @Inject
@@ -101,6 +105,7 @@ public class ItemDAOImpl implements ItemDAO {
       ps.setTimestamp(7, itemDTO.getLastOfferDate());
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
+          this.logger.log(Level.INFO, "Item correctly added");
           return rs.getInt("id_item");
         }
       }
@@ -118,6 +123,7 @@ public class ItemDAOImpl implements ItemDAO {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
+          this.logger.log(Level.INFO, "Item correctly cancelled");
           return ObjectsInstanceCreator.createItemInstance(factory, rs);
         }
       }
