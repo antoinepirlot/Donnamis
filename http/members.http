@@ -81,10 +81,10 @@ Authorization: {{token}}
 Content-Type: application/json
 
 {
-  "username": "heyo",
-  "password": "dzdzdzdzz",
-  "lastName": "Bastin",
-  "firstName": "Joachim",
+  "username": "wuhuuu",
+  "password": "ololollo",
+  "lastName": "Iov",
+  "firstName": "Dimitri",
   "phoneNumber": "0477810580"
 }
 

@@ -8,7 +8,7 @@ import AllOfferedItemsPage from "../Pages/AllOfferedItemPage";
 import ViewItemPage from "../Pages/ViewItemPage";
 import {OfferAnItemPage} from "../Pages/OfferAnItemPage";
 import MyItemsPage from "../Pages/MyItemsPage";
-import ProfilePage from "../Pages/Profile";
+import {ProfilePage} from "../Pages/ProfilePage";
 
 // Configure your routes here
 const routes = {

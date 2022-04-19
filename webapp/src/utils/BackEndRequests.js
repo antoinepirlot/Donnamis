@@ -260,6 +260,25 @@ async function offerAnItem(item) {
   return response.ok;
 }
 
+async function modifyMember(id, member) {
+  const request = {
+    method: "PUT",
+    headers: {
+      "Authorization": getObject("token"),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(member)
+  };
+  const response = await fetch(`/api/members/modify/${id}`, request);
+  if (!response.ok) {
+    showError("Impossible de modifier le profil");
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText
+    );
+  }
+  return response.ok;
+}
+
 async function offerAgain(offer) {
   const request = {
     method: "POST",
@@ -356,5 +375,6 @@ export {
   getItemsTypes,
   offerAnItem,
   offerAgain,
-  postInterest
+  postInterest,
+  modifyMember,
 };

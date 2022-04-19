@@ -36,7 +36,6 @@ const navBarHtml = `
         </ul>
       </div>
     </div>
-    <div id="usernameNavbar"></div>
   </nav>
 `;
 
@@ -88,18 +87,27 @@ const myItemsLinkHtml = `
           </li>
 `;
 
+const profilLinkHtml = `
+          <li class="nav-item">
+            <a id="memberUsername" class="nav-link" href="#" data-uri="/profil">
+            </a>
+          </li>
+`;
+
 const Navbar = async () => {
   const navbarWrapper = document.querySelector("#navbarWrapper");
   navbarWrapper.innerHTML = navBarHtml;
   const memberDTO = getObject("memberDTO");
   const links = document.querySelector("#navbarLinks");
   if (memberDTO) {
-    let memberUsername = document.querySelector("#usernameNavbar");
-    memberUsername.innerHTML = memberDTO.username;
+    links.innerHTML += profilLinkHtml;
+    let memberUsername = document.querySelector("#memberUsername");
+    memberUsername.innerHTML += memberDTO.username;
     if (await isAdmin()) {
       links.innerHTML += listMemberLinkHtml;
       links.innerHTML += allItemsLinkHtml;
-      memberUsername.innerHTML += " (admin)"
+      memberUsername.innerHTML = memberDTO.username + " (admin)";
+      console.log(memberUsername.innerHTML);
     }
     links.innerHTML += allOfferedItemsLinkHtml;
     links.innerHTML += offerAnItemLinkHtml;

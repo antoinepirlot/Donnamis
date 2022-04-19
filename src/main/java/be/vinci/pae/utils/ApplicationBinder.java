@@ -25,6 +25,8 @@ import be.vinci.pae.dal.offer.objects.OfferDAOImpl;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.dal.services.objects.DALServicesImpl;
+import be.vinci.pae.dal.utils.AbstractDAO;
+import be.vinci.pae.dal.utils.AbstractDAOImpl;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.ext.Provider;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -57,5 +59,8 @@ public class ApplicationBinder extends AbstractBinder {
     //ItemsType
     bind(ItemsTypeUCCImpl.class).to(ItemsTypeUCC.class).in(Singleton.class);
     bind(ItemsTypeDAOImpl.class).to(ItemsTypeDAO.class).in(Singleton.class);
+
+    //AbstractDAO
+    bind(AbstractDAOImpl.class).to(AbstractDAO.class).in(Singleton.class);
   }
 }
