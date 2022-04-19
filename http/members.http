@@ -10,19 +10,6 @@ Authorization: {{token}}
 GET {{baseUrl}}/members/list_denied
 Authorization: {{token}}
 
-### Login with default user credentials
-POST {{baseUrl}}/members/login
-Content-Type: application/json
-
-{
-  "username": "bri ",
-  "password": "Rad;293"
-}
-
-> {%
-  client.global.set("token", response.body.token);
-%}
-
 ###
 GET {{baseUrl}}/members/me
 Authorization: {{token}}
@@ -74,19 +61,34 @@ Content-Type: application/json
   }
 }
 
-### Modify Member
-PUT {{baseUrl}}/members/modify/3
+### Login with default user credentials
+POST {{baseUrl}}/members/login
 Content-Type: application/json
 
 {
-  "username": "Swapiz",
-  "password": "Password",
-  "lastName": "Hernaut",
-  "firstName": "Loïc",
-  "phone": "0477810590"
+  "username": "heyo",
+  "password": "dzdzdzdzz"
+}
+
+> {%
+  client.global.set("token", response.body.token);
+%}
+
+
+### Modify Member
+PUT {{baseUrl}}/members/modify/2
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "username": "heyo",
+  "password": "dzdzdzdzz",
+  "lastName": "Bastin",
+  "firstName": "Joachim",
+  "phoneNumber": "0477810580"
 }
 
 ### Get One Member
-GET {{baseUrl}}/members/7
-GET {{baseUrl}}/members/profil/3
+GET {{baseUrl}}/members/4
 Authorization: {{token}}
+

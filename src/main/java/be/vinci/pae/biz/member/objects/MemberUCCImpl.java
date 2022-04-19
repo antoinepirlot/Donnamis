@@ -60,6 +60,8 @@ public class MemberUCCImpl implements MemberUCC {
 
   @Override
   public MemberDTO modifyMember(int id, MemberDTO memberDTO) throws SQLException {
+    Member member = (Member) memberDTO;
+    member.hashPassword();
     try {
       dalServices.start();
       MemberDTO modifyMember = memberDAO.modifyMember(id, memberDTO);

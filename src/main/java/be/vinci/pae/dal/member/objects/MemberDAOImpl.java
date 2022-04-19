@@ -8,7 +8,6 @@ import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
 import jakarta.inject.Inject;
-import java.rmi.UnexpectedException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -110,7 +109,7 @@ public class MemberDAOImpl implements MemberDAO {
 
   public MemberDTO modifyMember(int id, MemberDTO memberDTO) {
     String query = "UPDATE project_pae.members SET username = ?, password = ?, last_name = ?, "
-        + "first_name = ?, phone = ? WHERE id_member = ?;";
+        + "first_name = ?, phone = ? WHERE id_member = ? RETURNING *";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setString(1, memberDTO.getUsername());
       preparedStatement.setString(2, memberDTO.getPassword());
@@ -137,7 +136,7 @@ public class MemberDAOImpl implements MemberDAO {
    */
   public boolean confirmMember(MemberDTO memberDTO) throws SQLException {
     String query = "UPDATE project_pae.members "
-        + "SET state = '"+CONFIRMED_STATE+"', is_admin = ? "
+        + "SET state = '" + CONFIRMED_STATE + "', is_admin = ? "
         + "WHERE id_member = ?;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setBoolean(1, memberDTO.isAdmin());
@@ -162,8 +161,9 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   public boolean denyMember(RefusalDTO refusalDTO) throws SQLException {
-    String query = "UPDATE project_pae.members SET state = '"+DENIED_STATE+"' WHERE id_member = ?;"
-        + "INSERT INTO project_pae.refusals (text, id_member) VALUES (?, ?);";
+    String query =
+        "UPDATE project_pae.members SET state = '" + DENIED_STATE + "' WHERE id_member = ?;"
+            + "INSERT INTO project_pae.refusals (text, id_member) VALUES (?, ?);";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, refusalDTO.getMember().getId());
       preparedStatement.setString(2,
