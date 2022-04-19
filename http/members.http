@@ -66,8 +66,8 @@ POST {{baseUrl}}/members/login
 Content-Type: application/json
 
 {
-  "username": "heyo",
-  "password": "dzdzdzdzz"
+  "username": "wuhuuu",
+  "password": "ololollo"
 }
 
 > {%

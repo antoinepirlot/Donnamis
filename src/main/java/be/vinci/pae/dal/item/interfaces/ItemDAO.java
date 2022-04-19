@@ -20,4 +20,6 @@ public interface ItemDAO {
   int addItem(ItemDTO itemDTO) throws SQLException;
 
   ItemDTO cancelItem(int id) throws SQLException;
+
+  ItemDTO modifyItem(ItemDTO itemDTO) throws SQLException;
 }

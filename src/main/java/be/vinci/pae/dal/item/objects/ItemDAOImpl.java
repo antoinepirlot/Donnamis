@@ -132,6 +132,30 @@ public class ItemDAOImpl implements ItemDAO {
   }
 
   @Override
+  public ItemDTO modifyItem(ItemDTO itemDTO) throws SQLException {
+    String selectIdTypeQuery = "SELECT id_type "
+        + "FROM project_pae.items_types "
+        + "WHERE item_type = ? ";
+    String query = "UPDATE project_pae.items SET item_description = ?, photo = ?, title = ?, "
+        + "id_type = (" + selectIdTypeQuery + ") WHERE id_item = ? RETURNING *";
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
+      preparedStatement.setString(1, itemDTO.getItemDescription());
+      preparedStatement.setString(2, itemDTO.getPhoto());
+      preparedStatement.setString(3, itemDTO.getTitle());
+      preparedStatement.setString(4, itemDTO.getItemType().getItemType());
+      preparedStatement.setInt(5, itemDTO.getId());
+      try (ResultSet rs = preparedStatement.executeQuery()) {
+        if (rs.next()) {
+          return ObjectsInstanceCreator.createItemInstance(this.factory, rs);
+        }
+      }
+    } catch (SQLException e) {
+      this.logger.log(Level.SEVERE, e.getMessage());
+    }
+    return null;
+  }
+
+  @Override
   public List<ItemDTO> getAllItemsOfAMember(int idMember) throws SQLException {
     List<ItemDTO> itemsDTO = new ArrayList<>();
     String query = "SELECT i.id_item, "

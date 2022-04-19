@@ -16,6 +16,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -160,6 +161,33 @@ public class ItemResource {
     }
     ItemDTO itemDTO = itemUCC.cancelItem(id);
     return this.jsonUtil.filterPublicJsonView(itemDTO);
+  }
+
+  /////////////////////////////////////////////////////////
+  ///////////////////////PUT///////////////////////////////
+  /////////////////////////////////////////////////////////
+
+  /**
+   * Modify the item.
+   *
+   * @param itemDTO the new item
+   * @return the modify item
+   */
+  @PUT
+  @Path("modify")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
+  public ItemDTO modifyItem(ItemDTO itemDTO) {
+    try {
+      ItemDTO modifyItem = itemUCC.modifyItem(itemDTO);
+      if (modifyItem == null) {
+        throw new ObjectNotFoundException("Item not found");
+      }
+      return modifyItem;
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   /////////////////////////////////////////////////////////
