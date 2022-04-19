@@ -7,12 +7,15 @@ import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
+import be.vinci.pae.ihm.logs.LoggerHandler;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.text.StringEscapeUtils;
 
 public class MemberDAOImpl implements MemberDAO {
@@ -21,6 +24,7 @@ public class MemberDAOImpl implements MemberDAO {
   private static final String CONFIRMED_STATE = "confirmed";
   private static final String DENIED_STATE = "denied";
   private static final boolean DEFAULT_IS_ADMIN = false;
+  private final Logger logger = LoggerHandler.getLogger();
   @Inject
   private DALBackendService dalBackendService;
   @Inject
@@ -102,7 +106,7 @@ public class MemberDAOImpl implements MemberDAO {
         }
       }
     } catch (SQLException e) {
-      System.out.println(e.getMessage());
+      this.logger.log(Level.SEVERE, e.getMessage());
     }
     return null;
   }
@@ -123,7 +127,7 @@ public class MemberDAOImpl implements MemberDAO {
         }
       }
     } catch (SQLException e) {
-      System.out.println(e.getMessage());
+      this.logger.log(Level.SEVERE, e.getMessage());
     }
     return null;
   }
@@ -194,7 +198,7 @@ public class MemberDAOImpl implements MemberDAO {
         }
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      this.logger.log(Level.SEVERE, e.getMessage());
     }
   }
 
@@ -212,7 +216,7 @@ public class MemberDAOImpl implements MemberDAO {
         }
       }
     } catch (SQLException e) {
-      System.out.println(e.getMessage());
+      this.logger.log(Level.SEVERE, e.getMessage());
     }
     return false;
   }
@@ -233,7 +237,7 @@ public class MemberDAOImpl implements MemberDAO {
         return listMemberDTO;
       }
     } catch (SQLException e) {
-      System.out.println(e.getMessage());
+      this.logger.log(Level.SEVERE, e.getMessage());
     }
     return null;
   }
@@ -254,7 +258,7 @@ public class MemberDAOImpl implements MemberDAO {
         }
       }
     } catch (SQLException e) {
-      System.out.println(e.getMessage());
+      this.logger.log(Level.SEVERE, e.getMessage());
     }
     return null;
   }
@@ -303,7 +307,7 @@ public class MemberDAOImpl implements MemberDAO {
         return true;
       }
     } catch (SQLException e) {
-      System.out.println(e.getMessage());
+      this.logger.log(Level.SEVERE, e.getMessage());
     }
     return false;
   }
@@ -334,6 +338,7 @@ public class MemberDAOImpl implements MemberDAO {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+      this.logger.log(Level.SEVERE, e.getMessage());
     }
     return false;
   }
