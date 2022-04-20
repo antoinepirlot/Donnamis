@@ -113,7 +113,7 @@ public class ItemResource {
    * @throws SQLException if an error occurs in the UCC method
    */
   @GET
-  @Path("assigned_item/{id}")
+  @Path("assigned_items/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public List<ItemDTO> getAssignedItems(@PathParam("id") int idMember) throws SQLException {
