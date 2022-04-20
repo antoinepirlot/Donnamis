@@ -279,6 +279,25 @@ async function modifyMember(id, member) {
   return response.ok;
 }
 
+async function modifyTheItem(item) {
+  const request = {
+    method: "PUT",
+    headers: {
+      "Authorization": getObject("token"),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(item)
+  };
+  const response = await fetch("/api/items/modify", request);
+  if (!response.ok) {
+    showError("Impossible de modifier l'objet");
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText
+    );
+  }
+  return response.ok;
+}
+
 async function offerAgain(offer) {
   const request = {
     method: "POST",
@@ -377,4 +396,5 @@ export {
   offerAgain,
   postInterest,
   modifyMember,
+  modifyTheItem,
 };
