@@ -157,9 +157,7 @@ public class ItemDAOImpl implements ItemDAO {
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           ItemDTO itemDTO = ObjectsInstanceCreator.createItemInstance(this.factory, rs);
-          if (itemDTO != null) {
-            itemsDTO.add(itemDTO);
-          }
+          itemsDTO.add(itemDTO);
         }
       }
     }
