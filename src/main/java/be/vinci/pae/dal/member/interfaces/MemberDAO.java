@@ -28,7 +28,7 @@ public interface MemberDAO {
 
   MemberDTO isAdmin(int id);
 
-  MemberDTO modifyMember(MemberDTO memberDTO);
+  MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException;
 
   /**
    * Change the state of the member to denied.

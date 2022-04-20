@@ -1,6 +1,7 @@
 import {getObject, getPayload,} from "../../utils/session";
 import {Redirect} from "../Router/Router";
 import {showError} from "../../utils/ShowError";
+import {modifyMember as modifyMemberBackEnd} from "../../utils/BackEndRequests";
 
 const viewProfileHtml = `
   <div class="bg-info d-inline-flex d-flex flex-column rounded w-50 p-3">
@@ -70,24 +71,22 @@ function showProfile() {
 async function modifyProfile(e) {
   e.preventDefault();
 
-  const name = document.querySelector("#nameForm");
-  const firstname = document.querySelector("#firstnameForm");
-  const username = document.querySelector("#usernameForm");
-  const password = document.querySelector("#passwordForm");
-  const phone = document.querySelector("#phoneForm");
-  const modifyMember = getObject("memberDTO");
+  const lastName = document.querySelector("#nameForm").value;
+  const firstName = document.querySelector("#firstnameForm").value;
+  const username = document.querySelector("#usernameForm").value;
+  const password = document.querySelector("#passwordForm").value;
+  const phoneNumber = document.querySelector("#phoneForm").value;
 
   const member = {
-    id: modifyMember.id,
+    id: getPayload().id,
     username: username,
     password: password,
-    lastName: name,
-    firstname: firstname,
-    phoneNumber: phone
-  }
-
+    lastName: lastName,
+    firstName: firstName,
+    phoneNumber: phoneNumber
+  };
   try {
-    await modifyMember(modifyMember.id, member);
+    await modifyMemberBackEnd(member);
     const errorMessage = document.querySelector("#errorMessage");
     showError("Modification validé", "success", errorMessage);
   } catch (error) {

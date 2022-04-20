@@ -111,9 +111,10 @@ public class MemberDAOImpl implements MemberDAO {
     return null;
   }
 
-  public MemberDTO modifyMember(MemberDTO memberDTO) {
+  public MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException {
     String query = "UPDATE project_pae.members SET username = ?, password = ?, last_name = ?, "
-        + "first_name = ?, phone = ? WHERE id_member = ? RETURNING *";
+        + "first_name = ?, phone = ? WHERE id_member = ? RETURNING *;";
+    MemberDTO modifiedMember = null;
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setString(1, memberDTO.getUsername());
       preparedStatement.setString(2, memberDTO.getPassword());
@@ -123,13 +124,11 @@ public class MemberDAOImpl implements MemberDAO {
       preparedStatement.setInt(6, memberDTO.getId());
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
-          return ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
+          memberDTO = ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
         }
       }
-    } catch (SQLException e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
     }
-    return null;
+    return memberDTO;
   }
 
   /**

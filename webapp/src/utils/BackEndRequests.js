@@ -276,7 +276,7 @@ async function offerAnItem(item) {
   return response.ok;
 }
 
-async function modifyMember(id, member) {
+async function modifyMember(member) {
   const request = {
     method: "PUT",
     headers: {
@@ -285,14 +285,14 @@ async function modifyMember(id, member) {
     },
     body: JSON.stringify(member)
   };
-  const response = await fetch(`/api/members/modify/${id}`, request);
+  const response = await fetch("/api/members/modify", request);
   if (!response.ok) {
     showError("Impossible de modifier le profil");
     throw new Error(
         "fetch error : " + response.status + " : " + response.statusText
     );
   }
-  return response.ok;
+  return await response.json();
 }
 
 async function offerAgain(offer) {

@@ -234,6 +234,12 @@ public class MemberResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException {
+    if (memberDTO == null
+        || memberDTO.getUsername() == null || memberDTO.getUsername().isBlank()
+        || memberDTO.getFirstName() == null || memberDTO.getFirstName().isBlank()
+    ) {
+      throw new WrongBodyDataException("Member incomplete");
+    }
     MemberDTO modifyMember = memberUCC.modifyMember(memberDTO);
     if (modifyMember == null) {
       throw new ObjectNotFoundException("Member not found");

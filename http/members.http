@@ -76,11 +76,12 @@ Content-Type: application/json
 
 
 ### Modify Member
-PUT {{baseUrl}}/members/modify/2
+PUT {{baseUrl}}/members/modify
 Authorization: {{token}}
 Content-Type: application/json
 
 {
+  "id": 5,
   "username": "wuhuuu",
   "password": "ololollo",
   "lastName": "Iov",
