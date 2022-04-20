@@ -1,5 +1,6 @@
 import {getAllItemsByOfferStatus, isAdmin} from "../../utils/BackEndRequests";
 import {Redirect} from "../Router/Router";
+import {showItems} from "../../utils/HtmlCode";
 
 const tableHtml = `
   <div>
@@ -16,33 +17,17 @@ const AllItemsPage = async () => {
   }
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtml;
-  const item = await getAllItemsByOfferStatus();
-  showItems(item)
+  const items = await getAllItemsByOfferStatus();
+  let tbody = document.querySelector("#all_items");
+  showItems(items, tbody);
 };
 
-function showItems(item) {
-  let tbody = document.querySelector("#all_items");
-  tbody.innerHTML = "";
-  item.forEach((item) => {
-    tbody.innerHTML += `
-    <div class="col-sm-3" id="item-card" >
-      <div class="card">
-      <img class="card-img-top" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">${item.title}</h5>
-          <p class="card-text">${item.itemDescription}</p>
-          <div id="seeItemButton">
-            <a href="/item?id=${item.id}" type="button" class="btn btn-primary"> Voir les détails</a>
-            <!--<input id="itemIdButton" type="hidden" value="">-->
-          </div>
-        </div>
-      </div>
-    </div>
-    `;
-  });
-  //const itemButtons = document.querySelectorAll("#seeItemButton");
-  //setSeeItemEvent(itemButtons);
-}
+// function showItems(item) {
+//
+//
+//   //const itemButtons = document.querySelectorAll("#seeItemButton");
+//   //setSeeItemEvent(itemButtons);
+// }
 
 //function setSeeItemEvent(itemButtons) {
 //  itemButtons.forEach(itemButton => {
