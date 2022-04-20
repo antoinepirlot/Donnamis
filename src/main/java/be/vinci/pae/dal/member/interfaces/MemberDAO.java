@@ -28,7 +28,7 @@ public interface MemberDAO {
 
   MemberDTO isAdmin(int id);
 
-  MemberDTO modifyMember(int id, MemberDTO memberDTO);
+  MemberDTO modifyMember(MemberDTO memberDTO);
 
   /**
    * Change the state of the member to denied.

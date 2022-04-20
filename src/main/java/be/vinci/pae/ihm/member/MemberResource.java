@@ -229,12 +229,12 @@ public class MemberResource {
   }
 
   @PUT
-  @Path("modify/{id}")
+  @Path("modify")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public MemberDTO modifyMember(@PathParam("id") int id, MemberDTO memberDTO) throws SQLException {
-    MemberDTO modifyMember = memberUCC.modifyMember(id, memberDTO);
+  public MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException {
+    MemberDTO modifyMember = memberUCC.modifyMember(memberDTO);
     if (modifyMember == null) {
       throw new ObjectNotFoundException("Member not found");
     }

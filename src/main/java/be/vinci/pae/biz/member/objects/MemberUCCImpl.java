@@ -59,12 +59,12 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public MemberDTO modifyMember(int id, MemberDTO memberDTO) throws SQLException {
+  public MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException {
     Member member = (Member) memberDTO;
     member.hashPassword();
     try {
       dalServices.start();
-      MemberDTO modifyMember = memberDAO.modifyMember(id, memberDTO);
+      MemberDTO modifyMember = memberDAO.modifyMember(memberDTO);
       dalServices.commit();
       return modifyMember;
     } catch (SQLException e) {

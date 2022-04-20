@@ -25,11 +25,10 @@ public interface MemberUCC {
   /**
    * Modify the member identified by its id.
    *
-   * @param id        the member's id
    * @param memberDTO the new member
    * @return the member or null if there's no member with the id
    */
-  MemberDTO modifyMember(int id, MemberDTO memberDTO) throws SQLException;
+  MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException;
 
   /**
    * Asks the UCC to get the adress of the membe identified by its id.

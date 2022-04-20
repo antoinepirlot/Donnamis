@@ -111,7 +111,7 @@ public class MemberDAOImpl implements MemberDAO {
     return null;
   }
 
-  public MemberDTO modifyMember(int id, MemberDTO memberDTO) {
+  public MemberDTO modifyMember(MemberDTO memberDTO) {
     String query = "UPDATE project_pae.members SET username = ?, password = ?, last_name = ?, "
         + "first_name = ?, phone = ? WHERE id_member = ? RETURNING *";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
@@ -120,7 +120,7 @@ public class MemberDAOImpl implements MemberDAO {
       preparedStatement.setString(3, memberDTO.getLastName());
       preparedStatement.setString(4, memberDTO.getFirstName());
       preparedStatement.setString(5, memberDTO.getPhoneNumber());
-      preparedStatement.setInt(6, id);
+      preparedStatement.setInt(6, memberDTO.getId());
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
           return ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
