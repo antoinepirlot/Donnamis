@@ -1,7 +1,6 @@
 import LoginPage from "../Pages/LoginPage";
 import Logout from "../Logout/Logout";
 import ListMemberPage from "../Pages/ListMemberPage";
-import LatestItemsOffersPage from "../Pages/LatestItemsOffersPage"
 import AllItemsPage from "../Pages/AllItemsPage"
 import RegisterPage from "../Pages/RegisterPage";
 import AllOfferedItemsPage from "../Pages/AllOfferedItemPage";
@@ -9,10 +8,12 @@ import ViewItemPage from "../Pages/ViewItemPage";
 import {OfferAnItemPage} from "../Pages/OfferAnItemPage";
 import MyItemsPage from "../Pages/MyItemsPage";
 import {ProfilePage} from "../Pages/ProfilePage";
+import HomePage from "../Pages/HomePage";
+import {MyAssignedItems} from "../Pages/MyAssignedItems";
 
 // Configure your routes here
 const routes = {
-  "/": LatestItemsOffersPage,
+  "/": HomePage,
   "/login": LoginPage,
   "/register": RegisterPage,
   "/logout": Logout,
@@ -23,7 +24,8 @@ const routes = {
   "/item": ViewItemPage,
   "/offer_item": OfferAnItemPage,
   "/my_items": MyItemsPage,
-  "/profil": ProfilePage
+  "/profil": ProfilePage,
+  "/assigned_items": MyAssignedItems,
 };
 
 /**

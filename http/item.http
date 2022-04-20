@@ -39,3 +39,7 @@ Authorization: {{token}}
 ### See all items by member id
 GET {{baseUrl}}/items/member_items/1
 Authorization: {{token}}
+
+###
+GET {{baseUrl}}/items/assigned_item/5
+Authorization: {{token}}

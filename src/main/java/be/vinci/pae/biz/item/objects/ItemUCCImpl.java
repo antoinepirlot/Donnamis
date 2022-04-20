@@ -79,4 +79,17 @@ public class ItemUCCImpl implements ItemUCC {
       throw e;
     }
   }
+
+  @Override
+  public List<ItemDTO> getAssignedItems(int idMember) throws SQLException {
+    try {
+      this.dalServices.start();
+      List<ItemDTO> listItemDTO = this.itemDAO.getAssignedItems(idMember);
+      this.dalServices.commit();
+      return listItemDTO;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
+    }
+  }
 }

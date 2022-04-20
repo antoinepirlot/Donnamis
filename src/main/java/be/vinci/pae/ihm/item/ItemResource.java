@@ -105,6 +105,24 @@ public class ItemResource {
     return this.jsonUtil.filterPublicJsonView(itemDTO);
   }
 
+  /**
+   * This method get items that have been assigned to this member identified by its id.
+   *
+   * @param idMember the member's id
+   * @return the list of assigned items of the member
+   * @throws SQLException if an error occurs in the UCC method
+   */
+  @GET
+  @Path("assigned_items/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
+  public List<ItemDTO> getAssignedItems(@PathParam("id") int idMember) throws SQLException {
+    if (idMember < 0) {
+      throw new WrongBodyDataException("idMember < 0 for get assigned items");
+    }
+    return this.jsonUtil.filterPublicJsonViewAsList(this.itemUCC.getAssignedItems(idMember));
+  }
+
   /////////////////////////////////////////////////////////
   ///////////////////////POST//////////////////////////////
   /////////////////////////////////////////////////////////

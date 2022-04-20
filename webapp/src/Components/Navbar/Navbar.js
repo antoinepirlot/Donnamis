@@ -94,6 +94,12 @@ const profilLinkHtml = `
           </li>
 `;
 
+const myAssignedItemsLinkHtml = `
+  <li class="nav-item">
+    <a class="nav-link" href="#" data-uri="/assigned_items">Mes objets assignés</a>
+  </li>
+`
+
 const Navbar = async () => {
   const navbarWrapper = document.querySelector("#navbarWrapper");
   navbarWrapper.innerHTML = navBarHtml;
@@ -112,6 +118,8 @@ const Navbar = async () => {
     links.innerHTML += allOfferedItemsLinkHtml;
     links.innerHTML += offerAnItemLinkHtml;
     links.innerHTML += myItemsLinkHtml;
+    links.innerHTML += myAssignedItemsLinkHtml
+
     links.innerHTML += logoutLinkHtml;
   } else {
     links.innerHTML += loginLinkHtml;

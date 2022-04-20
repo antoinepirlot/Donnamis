@@ -20,4 +20,13 @@ public interface ItemDAO {
   int addItem(ItemDTO itemDTO) throws SQLException;
 
   ItemDTO cancelItem(int id) throws SQLException;
+
+  /**
+   * This method get assigned items of a member from the database.
+   *
+   * @param idMember the member's id
+   * @return the list of assigned items of the member
+   * @throws SQLException if an error occurs while getting information from the database
+   */
+  List<ItemDTO> getAssignedItems(int idMember) throws SQLException;
 }

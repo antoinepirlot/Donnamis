@@ -41,4 +41,13 @@ public interface ItemUCC {
    * @return all the member's items
    */
   List<ItemDTO> getAllItemsOfAMember(int idMember) throws SQLException;
+
+  /**
+   * This method asks DAO to get assigned items of the member identified by its id.
+   *
+   * @param idMember the member's id
+   * @return the list of assigned items
+   * @throws SQLException if an error occurs in the DAO method
+   */
+  List<ItemDTO> getAssignedItems(int idMember) throws SQLException;
 }
