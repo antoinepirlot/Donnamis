@@ -9,6 +9,7 @@ import {OfferAnItemPage} from "../Pages/OfferAnItemPage";
 import MyItemsPage from "../Pages/MyItemsPage";
 import ProfilePage from "../Pages/Profile";
 import HomePage from "../Pages/HomePage";
+import {MyAssignedItems} from "../Pages/MyAssignedItems";
 
 // Configure your routes here
 const routes = {
@@ -23,7 +24,8 @@ const routes = {
   "/item": ViewItemPage,
   "/offer_item": OfferAnItemPage,
   "/my_items": MyItemsPage,
-  "/profil": ProfilePage
+  "/profil": ProfilePage,
+  "/assigned_items": MyAssignedItems,
 };
 
 /**

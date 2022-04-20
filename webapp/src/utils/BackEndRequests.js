@@ -169,6 +169,22 @@ async function getAllItemsByOfferStatus(offerStatus) {
   return await response.json();
 }
 
+async function getAssignedItems() {
+  const idMember = getPayload().id;
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/items/assigned_items/${idMember}`,
+      request);
+  if (!response.ok) {
+    throw new Error("Erreur lors du fetch");
+  }
+  return await response.json();
+}
+
 async function getAllOffers() {
   const request = {
     method: "GET",
@@ -348,6 +364,7 @@ export {
   confirmAdmin,
   denyMember,
   getAllItemsByOfferStatus,
+  getAssignedItems,
   getAllOffers,
   getLatestOffers,
   getMyItems,
