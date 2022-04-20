@@ -4,7 +4,6 @@
  * @param tbody the html part to show items
  */
 function showItems(items, tbody) {
-  console.log("hello util");
   tbody.innerHTML = "";
   items.forEach((item) => {
     tbody.innerHTML += `
