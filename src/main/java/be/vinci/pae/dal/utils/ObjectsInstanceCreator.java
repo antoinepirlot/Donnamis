@@ -41,26 +41,21 @@ public class ObjectsInstanceCreator {
    * @param rs      the result set that contains item's data
    * @return a new item instance with initialized attributes
    */
-  public static ItemDTO createItemInstance(Factory factory, ResultSet rs) {
+  public static ItemDTO createItemInstance(Factory factory, ResultSet rs) throws SQLException {
     ItemDTO itemDTO = factory.getItem();
-    try {
-      itemDTO.setId(rs.getInt("id_item"));
-      itemDTO.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("title")));
-      itemDTO.setPhoto(StringEscapeUtils.escapeHtml4(rs.getString("photo")));
-      itemDTO.setLastOfferDate(rs.getTimestamp("last_offer_date"));
-      itemDTO.setItemDescription(
-          StringEscapeUtils.escapeHtml4(rs.getString("item_description"))
-      );
-      itemDTO.setOfferStatus(
-          StringEscapeUtils.escapeHtml4(rs.getString("offer_status"))
-      );
-      itemDTO.setItemType(createItemsTypeInstance(factory, rs));
-      itemDTO.setMember(createMemberInstance(factory, rs));
-      System.out.println(itemDTO);
-    } catch (SQLException e) {
-      e.printStackTrace();
-      return null;
-    }
+    itemDTO.setId(rs.getInt("id_item"));
+    itemDTO.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("title")));
+    itemDTO.setPhoto(StringEscapeUtils.escapeHtml4(rs.getString("photo")));
+    itemDTO.setLastOfferDate(rs.getTimestamp("last_offer_date"));
+    itemDTO.setItemDescription(
+        StringEscapeUtils.escapeHtml4(rs.getString("item_description"))
+    );
+    itemDTO.setOfferStatus(
+        StringEscapeUtils.escapeHtml4(rs.getString("offer_status"))
+    );
+    itemDTO.setItemType(createItemsTypeInstance(factory, rs));
+    itemDTO.setMember(createMemberInstance(factory, rs));
+    System.out.println(itemDTO);
     return itemDTO;
   }
 
@@ -73,15 +68,12 @@ public class ObjectsInstanceCreator {
    * @param rs      the result set that contains item type's data
    * @return a new item type instance with initialized attributes
    */
-  public static ItemsTypeDTO createItemsTypeInstance(Factory factory, ResultSet rs) {
+  public static ItemsTypeDTO createItemsTypeInstance(Factory factory, ResultSet rs)
+      throws SQLException {
     System.out.println("Setting all item type attributes");
     ItemsTypeDTO itemsTypeDTO = factory.getItemType();
-    try {
-      itemsTypeDTO.setId(rs.getInt("id_type"));
-      itemsTypeDTO.setItemType(StringEscapeUtils.escapeHtml4(rs.getString("item_type")));
-    } catch (SQLException e) {
-      return null;
-    }
+    itemsTypeDTO.setId(rs.getInt("id_type"));
+    itemsTypeDTO.setItemType(StringEscapeUtils.escapeHtml4(rs.getString("item_type")));
     return itemsTypeDTO;
   }
 
@@ -93,45 +85,41 @@ public class ObjectsInstanceCreator {
    * @param rs      the result set that contains member's data
    * @return a new member instance with initialized attributes
    */
-  public static MemberDTO createMemberInstance(Factory factory, ResultSet rs) {
+  public static MemberDTO createMemberInstance(Factory factory, ResultSet rs) throws SQLException {
     System.out.println("Setting all member attributes");
     MemberDTO memberDTO = factory.getMember();
+    memberDTO.setUsername(StringEscapeUtils.escapeHtml4(rs.getString("username")));
+    memberDTO.setLastName(StringEscapeUtils.escapeHtml4(rs.getString("last_name")));
+    memberDTO.setFirstName(StringEscapeUtils.escapeHtml4(rs.getString("first_name")));
     try {
-      memberDTO.setUsername(StringEscapeUtils.escapeHtml4(rs.getString("username")));
-      memberDTO.setLastName(StringEscapeUtils.escapeHtml4(rs.getString("last_name")));
-      memberDTO.setFirstName(StringEscapeUtils.escapeHtml4(rs.getString("first_name")));
-      try {
-        memberDTO.setId(rs.getInt("id_member"));
-      } catch (SQLException e) {
-        System.out.println("No id selected for this member");
-      }
-      try {
-        memberDTO.setActualState(StringEscapeUtils.escapeHtml4(rs.getString("state")));
-      } catch (SQLException e) {
-        System.out.println("No actual state selected for this member");
-      }
-      try {
-        memberDTO.setPhoneNumber(StringEscapeUtils.escapeHtml4(rs.getString("phone")));
-      } catch (SQLException e) {
-        System.out.println("No phone selected for this member");
-      }
-      try {
-        memberDTO.setPassword(StringEscapeUtils.escapeHtml4(rs.getString("password")));
-      } catch (SQLException e) {
-        System.out.println("No password selected for this member");
-      }
-      try {
-        memberDTO.setAdmin(rs.getBoolean("is_admin"));
-      } catch (SQLException e) {
-        System.out.println("No is_admin selected for this member");
-      }
-      try {
-        memberDTO.setAddress(createAddressInstance(factory, rs));
-      } catch (SQLException e) {
-        System.out.println("No address selected for this member");
-      }
+      memberDTO.setId(rs.getInt("id_member"));
     } catch (SQLException e) {
-      return null;
+      System.out.println("No id selected for this member");
+    }
+    try {
+      memberDTO.setActualState(StringEscapeUtils.escapeHtml4(rs.getString("state")));
+    } catch (SQLException e) {
+      System.out.println("No actual state selected for this member");
+    }
+    try {
+      memberDTO.setPhoneNumber(StringEscapeUtils.escapeHtml4(rs.getString("phone")));
+    } catch (SQLException e) {
+      System.out.println("No phone selected for this member");
+    }
+    try {
+      memberDTO.setPassword(StringEscapeUtils.escapeHtml4(rs.getString("password")));
+    } catch (SQLException e) {
+      System.out.println("No password selected for this member");
+    }
+    try {
+      memberDTO.setAdmin(rs.getBoolean("is_admin"));
+    } catch (SQLException e) {
+      System.out.println("No is_admin selected for this member");
+    }
+    try {
+      memberDTO.setAddress(createAddressInstance(factory, rs));
+    } catch (SQLException e) {
+      System.out.println("No address selected for this member");
     }
     return memberDTO;
   }
