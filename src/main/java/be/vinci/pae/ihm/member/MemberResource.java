@@ -233,16 +233,12 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public MemberDTO modifyMember(@PathParam("id") int id, MemberDTO memberDTO) {
-    try {
-      MemberDTO modifyMember = memberUCC.modifyMember(id, memberDTO);
-      if (modifyMember == null) {
-        throw new ObjectNotFoundException("Member not found");
-      }
-      return modifyMember;
-    } catch (Exception e) {
-      return null;
+  public MemberDTO modifyMember(@PathParam("id") int id, MemberDTO memberDTO) throws SQLException {
+    MemberDTO modifyMember = memberUCC.modifyMember(id, memberDTO);
+    if (modifyMember == null) {
+      throw new ObjectNotFoundException("Member not found");
     }
+    return modifyMember;
   }
 
   /////////////////////////////////////////////////////////
