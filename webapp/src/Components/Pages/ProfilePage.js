@@ -4,14 +4,14 @@ import {showError} from "../../utils/ShowError";
 
 const viewProfileHtml = `
   <div class="bg-info d-inline-flex d-flex flex-column rounded w-50 p-3">
-    <h2>Mon profile</h2>
+    <h2 class="display-3">Mon profile</h2>
     <div id="username"></div>
     <div id="name"></div>
     <div id="phone"></div>
     <div id="address"></div>
   </div>
   <div class="bg-info d-inline-flex d-flex flex-column rounded w-50 p-3">
-    <h2>Modifier mon profile</h2>
+    <h2 class="display-3">Modifier mon profile</h2>
     <form id="modifyForm">
       <p>Nom :</p>
       <input id="nameForm" type = "text">
