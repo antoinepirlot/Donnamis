@@ -19,6 +19,7 @@ public class ItemDAOImpl implements ItemDAO {
 
 
   private static final String DEFAULT_OFFER_STATUS = "donated";
+  private static final String WAITING_RECIPIENT_STATUS = "waiting";
   private final Logger logger = LoggerHandler.getLogger();
   @Inject
   private Factory factory;
@@ -163,5 +164,42 @@ public class ItemDAOImpl implements ItemDAO {
       }
     }
     return itemsDTO;
+  }
+
+  @Override
+  public List<ItemDTO> getAssignedItems(int idMember) throws SQLException {
+    String query = "SELECT i.id_item, "
+        + "                i.item_description, "
+        + "                i.id_type, "
+        + "                i.id_member, "
+        + "                i.photo, "
+        + "                i.title, "
+        + "                i.offer_status, "
+        + "                i.last_offer_date, "
+        + "                it.id_type, "
+        + "                it.item_type, "
+        + "                m.id_member, "
+        + "                m.username, "
+        + "                m.last_name, "
+        + "                m.first_name "
+        + "FROM project_pae.items i, "
+        + "     project_pae.members m, "
+        + "     project_pae.items_types it, "
+        + "     project_pae.recipients r "
+        + "WHERE i.id_type = it.id_type "
+        + "  AND r.id_member = m.id_member "
+        + "  AND r.id_item = i.id_item "
+        + "  AND r.received = '" + WAITING_RECIPIENT_STATUS + "' "
+        + "  AND m.id_member = ?;";
+    List<ItemDTO> listItemDTO = new ArrayList<>();
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setInt(1, idMember);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          listItemDTO.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
+        }
+      }
+    }
+    return listItemDTO;
   }
 }
