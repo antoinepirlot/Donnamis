@@ -373,6 +373,21 @@ async function postInterest(interest, interestMessage) {
   return response.ok;
 }
 
+async function chooseRecipient(recipient) {
+  const request = {
+    method: "POST",
+    headers: {
+      "Authorization": getObject("token")
+    },
+    body: JSON.stringify(recipient)
+  };
+  const response = await fetch("/api/recipients", request);
+  if (!response.ok) {
+    throw new Error("Error while fetching");
+  }
+  return await response.json();
+}
+
 export {
   login,
   me,
@@ -394,4 +409,5 @@ export {
   offerAgain,
   postInterest,
   modifyMember,
+  chooseRecipient
 };
