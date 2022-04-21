@@ -23,11 +23,12 @@ public class ImageRessource {
   @AuthorizeMember
   public Response uploadFile(@FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDisposition) throws IOException {
-    //UUID uuid = UUID.randomUUID();
-    String fileName = fileDisposition.getFileName();
+    UUID uuid = UUID.randomUUID();
+    String fileName = String.valueOf(uuid);
+    String extension = FilenameUtils.getExtension(fileDisposition.getName());
+    fileName += extension;
     Files.copy(file, Paths.get(fileName));
 
-    String extension = FilenameUtils.getExtension(fileDisposition.getName());
     return Response.ok().build();
   }
 

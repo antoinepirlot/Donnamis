@@ -32,16 +32,23 @@ CREATE TABLE project_pae.addresses
     FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
 );
 
+--CREATE TABLE project_pae.photos
+--(
+--    id_photo   SERIAL PRIMARY KEY,
+--    link_photo VARCHAR(200) NOT NULL
+--);
+
 CREATE TABLE project_pae.items
 (
     id_item          SERIAL PRIMARY KEY,
     item_description VARCHAR(500) NOT NULL,
     id_type          INTEGER      NOT NULL,
     id_member        INTEGER      NOT NULL,
-    photo            VARCHAR(500) NULL,
+    photo            VARCHAR(200)      NULL,
     title            VARCHAR(50)  NOT NULL,
     offer_status     VARCHAR(10)  NOT NULL,
     last_offer_date  DATE         NULL,
+    --FOREIGN KEY (id_photo) REFERENCES project_pae.photos (id_photo),
     FOREIGN KEY (id_type) REFERENCES project_pae.items_types (id_type),
     FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
 );
@@ -155,18 +162,22 @@ INSERT INTO project_pae.items_types (item_type)
 VALUES ('Vêtements');
 -- 12
 
+-- PHOTOS TABLE
+--INSERT INTO  project_pae.photos(id_photo, link_photo)
+--VALUES (default, 'https://img.le-dictionnaire.com/paysage-campagne.jpg');
+
 -- ITEMS TABLE
 INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title,
                                offer_status, last_offer_date)
-VALUES ('Décorations de Noël de couleur rouge', 3, 3, 'christmas-1869533_640', 'Titre', 'donated',
+VALUES ('Décorations de Noël de couleur rouge', 3, 3, 1, 'Titre', 'donated',
         '21-03-22');
 INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title,
                                offer_status, last_offer_date)
-VALUES ('Cadre représentant un chien noir sur un fond noir.', 3, 3, 'dog-4118585_640', 'Titre',
+VALUES ('Cadre représentant un chien noir sur un fond noir.', 3, 3, null, 'Titre',
         'donated', '25-03-22');
 INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title,
                                offer_status, last_offer_date)
-VALUES ('Ancien bureau d’écolier.', 8, 4, 'BureauEcolier-7', 'Titre', 'donated', '25-03-22');
+VALUES ('Ancien bureau d’écolier.', 8, 4, null, 'Titre', 'donated', '25-03-22');
 
 -- OFFERS TABLE
 INSERT INTO project_pae.offers ("date", time_slot, id_item)
