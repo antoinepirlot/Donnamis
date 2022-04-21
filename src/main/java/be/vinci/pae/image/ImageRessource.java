@@ -1,6 +1,8 @@
 package be.vinci.pae.image;
 
 import be.vinci.pae.ihm.filter.AuthorizeMember;
+import be.vinci.pae.utils.Config;
+import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -15,21 +17,27 @@ import org.apache.maven.surefire.shared.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+@Singleton
+@Path("upload")
 public class ImageRessource {
 
   @POST
-  @Path("/upload")
+  @Path("image")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @AuthorizeMember
   public Response uploadFile(@FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDisposition) throws IOException {
+    java.nio.file.Path path = java.nio.file.Path.of(Config.getProperty("photoPath"));
+
     UUID uuid = UUID.randomUUID();
     String fileName = String.valueOf(uuid);
     String extension = FilenameUtils.getExtension(fileDisposition.getName());
     fileName += extension;
-    Files.copy(file, Paths.get(fileName));
 
-    return Response.ok().build();
+    Files.copy(file, Paths.get(fileName));
+    Files.copy(file, path);
+
+    return Response.ok(fileName).header("Access-Control-Allow-Origin", "*").build();
   }
 
 
