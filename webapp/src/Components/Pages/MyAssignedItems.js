@@ -6,8 +6,8 @@ import {Redirect} from "../Router/Router";
 const html = `
   <div>
     <div id="all_latest_items_title">
-      <h1 class="display-3">Bienvenue sur Donnamis</h1>
-      <h5 class="text-secondary">Voici les derniers objets mis en ligne</h5>
+      <h1 class="display-3">Mes objets attribués</h1>
+      <h5 class="text-secondary">Voici vos objets attribués en attente de votre récupération</h5>
     </div>
     <div class="row" id="assigned_items">
     </div>
