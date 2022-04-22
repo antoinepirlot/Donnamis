@@ -75,7 +75,6 @@ async function ViewItemPage() {
   //get offer's infos with the id in param
 
   const item = await getItemInfo(idItem);
-  console.log(item);
   const modifyMember = getObject("memberDTO");
   const button = document.querySelector("#interestButton");
 
@@ -157,18 +156,21 @@ async function modifyItem(e) {
   const title = document.querySelector("#titleForm");
   const itemDescription = document.querySelector("#itemDescriptionForm");
   const photo = document.querySelector("#photoForm");
-  const newItemType = document.querySelector("#itemTypeForm");
+  const newItemType = document.querySelector("#itemTypeFormList");
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const idItem = urlParams.get("id");
 
   const itemType = {
-    itemType: newItemType
+    itemType: newItemType.value
   }
 
   const item = {
-    id: 4,
-    itemDescription: itemDescription,
+    id: idItem,
+    itemDescription: itemDescription.value,
     itemType: itemType,
-    photo: photo,
-    title: title,
+    photo: photo.value,
+    title: title.value,
   }
 
   try {
