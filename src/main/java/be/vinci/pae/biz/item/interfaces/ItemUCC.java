@@ -50,4 +50,12 @@ public interface ItemUCC {
    * @throws SQLException if an error occurs in the DAO method
    */
   List<ItemDTO> getAssignedItems(int idMember) throws SQLException;
+
+  /**
+   * Mark item,identified by its id, as given.
+   * @param itemDTO the item to update
+   * @return true if the operation worked as expected otherwise false
+   * @throws SQLException if an error occurs while updating item
+   */
+  boolean markItemAsGiven(ItemDTO itemDTO) throws SQLException;
 }

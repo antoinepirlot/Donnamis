@@ -29,4 +29,12 @@ public interface ItemDAO {
    * @throws SQLException if an error occurs while getting information from the database
    */
   List<ItemDTO> getAssignedItems(int idMember) throws SQLException;
+
+  /**
+   * Mark the item identified by its id as given.
+   * @param itemDTO the item to update
+   * @return true if the item has been updated otherwise false
+   * @throws SQLException if an error occurs while updating item
+   */
+  boolean markItemAsGiven(ItemDTO itemDTO) throws SQLException;
 }

@@ -2,7 +2,7 @@ import {
   cancelOffer as cancelOfferBackEnd,
   chooseRecipient as chooseRecpientBackEnd,
   getInterestedMembers,
-  getMyItems,
+  getMyItems, markItemAsGiven,
   offerAgain as offerAgainBackEnd
 } from "../../utils/BackEndRequests";
 import {getPayload} from "../../utils/session";
@@ -96,6 +96,7 @@ function showItems(items) {
         <td><a id="itemDetails" href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir offre</a></td>
         <td><button id="offerAgainButton" class="btn btn-primary" value="${item.id}">Offrir à nouveau</button></td>
         <td><button id="chooseRecipientButton" class="btn btn-primary" value="${item.id}">Choisir un receveur</button></td>
+        <td><button id="markReceivedButton" class="btn btn-primary" value="${item.id}">Objet donné</button></td>
         <td><button id="itemCancelled" class="btn btn-danger" value="${item.id}">Annuler l'offre</button></td>
       </tr>
     `;
@@ -142,6 +143,30 @@ function showItems(items) {
       const chooseRecipientModal = document.querySelector(
           "#chooseRecipientModal");
       chooseRecipientModal.addEventListener("submit", await chooseRecipient);
+    });
+  });
+
+  /********************/
+  /*Mark item as given*/
+  /********************/
+  const markReceivedButtons = document.querySelectorAll("#markReceivedButton");
+  markReceivedButtons.forEach((markReceivedButton) => {
+    markReceivedButton.addEventListener("click", async () => {
+      const errorDiv = document.querySelector("#errorMessageMyItemsPage");
+      showError("Le changement est en cours...", "info", errorDiv);
+      idItem = markReceivedButton.value;
+      const item = {
+        id: idItem,
+        member: {
+          id: getPayload().id
+        }
+      }
+      try {
+        await markItemAsGiven(item);
+        showError("L'objet à bien été marqué comme donné.", "success", errorDiv);
+      } catch (e) {
+        showError("L'objet n'a pas été marqué comme donné.", "danger", errorDiv);
+      }
     });
   });
 

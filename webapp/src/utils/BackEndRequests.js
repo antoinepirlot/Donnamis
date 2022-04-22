@@ -355,6 +355,21 @@ async function getMyItems() {
   return await response.json()
 }
 
+async function markItemAsGiven(item) {
+  const request = {
+    method: "PUT",
+    headers: {
+      "Authorization": getObject("token"),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(item)
+  };
+  const response = await fetch(`/api/items/given`, request);
+  if (!response.ok) {
+    throw new Error("Error while updating item's offer status");
+  }
+}
+
 async function cancelOffer(id) {
   const request = {
     method: "DELETE",
@@ -432,6 +447,7 @@ export {
   getAllOffers,
   getLatestOffers,
   getMyItems,
+  markItemAsGiven,
   cancelOffer,
   getItem,
   getItemsTypes,

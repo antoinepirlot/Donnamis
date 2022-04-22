@@ -19,7 +19,9 @@ public class ItemDAOImpl implements ItemDAO {
 
 
   private static final String DEFAULT_OFFER_STATUS = "donated";
+  private static final String GIVEN_OFFER_STATUS = "given";
   private static final String WAITING_RECIPIENT_STATUS = "waiting";
+  private static final String RECEIVED_RECIPIENT_STATUS = "received";
   private final Logger logger = LoggerHandler.getLogger();
   @Inject
   private Factory factory;
@@ -199,5 +201,28 @@ public class ItemDAOImpl implements ItemDAO {
       }
     }
     return listItemDTO;
+  }
+
+  @Override
+  public boolean markItemAsGiven(ItemDTO itemDTO) throws SQLException {
+    String selectIdMember = "SELECT DISTINCT r.id_member "
+        + "FROM project_pae.items i, "
+        + "     project_pae.recipients r "
+        + "WHERE r.id_item = i.id_item "
+        + "  AND r.received = '"+WAITING_RECIPIENT_STATUS+"' "
+        + "  AND i.id_member = ?";
+    String query = "UPDATE project_pae.items "
+        + "SET offer_status = '"+GIVEN_OFFER_STATUS+"' "
+        + "WHERE id_item = ?; "
+        + "UPDATE project_pae.recipients "
+        + "SET received = '"+RECEIVED_RECIPIENT_STATUS+"' "
+        + "WHERE id_member = ("+selectIdMember+") "
+        + "  AND id_item = ?;";
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setInt(1, itemDTO.getId());
+      ps.setInt(2, itemDTO.getMember().getId());
+      ps.setInt(3, itemDTO.getId());
+      return ps.executeUpdate() != 0;
+    }
   }
 }

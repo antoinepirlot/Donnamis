@@ -5,6 +5,7 @@ import be.vinci.pae.biz.item.interfaces.ItemUCC;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
+import be.vinci.pae.exceptions.webapplication.ForbiddenException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeAdmin;
@@ -16,6 +17,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -23,6 +25,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import java.rmi.UnexpectedException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -155,6 +158,43 @@ public class ItemResource {
     if (!this.offerUCC.createOffer(offerDTO)) {
       String message = "The offer can't be added to the db due to a unexpected error";
       throw new WebApplicationException(message, Status.BAD_REQUEST);
+    }
+  }
+
+  /////////////////////////////////////////////////////////
+  ////////////////////////PUT//////////////////////////////
+  /////////////////////////////////////////////////////////
+
+  /**
+   * Mark the item identified by its id as given.
+   *
+   * @param itemDTO the item to update
+   * @throws SQLException        if an error occurs while updating item
+   * @throws UnexpectedException if marking item as given returned false
+   */
+  @PUT
+  @Path("given")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public void markItemAsGiven(ItemDTO itemDTO)
+      throws SQLException, UnexpectedException {
+    if (itemDTO == null
+        || itemDTO.getId() < 1
+        || itemDTO.getMember() == null || itemDTO.getMember().getId() < 1
+    ) {
+      throw new WrongBodyDataException("idItm is lower than 1.");
+    }
+    ItemDTO existingItem = this.itemUCC.getOneItem(itemDTO.getId());
+    if (existingItem == null) {
+      throw new ObjectNotFoundException("The item " + itemDTO.getId() + " doesn't exist.");
+    }
+    if (existingItem.getMember().getId() != itemDTO.getMember().getId()) {
+      throw new WrongBodyDataException("The member's id and item's member's id are not associated");
+    }
+    if (existingItem.getOfferStatus().equals("given")) {
+      throw new ForbiddenException("The item " + itemDTO.getId() + " is already given.");
+    }
+    if (!this.itemUCC.markItemAsGiven(itemDTO)) {
+      throw new UnexpectedException("marking item " + itemDTO.getId() + " as given failed.");
     }
   }
 

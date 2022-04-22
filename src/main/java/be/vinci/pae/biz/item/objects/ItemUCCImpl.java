@@ -92,4 +92,18 @@ public class ItemUCCImpl implements ItemUCC {
       throw e;
     }
   }
+
+  @Override
+  public boolean markItemAsGiven(ItemDTO itemDTO) throws SQLException {
+    try {
+      boolean given;
+      this.dalServices.start();
+      given = this.itemDAO.markItemAsGiven(itemDTO);
+      this.dalServices.commit();
+      return given;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
+    }
+  }
 }

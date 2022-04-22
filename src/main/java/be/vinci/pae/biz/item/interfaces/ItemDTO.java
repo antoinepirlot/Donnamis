@@ -4,6 +4,8 @@ import be.vinci.pae.biz.item.objects.ItemImpl;
 import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
+import be.vinci.pae.biz.recipient.interfaces.Recipient;
+import be.vinci.pae.biz.recipient.interfaces.RecipientDTO;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.sql.Timestamp;
 import java.util.List;
