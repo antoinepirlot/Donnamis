@@ -1,6 +1,6 @@
 import {getAllItemsByOfferStatus, isAdmin} from "../../utils/BackEndRequests";
 import {Redirect} from "../Router/Router";
-import {showItems} from "../../utils/HtmlCode";
+import {getShowItemsHtml} from "../../utils/HtmlCode";
 
 const tableHtml = `
   <div>
@@ -19,7 +19,7 @@ const AllItemsPage = async () => {
   pageDiv.innerHTML = tableHtml;
   const items = await getAllItemsByOfferStatus();
   let tbody = document.querySelector("#all_items");
-  showItems(items, tbody);
+  tbody.innerHTML = getShowItemsHtml(items);
 };
 
 // function showItems(item) {

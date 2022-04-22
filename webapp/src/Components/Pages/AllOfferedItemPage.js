@@ -1,5 +1,5 @@
 import {getAllItemsByOfferStatus} from "../../utils/BackEndRequests";
-import {showItems} from "../../utils/HtmlCode";
+import {getShowItemsHtml} from "../../utils/HtmlCode";
 
 const tableHtml = `
   <div>
@@ -14,7 +14,7 @@ const AllOfferedItemsPage = async () => {
   pageDiv.innerHTML = tableHtml;
   const items = await getAllItemsByOfferStatus("donated");
   let tbody = document.querySelector("#all_offered_items");
-  showItems(items, tbody);
+  tbody.innerHTML = getShowItemsHtml(items);
 };
 
 //function setSeeItemEvent(itemButtons) {

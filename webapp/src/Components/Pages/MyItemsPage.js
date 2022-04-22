@@ -10,25 +10,13 @@ import {getPayload} from "../../utils/session";
 import {showError} from "../../utils/ShowError";
 import {openModal} from "../../utils/Modals";
 import {Redirect} from "../Router/Router";
+import {getShowItemsHtml} from "../../utils/HtmlCode";
 
 const myItemsPageHtml = `
   <div>
-    <h1 class="display-3">Mes offres</h1>
-    <br>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Titre</th>
-          <th scope="col">Description de l'objet</th>
-          <th scope="col">Photo</th>
-          <th scope="col">Statut de l'offre</th>
-          <th scope="col"></th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody id="tbody_my_items">
-      </tbody>
-    </table>
+    <h1 class="display-3" id="all_items_title">Tous les objets</h1>
+    <div class="row" id="myItems">
+    </div>
   </div>
   <div id="errorMessageMyItemsPage"></div>
   
@@ -79,14 +67,15 @@ const MyItemsPage = async () => {
     const errorMessageMyItemsPage = document.querySelector(
         "#errorMessageMyItemsPage");
     showError(message, "info", errorMessageMyItemsPage);
-  } else {
-    showItems(items);
+    return;
   }
+  const tbody = document.querySelector("#myItems");
+  tbody.innerHTML = getShowItemsHtml(items);
+  showButtons(items);
 };
 
-function showItems(items) {
-  const tbody = document.querySelector("#tbody_my_items");
-  console.table(items)
+function showButtons(items) {
+  const tbody = document.querySelector("#itemButtons");
   tbody.innerHTML = "";
   items.forEach((item) => {
     const cancelButtonHtml = `<td><button id="itemCancelled" class="btn btn-danger" value="${item.id}">Annuler l'offre</button></td>`;
@@ -94,14 +83,7 @@ function showItems(items) {
     const markReceivedButtonHtml = `<td><button id="markReceivedButton" class="btn btn-primary" value="${item.id}">Objet donné</button></td>`;
     const chooseRecipientButtonHtml = `<td><button id="chooseRecipientButton" class="btn btn-primary" value="${item.id}">Choisir un receveur</button></td>`;
     const markNotGivenButtonHtml = `<td><button id="markNotGivenButton" class="btn btn-primary" value="${item.id}">Objet non récupéré</button></td>`;
-    let html = `
-      <tr>
-        <td>${item.title}</td>
-        <td>${item.itemDescription}</td>
-        <td>${item.photo}</td>
-        <td>${item.offerStatus}</td>
-        <td><a id="itemDetails" href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir offre</a></td>
-    `;
+    let html = "";
     if (item.offerStatus === "donated") {
       html += `
         ${offerAgainButtonHtml}
@@ -119,7 +101,6 @@ function showItems(items) {
         ${cancelButtonHtml}
       `;
     }
-    html += "</tr>";
     tbody.innerHTML += html
   });
 

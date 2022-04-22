@@ -1,5 +1,5 @@
 import {getAssignedItems} from "../../utils/BackEndRequests";
-import {showItems} from "../../utils/HtmlCode";
+import {getShowItemsHtml} from "../../utils/HtmlCode";
 import {getPayload} from "../../utils/session";
 import {Redirect} from "../Router/Router";
 
@@ -23,7 +23,7 @@ const MyAssignedItems = async () => {
   pageDiv.innerHTML = html;
   const items = await getAssignedItems();
   const tbody = document.querySelector("#assigned_items");
-  showItems(items, tbody);
+  getShowItemsHtml(items, tbody);
 }
 
 export {MyAssignedItems};
