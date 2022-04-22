@@ -220,6 +220,37 @@ public class MemberDAOImpl implements MemberDAO {
     return false;
   }
 
+  @Override
+  public List<MemberDTO> getInterestedMembers(int idItem) throws SQLException {
+    String query = "SELECT  m2.id_member, "
+        + "        m2.username, "
+        + "        m2.last_name, "
+        + "        m2.first_name, "
+        + "        m2.is_admin, "
+        + "        m2.state, "
+        + "        m2.phone "
+        + "FROM project_pae.members m, "
+        + "     project_pae.members m2, "
+        + "     project_pae.interests int, "
+        + "     project_pae.items i, "
+        + "     project_pae.offers o "
+        + "WHERE i.id_member = m.id_member "
+        + "  AND m2.id_member = int.id_member "
+        + "  AND int.id_offer = o.id_offer "
+        + "  AND o.id_item = i.id_item "
+        + "  AND i.id_item = ?;";
+    List<MemberDTO> memberDTOList = new ArrayList<>();
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setInt(1, idItem);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          memberDTOList.add(ObjectsInstanceCreator.createMemberInstance(this.factory, rs));
+        }
+      }
+    }
+    return memberDTOList.isEmpty() ? null : memberDTOList;
+  }
+
   //****************************** UTILS *******************************
 
   /**

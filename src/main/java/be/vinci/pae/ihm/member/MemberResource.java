@@ -115,6 +115,18 @@ public class MemberResource {
     return this.jsonUtil.filterPublicJsonView(memberDTO);
   }
 
+  @GET
+  @Path("interested/{idOffer}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
+  public List<MemberDTO> getInterestedMembers(@PathParam("idOffer") int idOffer)
+      throws SQLException {
+    if (idOffer < 1) {
+      throw new WrongBodyDataException("The idOffer is less than 1");
+    }
+    return this.jsonUtil.filterPublicJsonViewAsList(this.memberUCC.getInterestedMembers(idOffer));
+  }
+
   /////////////////////////////////////////////////////////
   ///////////////////////POST//////////////////////////////
   /////////////////////////////////////////////////////////

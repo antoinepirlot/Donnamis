@@ -1,5 +1,6 @@
 import {
   cancelOffer as cancelOfferBackEnd,
+  getInterestedMembers,
   getMyItems,
   offerAgain as offerAgainBackEnd
 } from "../../utils/BackEndRequests";
@@ -29,7 +30,7 @@ const myItemsPageHtml = `
   </div>
   <div id="errorMessageMyItemsPage"></div>
   
-  <!-- The Modal -->
+  <!-- The Modal offer again -->
 <div id="myItemsPageModal" class="modal">
   <div class="modal-content">
     <span id="myItemsPageModalCloseButton" class="close">&times;</span>
@@ -43,9 +44,25 @@ const myItemsPageHtml = `
     </form>
   </div>
 </div>
+
+<!--Modal for choose recipient-->
+<div id="chooseRecipientModal" class="modal">
+  <div class="modal-content">
+    <span id="chooseRecipientModalCloseButton" class="close">&times;</span>
+    <form id="offerAgainForm">
+      <h5>Sélectionnez un membre dans la liste des membres intéressés</h5><br>
+      <br>
+      Liste de membre<span id="asterisk">*</span>:<br>
+      <input id="chooseRecipientMemberListForm" list="chooseRecipientMembersList" placeholder="Choisissez un membre.">
+      <datalist id="chooseRecipientMembersList"></datalist><br>
+      <br>
+      <input type="submit" value="Envoyer">
+    </form>
+  </div>
+</div>
 `;
 
-let offerAgainItemId;
+let idItem;
 
 const MyItemsPage = async () => {
   if (!getPayload()) {
@@ -77,20 +94,61 @@ function showItems(items) {
         <td>${item.offerStatus}</td>
         <td><a id="itemDetails" href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir offre</a></td>
         <td><button id="offerAgainButton" class="btn btn-primary" value="${item.id}">Offrir à nouveau</button></td>
+        <td><button id="chooseRecipientButton" class="btn btn-primary" value="${item.id}">Choisir un receveur</button></td>
         <td><button id="itemCancelled" class="btn btn-danger" value="${item.id}">Annuler l'offre</button></td>
       </tr>
     `;
   });
+
+  /*************/
+  /*Offer again*/
+  /*************/
   const offerAgainButtons = document.querySelectorAll("#offerAgainButton");
   offerAgainButtons.forEach(async (offerAgainButton) => {
     offerAgainButton.addEventListener("click", async () => {
-      offerAgainItemId = offerAgainButton.value;
+      idItem = offerAgainButton.value;
       openModal("#myItemsPageModal", "#myItemsPageModalCloseButton");
       const offerAgainForm = document.querySelector("#offerAgainForm");
       offerAgainForm.addEventListener("submit", await offerAgain);
+    })
+  });
+
+  /*********************************/
+  /*Choose a recipient for the item*/
+  /*********************************/
+  const chooseRecipientButtons = document.querySelectorAll(
+      "#chooseRecipientButton");
+  chooseRecipientButtons.forEach(async (chooseRecipientButton) => {
+    chooseRecipientButton.addEventListener("click", async () => {
+      idItem = chooseRecipientButton.value;
+      let idOffer;
+      items.forEach((item) => {
+        if (item.id == idItem) { // == and not === because idItem is a string and item.id is int
+          idOffer = item.offerList[0].id;
+        }
+      });
+      const members = await getInterestedMembers(idOffer);
+      if (!members) {
+        const errorDiv = document.querySelector("#errorMessageMyItemsPage");
+        showError("Aucun membre n'est intéressé par votre offre pour l'instant",
+            "danger", errorDiv);
+      } else {
+        openModal("#chooseRecipientModal", "#chooseRecipientModalCloseButton");
+        const memberList = document.querySelector(
+            "#chooseRecipientMembersList");
+        memberList.innerHTML = ""; //empties the datalist of old members
+        members.forEach((member) => {
+          memberList.innerHTML += `
+          <option value="${member.username}">
+        `;
+        });
+      }
     });
   });
 
+  /*****************/
+  /*Cancel an offer*/
+  /*****************/
   const cancelButtons = document.querySelectorAll("#itemCancelled");
   cancelButtons.forEach(cancelButton => {
     cancelButton.addEventListener("click", async () => {
@@ -104,7 +162,7 @@ async function offerAgain(e) {
   e.preventDefault();
   const timeSlot = document.querySelector("#timeSlotFormOfferAgain").value;
   const offer = {
-    idItem: offerAgainItemId,
+    idItem: idItem,
     timeSlot: timeSlot
   }
   try {
@@ -113,6 +171,10 @@ async function offerAgain(e) {
   } catch (e) {
     console.error(e);
   }
+}
+
+async function chooseRecipient() {
+  const recipient = {}
 }
 
 export default MyItemsPage;

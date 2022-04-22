@@ -148,4 +148,17 @@ public class MemberUCCImpl implements MemberUCC {
       throw e;
     }
   }
+
+  @Override
+  public List<MemberDTO> getInterestedMembers(int idOffer) throws SQLException {
+    try {
+      this.dalServices.start();
+      List<MemberDTO> memberDTOList = this.memberDAO.getInterestedMembers(idOffer);
+      this.dalServices.commit();
+      return memberDTOList;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
+    }
+  }
 }

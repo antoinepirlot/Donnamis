@@ -39,4 +39,12 @@ public interface MemberDAO {
   boolean denyMember(RefusalDTO refusalDTO) throws SQLException;
 
   boolean memberExist(MemberDTO memberDTO, int idMember);
+
+  /**
+   * Get all interested members of the item identified by its id
+   *
+   * @param idOffer the item's id
+   * @return the list of interested members
+   */
+  List<MemberDTO> getInterestedMembers(int idOffer) throws SQLException;
 }
