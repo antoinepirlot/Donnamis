@@ -23,7 +23,7 @@ const MyAssignedItems = async () => {
   pageDiv.innerHTML = html;
   const items = await getAssignedItems();
   const tbody = document.querySelector("#assigned_items");
-  getShowItemsHtml(items, tbody);
+  tbody.innerHTML = getShowItemsHtml(items);
 }
 
 export {MyAssignedItems};
