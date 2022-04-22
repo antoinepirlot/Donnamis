@@ -27,4 +27,18 @@ public class RecipientUCCImpl implements RecipientUCC {
       throw e;
     }
   }
+
+  @Override
+  public boolean exists(RecipientDTO recipientDTO) throws SQLException {
+    try {
+      boolean exists;
+      this.dalServices.start();
+      exists = this.recipientDAO.exists(recipientDTO);
+      this.dalServices.commit();
+      return exists;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
+    }
+  }
 }
