@@ -166,7 +166,7 @@ public class ItemDAOImpl implements ItemDAO {
 
   @Override
   public List<ItemDTO> getAssignedItems(int idMember) throws SQLException {
-    String query = "SELECT i.id_item, "
+    String query = "SELECT DISTINCT i.id_item, "
         + "                i.item_description, "
         + "                i.id_type, "
         + "                i.id_member, "
