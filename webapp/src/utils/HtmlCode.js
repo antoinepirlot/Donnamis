@@ -13,7 +13,7 @@ function getShowItemsHtml(items) {
             <h5 class="card-title">${item.title}</h5>
             <p class="card-text">${item.itemDescription}</p>
             <div id="itemButtons">
-              <a href="/item?id=${item.id}" type="button" class="btn btn-primary"> Voir les détails</a>
+              <a href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir les détails</a>
             </div>
           </div>
         </div>

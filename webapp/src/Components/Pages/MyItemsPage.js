@@ -76,32 +76,29 @@ const MyItemsPage = async () => {
 
 function showButtons(items) {
   const tbody = document.querySelector("#itemButtons");
-  tbody.innerHTML = "";
   items.forEach((item) => {
     const cancelButtonHtml = `<td><button id="itemCancelled" class="btn btn-danger" value="${item.id}">Annuler l'offre</button></td>`;
     const offerAgainButtonHtml = `<td><button id="offerAgainButton" class="btn btn-primary" value="${item.id}">Offrir à nouveau</button></td>`;
     const markReceivedButtonHtml = `<td><button id="markReceivedButton" class="btn btn-primary" value="${item.id}">Objet donné</button></td>`;
     const chooseRecipientButtonHtml = `<td><button id="chooseRecipientButton" class="btn btn-primary" value="${item.id}">Choisir un receveur</button></td>`;
     const markNotGivenButtonHtml = `<td><button id="markNotGivenButton" class="btn btn-primary" value="${item.id}">Objet non récupéré</button></td>`;
-    let html = "";
     if (item.offerStatus === "donated") {
-      html += `
+      tbody.innerHTML += `
         ${offerAgainButtonHtml}
         ${chooseRecipientButtonHtml}
         ${cancelButtonHtml}
       `;
     } else if (item.offerStatus === "cancelled") {
-      html += `
+      tbody.innerHTML += `
         ${offerAgainButtonHtml}  
       `;
     } else if (item.offerStatus === "assigned") {
-      html += `
+      tbody.innerHTML += `
         ${markReceivedButtonHtml}
         ${markNotGivenButtonHtml}
         ${cancelButtonHtml}
       `;
     }
-    tbody.innerHTML += html
   });
 
   /*************/
