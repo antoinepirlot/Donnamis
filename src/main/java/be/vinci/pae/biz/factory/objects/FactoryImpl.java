@@ -13,6 +13,8 @@ import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.objects.OfferImpl;
 import be.vinci.pae.biz.recipient.interfaces.RecipientDTO;
 import be.vinci.pae.biz.recipient.objects.RecipientImpl;
+import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
+import be.vinci.pae.biz.refusal.objects.RefusalImpl;
 
 public class FactoryImpl implements Factory {
 
@@ -44,6 +46,11 @@ public class FactoryImpl implements Factory {
   @Override
   public RecipientDTO getRecipientDTO() {
     return new RecipientImpl();
+  }
+
+  @Override
+  public RefusalDTO getRefusalDTO() {
+    return new RefusalImpl();
   }
 }
 

@@ -6,6 +6,7 @@ import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.recipient.interfaces.RecipientDTO;
+import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 
 public interface Factory {
 
@@ -20,4 +21,6 @@ public interface Factory {
   ItemsTypeDTO getItemType();
 
   RecipientDTO getRecipientDTO();
+
+  RefusalDTO getRefusalDTO();
 }

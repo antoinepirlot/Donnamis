@@ -16,10 +16,24 @@ async function login(username, password) {
   };
   const response = await fetch("api/members/login", request);
   if (!response.ok) {
-    const loginMessage = document.querySelector("#loginMessage");
-    showError("Aucun utilisateur pour ce username et ce mot de passe",
-        "danger", loginMessage);
-    return;
+    if (response.status === 404) {
+      return false;
+    }
+    throw new Error("Error while login member.");
+  }
+  return await response.json();
+}
+
+async function getRefusal(username) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/refusals/${username}`, request);
+  if (!response.ok) {
+    throw new Error("Error while fetching refusal message.");
   }
   return await response.json();
 }
@@ -404,6 +418,7 @@ async function chooseRecipient(recipient) {
 
 export {
   login,
+  getRefusal,
   me,
   register,
   isAdmin,

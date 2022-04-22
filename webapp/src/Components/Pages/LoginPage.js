@@ -3,7 +3,10 @@ import {
   setLocalObject,
   setSessionObject
 } from "../../utils/session";
-import {login as loginBackEndRequest} from "../../utils/BackEndRequests";
+import {
+  getRefusal,
+  login as loginBackEndRequest
+} from "../../utils/BackEndRequests";
 import {Redirect} from "../Router/Router";
 import Navbar from "../Navbar/Navbar";
 import {showError} from "../../utils/ShowError";
@@ -60,18 +63,28 @@ async function login(e) {
   }
   try {
     const content = await loginBackEndRequest(username, password);
-    if (content == null) {
-      return
-    }
-    if (rememberMe) {
-      setLocalObject("token", content.token);
-      setLocalObject("memberDTO", content.memberDTO);
+    if (!content) {
+      const loginMessage = document.querySelector("#loginMessage");
+      const refusal = await getRefusal(username);
+      if (refusal) {
+        const refusalMessage = refusal.text;
+        showError(refusalMessage, "danger", loginMessage);
+      } else {
+        showError("Aucun utilisateur pour ce username et ce mot de passe",
+            "danger", loginMessage);
+      }
+      return;
     } else {
-      setSessionObject("token", content.token);
-      setSessionObject("memberDTO", content.memberDTO);
+      if (rememberMe) {
+        setLocalObject("token", content.token);
+        setLocalObject("memberDTO", content.memberDTO);
+      } else {
+        setSessionObject("token", content.token);
+        setSessionObject("memberDTO", content.memberDTO);
+      }
     }
     Redirect("/");
-    Navbar();
+    await Navbar();
   } catch (error) {
     console.error("LoginPage::error: ", error);
   }

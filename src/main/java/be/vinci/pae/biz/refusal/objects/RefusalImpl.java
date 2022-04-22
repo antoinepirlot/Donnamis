@@ -45,4 +45,13 @@ public class RefusalImpl implements Refusal {
   public void setText(String text) {
     this.text = text;
   }
+
+  @Override
+  public String toString() {
+    return "RefusalImpl{" +
+        "idRefusal=" + idRefusal +
+        ", member=" + member +
+        ", text='" + text + '\'' +
+        '}';
+  }
 }

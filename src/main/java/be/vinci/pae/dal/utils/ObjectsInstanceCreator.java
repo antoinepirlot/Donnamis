@@ -6,6 +6,7 @@ import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
+import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.apache.commons.text.StringEscapeUtils;
@@ -162,4 +163,11 @@ public class ObjectsInstanceCreator {
     return addressDTO;
   }
 
+  public static RefusalDTO createRefusalInstance(Factory factory, ResultSet rs)
+      throws SQLException {
+    RefusalDTO refusalDTO = factory.getRefusalDTO();
+    refusalDTO.setIdRefusal(rs.getInt("id_refusal"));
+    refusalDTO.setText(rs.getString("text"));
+    return refusalDTO;
+  }
 }
