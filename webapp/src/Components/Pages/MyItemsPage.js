@@ -1,5 +1,6 @@
 import {
   cancelOffer as cancelOfferBackEnd,
+  chooseRecipient as chooseRecpientBackEnd,
   getInterestedMembers,
   getMyItems,
   offerAgain as offerAgainBackEnd
@@ -121,13 +122,8 @@ function showItems(items) {
   chooseRecipientButtons.forEach(async (chooseRecipientButton) => {
     chooseRecipientButton.addEventListener("click", async () => {
       idItem = chooseRecipientButton.value;
-      let idOffer;
-      items.forEach((item) => {
-        if (item.id == idItem) { // == and not === because idItem is a string and item.id is int
-          idOffer = item.offerList[0].id;
-        }
-      });
-      const members = await getInterestedMembers(idOffer);
+      const item = items.find((item) => item.id == idItem);
+      const members = await getInterestedMembers(item.offerList[0].id);
       if (!members) {
         const errorDiv = document.querySelector("#errorMessageMyItemsPage");
         showError("Aucun membre n'est intéressé par votre offre pour l'instant",
@@ -143,6 +139,9 @@ function showItems(items) {
           <option value="${member.username}">
         `;
       });
+      const chooseRecipientModal = document.querySelector(
+          "#chooseRecipientModal");
+      chooseRecipientModal.addEventListener("submit", await chooseRecipient);
     });
   });
 
@@ -173,8 +172,27 @@ async function offerAgain(e) {
   }
 }
 
-async function chooseRecipient() {
-  const recipient = {}
+async function chooseRecipient(e) {
+  e.preventDefault();
+  const errorDiv = document.querySelector("#errorMessageMyItemsPage");
+  showError("Sélection du receveur en cours...", "info", errorDiv);
+  const recipientUsername = document.querySelector(
+      "#chooseRecipientMemberListForm").value;
+  const recipient = {
+    item: {
+      id: idItem
+    },
+    member: {
+      username: recipientUsername
+    }
+  }
+  try {
+    await chooseRecpientBackEnd(recipient)
+    showError("Vous avez choisi l'utilisateur " + recipientUsername
+        + " comme receveur.", "success", errorDiv);
+  } catch (e) {
+    showError("Impossible de choisir le receveur.", "danger", errorDiv);
+  }
 }
 
 export default MyItemsPage;

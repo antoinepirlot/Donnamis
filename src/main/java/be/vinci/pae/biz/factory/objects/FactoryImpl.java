@@ -11,6 +11,8 @@ import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.objects.MemberImpl;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.objects.OfferImpl;
+import be.vinci.pae.biz.recipient.interfaces.RecipientDTO;
+import be.vinci.pae.biz.recipient.objects.RecipientImpl;
 
 public class FactoryImpl implements Factory {
 
@@ -37,6 +39,11 @@ public class FactoryImpl implements Factory {
   @Override
   public ItemsTypeDTO getItemType() {
     return new ItemsTypeImpl();
+  }
+
+  @Override
+  public RecipientDTO getRecipientDTO() {
+    return new RecipientImpl();
   }
 }
 

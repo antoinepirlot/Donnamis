@@ -391,7 +391,8 @@ async function chooseRecipient(recipient) {
   const request = {
     method: "POST",
     headers: {
-      "Authorization": getObject("token")
+      "Authorization": getObject("token"),
+      "Content-Type": "application/json"
     },
     body: JSON.stringify(recipient)
   };
@@ -399,7 +400,6 @@ async function chooseRecipient(recipient) {
   if (!response.ok) {
     throw new Error("Error while fetching");
   }
-  return await response.json();
 }
 
 export {
