@@ -85,21 +85,39 @@ const MyItemsPage = async () => {
 
 function showItems(items) {
   const tbody = document.querySelector("#tbody_my_items");
+  console.table(items)
   tbody.innerHTML = "";
   items.forEach((item) => {
-    tbody.innerHTML += `
+    const cancelButtonHtml = `<td><button id="itemCancelled" class="btn btn-danger" value="${item.id}">Annuler l'offre</button></td>`;
+    const offerAgainButtonHtml = `<td><button id="offerAgainButton" class="btn btn-primary" value="${item.id}">Offrir à nouveau</button></td>`;
+    const markReceivedButtonHtml = `<td><button id="markReceivedButton" class="btn btn-primary" value="${item.id}">Objet donné</button></td>`;
+    const chooseRecipientButtonHtml = `<td><button id="chooseRecipientButton" class="btn btn-primary" value="${item.id}">Choisir un receveur</button></td>`;
+    let html = `
       <tr>
         <td>${item.title}</td>
         <td>${item.itemDescription}</td>
         <td>${item.photo}</td>
         <td>${item.offerStatus}</td>
         <td><a id="itemDetails" href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir offre</a></td>
-        <td><button id="offerAgainButton" class="btn btn-primary" value="${item.id}">Offrir à nouveau</button></td>
-        <td><button id="chooseRecipientButton" class="btn btn-primary" value="${item.id}">Choisir un receveur</button></td>
-        <td><button id="markReceivedButton" class="btn btn-primary" value="${item.id}">Objet donné</button></td>
-        <td><button id="itemCancelled" class="btn btn-danger" value="${item.id}">Annuler l'offre</button></td>
-      </tr>
     `;
+    if (item.offerStatus === "donated") {
+      html += `
+        ${offerAgainButtonHtml}
+        ${chooseRecipientButtonHtml}
+        ${cancelButtonHtml}
+      `;
+    } else if (item.offerStatus === "cancelled") {
+      html += `
+        ${offerAgainButtonHtml}  
+      `;
+    } else if (item.offerStatus === "assigned") {
+      html += `
+        ${markReceivedButtonHtml}
+        ${cancelButtonHtml}
+      `;
+    }
+    html += "</tr>";
+    tbody.innerHTML += html
   });
 
   /*************/
@@ -164,6 +182,7 @@ function showItems(items) {
       try {
         await markItemAsGiven(item);
         showError("L'objet à bien été marqué comme donné.", "success", errorDiv);
+        await MyItemsPage();
       } catch (e) {
         showError("L'objet n'a pas été marqué comme donné.", "danger", errorDiv);
       }
@@ -215,6 +234,7 @@ async function chooseRecipient(e) {
     await chooseRecpientBackEnd(recipient)
     showError("Vous avez choisi l'utilisateur " + recipientUsername
         + " comme receveur.", "success", errorDiv);
+    await MyItemsPage();
   } catch (e) {
     showError("Impossible de choisir le receveur.", "danger", errorDiv);
   }
