@@ -22,6 +22,7 @@ public class ItemDAOImpl implements ItemDAO {
   private static final String GIVEN_OFFER_STATUS = "given";
   private static final String WAITING_RECIPIENT_STATUS = "waiting";
   private static final String RECEIVED_RECIPIENT_STATUS = "received";
+  private static final String NOT_RECEIVED_RECIPIENT_STATUS = "not_received";
   private final Logger logger = LoggerHandler.getLogger();
   @Inject
   private Factory factory;
@@ -205,23 +206,47 @@ public class ItemDAOImpl implements ItemDAO {
 
   @Override
   public boolean markItemAsGiven(ItemDTO itemDTO) throws SQLException {
+    return this.markItemAs(true, itemDTO);
+  }
+
+  @Override
+  public boolean markItemAsNotGiven(ItemDTO itemDTO) throws SQLException {
+    return this.markItemAs(false, itemDTO);
+  }
+
+  /**
+   * mark item as given or not given and update the recipient.
+   * @param given true if it marks item as given or false to mark item as not given
+   * @param itemDTO the item to update
+   * @return true if the operation worked as expected otherwise false
+   * @throws SQLException if an error occurs while updating items or recipient
+   */
+  private boolean markItemAs(boolean given, ItemDTO itemDTO) throws SQLException {
     String selectIdMember = "SELECT DISTINCT r.id_member "
         + "FROM project_pae.items i, "
         + "     project_pae.recipients r "
         + "WHERE r.id_item = i.id_item "
-        + "  AND r.received = '"+WAITING_RECIPIENT_STATUS+"' "
+        + "  AND r.received = ? "
         + "  AND i.id_member = ?";
     String query = "UPDATE project_pae.items "
-        + "SET offer_status = '"+GIVEN_OFFER_STATUS+"' "
+        + "SET offer_status = ? "
         + "WHERE id_item = ?; "
         + "UPDATE project_pae.recipients "
-        + "SET received = '"+RECEIVED_RECIPIENT_STATUS+"' "
+        + "SET received = ? "
         + "WHERE id_member = ("+selectIdMember+") "
         + "  AND id_item = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
-      ps.setInt(1, itemDTO.getId());
-      ps.setInt(2, itemDTO.getMember().getId());
-      ps.setInt(3, itemDTO.getId());
+      if (given) {
+        ps.setString(1, GIVEN_OFFER_STATUS);
+        ps.setString(3, RECEIVED_RECIPIENT_STATUS);
+      } else {
+        ps.setString(1, DEFAULT_OFFER_STATUS);
+        ps.setString(3, NOT_RECEIVED_RECIPIENT_STATUS);
+      }
+      ps.setInt(2, itemDTO.getId());
+      ps.setString(4, WAITING_RECIPIENT_STATUS);
+      ps.setInt(5, itemDTO.getMember().getId());
+      ps.setInt(6, itemDTO.getId());
       return ps.executeUpdate() != 0;
     }
   }

@@ -58,4 +58,12 @@ public interface ItemUCC {
    * @throws SQLException if an error occurs while updating item
    */
   boolean markItemAsGiven(ItemDTO itemDTO) throws SQLException;
+
+  /**
+   * Mark item, identified by its id, as donated and update recipient to not received.
+   * @param itemDTO the item to update
+   * @return true if the operation worked as expected otherwise false
+   * @throws SQLException if an error occurs while updating item
+   */
+  boolean markItemAsNotGiven(ItemDTO itemDTO) throws SQLException;
 }

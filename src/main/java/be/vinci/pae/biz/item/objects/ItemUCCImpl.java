@@ -95,12 +95,32 @@ public class ItemUCCImpl implements ItemUCC {
 
   @Override
   public boolean markItemAsGiven(ItemDTO itemDTO) throws SQLException {
+    return this.markItemAs(true, itemDTO);
+  }
+
+  @Override
+  public boolean markItemAsNotGiven(ItemDTO itemDTO) throws SQLException {
+    return this.markItemAs(false, itemDTO);
+  }
+
+  /**
+   * mark item as given or not given and update the recipient.
+   * @param given true if it marks item as given or false to mark item as not given
+   * @param itemDTO the item to update
+   * @return true if the operation worked as expected otherwise false
+   * @throws SQLException if an error occurs while updating items or recipient
+   */
+  private boolean markItemAs(boolean given, ItemDTO itemDTO) throws SQLException{
     try {
-      boolean given;
+      boolean done;
       this.dalServices.start();
-      given = this.itemDAO.markItemAsGiven(itemDTO);
+      if (given) {
+        done = this.itemDAO.markItemAsGiven(itemDTO);
+      } else {
+        done = this.itemDAO.markItemAsNotGiven(itemDTO);
+      }
       this.dalServices.commit();
-      return given;
+      return done;
     } catch (SQLException e) {
       this.dalServices.rollback();
       throw e;

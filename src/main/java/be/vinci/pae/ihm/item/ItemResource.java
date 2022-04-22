@@ -177,26 +177,30 @@ public class ItemResource {
   @Consumes(MediaType.APPLICATION_JSON)
   public void markItemAsGiven(ItemDTO itemDTO)
       throws SQLException, UnexpectedException {
-    if (itemDTO == null
-        || itemDTO.getId() < 1
-        || itemDTO.getMember() == null || itemDTO.getMember().getId() < 1
-    ) {
-      throw new WrongBodyDataException("idItm is lower than 1.");
-    }
-    ItemDTO existingItem = this.itemUCC.getOneItem(itemDTO.getId());
-    if (existingItem == null) {
-      throw new ObjectNotFoundException("The item " + itemDTO.getId() + " doesn't exist.");
-    }
-    if (existingItem.getMember().getId() != itemDTO.getMember().getId()) {
-      throw new WrongBodyDataException("The member's id and item's member's id are not associated");
-    }
-    if (existingItem.getOfferStatus().equals("given")) {
-      throw new ForbiddenException("The item " + itemDTO.getId() + " is already given.");
-    }
+   this.checkMarkItemAs(itemDTO);
     if (!this.itemUCC.markItemAsGiven(itemDTO)) {
       throw new UnexpectedException("marking item " + itemDTO.getId() + " as given failed.");
     }
   }
+
+  /**
+   * Mark the item identified by its id as donated and update recipient to not received.
+   *
+   * @param itemDTO the item to update
+   * @throws SQLException        if an error occurs while updating item
+   * @throws UnexpectedException if marking item as given returned false
+   */
+  @PUT
+  @Path("not_given")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public void markItemAsNotGiven(ItemDTO itemDTO)
+      throws SQLException, UnexpectedException {
+    this.checkMarkItemAs(itemDTO);
+    if (!this.itemUCC.markItemAsNotGiven(itemDTO)) {
+      throw new UnexpectedException("marking item " + itemDTO.getId() + " as not given failed.");
+    }
+  }
+
 
   /////////////////////////////////////////////////////////
   ///////////////////////DELETE////////////////////////////
@@ -238,5 +242,29 @@ public class ItemResource {
       this.offerUCC.getAllOffersOf(itemDTO);
     }
     return listItemDTO;
+  }
+
+  /**
+   * Check itemDTO for mark item as {offerStatus}.
+   * @param itemDTO the item to check
+   * @throws SQLException if an error occurs while getting item from database
+   */
+  private void checkMarkItemAs(ItemDTO itemDTO) throws SQLException {
+    if (itemDTO == null
+        || itemDTO.getId() < 1
+        || itemDTO.getMember() == null || itemDTO.getMember().getId() < 1
+    ) {
+      throw new WrongBodyDataException("idItm is lower than 1.");
+    }
+    ItemDTO existingItem = this.itemUCC.getOneItem(itemDTO.getId());
+    if (existingItem == null) {
+      throw new ObjectNotFoundException("The item " + itemDTO.getId() + " doesn't exist.");
+    }
+    if (existingItem.getMember().getId() != itemDTO.getMember().getId()) {
+      throw new WrongBodyDataException("The member's id and item's member's id are not associated");
+    }
+    if (existingItem.getOfferStatus().equals("given")) {
+      throw new ForbiddenException("The item " + itemDTO.getId() + " is already given.");
+    }
   }
 }

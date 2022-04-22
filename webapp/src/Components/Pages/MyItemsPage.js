@@ -2,7 +2,8 @@ import {
   cancelOffer as cancelOfferBackEnd,
   chooseRecipient as chooseRecpientBackEnd,
   getInterestedMembers,
-  getMyItems, markItemAsGiven,
+  getMyItems,
+  markItemAs as markItemAsaBackEnd,
   offerAgain as offerAgainBackEnd
 } from "../../utils/BackEndRequests";
 import {getPayload} from "../../utils/session";
@@ -92,6 +93,7 @@ function showItems(items) {
     const offerAgainButtonHtml = `<td><button id="offerAgainButton" class="btn btn-primary" value="${item.id}">Offrir à nouveau</button></td>`;
     const markReceivedButtonHtml = `<td><button id="markReceivedButton" class="btn btn-primary" value="${item.id}">Objet donné</button></td>`;
     const chooseRecipientButtonHtml = `<td><button id="chooseRecipientButton" class="btn btn-primary" value="${item.id}">Choisir un receveur</button></td>`;
+    const markNotGivenButtonHtml = `<td><button id="markNotGivenButton" class="btn btn-primary" value="${item.id}">Objet non récupéré</button></td>`;
     let html = `
       <tr>
         <td>${item.title}</td>
@@ -113,6 +115,7 @@ function showItems(items) {
     } else if (item.offerStatus === "assigned") {
       html += `
         ${markReceivedButtonHtml}
+        ${markNotGivenButtonHtml}
         ${cancelButtonHtml}
       `;
     }
@@ -170,22 +173,19 @@ function showItems(items) {
   const markReceivedButtons = document.querySelectorAll("#markReceivedButton");
   markReceivedButtons.forEach((markReceivedButton) => {
     markReceivedButton.addEventListener("click", async () => {
-      const errorDiv = document.querySelector("#errorMessageMyItemsPage");
-      showError("Le changement est en cours...", "info", errorDiv);
       idItem = markReceivedButton.value;
-      const item = {
-        id: idItem,
-        member: {
-          id: getPayload().id
-        }
-      }
-      try {
-        await markItemAsGiven(item);
-        showError("L'objet à bien été marqué comme donné.", "success", errorDiv);
-        await MyItemsPage();
-      } catch (e) {
-        showError("L'objet n'a pas été marqué comme donné.", "danger", errorDiv);
-      }
+      await markItemAs(true);
+    });
+  });
+
+  /***************************/
+  /*Mark item as not received*/
+  /***************************/
+  const markNotGivenButtons = document.querySelectorAll("#markNotGivenButton");
+  markNotGivenButtons.forEach((markNotGivenButton) => {
+    markNotGivenButton.addEventListener("click", async () => {
+      idItem = markNotGivenButton.value;
+      await markItemAs(false);
     });
   });
 
@@ -237,6 +237,24 @@ async function chooseRecipient(e) {
     await MyItemsPage();
   } catch (e) {
     showError("Impossible de choisir le receveur.", "danger", errorDiv);
+  }
+}
+
+async function markItemAs(given) {
+  const errorDiv = document.querySelector("#errorMessageMyItemsPage");
+  showError("Le changement est en cours...", "info", errorDiv);
+  const item = {
+    id: idItem,
+    member: {
+      id: getPayload().id
+    }
+  }
+  try {
+    await markItemAsaBackEnd(given, item);
+    showError("L'objet à bien été marqué comme donné.", "success", errorDiv);
+    await MyItemsPage();
+  } catch (e) {
+    showError("L'objet n'a pas été marqué comme donné.", "danger", errorDiv);
   }
 }
 

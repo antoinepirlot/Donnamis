@@ -355,7 +355,12 @@ async function getMyItems() {
   return await response.json()
 }
 
-async function markItemAsGiven(item) {
+/**
+ * Fetch to "items" to mark item as given or not given
+ * @param given {boolean} true if it marks item as given or false to not given
+ * @param item the item to update
+ */
+async function markItemAs(given, item) {
   const request = {
     method: "PUT",
     headers: {
@@ -364,7 +369,13 @@ async function markItemAsGiven(item) {
     },
     body: JSON.stringify(item)
   };
-  const response = await fetch(`/api/items/given`, request);
+  let url;
+  if (given) {
+    url = "/api/items/given";
+  } else {
+    url = "/api/items/not_given"
+  }
+  const response = await fetch(url, request);
   if (!response.ok) {
     throw new Error("Error while updating item's offer status");
   }
@@ -447,7 +458,7 @@ export {
   getAllOffers,
   getLatestOffers,
   getMyItems,
-  markItemAsGiven,
+  markItemAs,
   cancelOffer,
   getItem,
   getItemsTypes,

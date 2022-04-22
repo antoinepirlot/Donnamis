@@ -37,4 +37,12 @@ public interface ItemDAO {
    * @throws SQLException if an error occurs while updating item
    */
   boolean markItemAsGiven(ItemDTO itemDTO) throws SQLException;
+
+  /**
+   * Mark the item, identified by its id, as donated and update recipient to not received.
+   * @param itemDTO the item to update
+   * @return true if the item has been update otherwise false
+   * @throws SQLException if an error occurs while updating item
+   */
+  boolean markItemAsNotGiven(ItemDTO itemDTO) throws SQLException;
 }
