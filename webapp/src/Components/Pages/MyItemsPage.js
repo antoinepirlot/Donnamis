@@ -132,17 +132,17 @@ function showItems(items) {
         const errorDiv = document.querySelector("#errorMessageMyItemsPage");
         showError("Aucun membre n'est intéressé par votre offre pour l'instant",
             "danger", errorDiv);
-      } else {
-        openModal("#chooseRecipientModal", "#chooseRecipientModalCloseButton");
-        const memberList = document.querySelector(
-            "#chooseRecipientMembersList");
-        memberList.innerHTML = ""; //empties the datalist of old members
-        members.forEach((member) => {
-          memberList.innerHTML += `
+        return;
+      }
+      openModal("#chooseRecipientModal", "#chooseRecipientModalCloseButton");
+      const memberList = document.querySelector(
+          "#chooseRecipientMembersList");
+      memberList.innerHTML = ""; //empties the datalist of old members
+      members.forEach((member) => {
+        memberList.innerHTML += `
           <option value="${member.username}">
         `;
-        });
-      }
+      });
     });
   });
 
