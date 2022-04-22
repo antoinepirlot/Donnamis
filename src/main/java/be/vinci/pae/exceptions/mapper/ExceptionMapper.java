@@ -2,6 +2,7 @@ package be.vinci.pae.exceptions.mapper;
 
 import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ForbiddenException;
+import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.TokenDecodingException;
 import be.vinci.pae.exceptions.webapplication.UnauthorizedException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
@@ -27,6 +28,9 @@ public class ExceptionMapper implements jakarta.ws.rs.ext.ExceptionMapper<Throwa
     }
     if (throwable instanceof ForbiddenException) {
       return ((ForbiddenException) throwable).getResponse();
+    }
+    if (throwable instanceof ObjectNotFoundException) {
+      return ((ObjectNotFoundException) throwable).getResponse();
     }
     if (throwable instanceof TokenDecodingException) {
       return ((TokenDecodingException) throwable).getResponse();
