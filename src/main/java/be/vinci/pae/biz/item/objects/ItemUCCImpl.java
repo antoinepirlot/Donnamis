@@ -68,6 +68,19 @@ public class ItemUCCImpl implements ItemUCC {
   }
 
   @Override
+  public ItemDTO modifyItem(ItemDTO itemDTO) throws SQLException {
+    try {
+      dalServices.start();
+      ItemDTO modifyItem = itemDAO.modifyItem(itemDTO);
+      dalServices.commit();
+      return modifyItem;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
   public List<ItemDTO> getAllItemsOfAMember(int idMember) throws SQLException {
     try {
       dalServices.start();

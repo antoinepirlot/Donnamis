@@ -29,4 +29,6 @@ public interface ItemDAO {
    * @throws SQLException if an error occurs while getting information from the database
    */
   List<ItemDTO> getAssignedItems(int idMember) throws SQLException;
+
+  ItemDTO modifyItem(ItemDTO itemDTO) throws SQLException;
 }

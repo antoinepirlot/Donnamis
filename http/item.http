@@ -43,3 +43,18 @@ Authorization: {{token}}
 ###
 GET {{baseUrl}}/items/assigned_item/5
 Authorization: {{token}}
+
+### Modify Offer
+PUT {{baseUrl}}/items/modify
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "id": 4,
+  "itemDescription": "Pour boire café",
+  "itemType": {
+    "itemType": "Matériel de cuisine"
+  },
+  "photo": "Mug",
+  "title": "Mug Rose"
+}

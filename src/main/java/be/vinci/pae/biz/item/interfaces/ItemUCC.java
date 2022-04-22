@@ -36,6 +36,15 @@ public interface ItemUCC {
   ItemDTO cancelItem(int id) throws SQLException;
 
   /**
+   * Modify the item.
+   *
+   * @param itemDTO the new item
+   * @return the modify item
+   * @throws SQLException SQL error
+   */
+  ItemDTO modifyItem(ItemDTO itemDTO) throws SQLException;
+
+  /**
    * Ask itemDAO to get all the items identified by the member id.
    *
    * @return all the member's items
