@@ -10,6 +10,7 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public class RecipientDAOImpl implements RecipientDAO {
 
+  private static final String ASSIGNED_ITEM_STATUS = "assigned";
   private static final String RECEIVED_DEFAULT = "waiting";
   private static final String NOT_RECEIVED = "not received";
   private static final String RECEIVED = "received";
@@ -22,12 +23,16 @@ public class RecipientDAOImpl implements RecipientDAO {
         + "FROM project_pae.members m "
         + "WHERE m.username = ?";
     String query = "INSERT INTO project_pae.recipients (id_item, id_member, received) "
-        + "VALUES (?, (" + selectMemberId + "), '" + RECEIVED_DEFAULT + "');";
+        + "VALUES (?, (" + selectMemberId + "), '" + RECEIVED_DEFAULT + "'); "
+        + "UPDATE project_pae.items "
+        + "SET offer_status = '"+ASSIGNED_ITEM_STATUS+"' "
+        + "WHERE id_item = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setInt(1, recipientDTO.getItem().getId());
       ps.setString(2, StringEscapeUtils.escapeHtml4(
           recipientDTO.getMember().getUsername()
       ));
+      ps.setInt(3, recipientDTO.getItem().getId());
       return ps.executeUpdate() != 0;
     }
   }
