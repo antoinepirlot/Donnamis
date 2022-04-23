@@ -10,6 +10,7 @@ import MyItemsPage from "../Pages/Members/MyItemsPage";
 import ProfilePage from "../Pages/Members/ProfilePage";
 import HomePage from "../Pages/HomePage";
 import MyAssignedItems from "../Pages/Members/MyAssignedItems";
+import MemberPage from "../Pages/Admins/MemberPage";
 
 // Configure your routes here
 const routes = {
@@ -26,6 +27,7 @@ const routes = {
   "/my_items": MyItemsPage,
   "/profil": ProfilePage,
   "/assigned_items": MyAssignedItems,
+  "/member": MemberPage,
 };
 
 /**

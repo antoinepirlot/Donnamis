@@ -124,6 +124,20 @@ async function getInterestedMembers(idOffer) {
   return response.status === 200 ? await response.json() : null;
 }
 
+async function getOneMember(idMember) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/members/${idMember}`, request);
+  if (!response.ok) {
+    throw new Error("Error while fetching one user.");
+  }
+  return await response.json();
+}
+
 async function confirmInscription(member) {
   const request = {
     method: "PUT",
@@ -468,6 +482,7 @@ export {
   isAdmin,
   getAllMembers,
   getInterestedMembers,
+  getOneMember,
   confirmInscription,
   confirmAdmin,
   denyMember,

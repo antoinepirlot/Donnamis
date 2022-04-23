@@ -80,6 +80,11 @@ async function showRegisteredMember(member) {
         <td><button type="submit" class="btn btn-primary" id="RegisteredConfirmButton" value=${member.id}>Confirmer</button></td>
         <td><button type="submit" class="btn btn-danger" id="RegisteredRefuseButton" value=${member.id}>Refuser</button></td>
         <td><div class="form-floating mb-3"><input type="text" class="form-control" id="refusalText"><label for="refusalText">Message</label></div></td>
+        <td>
+          <div id="itemButtons">
+            <a href="/member?id=${member.id}" type="button" class="btn btn-primary">Voir les détails</a>
+          </div>
+        </td>
       </tr>    
     `;
 
