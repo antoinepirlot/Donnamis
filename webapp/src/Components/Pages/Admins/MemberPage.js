@@ -1,4 +1,4 @@
-import {getOneMember} from "../../../utils/BackEndRequests";
+import {getNumberOfItems, getOneMember} from "../../../utils/BackEndRequests";
 
 const memberPageHtml = `
   <div id="memberPageContent" class="bg-info d-inline-flex d-flex flex-column rounded w-50 p-3">
@@ -16,10 +16,10 @@ const MemberPage = async () => {
   const member = await getOneMember(idMember);
   const profilUsernameDiv = document.querySelector("#profilUsernameMemberPage");
   profilUsernameDiv.innerText = `Profile de: ${member.username}`;
-  showMemberInformation(member);
+  await showMemberInformation(member);
 }
 
-function showMemberInformation(member) {
+async function showMemberInformation(member) {
   const content = document.querySelector("#memberPageContent");
   let contentHtml = `
     <p>
@@ -28,7 +28,9 @@ function showMemberInformation(member) {
       ${getAddressHtml(member.address)}<br>
       Statut: ${getActualState(member)}<br>
       Administrateur: ${member.isAdmin ? "Oui" : "Non"}<br>
-      Numéro de téléphone: ${member.phoneNumber ? member.phoneNumber : "Aucun"}
+      Numéro de téléphone: ${member.phoneNumber ? member.phoneNumber : "Aucun"}<br>
+      Nombre d'objets offerts: ${await getNumberOfItems(member.id, "donated")}<br>
+      Nombre d'objets donnés: ${await getNumberOfItems(member.id, "given")}<br>
   `;
 
   contentHtml +=

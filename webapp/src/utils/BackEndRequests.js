@@ -302,6 +302,20 @@ async function getItemsTypes() {
   return await response.json();
 }
 
+async function getNumberOfItems(idMember, offerStatus) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/items/count/${idMember}/${offerStatus}`, request);
+  if (!response.ok) {
+    throw new Error("Error while fetching the number of items.");
+  }
+  return await response.json();
+}
+
 async function addNewItemsType(itemsType) {
   const request = {
     method: "POST",
@@ -496,6 +510,7 @@ export {
   getItem,
   getItemsTypes,
   addNewItemsType,
+  getNumberOfItems,
   offerAnItem,
   offerAgain,
   postInterest,
