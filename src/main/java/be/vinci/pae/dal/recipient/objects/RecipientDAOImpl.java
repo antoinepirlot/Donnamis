@@ -13,8 +13,8 @@ public class RecipientDAOImpl implements RecipientDAO {
 
   private static final String ASSIGNED_ITEM_STATUS = "assigned";
   private static final String RECEIVED_DEFAULT = "waiting";
-  private static final String NOT_RECEIVED = "not received";
-  private static final String RECEIVED = "received";
+  //private static final String NOT_RECEIVED = "not received";
+  //private static final String RECEIVED = "received";
   @Inject
   private DALBackendService dalBackendService;
 
