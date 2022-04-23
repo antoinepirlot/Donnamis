@@ -69,37 +69,53 @@ const MyItemsPage = async () => {
     showError(message, "info", errorMessageMyItemsPage);
     return;
   }
-  const tbody = document.querySelector("#myItems");
-  tbody.innerHTML = getShowItemsHtml(items);
   showButtons(items);
 };
 
 function showButtons(items) {
-  const tbody = document.querySelector("#itemButtons");
-  tbody.innerHTML = "";
+  const myItemsDiv = document.querySelector("#myItems");
+  myItemsDiv.innerHTML = "";
   items.forEach((item) => {
+    let html = `
+      <div class="col-sm-3" id="item-card" >
+        <div class="card">
+        <img class="card-img-top" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">${item.title}</h5>
+            <p class="card-text">${item.itemDescription}</p>
+            <div id="itemButtons">
+              <a href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir les détails</a>
+
+    `;
     const cancelButtonHtml = `<td><button id="itemCancelled" class="btn btn-danger" value="${item.id}">Annuler l'offre</button></td>`;
     const offerAgainButtonHtml = `<td><button id="offerAgainButton" class="btn btn-primary" value="${item.id}">Offrir à nouveau</button></td>`;
     const markReceivedButtonHtml = `<td><button id="markReceivedButton" class="btn btn-primary" value="${item.id}">Objet donné</button></td>`;
     const chooseRecipientButtonHtml = `<td><button id="chooseRecipientButton" class="btn btn-primary" value="${item.id}">Choisir un receveur</button></td>`;
     const markNotGivenButtonHtml = `<td><button id="markNotGivenButton" class="btn btn-primary" value="${item.id}">Objet non récupéré</button></td>`;
     if (item.offerStatus === "donated") {
-      tbody.innerHTML += `
+      html += `
         ${offerAgainButtonHtml}
         ${chooseRecipientButtonHtml}
         ${cancelButtonHtml}
       `;
     } else if (item.offerStatus === "cancelled") {
-      tbody.innerHTML += `
+      html += `
         ${offerAgainButtonHtml}  
       `;
     } else if (item.offerStatus === "assigned") {
-      tbody.innerHTML += `
+      html += `
         ${markReceivedButtonHtml}
         ${markNotGivenButtonHtml}
         ${cancelButtonHtml}
       `;
     }
+    html += `
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    myItemsDiv.innerHTML += html;
   });
 
   /*************/
