@@ -63,6 +63,15 @@ public class ItemResource {
   @Produces(MediaType.APPLICATION_JSON)
   public List<ItemDTO> getAllItemsByOfferStatus(@PathParam("offer_status") String offerStatus)
       throws SQLException {
+    if (offerStatus == null || offerStatus.isBlank()
+        || (!offerStatus.equals("donated")
+            && !offerStatus.equals("assigned")
+            && !offerStatus.equals("cancelled")
+            && !offerStatus.equals("given")
+        )
+    ) {
+      throw new WrongBodyDataException("Offer status " + offerStatus + " is not valid.");
+    }
     return this.getAllItems(offerStatus, -1);
   }
 
