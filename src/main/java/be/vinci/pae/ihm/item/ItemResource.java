@@ -103,7 +103,7 @@ public class ItemResource {
    * @throws SQLException if an error occurs while getting items
    */
   @GET
-  @Path("member_items/{idMember}/{offerStatus}")
+  @Path("items/{idMember}/{offerStatus}")
   @Consumes(MediaType.TEXT_PLAIN)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
