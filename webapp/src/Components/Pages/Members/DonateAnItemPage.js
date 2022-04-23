@@ -92,7 +92,7 @@ async function offerItem(e) {
     lastOfferDate: date
   }
   try {
-    if (!itemsTypes.find((type) => type === itemTypeValue)) {
+    if (!itemsTypes.find((type) => type.itemType === itemTypeValue)) {
       await addNewItemsType(itemsType);
     }
     await offerAnItem(item);
