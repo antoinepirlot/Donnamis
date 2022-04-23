@@ -76,6 +76,7 @@ const MyItemsPage = async () => {
 
 function showButtons(items) {
   const tbody = document.querySelector("#itemButtons");
+  tbody.innerHTML = "";
   items.forEach((item) => {
     const cancelButtonHtml = `<td><button id="itemCancelled" class="btn btn-danger" value="${item.id}">Annuler l'offre</button></td>`;
     const offerAgainButtonHtml = `<td><button id="offerAgainButton" class="btn btn-primary" value="${item.id}">Offrir à nouveau</button></td>`;

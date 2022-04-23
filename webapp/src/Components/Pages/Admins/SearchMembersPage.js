@@ -28,12 +28,12 @@ async function SearchMembersPage() {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = viewSearchbarHtml;
   const members = await getAllMembers();
+  const tbody = document.querySelector("#tbody_all_members");
   showFilterMembers(members)
   //Listener pour chaque frappe au clavier
   const searchInput = document.getElementById('searchInput');
   searchInput.addEventListener('keyup', function () {
         //Empty the table
-        const tbody = document.querySelector("#tbody_all_members");
         tbody.innerHTML = "";
 
         const input = searchInput.value.toLowerCase();
@@ -53,8 +53,9 @@ async function SearchMembersPage() {
 }
 
 function showFilterMembers(members) {
+  const tbody = document.querySelector("#tbody_all_members");
+  tbody.innerHTML = "";
   members.forEach((member) => {
-    const tbody = document.querySelector("#tbody_all_members");
     tbody.innerHTML += `
       <tr id="MemberLine">
         <td>${member.firstName}</td>

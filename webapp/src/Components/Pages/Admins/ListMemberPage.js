@@ -71,6 +71,7 @@ const ListMemberPage = async () => {
 
 async function showRegisteredMember(member) {
   const tbody = document.querySelector("#tbody_registered_members");
+  tbody.innerHTML = "";
   //For Each Member
   tbody.innerHTML += `
       <tr id="RegisteredLine">
@@ -132,6 +133,7 @@ async function showRegisteredMember(member) {
 
 async function showDeniedMember(member) {
   const tbody = document.querySelector("#tbody_denied_members");
+  tbody.innerHTML = "";
   tbody.innerHTML += `
       <tr id="DeniedLine">
         <td>${member.firstName}</td>
