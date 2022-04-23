@@ -11,7 +11,7 @@ import ProfilePage from "../Pages/Members/ProfilePage";
 import HomePage from "../Pages/HomePage";
 import MyAssignedItems from "../Pages/Members/MyAssignedItems";
 import MemberPage from "../Pages/Admins/MemberPage";
-import {SearchMembersPage} from "../Pages/Admins/SearchMembersPage";
+import SearchMembersPage from "../Pages/Admins/SearchMembersPage";
 
 // Configure your routes here
 const routes = {

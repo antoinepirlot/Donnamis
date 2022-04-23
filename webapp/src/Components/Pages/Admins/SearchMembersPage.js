@@ -60,4 +60,4 @@ function showFilterMembers(members) {
   })
 }
 
-export {SearchMembersPage};
+export default SearchMembersPage;
