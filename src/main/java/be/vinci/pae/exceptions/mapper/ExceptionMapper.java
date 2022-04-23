@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 public class ExceptionMapper implements jakarta.ws.rs.ext.ExceptionMapper<Throwable> {
 
   private final Logger logger = LoggerHandler.getLogger();
+
   @Override
   public Response toResponse(Throwable throwable) {
     String logMessage = throwable.getMessage() + "\n";
