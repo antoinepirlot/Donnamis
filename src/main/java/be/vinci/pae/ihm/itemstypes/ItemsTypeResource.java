@@ -73,6 +73,7 @@ public class ItemsTypeResource {
       throw new ConflictException(message);
     }
     if (!this.itemsTypeUCC.addItemsType(itemsTypeDTO)) {
-      throw new UnexpectedException("Unexpected exception while adding new itemsType");    }
+      throw new UnexpectedException("Unexpected exception while adding new itemsType");
+    }
   }
 }
