@@ -48,8 +48,8 @@ public class ItemResource {
   @Path("all_items")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public List<ItemDTO> getAllItems() throws SQLException {
-    return this.getAllItems(null, -1);
+  public List<ItemDTO> getAllItemsByOfferStatusOrIdMember() throws SQLException {
+    return this.getAllItemsByOfferStatusOrIdMember(null, -1);
   }
 
   /**
@@ -71,7 +71,7 @@ public class ItemResource {
     ) {
       throw new WrongBodyDataException("Offer status " + offerStatus + " is not valid.");
     }
-    return this.getAllItems(offerStatus, -1);
+    return this.getAllItemsByOfferStatusOrIdMember(offerStatus, -1);
   }
 
   /**
@@ -92,7 +92,7 @@ public class ItemResource {
     if (!this.memberUCC.memberExist(null, idMember)) {
       throw new ObjectNotFoundException("This member doesn't exists.");
     }
-    return this.getAllItems(null, idMember);
+    return this.getAllItemsByOfferStatusOrIdMember(null, idMember);
   }
 
   /**
@@ -323,7 +323,7 @@ public class ItemResource {
   ///////////////////////UTILS/////////////////////////////
   /////////////////////////////////////////////////////////
 
-  private List<ItemDTO> getAllItems(String offerStatus, int idMember) throws SQLException {
+  private List<ItemDTO> getAllItemsByOfferStatusOrIdMember(String offerStatus, int idMember) throws SQLException {
     List<ItemDTO> listItemDTO;
     if (idMember > 0) {
       listItemDTO = itemUCC.getAllItemsOfAMember(idMember);
