@@ -71,7 +71,7 @@ public interface MemberDAO {
    * if memberDTO is null it checks with idMember.
    * @param memberDTO the member to check
    * @param idMember the member's id to check
-   * @return
+   * @return true if the member exists otherwise false
    */
   boolean memberExist(MemberDTO memberDTO, int idMember);
 
