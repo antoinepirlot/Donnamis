@@ -33,6 +33,9 @@ async function getRefusal(username) {
   };
   const response = await fetch(`/api/refusals/${username}`, request);
   if (!response.ok) {
+    if (response.status === 404) {
+      return false;
+    }
     throw new Error("Error while fetching refusal message.");
   }
   return await response.json();
