@@ -68,7 +68,7 @@ async function ViewItemPage() {
 function showPhoneNumberInput() {
   const phoneNumberInputDiv = document.querySelector("#phoneNumberInputDiv");
   const phoneNumberInputHtml = `
-    <input id="phoneNumberInput" type="tel" placeholder="0487123456" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}">
+    <input id="phoneNumberInput" type="tel" placeholder="0487123456" pattern="(+?[0-9]{3})[0-9]{13}">
   `;
   if (!phoneNumberInputDiv.querySelector("#phoneNumberInput")) {
     phoneNumberInputDiv.innerHTML = phoneNumberInputHtml;
@@ -110,6 +110,9 @@ async function postInterest(e) {
   const member = {
     id: getPayload().id
   };
+  if (callWanted) {
+    member.phoneNumber = document.querySelector("#phoneNumberInput").value;
+  }
   const interest = {
     callWanted: callWanted,
     offer: lastOffer,
