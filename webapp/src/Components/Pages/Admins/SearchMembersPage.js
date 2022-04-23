@@ -1,6 +1,6 @@
 import {getPayload,} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
-import {getAllMembers} from "../../../utils/BackEndRequests";
+import {getAllMembers, isAdmin} from "../../../utils/BackEndRequests";
 
 const viewSearchbarHtml = `
   <h1 class="display-3" id="search_member_title">Rechercher des membres</h1>
@@ -21,7 +21,7 @@ const viewSearchbarHtml = `
 `;
 
 async function SearchMembersPage() {
-  if (!getPayload()) {
+  if (!await isAdmin()) {
     Redirect("/");
     return;
   }
