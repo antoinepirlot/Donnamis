@@ -5,6 +5,7 @@ import {
   getItem,
   postInterest as postInterestBackEnd
 } from "../../../utils/BackEndRequests";
+import {placements} from "@popperjs/core";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3">
@@ -18,12 +19,13 @@ const viewOfferHtml = `
         <h5 id="availabilities" class="card-text"></h5>
         <h5 id="pubDate" class="card-text"></h5>
 
-        <form>
-                <div class="form-check form-switch">
-         <input class="form-check-input" type="checkbox" id="callWanted">
-         <label class="form-check-label" for="callWanted">J'accepte d'être appelé</label>
-        </div>
-           <input id="interestButton" type="submit" class="btn btn-primary" value="Je suis interessé(e) !">
+        <form id="interestForm">
+          <div id="interestsInputs" class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="callWanted">
+            <label class="form-check-label" for="callWanted">J'accepte d'être appelé</label>
+            <div id="phoneNumberInputDiv"></div>
+          </div>
+          <input id="interestButton" type="submit" class="btn btn-primary" value="Je suis interessé(e) !">
        </form>
 
        <div class="message" id="interestMessage"></div>
@@ -52,11 +54,27 @@ async function ViewItemPage() {
   const page = document.querySelector("#page");
   const idItem = urlParams.get("id");
   page.innerHTML = viewOfferHtml;
+
+  const callWanted = document.querySelector("#callWanted");
+  callWanted.addEventListener("click", showPhoneNumberInput)
+
   const button = document.querySelector("#offerCard");
   //get offer's infos with the id in param
   await getItemInfo(idItem);
   //post an interest
   button.addEventListener("submit", postInterest);
+}
+
+function showPhoneNumberInput() {
+  const phoneNumberInputDiv = document.querySelector("#phoneNumberInputDiv");
+  const phoneNumberInputHtml = `
+    <input id="phoneNumberInput" type="tel" placeholder="0487123456" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}">
+  `;
+  if (!phoneNumberInputDiv.querySelector("#phoneNumberInput")) {
+    phoneNumberInputDiv.innerHTML = phoneNumberInputHtml;
+  } else {
+    phoneNumberInputDiv.innerHTML = "";
+  }
 }
 
 async function getItemInfo(idItem) {
