@@ -41,6 +41,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "                i.last_offer_date, "
         + "                it.id_type, "
         + "                it.item_type, "
+        + "                m.id_member, "
         + "                m.username, "
         + "                m.last_name, "
         + "                m.first_name "
@@ -149,6 +150,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "                i.last_offer_date, "
         + "                it.id_type, "
         + "                it.item_type, "
+        + "                m.id_member, "
         + "                m.username, "
         + "                m.last_name, "
         + "                m.first_name "
@@ -265,6 +267,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "                i.last_offer_date, "
         + "                it.id_type, "
         + "                it.item_type, "
+        + "                m.id_member, "
         + "                m.username, "
         + "                m.last_name, "
         + "                m.first_name "
@@ -287,7 +290,7 @@ public class ItemDAOImpl implements ItemDAO {
         while (rs.next()) {
           itemDTOList.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
         }
-        return itemDTOList;
+        return itemDTOList.isEmpty() ? null : itemDTOList;
       }
     }
   }
@@ -305,8 +308,8 @@ public class ItemDAOImpl implements ItemDAO {
         + "FROM project_pae.items i, "
         + "     project_pae.items_types it, "
         + "     project_pae.recipients r "
-        + "WHERE r.received = '"+RECEIVED_RECIPIENT_STATUS+"'  "
-        + "  AND r.id_member = ?"
+        + "WHERE r.received = '"+RECEIVED_RECIPIENT_STATUS+"' "
+        + "  AND r.id_member = ? "
         + "  AND r.id_item = i.id_item "
         + "  AND i.id_type = it.id_type;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
@@ -316,7 +319,7 @@ public class ItemDAOImpl implements ItemDAO {
         while (rs.next()) {
           itemDTOList.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
         }
-        return itemDTOList;
+        return itemDTOList.isEmpty() ? null : itemDTOList;
       }
     }
   }
