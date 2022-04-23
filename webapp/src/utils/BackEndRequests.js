@@ -288,6 +288,21 @@ async function getItemsTypes() {
   return await response.json();
 }
 
+async function addNewItemsType(itemsType) {
+  const request = {
+    method: "POST",
+    headers: {
+      "Authorization": getObject("token"),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(itemsType)
+  };
+  const response = await fetch("/api/items_types", request);
+  if (!response.ok) {
+    throw new Error("Error while adding a new items type.");
+  }
+}
+
 async function offerAnItem(item) {
   const request = {
     method: "POST",
@@ -465,6 +480,7 @@ export {
   cancelOffer,
   getItem,
   getItemsTypes,
+  addNewItemsType,
   offerAnItem,
   offerAgain,
   postInterest,
