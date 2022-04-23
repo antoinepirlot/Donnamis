@@ -54,7 +54,11 @@ public class ObjectsInstanceCreator {
     itemDTO.setOfferStatus(
         StringEscapeUtils.escapeHtml4(rs.getString("offer_status"))
     );
-    itemDTO.setItemType(createItemsTypeInstance(factory, rs));
+    try {
+      itemDTO.setItemType(createItemsTypeInstance(factory, rs));
+    } catch (SQLException e) {
+      itemDTO.setItemType(null);
+    }
     try {
       itemDTO.setMember(createMemberInstance(factory, rs));
     } catch (SQLException e) {
