@@ -5,11 +5,11 @@ import AllItemsPage from "../Pages/Admins/AllItemsPage"
 import RegisterPage from "../Pages/RegisterPage";
 import AllOfferedItemsPage from "../Pages/Members/AllOfferedItemPage";
 import ViewItemPage from "../Pages/Members/ViewItemPage";
-import {OfferAnItemPage} from "../Pages/Members/OfferAnItemPage";
+import OfferAnItemPage from "../Pages/Members/OfferAnItemPage";
 import MyItemsPage from "../Pages/Members/MyItemsPage";
-import {ProfilePage} from "../Pages/Members/ProfilePage";
+import ProfilePage from "../Pages/Members/ProfilePage";
 import HomePage from "../Pages/HomePage";
-import {MyAssignedItems} from "../Pages/Members/MyAssignedItems";
+import MyAssignedItems from "../Pages/Members/MyAssignedItems";
 
 // Configure your routes here
 const routes = {

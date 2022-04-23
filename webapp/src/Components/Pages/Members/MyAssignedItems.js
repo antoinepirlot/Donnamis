@@ -26,4 +26,4 @@ const MyAssignedItems = async () => {
   tbody.innerHTML = getShowItemsHtml(items);
 }
 
-export {MyAssignedItems};
+export default MyAssignedItems;

@@ -94,4 +94,4 @@ async function modifyProfile(e) {
   }
 }
 
-export {ProfilePage};
+export default ProfilePage;

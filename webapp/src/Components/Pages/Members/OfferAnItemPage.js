@@ -104,4 +104,4 @@ async function offerItem(e) {
   }
 }
 
-export {OfferAnItemPage};
+export default OfferAnItemPage;
