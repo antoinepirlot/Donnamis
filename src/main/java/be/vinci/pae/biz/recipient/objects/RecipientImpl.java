@@ -63,11 +63,11 @@ public class RecipientImpl implements Recipient {
 
   @Override
   public String toString() {
-    return "RecipientImpl{" +
-        "id=" + id +
-        ", item=" + item +
-        ", member=" + member +
-        ", received='" + received + '\'' +
-        '}';
+    return "RecipientImpl{"
+        + "id=" + id
+        + ", item=" + item
+        + ", member=" + member
+        + ", received='" + received + '\''
+        + '}';
   }
 }
