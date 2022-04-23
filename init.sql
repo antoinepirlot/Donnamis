@@ -44,10 +44,10 @@ CREATE TABLE project_pae.items
     item_description VARCHAR(500) NOT NULL,
     id_type          INTEGER      NOT NULL,
     id_member        INTEGER      NOT NULL,
-    photo            VARCHAR(200)      NULL,
+    photo            VARCHAR(500) NULL,
     title            VARCHAR(50)  NOT NULL,
     offer_status     VARCHAR(10)  NOT NULL,
-    last_offer_date  DATE         NULL,
+    last_offer_date  TIMESTAMP    NULL,
     --FOREIGN KEY (id_photo) REFERENCES project_pae.photos (id_photo),
     FOREIGN KEY (id_type) REFERENCES project_pae.items_types (id_type),
     FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
@@ -66,7 +66,7 @@ CREATE TABLE project_pae.ratings
 CREATE TABLE project_pae.offers
 (
     id_offer  SERIAL PRIMARY KEY,
-    date      DATE        NOT NULL,
+    date      TIMESTAMP   NOT NULL,
     time_slot VARCHAR(50) NOT NULL,
     id_item   INTEGER     NOT NULL,
     FOREIGN KEY (id_item) REFERENCES project_pae.items (id_item)
@@ -75,10 +75,10 @@ CREATE TABLE project_pae.offers
 CREATE TABLE project_pae.interests
 (
     id_interest SERIAL PRIMARY KEY,
-    call_wanted BOOLEAN NOT NULL,
-    id_offer    INTEGER NOT NULL,
-    id_member   INTEGER NOT NULL,
-    date        DATE    NOT NULL,
+    call_wanted BOOLEAN   NOT NULL,
+    id_offer    INTEGER   NOT NULL,
+    id_member   INTEGER   NOT NULL,
+    date        TIMESTAMP NOT NULL,
     FOREIGN KEY (id_offer) REFERENCES project_pae.offers (id_offer),
     FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
 );
@@ -169,15 +169,15 @@ VALUES ('Vêtements');
 -- ITEMS TABLE
 INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title,
                                offer_status, last_offer_date)
-VALUES ('Décorations de Noël de couleur rouge', 3, 3, 1, 'Titre', 'donated',
+VALUES ('Décorations de Noël de couleur rouge', 3, 3, 'christmas-1869533_640', 'Titre', 'donated',
         '21-03-22');
 INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title,
                                offer_status, last_offer_date)
-VALUES ('Cadre représentant un chien noir sur un fond noir.', 3, 3, null, 'Titre',
+VALUES ('Cadre représentant un chien noir sur un fond noir.', 3, 3, 'dog-4118585_640', 'Titre',
         'donated', '25-03-22');
 INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title,
                                offer_status, last_offer_date)
-VALUES ('Ancien bureau d’écolier.', 8, 4, null, 'Titre', 'donated', '25-03-22');
+VALUES ('Ancien bureau d’écolier.', 8, 4, 'BureauEcolier-7', 'Titre', 'donated', '25-03-22');
 
 -- OFFERS TABLE
 INSERT INTO project_pae.offers ("date", time_slot, id_item)
