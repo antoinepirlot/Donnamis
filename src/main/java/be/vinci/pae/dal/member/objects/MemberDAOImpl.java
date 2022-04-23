@@ -105,11 +105,11 @@ public class MemberDAOImpl implements MemberDAO {
       preparedStatement.setInt(6, memberDTO.getId());
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
-          memberDTO = ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
+          modifiedMember = ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
         }
       }
     }
-    return memberDTO;
+    return modifiedMember;
   }
 
   /**
