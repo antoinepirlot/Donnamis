@@ -231,7 +231,6 @@ public class MemberDAOImpl implements MemberDAO {
         }
       }
     }
-    System.out.println(memberDTOList.isEmpty());
     return memberDTOList.isEmpty() ? null : memberDTOList;
   }
 

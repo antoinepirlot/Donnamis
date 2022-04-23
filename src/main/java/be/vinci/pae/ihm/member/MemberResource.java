@@ -137,7 +137,6 @@ public class MemberResource {
     if (idOffer < 1) {
       throw new WrongBodyDataException("The idOffer is less than 1");
     }
-    System.out.println(this.memberUCC.getInterestedMembers(idOffer));
     return this.jsonUtil.filterPublicJsonViewAsList(this.memberUCC.getInterestedMembers(idOffer));
   }
 
@@ -304,7 +303,6 @@ public class MemberResource {
    * @return the member's token
    */
   private String createToken(int id) {
-    System.out.println("Generating token.");
     Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
     Date date = new Date();
     long duration = 1000 * 60 * 60 * 48; //2 days
