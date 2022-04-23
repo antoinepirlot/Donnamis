@@ -103,6 +103,23 @@ public class ItemUCCImpl implements ItemUCC {
     return this.markItemAs(false, itemDTO);
   }
 
+  @Override
+  public int countNumberOfItemsByOfferStatus(int idMember, String offerStatus) throws SQLException {
+    try {
+      this.dalServices.start();
+      int itemsNumber = this.itemDAO.countNumberOfItemsByOfferStatus(idMember, offerStatus);
+      this.dalServices.commit();
+      return itemsNumber;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
+    }
+  }
+
+  /////////////////////////////////////////////////////////
+  ///////////////////////UTILS/////////////////////////////
+  /////////////////////////////////////////////////////////
+
   /**
    * mark item as given or not given and update the recipient.
    * @param given true if it marks item as given or false to mark item as not given

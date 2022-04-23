@@ -45,4 +45,13 @@ public interface ItemDAO {
    * @throws SQLException if an error occurs while updating item
    */
   boolean markItemAsNotGiven(ItemDTO itemDTO) throws SQLException;
+
+  /**
+   * Count the number of items with the specified offer status for the member with the idMember.
+   * @param idMember the member's id
+   * @param offerStatus the item's offer status
+   * @return the number of items matching the offer status
+   * @throws SQLException if an error occurs while counting
+   */
+  int countNumberOfItemsByOfferStatus(int idMember, String offerStatus) throws SQLException;
 }

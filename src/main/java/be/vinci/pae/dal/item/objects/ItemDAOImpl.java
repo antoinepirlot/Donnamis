@@ -217,9 +217,26 @@ public class ItemDAOImpl implements ItemDAO {
     return this.markItemAs(false, itemDTO);
   }
 
+  @Override
+  public int countNumberOfItemsByOfferStatus(int idMember, String offerStatus) throws SQLException {
+    String query = "SELECT COUNT(id_item) "
+        + "FROM project_pae.items "
+        + "WHERE id_member = ? "
+        + "  AND offer_status = ?;";
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setInt(1, idMember);
+      ps.setString(2, StringEscapeUtils.escapeHtml4(offerStatus));
+      try (ResultSet rs = ps.executeQuery()) {
+        rs.next();
+        return rs.getInt(1);
+      }
+    }
+  }
+
   /**
    * mark item as given or not given and update the recipient.
-   * @param given true if it marks item as given or false to mark item as not given
+   *
+   * @param given   true if it marks item as given or false to mark item as not given
    * @param itemDTO the item to update
    * @return true if the operation worked as expected otherwise false
    * @throws SQLException if an error occurs while updating items or recipient
@@ -236,7 +253,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "WHERE id_item = ?; "
         + "UPDATE project_pae.recipients "
         + "SET received = ? "
-        + "WHERE id_member = ("+selectIdMember+") "
+        + "WHERE id_member = (" + selectIdMember + ") "
         + "  AND id_item = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       if (given) {
