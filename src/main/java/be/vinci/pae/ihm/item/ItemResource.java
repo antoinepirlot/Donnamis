@@ -323,7 +323,8 @@ public class ItemResource {
   ///////////////////////UTILS/////////////////////////////
   /////////////////////////////////////////////////////////
 
-  private List<ItemDTO> getAllItemsByOfferStatusOrIdMember(String offerStatus, int idMember) throws SQLException {
+  private List<ItemDTO> getAllItemsByOfferStatusOrIdMember(String offerStatus, int idMember)
+      throws SQLException {
     List<ItemDTO> listItemDTO;
     if (idMember > 0) {
       listItemDTO = itemUCC.getAllItemsOfAMember(idMember);
