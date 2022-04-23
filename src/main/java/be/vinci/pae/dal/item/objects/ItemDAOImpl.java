@@ -241,9 +241,9 @@ public class ItemDAOImpl implements ItemDAO {
         + "WHERE id_member = ? "
         + "  AND received = ";
     if(received) {
-      query += RECEIVED_RECIPIENT_STATUS;
+      query += "'"+RECEIVED_RECIPIENT_STATUS+"';";
     } else {
-      query += NOT_RECEIVED_RECIPIENT_STATUS;
+      query += "'"+NOT_RECEIVED_RECIPIENT_STATUS+"';";
     }
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setInt(1, idMember);
