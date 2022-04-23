@@ -20,7 +20,7 @@ public class InterestDAOImpl implements InterestDAO {
         + "VALUES (?, ?, ?, ?); ";
     if (interestDTO.isCallWanted()) {
       query += "UPDATE project_pae.members "
-          + "SET phoneNumber = ? "
+          + "SET phone = ? "
           + "WHERE id_member = ?;";
     }
     try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
