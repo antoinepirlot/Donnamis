@@ -66,5 +66,4 @@ public class ItemsTypeDAOImpl implements ItemsTypeDAO {
       return ps.executeUpdate() != 0;
     }
   }
-
 }

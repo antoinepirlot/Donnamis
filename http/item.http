@@ -43,3 +43,7 @@ Authorization: {{token}}
 ###
 GET {{baseUrl}}/items/assigned_item/5
 Authorization: {{token}}
+
+###
+GET {{baseUrl}}/items/count/4/given
+Authorization: {{token}}

@@ -124,6 +124,20 @@ async function getInterestedMembers(idOffer) {
   return response.status === 200 ? await response.json() : null;
 }
 
+async function getOneMember(idMember) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/members/${idMember}`, request);
+  if (!response.ok) {
+    throw new Error("Error while fetching one user.");
+  }
+  return await response.json();
+}
+
 async function confirmInscription(member) {
   const request = {
     method: "PUT",
@@ -284,6 +298,34 @@ async function getItemsTypes() {
     throw new Error(
         "fetch error : " + response.status + " : " + response.statusText
     );
+  }
+  return await response.json();
+}
+
+async function getNumberOfItems(idMember, offerStatus) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/items/count/${idMember}/${offerStatus}`, request);
+  if (!response.ok) {
+    throw new Error("Error while fetching the number of items.");
+  }
+  return await response.json();
+}
+
+async function getNumberOfReceivedOrNotReceivedItems(idMember, received) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/items/count_assigned_items/${idMember}/${received}`, request);
+  if (!response.ok) {
+    throw new Error("Error while fetching count of received or not received items of member: " + idMember);
   }
   return await response.json();
 }
@@ -468,6 +510,7 @@ export {
   isAdmin,
   getAllMembers,
   getInterestedMembers,
+  getOneMember,
   confirmInscription,
   confirmAdmin,
   denyMember,
@@ -481,6 +524,8 @@ export {
   getItem,
   getItemsTypes,
   addNewItemsType,
+  getNumberOfItems,
+  getNumberOfReceivedOrNotReceivedItems,
   offerAnItem,
   offerAgain,
   postInterest,
