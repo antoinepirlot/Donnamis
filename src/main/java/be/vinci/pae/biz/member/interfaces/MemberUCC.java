@@ -70,7 +70,7 @@ public interface MemberUCC {
   boolean register(MemberDTO memberDTO) throws SQLException;
 
   /**
-   * Get the list of interested member of the item and returns it
+   * Get the list of interested member of the item and returns it.
    *
    * @param idOffer the id of the item
    * @return the list of interested members

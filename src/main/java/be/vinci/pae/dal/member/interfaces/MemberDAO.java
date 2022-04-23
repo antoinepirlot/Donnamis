@@ -36,6 +36,7 @@ public interface MemberDAO {
 
   /**
    * Confirm the member.
+   *
    * @param memberDTO the member to confirm
    * @return true if the member has been confirmed, otherwise false
    * @throws SQLException if an error occurs while confirming member
@@ -75,7 +76,7 @@ public interface MemberDAO {
   boolean memberExist(MemberDTO memberDTO, int idMember);
 
   /**
-   * Get all interested members of the item identified by its id
+   * Get all interested members of the item identified by its id.
    *
    * @param idOffer the item's id
    * @return the list of interested members

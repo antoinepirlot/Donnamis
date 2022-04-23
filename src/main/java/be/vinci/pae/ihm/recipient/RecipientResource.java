@@ -22,7 +22,7 @@ public class RecipientResource {
   private RecipientUCC recipientUCC;
 
   /**
-   * Add a recipient into the database
+   * Add a recipient into the database.
    *
    * @param recipientDTO the recipient to add
    * @throws SQLException        if an error occurs while adding it

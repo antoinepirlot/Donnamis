@@ -24,7 +24,7 @@ public class RefusalResource {
   private RefusalUCC refusalUCC;
 
   /**
-   * Get the refusal message of the member identified by its id
+   * Get the refusal message of the member identified by its id.
    *
    * @param username the member's username
    * @return the refusal message
