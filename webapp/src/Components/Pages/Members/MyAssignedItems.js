@@ -1,7 +1,7 @@
-import {getAssignedItems} from "../../utils/BackEndRequests";
-import {getShowItemsHtml} from "../../utils/HtmlCode";
-import {getPayload} from "../../utils/session";
-import {Redirect} from "../Router/Router";
+import {getAssignedItems} from "../../../utils/BackEndRequests";
+import {getShowItemsHtml} from "../../../utils/HtmlCode";
+import {getPayload} from "../../../utils/session";
+import {Redirect} from "../../Router/Router";
 
 const html = `
   <div>

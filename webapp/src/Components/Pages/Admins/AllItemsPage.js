@@ -1,6 +1,6 @@
-import {getAllItemsByOfferStatus, isAdmin} from "../../utils/BackEndRequests";
-import {Redirect} from "../Router/Router";
-import {getShowItemsHtml} from "../../utils/HtmlCode";
+import {getAllItemsByOfferStatus, isAdmin} from "../../../utils/BackEndRequests";
+import {Redirect} from "../../Router/Router";
+import {getShowItemsHtml} from "../../../utils/HtmlCode";
 
 const tableHtml = `
   <div>

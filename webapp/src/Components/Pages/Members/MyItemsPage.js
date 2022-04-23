@@ -5,12 +5,12 @@ import {
   getMyItems,
   markItemAs as markItemAsaBackEnd,
   offerAgain as offerAgainBackEnd
-} from "../../utils/BackEndRequests";
-import {getPayload} from "../../utils/session";
-import {showError} from "../../utils/ShowError";
-import {openModal} from "../../utils/Modals";
-import {Redirect} from "../Router/Router";
-import {getShowItemsHtml} from "../../utils/HtmlCode";
+} from "../../../utils/BackEndRequests";
+import {getPayload} from "../../../utils/session";
+import {showError} from "../../../utils/ShowError";
+import {openModal} from "../../../utils/Modals";
+import {Redirect} from "../../Router/Router";
+import {getShowItemsHtml} from "../../../utils/HtmlCode";
 
 const myItemsPageHtml = `
   <div>

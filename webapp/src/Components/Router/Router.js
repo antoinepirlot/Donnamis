@@ -1,15 +1,15 @@
 import LoginPage from "../Pages/LoginPage";
 import Logout from "../Logout/Logout";
-import ListMemberPage from "../Pages/ListMemberPage";
-import AllItemsPage from "../Pages/AllItemsPage"
+import ListMemberPage from "../Pages/Admins/ListMemberPage";
+import AllItemsPage from "../Pages/Admins/AllItemsPage"
 import RegisterPage from "../Pages/RegisterPage";
-import AllOfferedItemsPage from "../Pages/AllOfferedItemPage";
-import ViewItemPage from "../Pages/ViewItemPage";
-import {OfferAnItemPage} from "../Pages/OfferAnItemPage";
-import MyItemsPage from "../Pages/MyItemsPage";
-import {ProfilePage} from "../Pages/ProfilePage";
+import AllOfferedItemsPage from "../Pages/Members/AllOfferedItemPage";
+import ViewItemPage from "../Pages/Members/ViewItemPage";
+import {OfferAnItemPage} from "../Pages/Members/OfferAnItemPage";
+import MyItemsPage from "../Pages/Members/MyItemsPage";
+import {ProfilePage} from "../Pages/Members/ProfilePage";
 import HomePage from "../Pages/HomePage";
-import {MyAssignedItems} from "../Pages/MyAssignedItems";
+import {MyAssignedItems} from "../Pages/Members/MyAssignedItems";
 
 // Configure your routes here
 const routes = {

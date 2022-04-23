@@ -2,10 +2,10 @@ import {
   addNewItemsType,
   getItemsTypes,
   offerAnItem
-} from "../../utils/BackEndRequests";
-import {showError} from "../../utils/ShowError";
-import {getPayload} from "../../utils/session";
-import {Redirect} from "../Router/Router";
+} from "../../../utils/BackEndRequests";
+import {showError} from "../../../utils/ShowError";
+import {getPayload} from "../../../utils/session";
+import {Redirect} from "../../Router/Router";
 
 const htmlForm = `
   <div>
