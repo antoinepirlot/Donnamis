@@ -63,11 +63,10 @@ public class ItemResource {
   public List<ItemDTO> getAllItemsByOfferStatus(@PathParam("offer_status") String offerStatus)
       throws SQLException {
     if (offerStatus == null || offerStatus.isBlank()
-        || (!offerStatus.equals("donated")
+        || !offerStatus.equals("donated")
         && !offerStatus.equals("assigned")
         && !offerStatus.equals("cancelled")
         && !offerStatus.equals("given")
-        )
     ) {
       throw new WrongBodyDataException("Offer status " + offerStatus + " is not valid.");
     }
@@ -112,9 +111,8 @@ public class ItemResource {
       @PathParam("offerStatus") String offerStatus) throws SQLException {
     if (idMember < 1
         || offerStatus == null || offerStatus.isBlank()
-        || (!offerStatus.equals("donated")
+        || !offerStatus.equals("donated")
         && !offerStatus.equals("given")
-        )
     ) {
       throw new WrongBodyDataException("idMember or offer status are not valid.");
     }
@@ -184,7 +182,7 @@ public class ItemResource {
       @PathParam("offer_status") String offerStatus) throws SQLException {
     if (idMember < 1
         || offerStatus == null || offerStatus.isBlank()
-        || (!offerStatus.equals("donated") && !offerStatus.equals("given"))
+        || !offerStatus.equals("donated") && !offerStatus.equals("given")
     ) {
       throw new WrongBodyDataException("Wrong offerStatus is invalid.");
     }
