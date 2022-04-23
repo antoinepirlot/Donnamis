@@ -48,7 +48,7 @@ public class ItemResource {
   @Path("all_items")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public List<ItemDTO> getAllItemsByOfferStatusOrIdMember() throws SQLException {
+  public List<ItemDTO> getAllItems() throws SQLException {
     return this.getAllItemsByOfferStatusOrIdMember(null, -1);
   }
 
