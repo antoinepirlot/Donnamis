@@ -96,21 +96,6 @@ public class MemberDAOImpl implements MemberDAO {
     return this.getOne(memberDTO);
   }
 
-  public AddressDTO getAddressMember(int id) {
-    String query = "SELECT * FROM project_pae.addresses a WHERE a.id_member = ?;";
-    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
-      preparedStatement.setInt(1, id);
-      try (ResultSet rs = preparedStatement.executeQuery()) {
-        if (rs.next()) {
-          return ObjectsInstanceCreator.createAddressInstance(this.factory, rs);
-        }
-      }
-    } catch (SQLException e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
-    }
-    return null;
-  }
-
   public MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException {
     String query = "UPDATE project_pae.members SET username = ?, password = ?, last_name = ?, "
         + "first_name = ?, phone = ? WHERE id_member = ? RETURNING *;";

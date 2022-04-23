@@ -22,8 +22,6 @@ public interface MemberDAO {
    */
   boolean register(MemberDTO memberDTO) throws SQLException;
 
-  AddressDTO getAddressMember(int id);
-
   boolean confirmMember(MemberDTO memberDTO) throws SQLException;
 
   MemberDTO isAdmin(int id);

@@ -31,14 +31,6 @@ public interface MemberUCC {
   MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException;
 
   /**
-   * Asks the UCC to get the adress of the membe identified by its id.
-   *
-   * @param id the member's id
-   * @return the adress or null if there's no member with the id
-   */
-  AddressDTO getAddressMember(int id) throws SQLException;
-
-  /**
    * Confirm the inscription of a member.
    *
    * @param memberDTO the member to confirm

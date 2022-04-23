@@ -46,19 +46,6 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public AddressDTO getAddressMember(int id) throws SQLException {
-    try {
-      dalServices.start();
-      AddressDTO addressDTO = memberDAO.getAddressMember(id);
-      dalServices.commit();
-      return addressDTO;
-    } catch (SQLException e) {
-      dalServices.rollback();
-      throw e;
-    }
-  }
-
-  @Override
   public MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException {
     Member member = (Member) memberDTO;
     member.hashPassword();

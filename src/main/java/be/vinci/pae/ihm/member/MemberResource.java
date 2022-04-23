@@ -107,11 +107,6 @@ public class MemberResource {
     if (memberDTO == null) {
       throw new ObjectNotFoundException("Member not found");
     }
-    AddressDTO addressDTO = memberUCC.getAddressMember(id);
-    if (addressDTO == null) {
-      throw new ObjectNotFoundException("Address not found");
-    }
-    memberDTO.setAddress(addressDTO);
     return this.jsonUtil.filterPublicJsonView(memberDTO);
   }
 
