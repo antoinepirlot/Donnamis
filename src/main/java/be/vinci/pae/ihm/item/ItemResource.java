@@ -67,7 +67,7 @@ public class ItemResource {
         && !offerStatus.equals("assigned")
         && !offerStatus.equals("cancelled")
         && !offerStatus.equals("given")
-    )
+        )
     ) {
       throw new WrongBodyDataException("Offer status " + offerStatus + " is not valid.");
     }
@@ -114,7 +114,7 @@ public class ItemResource {
         || offerStatus == null || offerStatus.isBlank()
         || (!offerStatus.equals("donated")
         && !offerStatus.equals("given")
-    )
+        )
     ) {
       throw new WrongBodyDataException("idMember or offer status are not valid.");
     }
