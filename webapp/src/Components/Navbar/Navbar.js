@@ -35,6 +35,8 @@ const navBarHtml = `
           </li>
         </ul>
       </div>
+      <div id="usernameNavbar">
+      </div>
     </div>
   </nav>
 `;
@@ -88,11 +90,7 @@ const myItemsLinkHtml = `
 `;
 
 const profilLinkHtml = `
-          <li class="nav-item">
-            <a id="memberUsername" class="nav-link" href="#" data-uri="/profil">
-            </a>
-          </li>
-`;
+  <a id="memberUsername" class="nav-link" href="#" data-uri="/profil"></a>`;
 
 const myAssignedItemsLinkHtml = `
   <li class="nav-item">
@@ -106,8 +104,9 @@ const Navbar = async () => {
   const memberDTO = getObject("memberDTO");
   const links = document.querySelector("#navbarLinks");
   if (memberDTO) {
-    links.innerHTML += profilLinkHtml;
-    let memberUsername = document.querySelector("#memberUsername");
+    const naveBarMemberPlace = document.querySelector("#usernameNavbar");
+    naveBarMemberPlace.innerHTML = profilLinkHtml;
+    const memberUsername = document.querySelector("#memberUsername");
     memberUsername.innerHTML += memberDTO.username;
     if (await isAdmin()) {
       links.innerHTML += listMemberLinkHtml;
