@@ -302,6 +302,20 @@ async function getItemsTypes() {
   return await response.json();
 }
 
+async function getAllItemsByMemberIdAndOfferStatus(idMember, offerStatus) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/items/${idMember}/${offerStatus}`, request);
+  if (!response.ok) {
+    throw new Error("Error while fetching member's items");
+  }
+  return await response.json();
+}
+
 async function getNumberOfItems(idMember, offerStatus) {
   const request = {
     method: "GET",
@@ -523,6 +537,7 @@ export {
   cancelOffer,
   getItem,
   getItemsTypes,
+  getAllItemsByMemberIdAndOfferStatus,
   addNewItemsType,
   getNumberOfItems,
   getNumberOfReceivedOrNotReceivedItems,
