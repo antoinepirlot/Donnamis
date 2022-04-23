@@ -3,6 +3,7 @@ import {Redirect} from "../../Router/Router";
 import {getAllMembers} from "../../../utils/BackEndRequests";
 
 const viewSearchbarHtml = `
+  <h1 class="display-3" id="search_member_title">Rechercher des membres</h1>
   <input class="form-control me-2" id="searchInput" type="search" placeholder="Rechercher un membre" aria-label="Rechercher">
   <div>
     <table class="table">
@@ -10,7 +11,7 @@ const viewSearchbarHtml = `
         <tr>
           <th scope="col">Nom</th>
           <th scope="col">Prénom</th>
-          <th scope="col">Voir membre</th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody id="tbody_all_members">
@@ -35,14 +36,18 @@ async function SearchMembersPage() {
         const tbody = document.querySelector("#tbody_all_members");
         tbody.innerHTML = "";
 
-        const input = searchInput.value;
+        const input = searchInput.value.toLowerCase();
+
         const result = members.filter(
             member => member.lastName.toLowerCase().includes(input)
                 || member.firstName.toLowerCase().includes(
                     input))
 
-        showFilterMembers(result)
-
+        if (result.length < 1) {
+          tbody.innerHTML = `<h1 class="display-6" id="SearchErrorMessage">Il n'y a aucun résultat pour cette recherche</h1>`;
+        } else {
+          showFilterMembers(result)
+        }
       }
   )
 }
@@ -54,7 +59,7 @@ function showFilterMembers(members) {
       <tr id="MemberLine">
         <td>${member.firstName}</td>
         <td>${member.lastName}</td>
-        <td><a href="/member?id=${member.id}" type="button" class="btn btn-primary">Voir les détails</a></td>
+        <td><a href="/member?id=${member.id}" type="button" class="btn btn-primary">Voir détails</a></td>
       </tr>    
     `;
   })

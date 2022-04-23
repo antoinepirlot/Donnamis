@@ -46,8 +46,15 @@
   text-overflow: ellipsis;
 }
 
-#all_offered_items_title, #all_items_title, #all_latest_items_title, #login_title {
+#all_offered_items_title, #all_items_title, #all_latest_items_title, #login_title, #search_member_title {
   margin-bottom: 2.5rem;
+}
+
+#SearchErrorMessage {
+  margin-top: 5rem;
+  margin-left: 7rem;
+  color: #696969;
+  position: relative;
 }
 
 /*MODAL*/
