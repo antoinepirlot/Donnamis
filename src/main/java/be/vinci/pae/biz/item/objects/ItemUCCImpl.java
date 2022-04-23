@@ -131,7 +131,8 @@ public class ItemUCCImpl implements ItemUCC {
   }
 
   @Override
-  public List<ItemDTO> getMemberItemsByOfferStatus(int idMember, String offerStatus) throws SQLException {
+  public List<ItemDTO> getMemberItemsByOfferStatus(int idMember, String offerStatus)
+      throws SQLException {
     try {
       this.dalServices.start();
       List<ItemDTO> itemDTOList = this.itemDAO.getMemberItemsByOfferStatus(idMember, offerStatus);
