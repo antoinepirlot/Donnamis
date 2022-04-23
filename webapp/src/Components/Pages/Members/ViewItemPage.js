@@ -1,11 +1,10 @@
-import {getPayload,} from "../../../utils/session";
+import {checkToken, getObject, getPayload,} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
 import {showError} from "../../../utils/ShowError";
 import {
-  getItem,
+  getItem, me,
   postInterest as postInterestBackEnd
 } from "../../../utils/BackEndRequests";
-import {placements} from "@popperjs/core";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3">
@@ -67,9 +66,18 @@ async function ViewItemPage() {
 
 function showPhoneNumberInput() {
   const phoneNumberInputDiv = document.querySelector("#phoneNumberInputDiv");
-  const phoneNumberInputHtml = `
-    <input id="phoneNumberInput" type="tel" placeholder="0487123456" pattern="(+?[0-9]{3})[0-9]{13}">
-  `;
+  let phoneNumberInputHtml;
+  const memberDTO = getObject("memberDTO");
+  console.log(memberDTO)
+  if (memberDTO.phoneNumber) {
+    phoneNumberInputHtml = `
+      <input id="phoneNumberInput" type="tel" value="${memberDTO.phoneNumber}" pattern="(+?[0-9]{3})[0-9]{13}">
+    `;
+  } else {
+    phoneNumberInputHtml = `
+      <input id="phoneNumberInput" type="tel" placeholder="Téléphone" pattern="(+?[0-9]{3})[0-9]{13}">
+    `;
+  }
   if (!phoneNumberInputDiv.querySelector("#phoneNumberInput")) {
     phoneNumberInputDiv.innerHTML = phoneNumberInputHtml;
   } else {
@@ -118,9 +126,11 @@ async function postInterest(e) {
     offer: lastOffer,
     member: member
   };
-  console.table(interest);
   try {
     await postInterestBackEnd(interest, interestMessage);
+    if (callWanted) {
+      await checkToken();
+    }
   } catch (err) {
     showError("Votre marque d'intérêt n'a pas pu être ajoutée", "danger",
         interestMessage);
