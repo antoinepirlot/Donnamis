@@ -55,8 +55,11 @@ public class ObjectsInstanceCreator {
         StringEscapeUtils.escapeHtml4(rs.getString("offer_status"))
     );
     itemDTO.setItemType(createItemsTypeInstance(factory, rs));
-    itemDTO.setMember(createMemberInstance(factory, rs));
-    System.out.println(itemDTO);
+    try {
+      itemDTO.setMember(createMemberInstance(factory, rs));
+    } catch (SQLException e) {
+      System.out.println("No member for the item.");
+    }
     return itemDTO;
   }
 
