@@ -84,6 +84,12 @@ public class MemberResource {
     return this.jsonUtil.filterPublicJsonViewAsList(listMemberDTO);
   }
 
+  /**
+   * Check if the token is valid. If it's valid create new one.
+   * @param request the request that contains the token
+   * @return a new token
+   * @throws SQLException if an error occurs while checking if the member exists
+   */
   @GET
   @Path("/me")
   @Produces(MediaType.APPLICATION_JSON)
@@ -98,6 +104,12 @@ public class MemberResource {
     return this.createObjectNode(token, memberDTO);
   }
 
+  /**
+   * get a member with its id.
+   * @param id the member's id
+   * @return the member that match with the id.
+   * @throws SQLException if an error occurs while getting member
+   */
   @GET
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
@@ -110,6 +122,12 @@ public class MemberResource {
     return this.jsonUtil.filterPublicJsonView(memberDTO);
   }
 
+  /**
+   * Get a list of interested members for an offer identified by the offer's id.
+   * @param idOffer the offer's id
+   * @return the list of interested member for the offer
+   * @throws SQLException if an error occurs while getting the list of interested members
+   */
   @GET
   @Path("interested/{idOffer}")
   @Produces(MediaType.APPLICATION_JSON)
@@ -235,6 +253,13 @@ public class MemberResource {
     }
   }
 
+  /**
+   * Modify the member identified by its id.
+   *
+   * @param memberDTO the new member
+   * @return the member or null if there's no member with the id
+   * @throws SQLException if an error occurs while using ucc methods
+   */
   @PUT
   @Path("modify")
   @Consumes(MediaType.APPLICATION_JSON)

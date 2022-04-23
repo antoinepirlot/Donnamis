@@ -150,6 +150,15 @@ public class ObjectsInstanceCreator {
     return addressDTO;
   }
 
+  /**
+   * Create a refusal instance with the factory and set all its attributes with data selected from
+   * the db.
+   *
+   * @param factory the factory that gives an address
+   * @param rs      the result set that contains address's data
+   * @return a new refusal instance with initialized attributes
+   * @throws SQLException if an attributes is not in the result set
+   */
   public static RefusalDTO createRefusalInstance(Factory factory, ResultSet rs)
       throws SQLException {
     RefusalDTO refusalDTO = factory.getRefusalDTO();
