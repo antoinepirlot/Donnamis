@@ -137,6 +137,7 @@ public class MemberResource {
     if (idOffer < 1) {
       throw new WrongBodyDataException("The idOffer is less than 1");
     }
+    System.out.println(this.memberUCC.getInterestedMembers(idOffer));
     return this.jsonUtil.filterPublicJsonViewAsList(this.memberUCC.getInterestedMembers(idOffer));
   }
 
