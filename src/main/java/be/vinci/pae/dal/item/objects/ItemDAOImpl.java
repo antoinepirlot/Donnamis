@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class ItemDAOImpl implements ItemDAO {
 
@@ -100,11 +101,13 @@ public class ItemDAOImpl implements ItemDAO {
             + "RETURNING id_item;";
     try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
       //Select query
-      ps.setString(1, itemDTO.getItemDescription());
-      ps.setString(2, itemDTO.getItemType().getItemType());
+      ps.setString(1, StringEscapeUtils.escapeHtml4(itemDTO.getItemDescription()));
+      ps.setString(2, StringEscapeUtils.escapeHtml4(
+          itemDTO.getItemType().getItemType()
+      ));
       ps.setInt(3, itemDTO.getMember().getId());
-      ps.setString(4, itemDTO.getPhoto());
-      ps.setString(5, itemDTO.getTitle());
+      ps.setString(4, StringEscapeUtils.escapeHtml4(itemDTO.getPhoto()));
+      ps.setString(5, StringEscapeUtils.escapeHtml4(itemDTO.getTitle()));
       ps.setString(6, DEFAULT_OFFER_STATUS);
       ps.setTimestamp(7, itemDTO.getLastOfferDate());
       try (ResultSet rs = ps.executeQuery()) {
