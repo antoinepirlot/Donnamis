@@ -84,18 +84,14 @@ public class MemberDAOImpl implements MemberDAO {
     return null;
   }
 
-  /**
-   * Get the members in the DB with the corresponding id.
-   *
-   * @param id the id of the member
-   * @return the members in the DB with the corresponding id otherwise null
-   */
+  @Override
   public MemberDTO getOne(int id) throws SQLException {
     MemberDTO memberDTO = this.factory.getMember();
     memberDTO.setId(id);
     return this.getOne(memberDTO);
   }
 
+  @Override
   public MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException {
     String query = "UPDATE project_pae.members SET username = ?, password = ?, last_name = ?, "
         + "first_name = ?, phone = ? WHERE id_member = ? RETURNING *;";
@@ -148,6 +144,7 @@ public class MemberDAOImpl implements MemberDAO {
     return executeQueryWithId(id, query);
   }
 
+  @Override
   public boolean denyMember(RefusalDTO refusalDTO) throws SQLException {
     String query =
         "UPDATE project_pae.members SET state = '" + DENIED_STATE + "' WHERE id_member = ?;"
@@ -186,6 +183,7 @@ public class MemberDAOImpl implements MemberDAO {
     }
   }
 
+  @Override
   public boolean memberExist(MemberDTO memberDTO, int idMember) {
     String query = "SELECT id_member FROM project_pae.members WHERE id_member = ?";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
