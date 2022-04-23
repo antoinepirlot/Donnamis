@@ -154,6 +154,32 @@ public class ItemResource {
     return this.itemUCC.countNumberOfItemsByOfferStatus(idMember, offerStatus);
   }
 
+  /**
+   * Count the number of items that have been received or not by the member.
+   * If received is true that means the item has been received by the member.
+   * If received is false that means the member marked his interest in the item but
+   * the member who offers the item marked the member has never received the item.
+   * @param idMember the member's id
+   * @param received true if the item has been received by the member
+   *                 false if the member had marked its interest but never take the item.
+   * @return the number of the number of items received or not received
+   * @throws SQLException if an error occurs while counting items
+   * @throws WrongBodyDataException if the id member is lower than 1
+   * @throws ObjectNotFoundException if the member doesn't exist in the database
+   */
+  @GET
+  @Path("count_assigned_items/{idMember}/{received}")
+  public int countNumberOfReceivedOrNotReceivedItems(@PathParam("idMember") int idMember,
+      @PathParam("received") boolean received) throws SQLException {
+    if (idMember < 1) {
+      throw new WrongBodyDataException("idMember is lower than 1");
+    }
+    if (!this.memberUCC.memberExist(null, idMember)) {
+      throw new ObjectNotFoundException("The member " + idMember + " doesn't exist.");
+    }
+    return this.itemUCC.countNumberOfReceivedOrNotReceivedItems(idMember, received);
+  }
+
   /////////////////////////////////////////////////////////
   ///////////////////////POST//////////////////////////////
   /////////////////////////////////////////////////////////

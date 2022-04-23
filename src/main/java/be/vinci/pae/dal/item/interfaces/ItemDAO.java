@@ -54,4 +54,17 @@ public interface ItemDAO {
    * @throws SQLException if an error occurs while counting
    */
   int countNumberOfItemsByOfferStatus(int idMember, String offerStatus) throws SQLException;
+
+  /**
+   * Count the number of items that have been received or not by the member.
+   * If received is true that means the item has been received by the member.
+   * If received is false that means the member marked his interest in the item but
+   * the member who offers the item marked the member has never received the item.
+   * @param idMember the member's id
+   * @param received true if the item has been received by the member
+   *                 false if the member had marked its interest but never take the item.
+   * @return the number of the number of items received or not received
+   * @throws SQLException if an error occurs while counting items
+   */
+  int countNumberOfReceivedOrNotReceivedItems(int idMember, boolean received)throws SQLException;
 }

@@ -116,6 +116,20 @@ public class ItemUCCImpl implements ItemUCC {
     }
   }
 
+  @Override
+  public int countNumberOfReceivedOrNotReceivedItems(int idMember, boolean received)
+      throws SQLException {
+    try {
+      this.dalServices.start();
+      int numberOfItems = this.itemDAO.countNumberOfReceivedOrNotReceivedItems(idMember, received);
+      this.dalServices.commit();
+      return numberOfItems;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
+    }
+  }
+
   /////////////////////////////////////////////////////////
   ///////////////////////UTILS/////////////////////////////
   /////////////////////////////////////////////////////////
