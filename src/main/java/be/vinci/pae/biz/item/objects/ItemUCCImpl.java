@@ -130,6 +130,32 @@ public class ItemUCCImpl implements ItemUCC {
     }
   }
 
+  @Override
+  public List<ItemDTO> getMemberItemsByOfferStatus(int idMember, String offerStatus) throws SQLException {
+    try {
+      this.dalServices.start();
+      List<ItemDTO> itemDTOList = this.itemDAO.getMemberItemsByOfferStatus(idMember, offerStatus);
+      this.dalServices.commit();
+      return itemDTOList;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public List<ItemDTO> getMemberReceivedItems(int idMember) throws SQLException {
+    try {
+      this.dalServices.start();
+      List<ItemDTO> itemDTOList = this.itemDAO.getMemberReceivedItems(idMember);
+      this.dalServices.commit();
+      return itemDTOList;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
+    }
+  }
+
   /////////////////////////////////////////////////////////
   ///////////////////////UTILS/////////////////////////////
   /////////////////////////////////////////////////////////

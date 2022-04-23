@@ -254,6 +254,77 @@ public class ItemDAOImpl implements ItemDAO {
     }
   }
 
+  @Override
+  public List<ItemDTO> getMemberItemsByOfferStatus(int idMember, String offerStatus)
+      throws SQLException {
+    String query = "SELECT i.id_item, "
+        + "                i.item_description, "
+        + "                i.photo, "
+        + "                i.title, "
+        + "                i.offer_status, "
+        + "                i.last_offer_date, "
+        + "                it.id_type, "
+        + "                it.item_type, "
+        + "                m.username, "
+        + "                m.last_name, "
+        + "                m.first_name "
+        + "FROM project_pae.items i, "
+        + "     project_pae.items_types it, "
+        + "     project_pae.members m "
+        + "WHERE i.id_type = it.id_type "
+        + "  AND i.id_member = m.id_member "
+        + "  AND m.id_member = ? ";
+    if (offerStatus != null && !offerStatus.isBlank()) {
+      query += "AND i.offer_status = ?";
+    }
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setInt(1, idMember);
+      if (offerStatus != null && !offerStatus.isBlank()) {
+        ps.setString(2, StringEscapeUtils.escapeHtml4(offerStatus));
+      }
+      try (ResultSet rs = ps.executeQuery()) {
+        List<ItemDTO> itemDTOList = new ArrayList<>();
+        while (rs.next()) {
+          itemDTOList.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
+        }
+        return itemDTOList;
+      }
+    }
+  }
+
+  @Override
+  public List<ItemDTO> getMemberReceivedItems(int idMember) throws SQLException {
+    String query = "SELECT i.id_item, "
+        + "       i.item_description, "
+        + "       i.photo, "
+        + "       i.title, "
+        + "       i.offer_status, "
+        + "       i.last_offer_date, "
+        + "       it.id_type, "
+        + "       it.item_type "
+        + "FROM project_pae.items i, "
+        + "     project_pae.items_types it, "
+        + "     project_pae.recipients r "
+        + "WHERE r.received = 'received' "
+        + "  AND r.id_member = '"+RECEIVED_RECIPIENT_STATUS+"' "
+        + "  AND r.id_item = i.id_item "
+        + "  AND i.id_type = it.id_type;";
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setInt(1, idMember);
+      try (ResultSet rs = ps.executeQuery()) {
+        List<ItemDTO> itemDTOList = new ArrayList<>();
+        while (rs.next()) {
+          itemDTOList.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
+        }
+        return itemDTOList;
+      }
+    }
+  }
+
+  /////////////////////////////////////////////////////////
+  ///////////////////////UTILS/////////////////////////////
+  /////////////////////////////////////////////////////////
+
   /**
    * mark item as given or not given and update the recipient.
    *

@@ -97,6 +97,36 @@ public class ItemResource {
   }
 
   /**
+   * Get all donated items of the member identified by its id.
+   * @param idMember the member's id
+   * @param offerStatus the item's offer status
+   * @return the list of member's donated items
+   * @throws SQLException if an error occurs while getting items
+   */
+  @GET
+  @Path("member_items/{idMember}/{offerStatus}")
+  @Consumes(MediaType.TEXT_PLAIN)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<ItemDTO> getAllItemsByMemberId(@PathParam("idMember") int idMember,
+      @PathParam("offerStatus") String offerStatus) throws SQLException {
+    if (idMember < 1
+        || offerStatus == null || offerStatus.isBlank()
+        || (!offerStatus.equals("donated")
+            && !offerStatus.equals("given")
+        )
+    ) {
+      throw new WrongBodyDataException("idMember or offer status are not valid.");
+    }
+
+    if(offerStatus.equals("donated")) {
+      return this.jsonUtil
+          .filterPublicJsonViewAsList(itemUCC.getMemberItemsByOfferStatus(idMember, offerStatus));
+    }
+    return this.jsonUtil.filterPublicJsonViewAsList(this.itemUCC.getMemberReceivedItems(idMember));
+  }
+
+  /**
    * Asks UCC to get one offer identified by its id.
    *
    * @param id the item's id

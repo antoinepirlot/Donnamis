@@ -67,4 +67,21 @@ public interface ItemDAO {
    * @throws SQLException if an error occurs while counting items
    */
   int countNumberOfReceivedOrNotReceivedItems(int idMember, boolean received)throws SQLException;
+
+  /**
+   * Get all donated items of the member identified by its id.
+   * @param idMember the member's id
+   * @param offerStatus the item's offer status
+   * @return the list of member's donated items
+   * @throws SQLException if an error occurs while getting items
+   */
+  List<ItemDTO> getMemberItemsByOfferStatus(int idMember, String offerStatus) throws SQLException;
+
+  /**
+   * Get items that the member received.
+   * @param idMember the member's id
+   * @return the list of member's received items
+   * @throws SQLException if an error occurs while getting items
+   */
+  List<ItemDTO> getMemberReceivedItems(int idMember)throws SQLException;
 }
