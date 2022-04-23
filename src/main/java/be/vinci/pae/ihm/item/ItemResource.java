@@ -270,7 +270,7 @@ public class ItemResource {
   @Consumes(MediaType.APPLICATION_JSON)
   public void markItemAsGiven(ItemDTO itemDTO)
       throws SQLException, UnexpectedException {
-    this.checkMarkItemAs(itemDTO);
+    this.checkMarkItem(itemDTO);
     if (!this.itemUCC.markItemAsGiven(itemDTO)) {
       throw new UnexpectedException("marking item " + itemDTO.getId() + " as given failed.");
     }
@@ -288,7 +288,7 @@ public class ItemResource {
   @Consumes(MediaType.APPLICATION_JSON)
   public void markItemAsNotGiven(ItemDTO itemDTO)
       throws SQLException, UnexpectedException {
-    this.checkMarkItemAs(itemDTO);
+    this.checkMarkItem(itemDTO);
     if (!this.itemUCC.markItemAsNotGiven(itemDTO)) {
       throw new UnexpectedException("marking item " + itemDTO.getId() + " as not given failed.");
     }
@@ -342,7 +342,7 @@ public class ItemResource {
    * @param itemDTO the item to check
    * @throws SQLException if an error occurs while getting item from database
    */
-  private void checkMarkItemAs(ItemDTO itemDTO) throws SQLException {
+  private void checkMarkItem(ItemDTO itemDTO) throws SQLException {
     if (itemDTO == null
         || itemDTO.getId() < 1
         || itemDTO.getMember() == null || itemDTO.getMember().getId() < 1
