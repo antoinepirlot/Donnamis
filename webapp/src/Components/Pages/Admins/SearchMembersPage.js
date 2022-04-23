@@ -36,7 +36,8 @@ async function SearchMembersPage() {
         const tbody = document.querySelector("#tbody_all_members");
         tbody.innerHTML = "";
 
-        const input = searchInput.value;
+        const input = searchInput.value.toLowerCase();
+
         const result = members.filter(
             member => member.lastName.toLowerCase().includes(input)
                 || member.firstName.toLowerCase().includes(
