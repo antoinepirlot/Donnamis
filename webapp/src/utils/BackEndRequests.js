@@ -316,6 +316,20 @@ async function getNumberOfItems(idMember, offerStatus) {
   return await response.json();
 }
 
+async function getNumberOfReceivedOrNotReceivedItems(idMember, received) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/items/count_assigned_items/${idMember}/${received}`, request);
+  if (!response.ok) {
+    throw new Error("Error while fetching count of received or not received items of member: " + idMember);
+  }
+  return await response.json();
+}
+
 async function addNewItemsType(itemsType) {
   const request = {
     method: "POST",
@@ -511,6 +525,7 @@ export {
   getItemsTypes,
   addNewItemsType,
   getNumberOfItems,
+  getNumberOfReceivedOrNotReceivedItems,
   offerAnItem,
   offerAgain,
   postInterest,

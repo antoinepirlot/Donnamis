@@ -1,4 +1,8 @@
-import {getNumberOfItems, getOneMember} from "../../../utils/BackEndRequests";
+import {
+  getNumberOfItems,
+  getNumberOfReceivedOrNotReceivedItems,
+  getOneMember
+} from "../../../utils/BackEndRequests";
 
 const memberPageHtml = `
   <div id="memberPageContent" class="bg-info d-inline-flex d-flex flex-column rounded w-50 p-3">
@@ -31,8 +35,8 @@ async function showMemberInformation(member) {
       Numéro de téléphone: ${member.phoneNumber ? member.phoneNumber : "Aucun"}<br>
       Nombre d'objets offerts: ${await getNumberOfItems(member.id, "donated")}<br>
       Nombre d'objets donnés: ${await getNumberOfItems(member.id, "given")}<br>
-      Nombre d'objets intéréssé mais non reçu: En cours de développement<br>
-      Nombre d'objets reçus: En cours de développement<br>
+      Nombre d'objets intéréssé mais non reçu: ${await getNumberOfReceivedOrNotReceivedItems(member.id, false)}<br>
+      Nombre d'objets reçus: ${await getNumberOfReceivedOrNotReceivedItems(member.id, true)}<br>
   `;
   content.innerHTML += contentHtml;
 }
