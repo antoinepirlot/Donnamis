@@ -163,12 +163,13 @@ public class ItemUCCImpl implements ItemUCC {
 
   /**
    * mark item as given or not given and update the recipient.
-   * @param given true if it marks item as given or false to mark item as not given
+   *
+   * @param given   true if it marks item as given or false to mark item as not given
    * @param itemDTO the item to update
    * @return true if the operation worked as expected otherwise false
    * @throws SQLException if an error occurs while updating items or recipient
    */
-  private boolean markItemAs(boolean given, ItemDTO itemDTO) throws SQLException{
+  private boolean markItemAs(boolean given, ItemDTO itemDTO) throws SQLException {
     try {
       boolean done;
       this.dalServices.start();

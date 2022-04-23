@@ -242,10 +242,10 @@ public class ItemDAOImpl implements ItemDAO {
         + "FROM     project_pae.recipients "
         + "WHERE id_member = ? "
         + "  AND received = ";
-    if(received) {
-      query += "'"+RECEIVED_RECIPIENT_STATUS+"';";
+    if (received) {
+      query += "'" + RECEIVED_RECIPIENT_STATUS + "';";
     } else {
-      query += "'"+NOT_RECEIVED_RECIPIENT_STATUS+"';";
+      query += "'" + NOT_RECEIVED_RECIPIENT_STATUS + "';";
     }
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setInt(1, idMember);
@@ -308,7 +308,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "FROM project_pae.items i, "
         + "     project_pae.items_types it, "
         + "     project_pae.recipients r "
-        + "WHERE r.received = '"+RECEIVED_RECIPIENT_STATUS+"' "
+        + "WHERE r.received = '" + RECEIVED_RECIPIENT_STATUS + "' "
         + "  AND r.id_member = ? "
         + "  AND r.id_item = i.id_item "
         + "  AND i.id_type = it.id_type;";

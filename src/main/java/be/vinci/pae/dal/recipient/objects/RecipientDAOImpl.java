@@ -26,7 +26,7 @@ public class RecipientDAOImpl implements RecipientDAO {
     String query = "INSERT INTO project_pae.recipients (id_item, id_member, received) "
         + "VALUES (?, (" + selectMemberId + "), '" + RECEIVED_DEFAULT + "'); "
         + "UPDATE project_pae.items "
-        + "SET offer_status = '"+ASSIGNED_ITEM_STATUS+"' "
+        + "SET offer_status = '" + ASSIGNED_ITEM_STATUS + "' "
         + "WHERE id_item = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setInt(1, recipientDTO.getItem().getId());
@@ -45,7 +45,7 @@ public class RecipientDAOImpl implements RecipientDAO {
         + "WHERE username = ?";
     String query = "SELECT id_recipient "
         + "FROM project_pae.recipients "
-        + "WHERE id_member = ("+selectIdMemberRecipient+") "
+        + "WHERE id_member = (" + selectIdMemberRecipient + ") "
         + "  AND id_item = ? "
         + "LIMIT 1;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {

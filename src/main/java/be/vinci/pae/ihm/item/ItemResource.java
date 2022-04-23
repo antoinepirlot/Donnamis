@@ -64,10 +64,10 @@ public class ItemResource {
       throws SQLException {
     if (offerStatus == null || offerStatus.isBlank()
         || (!offerStatus.equals("donated")
-            && !offerStatus.equals("assigned")
-            && !offerStatus.equals("cancelled")
-            && !offerStatus.equals("given")
-        )
+        && !offerStatus.equals("assigned")
+        && !offerStatus.equals("cancelled")
+        && !offerStatus.equals("given")
+    )
     ) {
       throw new WrongBodyDataException("Offer status " + offerStatus + " is not valid.");
     }
@@ -97,7 +97,8 @@ public class ItemResource {
 
   /**
    * Get all donated items of the member identified by its id.
-   * @param idMember the member's id
+   *
+   * @param idMember    the member's id
    * @param offerStatus the item's offer status
    * @return the list of member's donated items
    * @throws SQLException if an error occurs while getting items
@@ -112,13 +113,13 @@ public class ItemResource {
     if (idMember < 1
         || offerStatus == null || offerStatus.isBlank()
         || (!offerStatus.equals("donated")
-            && !offerStatus.equals("given")
-        )
+        && !offerStatus.equals("given")
+    )
     ) {
       throw new WrongBodyDataException("idMember or offer status are not valid.");
     }
 
-    if(offerStatus.equals("donated")) {
+    if (offerStatus.equals("donated")) {
       return this.jsonUtil
           .filterPublicJsonViewAsList(itemUCC.getMemberItemsByOfferStatus(idMember, offerStatus));
     }
@@ -167,11 +168,12 @@ public class ItemResource {
 
   /**
    * Count the number of items with a specific offer status for the member with the idMember.
-   * @param idMember the member's id
+   *
+   * @param idMember    the member's id
    * @param offerStatus the offer status can only be "donated" or "given"
    * @return the number of items that match offer status
-   * @throws SQLException if an error occurs while counting.
-   * @throws WrongBodyDataException if the offer status is invalid
+   * @throws SQLException            if an error occurs while counting.
+   * @throws WrongBodyDataException  if the offer status is invalid
    * @throws ObjectNotFoundException if the member doesn't exist
    */
   @GET
@@ -187,22 +189,23 @@ public class ItemResource {
       throw new WrongBodyDataException("Wrong offerStatus is invalid.");
     }
     if (!this.memberUCC.memberExist(null, idMember)) {
-      throw new ObjectNotFoundException("The member "+idMember+" doesn't exist.");
+      throw new ObjectNotFoundException("The member " + idMember + " doesn't exist.");
     }
     return this.itemUCC.countNumberOfItemsByOfferStatus(idMember, offerStatus);
   }
 
   /**
-   * Count the number of items that have been received or not by the member.
-   * If received is true that means the item has been received by the member.
-   * If received is false that means the member marked his interest in the item but
-   * the member who offers the item marked the member has never received the item.
+   * Count the number of items that have been received or not by the member. If received is true
+   * that means the item has been received by the member. If received is false that means the member
+   * marked his interest in the item but the member who offers the item marked the member has never
+   * received the item.
+   *
    * @param idMember the member's id
-   * @param received true if the item has been received by the member
-   *                 false if the member had marked its interest but never take the item.
+   * @param received true if the item has been received by the member false if the member had marked
+   *                 its interest but never take the item.
    * @return the number of the number of items received or not received
-   * @throws SQLException if an error occurs while counting items
-   * @throws WrongBodyDataException if the id member is lower than 1
+   * @throws SQLException            if an error occurs while counting items
+   * @throws WrongBodyDataException  if the id member is lower than 1
    * @throws ObjectNotFoundException if the member doesn't exist in the database
    */
   @GET
