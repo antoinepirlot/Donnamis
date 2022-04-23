@@ -6,8 +6,8 @@ import {
   denyMember,
   getAllMembers,
   isAdmin
-} from "../../utils/BackEndRequests";
-import {Redirect} from "../Router/Router";
+} from "../../../utils/BackEndRequests";
+import {Redirect} from "../../Router/Router";
 
 const tableHtmlConfirmedMembers = `
   <div>

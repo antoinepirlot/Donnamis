@@ -1,10 +1,10 @@
-import {getPayload,} from "../../utils/session";
-import {Redirect} from "../Router/Router";
-import {showError} from "../../utils/ShowError";
+import {getPayload,} from "../../../utils/session";
+import {Redirect} from "../../Router/Router";
+import {showError} from "../../../utils/ShowError";
 import {
   getItem,
   postInterest as postInterestBackEnd
-} from "../../utils/BackEndRequests";
+} from "../../../utils/BackEndRequests";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3">

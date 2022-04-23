@@ -1,5 +1,5 @@
-import {getAllItemsByOfferStatus} from "../../utils/BackEndRequests";
-import {getShowItemsHtml} from "../../utils/HtmlCode";
+import {getAllItemsByOfferStatus} from "../../../utils/BackEndRequests";
+import {getShowItemsHtml} from "../../../utils/HtmlCode";
 
 const tableHtml = `
   <div>
