@@ -45,9 +45,9 @@ public class ItemUCCImpl implements ItemUCC {
   public int addItem(ItemDTO itemDTO) throws SQLException {
     try {
       dalServices.start();
-      int id_item = itemDAO.addItem(itemDTO);
+      int idItem = itemDAO.addItem(itemDTO);
       dalServices.commit();
-      return id_item;
+      return idItem;
     } catch (SQLException e) {
       dalServices.rollback();
       throw e;
