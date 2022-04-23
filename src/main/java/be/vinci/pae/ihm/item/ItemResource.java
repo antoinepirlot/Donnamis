@@ -28,7 +28,6 @@ import jakarta.ws.rs.core.Response.Status;
 import java.rmi.UnexpectedException;
 import java.sql.SQLException;
 import java.util.List;
-import org.apache.commons.text.StringEscapeUtils;
 
 @Singleton
 @Path("items")
@@ -85,7 +84,7 @@ public class ItemResource {
   @Path("member_items/{idMember}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public List<ItemDTO> getAllItemsByMemberId(@PathParam("idMember") int idMember)
+  public List<ItemDTO> getAllItemsByMemberIdAndOfferStatus(@PathParam("idMember") int idMember)
       throws SQLException {
     if (idMember < 1) {
       throw new WrongBodyDataException("The idMember must be grater than 1");
@@ -108,7 +107,7 @@ public class ItemResource {
   @Consumes(MediaType.TEXT_PLAIN)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public List<ItemDTO> getAllItemsByMemberId(@PathParam("idMember") int idMember,
+  public List<ItemDTO> getAllItemsByMemberIdAndOfferStatus(@PathParam("idMember") int idMember,
       @PathParam("offerStatus") String offerStatus) throws SQLException {
     if (idMember < 1
         || offerStatus == null || offerStatus.isBlank()
