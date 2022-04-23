@@ -7,8 +7,6 @@ import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.interfaces.Offer;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
-import be.vinci.pae.biz.recipient.interfaces.Recipient;
-import be.vinci.pae.biz.recipient.interfaces.RecipientDTO;
 import be.vinci.pae.views.Views;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

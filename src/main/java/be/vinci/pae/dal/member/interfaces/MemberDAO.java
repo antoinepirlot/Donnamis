@@ -1,6 +1,5 @@
 package be.vinci.pae.dal.member.interfaces;
 
-import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import java.sql.SQLException;
