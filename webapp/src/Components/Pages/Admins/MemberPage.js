@@ -31,10 +31,10 @@ async function showMemberInformation(member) {
       Numéro de téléphone: ${member.phoneNumber ? member.phoneNumber : "Aucun"}<br>
       Nombre d'objets offerts: ${await getNumberOfItems(member.id, "donated")}<br>
       Nombre d'objets donnés: ${await getNumberOfItems(member.id, "given")}<br>
+      Nombre d'objets intéréssé mais non reçu: En cours de développement<br>
+      Nombre d'objets reçus: En cours de développement<br>
   `;
-
-  contentHtml +=
-      content.innerHTML += contentHtml;
+  content.innerHTML += contentHtml;
 }
 
 function getActualState(member) {
