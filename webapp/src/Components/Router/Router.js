@@ -10,7 +10,7 @@ import MyItemsPage from "../Pages/Members/MyItemsPage";
 import {ProfilePage} from "../Pages/Members/ProfilePage";
 import HomePage from "../Pages/HomePage";
 import {MyAssignedItems} from "../Pages/Members/MyAssignedItems";
-
+import {SearchMembersPage} from "../Pages/Admins/SearchMembersPage";
 // Configure your routes here
 const routes = {
   "/": HomePage,
@@ -26,6 +26,7 @@ const routes = {
   "/my_items": MyItemsPage,
   "/profil": ProfilePage,
   "/assigned_items": MyAssignedItems,
+  "/search_members": SearchMembersPage,
 };
 
 /**

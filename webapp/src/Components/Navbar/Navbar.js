@@ -65,6 +65,12 @@ const listMemberLinkHtml = `
           </li>
 `;
 
+const searchMembersLinkHtml = `
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-uri="/search_members">Rechercher des membres</a>
+          </li>
+`;
+
 const allItemsLinkHtml = `
           <li class="nav-item">
             <a class="nav-link" href="#" data-uri="/all_items">Tous les objets</a>
@@ -110,6 +116,7 @@ const Navbar = async () => {
     memberUsername.innerHTML += memberDTO.username;
     if (await isAdmin()) {
       links.innerHTML += listMemberLinkHtml;
+      links.innerHTML += searchMembersLinkHtml;
       links.innerHTML += allItemsLinkHtml;
       memberUsername.innerHTML = memberDTO.username + " (admin)";
       console.log(memberUsername.innerHTML);
