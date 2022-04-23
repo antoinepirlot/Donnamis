@@ -6,8 +6,8 @@ import java.sql.PreparedStatement;
 
 public class AbstractDAOImpl implements AbstractDAO {
 
-//  @Inject
-//  private DALBackendService dalBackendService;
+  //@Inject
+  //private DALBackendService dalBackendService;
 
   @Override
   public PreparedStatement getOne() {
