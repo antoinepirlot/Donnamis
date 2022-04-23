@@ -35,7 +35,7 @@ const htmlForm = `
 
 let itemsTypes;
 
-const OfferAnItemPage = async () => {
+const DonateAnItemPage = async () => {
   if (!getPayload()) {
     Redirect("/");
     return;
@@ -104,4 +104,4 @@ async function offerItem(e) {
   }
 }
 
-export default OfferAnItemPage;
+export default DonateAnItemPage;

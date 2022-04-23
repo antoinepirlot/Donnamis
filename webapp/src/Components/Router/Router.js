@@ -3,9 +3,9 @@ import Logout from "../Logout/Logout";
 import ListMemberPage from "../Pages/Admins/ListMemberPage";
 import AllItemsPage from "../Pages/Admins/AllItemsPage"
 import RegisterPage from "../Pages/RegisterPage";
-import AllOfferedItemsPage from "../Pages/Members/AllOfferedItemPage";
+import AllOfferedItemsPage from "../Pages/Members/AllDonatedItemPage";
 import ViewItemPage from "../Pages/Members/ViewItemPage";
-import OfferAnItemPage from "../Pages/Members/OfferAnItemPage";
+import DonateAnItemPage from "../Pages/Members/DonateAnItemPage";
 import MyItemsPage from "../Pages/Members/MyItemsPage";
 import ProfilePage from "../Pages/Members/ProfilePage";
 import HomePage from "../Pages/HomePage";
@@ -24,7 +24,7 @@ const routes = {
   "/all_items": AllItemsPage,
   "/all_offered_items": AllOfferedItemsPage,
   "/item": ViewItemPage,
-  "/offer_item": OfferAnItemPage,
+  "/offer_item": DonateAnItemPage,
   "/my_items": MyItemsPage,
   "/profil": ProfilePage,
   "/assigned_items": MyAssignedItems,
