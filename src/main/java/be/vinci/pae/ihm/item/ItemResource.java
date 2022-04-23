@@ -169,6 +169,7 @@ public class ItemResource {
    */
   @GET
   @Path("count_assigned_items/{idMember}/{received}")
+  @AuthorizeAdmin
   public int countNumberOfReceivedOrNotReceivedItems(@PathParam("idMember") int idMember,
       @PathParam("received") boolean received) throws SQLException {
     if (idMember < 1) {
