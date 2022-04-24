@@ -1,7 +1,7 @@
 import {
   addNewItemsType,
   getItemsTypes,
-  offerAnItem
+  offerAnItem, sendPicture
 } from "../../../utils/BackEndRequests";
 import {showError} from "../../../utils/ShowError";
 import {getPayload} from "../../../utils/session";
@@ -41,6 +41,7 @@ const htmlForm = `
 
 
 let itemsTypes;
+let errorMessageOfferAnItemPage;
 
 const DonateAnItemPage = async () => {
   if (!getPayload()) {
@@ -49,6 +50,7 @@ const DonateAnItemPage = async () => {
   }
   const page = document.querySelector("#page");
   page.innerHTML = htmlForm;
+  errorMessageOfferAnItemPage = document.querySelector("#errorMessageOfferAnItemPage");
   const offerItemForm = document.querySelector("#offerItemForm");
   itemsTypes = await getItemsTypes();
   showItemsTypes("#itemsTypesDonateAnItemPage", itemsTypes);
@@ -60,8 +62,6 @@ const DonateAnItemPage = async () => {
 async function offerItem(e) {
   const date = new Date();
   e.preventDefault();
-  const errorMessageOfferAnItemPage = document.querySelector(
-      "#errorMessageOfferAnItemPage");
   const title = document.querySelector("#titleForm").value;
   const itemDescription = document.querySelector("#itemDescriptionForm").value;
   let photo = document.querySelector("#photoForm").value;
@@ -108,13 +108,13 @@ async function sendFile(e) {
   const fileInput = document.querySelector('input[name=file]');
   const formData = new FormData();
   formData.append('file', fileInput.files[0]);
-  const options = {
-    method: 'POST',
-    body: formData
-  };
-
-  await fetch('/api/image/upload', options);
-  return false;
+  try {
+    await sendPicture(formData)
+    showError("L'iùage à été uploadé.", "success", errorMessageOfferAnItemPage);
+  } catch (e) {
+    console.error(e);
+    showError("Problème lors de l'upload de l'image.", "danger", errorMessageOfferAnItemPage);
+  }
 }
 
 

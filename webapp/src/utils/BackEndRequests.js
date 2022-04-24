@@ -384,6 +384,20 @@ async function offerAnItem(item) {
   return response.ok;
 }
 
+async function sendPicture(formData) {
+  const request = {
+    method: 'POST',
+    headers: {
+      "Authorization": getObject("token")
+    },
+    body: formData
+  };
+  const response = await fetch('/api/image/upload', request);
+  if (!response.ok) {
+    throw new Error("Error while uploading an image.");
+  }
+}
+
 async function modifyMember(member) {
   const request = {
     method: "PUT",
@@ -567,6 +581,7 @@ export {
   getNumberOfItems,
   getNumberOfReceivedOrNotReceivedItems,
   offerAnItem,
+  sendPicture,
   offerAgain,
   postInterest,
   modifyMember,
