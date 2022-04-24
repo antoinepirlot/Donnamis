@@ -19,60 +19,68 @@ public class OfferUCCImpl implements OfferUCC {
   private DALServices dalServices;
 
   @Override
-  public boolean createOffer(OfferDTO offerDTO) {
-    //Cette ligne n'est nécessaire que si on doit faire appel à une fonction de l'interface Offer
-    //Offer offer = (Offer) offerDTO;
-    dalServices.start();
-    if (!this.offerDAO.createOffer(offerDTO)) {
-      dalServices.rollback();
-    }
-    return dalServices.commit();
-  }
-
-  @Override
-  public List<OfferDTO> getLatestOffers() {
-    dalServices.start();
-    List<OfferDTO> listOfferDTO = offerDAO.getLatestOffers();
-    if (listOfferDTO == null) {
-      dalServices.rollback();
-    }
-    dalServices.commit();
-    return listOfferDTO;
-  }
-
-  @Override
-  public List<OfferDTO> getAllOffers() {
-    dalServices.start();
-    List<OfferDTO> listOfferDTO = offerDAO.getAllOffers();
-    if (listOfferDTO == null) {
-      dalServices.rollback();
-    }
-    dalServices.commit();
-    return listOfferDTO;
-  }
-
-  @Override
-  public OfferDTO getOneOffer(int id) {
-    dalServices.start();
-    OfferDTO offerDTO = offerDAO.getOne(id);
-    if (offerDTO == null) {
-      dalServices.rollback();
-      return null;
-    }
-    dalServices.commit();
-    return offerDTO;
-  }
-
-  @Override
-  public void getAllOffersOf(ItemDTO itemDTO) {
-    Item item = (Item) itemDTO;
-    dalServices.start();
+  public boolean createOffer(OfferDTO offerDTO) throws SQLException {
     try {
+      dalServices.start();
+      boolean isCreated = this.offerDAO.createOffer(offerDTO);
+      dalServices.commit();
+      return isCreated;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public List<OfferDTO> getAllOffers(String offerStatus) throws SQLException {
+    try {
+      dalServices.start();
+      List<OfferDTO> listOfferDTO = offerDAO.getAllOffers(offerStatus);
+      dalServices.commit();
+      return listOfferDTO;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public OfferDTO getOneOffer(int id) throws SQLException {
+    try {
+      dalServices.start();
+      OfferDTO offerDTO = offerDAO.getOne(id);
+      dalServices.commit();
+      return offerDTO;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public void getAllOffersOf(ItemDTO itemDTO) throws SQLException {
+    Item item = (Item) itemDTO;
+    try {
+      dalServices.start();
       Offer offerToAdd = (Offer) this.offerDAO.getLastOfferOf(item);
+      dalServices.commit();
       item.addOffer(offerToAdd);
     } catch (SQLException e) {
       dalServices.rollback();
+      throw e;
     }
-    dalServices.commit();
+  }
+
+  @Override
+  public boolean offerExist(OfferDTO offerDTO) throws SQLException {
+    try {
+      dalServices.start();
+      boolean doesExist = this.offerDAO.offerExist(offerDTO);
+      dalServices.commit();
+      return doesExist;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
+    }
   }
 }

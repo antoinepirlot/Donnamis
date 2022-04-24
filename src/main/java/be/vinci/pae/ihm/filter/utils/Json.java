@@ -1,4 +1,4 @@
-package be.vinci.pae.ihm.utils;
+package be.vinci.pae.ihm.filter.utils;
 
 import be.vinci.pae.views.Views;
 import com.fasterxml.jackson.core.JsonProcessingException;

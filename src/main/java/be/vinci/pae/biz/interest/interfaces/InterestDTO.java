@@ -2,8 +2,9 @@ package be.vinci.pae.biz.interest.interfaces;
 
 import be.vinci.pae.biz.interest.objects.InterestImpl;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import java.util.Date;
+import java.sql.Timestamp;
 
 @JsonDeserialize(as = InterestImpl.class)
 public interface InterestDTO {
@@ -16,15 +17,15 @@ public interface InterestDTO {
 
   void setCallWanted(boolean callWanted);
 
-  int getIdItem();
+  OfferDTO getOffer();
 
-  void setIdItem(int idItem);
+  void setOffer(OfferDTO offer);
 
   MemberDTO getMember();
 
   void setMember(MemberDTO idMember);
 
-  Date getDate();
+  Timestamp getDate();
 
-  void setDate(Date date);
+  void setDate(Timestamp date);
 }

@@ -1,6 +1,6 @@
 package be.vinci.pae.ihm.filter;
 
-import be.vinci.pae.ihm.filter.utils.TokenDecoder;
+import be.vinci.pae.ihm.utils.TokenDecoder;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;

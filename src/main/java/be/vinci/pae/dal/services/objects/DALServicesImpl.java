@@ -2,18 +2,22 @@ package be.vinci.pae.dal.services.objects;
 
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.ihm.logs.LoggerHandler;
 import be.vinci.pae.utils.Config;
 import jakarta.inject.Singleton;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 @Singleton
 public class DALServicesImpl implements DALServices, DALBackendService {
 
 
-  private final ThreadLocal<Connection> dbThreadLocal = new ThreadLocal<Connection>();
+  private final ThreadLocal<Connection> dbThreadLocal = new ThreadLocal<>();
+  private final Logger logger = LoggerHandler.getLogger();
   private final BasicDataSource basicDataSource = setBasicDataSource();
 
   private BasicDataSource setBasicDataSource() {
@@ -30,56 +34,38 @@ public class DALServicesImpl implements DALServices, DALBackendService {
 
   /**
    * Try to connect to the db.
-   *
-   * @return the db connection
    */
-  public Connection start() {
-    try {
-      //connection = DriverManager.getConnection(url, user, dbPassword); //postgres password
-      //Creating connection
-      Connection connection = basicDataSource.getConnection();
-      System.out.println("Connexion prise par le thread : " + connection);
-      //Set the connection in the ThreadLocal Map
-      connection.setAutoCommit(false);
-      dbThreadLocal.set(connection);
-      System.out.println("Connection à la db réussie.");
-      return connection;
-    } catch (SQLException e) {
-      System.out.println("Impossible de joindre le serveur");
-      System.exit(1);
-    }
-    return null;
+  public void start() throws SQLException {
+    //connection = DriverManager.getConnection(url, user, dbPassword); //postgres password
+    //Creating connection
+    Connection connection = basicDataSource.getConnection();
+    //Set the connection in the ThreadLocal Map
+    connection.setAutoCommit(false);
+    dbThreadLocal.set(connection);
+    this.logger.log(Level.INFO, "Connection to the database successful ");
   }
 
   @Override
-  public boolean commit() {
+  public void commit() throws SQLException {
     Connection connection = dbThreadLocal.get();
-    try {
-      connection.commit();
-      connection.setAutoCommit(true);
-      connection.close();
-      dbThreadLocal.remove();
-      System.out.println("Connection removed");
-    } catch (SQLException e) {
-      System.out.println("Impossible de joindre le serveur");
-      System.exit(1);
-    }
-    return true;
+    connection.commit();
+    connection.setAutoCommit(true);
+    connection.close();
+    dbThreadLocal.remove();
+    this.logger.log(Level.INFO, "Connection removed");
   }
 
   @Override
-  public boolean rollback() {
-    Connection connection = dbThreadLocal.get();
-    try {
+  public void rollback() {
+    try (Connection connection = dbThreadLocal.get()) {
       connection.rollback();
       connection.setAutoCommit(true);
       connection.close();
       dbThreadLocal.remove();
     } catch (SQLException e) {
-      System.out.println("Impossible de joindre le serveur");
+      this.logger.log(Level.SEVERE, "Impossible to join the server");
       System.exit(1);
     }
-    return true;
   }
 
   /**
@@ -89,7 +75,7 @@ public class DALServicesImpl implements DALServices, DALBackendService {
     try {
       Class.forName("org.postgresql.Driver");
     } catch (ClassNotFoundException e) {
-      System.out.println("Driver PostgreSQL manquant");
+      this.logger.log(Level.SEVERE, "PostgreSQL driver is missing");
       System.exit(1);
     }
   }
@@ -103,10 +89,7 @@ public class DALServicesImpl implements DALServices, DALBackendService {
    */
   @Override
   public PreparedStatement getPreparedStatement(String query) throws SQLException {
-    System.out.println("Récupération de la connection du thread courant");
     Connection connection = dbThreadLocal.get();
-    System.out.println(connection);
-    System.out.println("Preparation du query");
     return connection.prepareStatement(query);
   }
 

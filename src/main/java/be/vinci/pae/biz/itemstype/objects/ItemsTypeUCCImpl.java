@@ -4,11 +4,9 @@ import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeUCC;
 import be.vinci.pae.dal.itemstype.interfaces.ItemsTypeDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
-import be.vinci.pae.ihm.logs.LoggerHandler;
 import jakarta.inject.Inject;
+import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ItemsTypeUCCImpl implements ItemsTypeUCC {
 
@@ -16,19 +14,43 @@ public class ItemsTypeUCCImpl implements ItemsTypeUCC {
   private ItemsTypeDAO itemsTypeDAO;
   @Inject
   private DALServices dalServices;
-  private final Logger logger = LoggerHandler.getLogger();
 
   @Override
-  public List<ItemsTypeDTO> getAll() {
-    this.dalServices.start();
-    List<ItemsTypeDTO> itemsTypeDTOList = this.itemsTypeDAO.getAll();
-    if (itemsTypeDTOList == null) {
-      this.dalServices.rollback();
-      String message = "ERROR while getting all itemsType";
-      this.logger.log(Level.INFO, message);
-    } else {
+  public List<ItemsTypeDTO> getAll() throws SQLException {
+    try {
+      this.dalServices.start();
+      List<ItemsTypeDTO> itemsTypeDTOList = this.itemsTypeDAO.getAll();
       this.dalServices.commit();
+      return itemsTypeDTOList;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
     }
-    return itemsTypeDTOList;
+  }
+
+  @Override
+  public boolean exists(ItemsTypeDTO itemsTypeDTO) throws SQLException {
+    try {
+      this.dalServices.start();
+      boolean exists = this.itemsTypeDAO.exists(itemsTypeDTO);
+      this.dalServices.commit();
+      return exists;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public boolean addItemsType(ItemsTypeDTO itemsTypeDTO) throws SQLException {
+    try {
+      this.dalServices.start();
+      boolean added = this.itemsTypeDAO.addItemsType(itemsTypeDTO);
+      this.dalServices.commit();
+      return added;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
+    }
   }
 }

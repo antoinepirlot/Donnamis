@@ -1,18 +1,21 @@
 import LoginPage from "../Pages/LoginPage";
 import Logout from "../Logout/Logout";
-import ListMemberPage from "../Pages/ListMemberPage";
-import LatestItemsOffersPage from "../Pages/LatestItemsOffersPage"
-import AllItemsPage from "../Pages/AllItemsPage"
+import ListMemberPage from "../Pages/Admins/ListMemberPage";
+import AllItemsPage from "../Pages/Admins/AllItemsPage"
 import RegisterPage from "../Pages/RegisterPage";
-import AllOfferedItemsPage from "../Pages/AllOfferedItemPage";
-import ViewItemPage from "../Pages/ViewItemPage";
-import {OfferAnItemPage} from "../Pages/OfferAnItemPage";
-import MyItemsPage from "../Pages/MyItemsPage";
-import ProfilePage from "../Pages/Profile";
+import AllOfferedItemsPage from "../Pages/Members/AllDonatedItemPage";
+import ViewItemPage from "../Pages/Members/ViewItemPage";
+import DonateAnItemPage from "../Pages/Members/DonateAnItemPage";
+import MyItemsPage from "../Pages/Members/MyItemsPage";
+import ProfilePage from "../Pages/Members/ProfilePage";
+import HomePage from "../Pages/HomePage";
+import MyAssignedItems from "../Pages/Members/MyAssignedItems";
+import MemberPage from "../Pages/Admins/MemberPage";
+import SearchMembersPage from "../Pages/Admins/SearchMembersPage";
 
 // Configure your routes here
 const routes = {
-  "/": LatestItemsOffersPage,
+  "/": HomePage,
   "/login": LoginPage,
   "/register": RegisterPage,
   "/logout": Logout,
@@ -21,9 +24,12 @@ const routes = {
   "/all_items": AllItemsPage,
   "/all_offered_items": AllOfferedItemsPage,
   "/item": ViewItemPage,
-  "/offer_item": OfferAnItemPage,
+  "/offer_item": DonateAnItemPage,
   "/my_items": MyItemsPage,
-  "/profil": ProfilePage
+  "/profil": ProfilePage,
+  "/assigned_items": MyAssignedItems,
+  "/search_members": SearchMembersPage,
+  "/member": MemberPage,
 };
 
 /**

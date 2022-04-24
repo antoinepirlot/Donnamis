@@ -2,27 +2,91 @@ package be.vinci.pae.ihm.offer;
 
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
+import be.vinci.pae.exceptions.webapplication.ConflictException;
+import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
+import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
+import be.vinci.pae.ihm.filter.AuthorizeAdmin;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
-import be.vinci.pae.ihm.utils.Json;
+import be.vinci.pae.ihm.filter.utils.Json;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import java.sql.SQLException;
 import java.util.List;
 
 @Singleton
 @Path("offers")
 public class OfferResource {
-  
+
   private final Json<OfferDTO> jsonUtil = new Json<>(OfferDTO.class);
   @Inject
   private OfferUCC offerUCC;
+
+  /////////////////////////////////////////////////////////
+  ///////////////////////GET///////////////////////////////
+  /////////////////////////////////////////////////////////
+
+  /**
+   * Method that get all offers.
+   *
+   * @return the list of all offers if there's at least one offer, otherwise null
+   */
+  @GET
+  @Path("all_offers")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<OfferDTO> getAllOffers()
+      throws SQLException {
+    return this.getAllOffers(null);
+  }
+
+  /**
+   * Method that get all offers with specified offer status.
+   *
+   * @return the list of all offers if there's at least one offer, otherwise null
+   */
+  @GET
+  @Path("all_offers/{offer_status}")
+  @Consumes(MediaType.TEXT_PLAIN)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public List<OfferDTO> getAllOffers(@PathParam("offer_status") String offerStatus)
+      throws SQLException {
+    List<OfferDTO> listOfferDTO = offerUCC.getAllOffers(offerStatus);
+    if (listOfferDTO == null) {
+      throw new ObjectNotFoundException("No offers into the database.");
+    }
+    return this.jsonUtil.filterPublicJsonViewAsList(listOfferDTO);
+  }
+
+  /**
+   * Method that get one offer identified by its id.
+   *
+   * @return the offer
+   * @throws ObjectNotFoundException if the offer does not exist
+   */
+  @GET
+  @Path("{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
+  public OfferDTO getOneOffer(@PathParam("id") int id)
+      throws SQLException {
+    OfferDTO offerDTO = offerUCC.getOneOffer(id);
+    if (offerDTO == null) {
+      throw new ObjectNotFoundException("No offers into the database.");
+    }
+    return this.jsonUtil.filterPublicJsonView(offerDTO);
+  }
+
+  /////////////////////////////////////////////////////////
+  ///////////////////////POST//////////////////////////////
+  /////////////////////////////////////////////////////////
 
   /**
    * Asks UCC to add an offer into the database.
@@ -33,74 +97,21 @@ public class OfferResource {
   @Path("add_offer")
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public void addOffer(OfferDTO offerDTO) {
+  public void addOffer(OfferDTO offerDTO) throws SQLException {
     // Get and check credentials
-    if (offerDTO.getTimeSlot() == null
-    ) {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-          .entity("Some information required").type("text/plain").build());
+    if (offerDTO == null || offerDTO.getIdItem() < 1) {
+      String message;
+      if (offerDTO == null) {
+        message = "offerDTO is null.";
+      } else {
+        message = "item id = " + offerDTO.getIdItem() + " and is not greater than 0.";
+      }
+      throw new WrongBodyDataException(message);
     }
-
     //Try to create an offer
     if (!offerUCC.createOffer(offerDTO)) {
-      throw new WebApplicationException(Response.status(Response.Status.CONFLICT)
-          .entity("this resource already exists").type(MediaType.TEXT_PLAIN)
-          .build());
-    }
-
-  }
-
-  /**
-   * Method that get all the latest items offered.
-   *
-   * @return the list of lastest offers if there's at least one offer, otherwise null
-   */
-  @GET
-  @Path("latest_offers")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
-  public List<OfferDTO> getLatestOffers() {
-    List<OfferDTO> listOfferDTO = offerUCC.getLatestOffers();
-    if (listOfferDTO == null) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Ressource not found").type("text/plain").build());
-    }
-
-    //Convert to ObjectNode
-    try {
-      return this.jsonUtil.filterPublicJsonViewAsList(listOfferDTO);
-    } catch (Exception e) {
-      System.out.println("Unable to create list of the latest items");
-      return null;
+      String message = "Add an existing offer.";
+      throw new ConflictException(message);
     }
   }
-
-
-  /**
-   * Method that get all the items offered.
-   *
-   * @return the list of all offers if there's at least one offer, otherwise null
-   */
-  @GET
-  @Path("all_offers")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
-  public List<OfferDTO> getAllOffers() {
-    List<OfferDTO> listOfferDTO = offerUCC.getAllOffers();
-    if (listOfferDTO == null) {
-      throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
-          .entity("Ressource not found").type("text/plain").build());
-    }
-
-    //Convert to ObjectNode
-    try {
-      return this.jsonUtil.filterPublicJsonViewAsList(listOfferDTO);
-    } catch (Exception e) {
-      System.out.println("Unable to create list of all the items");
-      return null;
-    }
-  }
-
 }

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class ItemsTypeDAOImpl implements ItemsTypeDAO {
 
@@ -43,4 +44,26 @@ public class ItemsTypeDAOImpl implements ItemsTypeDAO {
     return null;
   }
 
+  @Override
+  public boolean exists(ItemsTypeDTO itemsTypeDTO) throws SQLException {
+    String query = "SELECT DISTINCT item_type "
+        + "FROM project_pae.items_types "
+        + "WHERE item_type = ?;";
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setString(1, StringEscapeUtils.escapeHtml4(itemsTypeDTO.getItemType()));
+      try (ResultSet rs = ps.executeQuery()) {
+        return rs.next();
+      }
+    }
+  }
+
+  @Override
+  public boolean addItemsType(ItemsTypeDTO itemsTypeDTO) throws SQLException {
+    String query = "INSERT INTO project_pae.items_types (item_type) "
+        + "VALUES (?);";
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setString(1, StringEscapeUtils.escapeHtml4(itemsTypeDTO.getItemType()));
+      return ps.executeUpdate() != 0;
+    }
+  }
 }

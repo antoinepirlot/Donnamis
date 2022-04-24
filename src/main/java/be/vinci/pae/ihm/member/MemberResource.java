@@ -3,32 +3,37 @@ package be.vinci.pae.ihm.member;
 import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
+import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeAdmin;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
-import be.vinci.pae.ihm.logs.LoggerHandler;
-import be.vinci.pae.ihm.utils.Json;
+import be.vinci.pae.ihm.filter.utils.Json;
+import be.vinci.pae.ihm.utils.TokenDecoder;
 import be.vinci.pae.utils.Config;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HEAD;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import java.rmi.UnexpectedException;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Root resource (exposed at "myresource" path).
@@ -37,61 +42,29 @@ import java.util.logging.Logger;
 @Path("members")
 public class MemberResource {
 
-  private final Logger logger = LoggerHandler.getLogger();
   private final ObjectMapper jsonMapper = new ObjectMapper();
   private final Json<MemberDTO> jsonUtil = new Json<>(MemberDTO.class);
-
   @Inject
   private MemberUCC memberUCC;
 
+  /////////////////////////////////////////////////////////
+  ///////////////////////HEAD//////////////////////////////
+  /////////////////////////////////////////////////////////
+
   /**
-   * Method handling HTTP GET requests. The returned object will be sent to the client as
-   * "text/plain" media type.
-   *
-   * @return list of member
+   * Asks UCC to check if the member is admin or not.
    */
-  @GET
-  @Path("list_member")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
+  @HEAD
+  @Path("is_admin")
+  @Produces(MediaType.TEXT_PLAIN)
   @AuthorizeAdmin
-  public List<MemberDTO> getAllMembers() {
-    try {
-      List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
-      if (listMemberDTO == null) {
-        String message = "No member into the database";
-        this.logger.log(Level.INFO, message);
-        throw new ObjectNotFoundException();
-      }
-      return this.jsonUtil.filterPublicJsonViewAsList(listMemberDTO);
-    } catch (Exception e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
-      return null;
-    }
+  public void isAdmin() {
+    //@AuthorizeAdmin checks if the member is admin or not
   }
 
-  @GET
-  @Path("profil/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
-  public MemberDTO getMemberById(@PathParam("id") int id) {
-    try {
-      MemberDTO memberDTO = memberUCC.getOneMember(id);
-      if (memberDTO == null) {
-        throw new ObjectNotFoundException("Member not found");
-      }
-      AddressDTO addressDTO = memberUCC.getAddressMember(id);
-      if (addressDTO == null) {
-        throw new ObjectNotFoundException("Address not found");
-      }
-      memberDTO.setAddress(addressDTO);
-      return memberDTO;
-    } catch (Exception e) { //Exception Critique
-      this.logger.log(Level.SEVERE, e.getMessage());
-      return null;
-    }
-  }
+  /////////////////////////////////////////////////////////
+  ///////////////////////GET///////////////////////////////
+  /////////////////////////////////////////////////////////
 
   /**
    * Method handling HTTP GET requests. The returned object will be sent to the client as
@@ -100,112 +73,76 @@ public class MemberResource {
    * @return list of member
    */
   @GET
-  @Path("list_registered")
-  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public List<MemberDTO> getMembersRegistered() {
-    try {
-      List<MemberDTO> registeredMembers = memberUCC.getMembersRegistered();
-      if (registeredMembers == null) {
-        String message = "Get all registered members but there's no registered members.";
-        throw new ObjectNotFoundException(message);
-      }
-      return this.jsonUtil.filterPublicJsonViewAsList(registeredMembers);
-    } catch (Exception e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
-      return null;
+  public List<MemberDTO> getAllMembers() throws SQLException {
+    List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
+    if (listMemberDTO == null || listMemberDTO.isEmpty()) {
+      throw new ObjectNotFoundException("No member into the database");
     }
+    return this.jsonUtil.filterPublicJsonViewAsList(listMemberDTO);
   }
 
   /**
-   * Method handling HTTP GET requests. The returned object will be sent to the client as
-   * "text/plain" media type.
-   *
-   * @return list of member
+   * Check if the token is valid. If it's valid create new one.
+   * @param request the request that contains the token
+   * @return a new token
+   * @throws SQLException if an error occurs while checking if the member exists
    */
   @GET
-  @Path("list_denied")
-  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("/me")
   @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
-  public List<MemberDTO> getMembersDenied() {
-    try {
-      List<MemberDTO> deniedMembers = memberUCC.getMembersDenied();
-      if (deniedMembers == null) {
-        String message = "Get all denied members but there's no denied members.";
-        throw new ObjectNotFoundException(message);
-      }
-      return this.jsonUtil.filterPublicJsonViewAsList(deniedMembers);
-    } catch (Exception e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
-      return null;
-    }
-  }
-
-  /**
-   * Asks UCC to confirm the member identified by its id.
-   *
-   * @param id the member's id
-   * @return the confirmed member
-   */
-  @PUT
-  @Path("confirm/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
-  public MemberDTO confirmMember(@PathParam("id") int id) {
-    try {
-      System.out.println("********* Confirm Member *************");
-      if (memberUCC.getOneMember(id) == null) {
-        throw new ObjectNotFoundException("No member with the id: " + id);
-      }
-      MemberDTO confirmedMember = memberUCC.confirmMember(id);
-      return this.jsonUtil.filterPublicJsonView(confirmedMember);
-    } catch (Exception e) {
-      this.logger.log(Level.INFO, e.getMessage());
-    }
-    return null;
-  }
-
-  /**
-   * Asks UCC to confirm an admin identified by its id.
-   *
-   * @param id the member's id
-   * @return the confirmed admin member
-   */
-  @PUT
-  @Path("confirmAdmin/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
-  public MemberDTO confirmAdmin(@PathParam("id") int id) {
-    if (memberUCC.getOneMember(id) == null) {
-      String message = "Try to confirm an admin member with an id not in the database. Id: " + id;
+  public ObjectNode refreshToken(@Context ContainerRequestContext request) throws SQLException {
+    DecodedJWT decodedJWT = TokenDecoder.decodeToken(request);
+    MemberDTO memberDTO = this.memberUCC.getOneMember(decodedJWT.getClaim("id").asInt());
+    if (memberDTO == null) {
+      String message = "This member has not been found.";
       throw new ObjectNotFoundException(message);
     }
-    MemberDTO confirmedAdmin = memberUCC.confirmAdmin(id);
-    return this.jsonUtil.filterPublicJsonView(confirmedAdmin);
+    String token = this.createToken(memberDTO.getId());
+    return this.createObjectNode(token, memberDTO);
   }
 
   /**
-   * Asks UCC to deny the member's inscription.
-   *
+   * get a member with its id.
    * @param id the member's id
-   * @return the denied member
+   * @return the member that match with the id.
+   * @throws SQLException if an error occurs while getting member
    */
-  @PUT
-  @Path("denies/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
+  @GET
+  @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
-  public MemberDTO denyMember(@PathParam("id") int id, String refusalText) {
-    if (memberUCC.getOneMember(id) == null) {
-      throw new ObjectNotFoundException("No member with the id: " + id);
+  @AuthorizeMember
+  public MemberDTO getMemberById(@PathParam("id") int id) throws SQLException {
+    MemberDTO memberDTO = memberUCC.getOneMember(id);
+    if (memberDTO == null) {
+      throw new ObjectNotFoundException("Member not found");
     }
-    MemberDTO memberDTO = memberUCC.denyMember(id, refusalText);
     return this.jsonUtil.filterPublicJsonView(memberDTO);
   }
+
+  /**
+   * Get a list of interested members for an offer identified by the offer's id.
+   * @param idOffer the offer's id
+   * @return the list of interested member for the offer
+   * @throws SQLException if an error occurs while getting the list of interested members
+   */
+  @GET
+  @Path("interested/{idOffer}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
+  public List<MemberDTO> getInterestedMembers(@PathParam("idOffer") int idOffer)
+      throws SQLException {
+    if (idOffer < 1) {
+      throw new WrongBodyDataException("The idOffer is less than 1");
+    }
+    return this.jsonUtil.filterPublicJsonViewAsList(this.memberUCC.getInterestedMembers(idOffer));
+  }
+
+  /////////////////////////////////////////////////////////
+  ///////////////////////POST//////////////////////////////
+  /////////////////////////////////////////////////////////
 
   /**
    * Method that login the member. It verify if the user can be connected by calling ucc.
@@ -217,71 +154,21 @@ public class MemberResource {
   @Path("login")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public ObjectNode login(MemberDTO memberDTO) {
+  public ObjectNode login(MemberDTO memberDTO) throws SQLException {
     // Get and check credentials
     if (memberDTO == null
         || memberDTO.getUsername().isBlank()
         || memberDTO.getPassword().isBlank()
     ) {
       String message = "Member has wrong attributes for login method";
-      this.logger.log(Level.SEVERE, message);
       throw new WrongBodyDataException(message);
     }
     memberDTO = memberUCC.login(memberDTO);
     if (memberDTO == null) {
-      throw new ObjectNotFoundException();
+      throw new ObjectNotFoundException("Member is null");
     }
     String token = createToken(memberDTO.getId());
     return createObjectNode(token, memberDTO);
-  }
-
-  /**
-   * Asks UCC to check if the member is admin or not.
-   *
-   * @return null (the text is return with)
-   */
-  @GET
-  @Path("is_admin")
-  @Produces(MediaType.TEXT_PLAIN)
-  @AuthorizeAdmin
-  public String isAdmin() {
-    return "This member is admin";
-  }
-
-  /**
-   * Create a ObjectNode that contains a token from a String.
-   *
-   * @param token that will beBase64.decode(payload); add to ObjectNode
-   * @return objectNode that contains the new token
-   */
-  private ObjectNode createObjectNode(String token, MemberDTO memberDTO) {
-    try {
-      return jsonMapper.createObjectNode()
-          .put("token", token)
-          .putPOJO("memberDTO", this.jsonUtil
-              .filterPublicJsonView(memberDTO)
-          );
-    } catch (Exception e) {
-      LoggerHandler.getLogger().log(Level.SEVERE, e.getMessage());
-      return null;
-    }
-  }
-
-  /**
-   * Create a connection token for a member.
-   *
-   * @return the member's token
-   */
-  private String createToken(int id) {
-    System.out.println("Generating token.");
-    Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
-    Date date = new Date();
-    long duration = 1000 * 60 * 60; //1 hour
-    return JWT.create()
-        .withIssuer("auth0")
-        .withClaim("id", id)
-        .withExpiresAt(new Date(date.getTime() + duration))
-        .sign(jwtAlgorithm);
   }
 
   /**
@@ -292,7 +179,7 @@ public class MemberResource {
   @POST
   @Path("register")
   @Consumes(MediaType.APPLICATION_JSON)
-  public void register(MemberDTO memberDTO) {
+  public void register(MemberDTO memberDTO) throws SQLException {
     // Verify memberDTO integrity
     if (memberDTO == null
         || memberDTO.getUsername() == null || memberDTO.getUsername().isBlank()
@@ -320,5 +207,109 @@ public class MemberResource {
       String message = "This member already exist in the database";
       throw new ConflictException(message);
     }
+  }
+
+  /////////////////////////////////////////////////////////
+  ///////////////////////PUT///////////////////////////////
+  /////////////////////////////////////////////////////////
+
+  /**
+   * Asks UCC to confirm the member identified by its id.
+   *
+   * @param memberDTO the member to confirm
+   */
+  @PUT
+  @Path("confirm")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public void confirmMember(MemberDTO memberDTO) throws SQLException, UnexpectedException {
+    if (memberDTO == null || memberDTO.getId() < 1) {
+      throw new WrongBodyDataException("Confirmation of a incomplete member's information.");
+    }
+    if (memberUCC.getOneMember(memberDTO.getId()) == null) {
+      throw new ObjectNotFoundException("No member with the id: " + memberDTO.getId());
+    }
+    if (!memberUCC.confirmMember(memberDTO)) {
+      throw new UnexpectedException("An unexpected error happened while confirming member.");
+    }
+  }
+
+  /**
+   * Asks UCC to deny the member's inscription.
+   *
+   * @param refusalDTO the refusal information
+   */
+  @PUT
+  @Path("deny")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public void denyMember(RefusalDTO refusalDTO) throws SQLException, UnexpectedException {
+    if (!memberUCC.memberExist(refusalDTO.getMember(), -1)) {
+      throw new ObjectNotFoundException("No member with the id: " + refusalDTO.getMember().getId());
+    }
+    if (!memberUCC.denyMember(refusalDTO)) {
+      throw new UnexpectedException("An unexpected error happened while denying member.");
+    }
+  }
+
+  /**
+   * Modify the member identified by its id.
+   *
+   * @param memberDTO the new member
+   * @return the member or null if there's no member with the id
+   * @throws SQLException if an error occurs while using ucc methods
+   */
+  @PUT
+  @Path("modify")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
+  public MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException {
+    if (memberDTO == null
+        || memberDTO.getUsername() == null || memberDTO.getUsername().isBlank()
+        || memberDTO.getFirstName() == null || memberDTO.getFirstName().isBlank()
+    ) {
+      throw new WrongBodyDataException("Member incomplete");
+    }
+    MemberDTO modifyMember = memberUCC.modifyMember(memberDTO);
+    if (modifyMember == null) {
+      throw new ObjectNotFoundException("Member not found");
+    }
+    return modifyMember;
+  }
+
+  /////////////////////////////////////////////////////////
+  ///////////////////////UTILS/////////////////////////////
+  /////////////////////////////////////////////////////////
+
+  /**
+   * Create a ObjectNode that contains a token from a String.
+   *
+   * @param token that will beBase64.decode(payload); add to ObjectNode
+   * @return objectNode that contains the new token
+   */
+  private ObjectNode createObjectNode(String token, MemberDTO memberDTO) {
+    return jsonMapper.createObjectNode()
+        .put("token", token)
+        .putPOJO("memberDTO", this.jsonUtil
+            .filterPublicJsonView(memberDTO)
+        );
+  }
+
+  /**
+   * Create a connection token for a member.
+   *
+   * @return the member's token
+   */
+  private String createToken(int id) {
+    Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
+    Date date = new Date();
+    long duration = 1000 * 60 * 60 * 48; //2 days
+    return JWT.create()
+        .withIssuer("auth0")
+        .withClaim("id", id)
+        .withExpiresAt(new Date(date.getTime() + duration))
+        .sign(jwtAlgorithm);
   }
 }

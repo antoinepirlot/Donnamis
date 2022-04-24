@@ -2,16 +2,20 @@ package be.vinci.pae.ihm.interest;
 
 import be.vinci.pae.biz.interest.interfaces.InterestDTO;
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
+import be.vinci.pae.biz.member.interfaces.MemberUCC;
+import be.vinci.pae.biz.offer.interfaces.OfferUCC;
+import be.vinci.pae.exceptions.webapplication.ConflictException;
+import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
+import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response.Status;
+import java.rmi.UnexpectedException;
+import java.sql.SQLException;
 
 @Singleton
 @Path("interests")
@@ -19,55 +23,56 @@ public class InterestResource {
 
   @Inject
   private InterestUCC interestUCC;
+  @Inject
+  private OfferUCC offerUCC;
+  @Inject
+  private MemberUCC memberUCC;
+
+  /////////////////////////////////////////////////////////
+  ///////////////////////POST//////////////////////////////
+  /////////////////////////////////////////////////////////
 
   /**
    * Mark the interest in an offer.
    *
    * @param interestDTO the interest to add
-   * @return 1 if interest good added -1 if not
    */
   @POST
   @Path("")
   @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public int markInterest(InterestDTO interestDTO) {
-
-    //Verify if the offer already exist
-    if (!interestUCC.offerExist(interestDTO.getIdItem())) {
-      System.out.println("offer does not exist");
-      throw new WebApplicationException("offer not found", Status.NOT_FOUND);
-    }
+  public void markInterest(InterestDTO interestDTO) throws SQLException, UnexpectedException {
 
     //Verify the content of the request
-    if (interestDTO.getMember().getId() < 1) {
-      System.out.println(interestDTO);
-      throw new WebApplicationException("idMember required", Status.BAD_REQUEST);
+    if (interestDTO == null
+        || interestDTO.getOffer() == null || interestDTO.getOffer().getId() < 1
+        || interestDTO.getMember() == null || interestDTO.getMember().getId() < 1
+        || interestDTO.isCallWanted()
+        && (interestDTO.getMember().getPhoneNumber() == null
+            || interestDTO.getMember().getPhoneNumber().isBlank()
+        )
+    ) {
+      throw new WrongBodyDataException("idMember required");
+    }
+
+    //Verify if the offer already exist
+    if (!this.offerUCC.offerExist(interestDTO.getOffer())) {
+      System.out.println("offer does not exist");
+      throw new ObjectNotFoundException("offer not found");
     }
 
     //Verify if the member already exist
-    if (!interestUCC.memberExist(interestDTO.getMember())) {
-      throw new WebApplicationException("member doesn't exist", Status.NOT_FOUND);
+    if (!this.memberUCC.memberExist(interestDTO.getMember(), -1)) {
+      throw new ObjectNotFoundException("member doesn't exist");
     }
 
     //Verify if the interest already exist
-    if (interestUCC.interestExist(interestDTO.getIdItem(), interestDTO.getMember())) {
-      throw new WebApplicationException("interest already exist", Status.CONFLICT);
+    if (this.interestUCC.interestExist(interestDTO)) {
+      throw new ConflictException("interest already exist");
     }
-
     //Add the interest
-    int res = interestUCC.markInterest(
-        interestDTO.getMember(),
-        interestDTO.getIdItem(),
-        interestDTO.isCallWanted()
-    );
-    if (res == 0) {
-      throw new WebApplicationException(
-          "no phone number registered for this member",
-          Status.FORBIDDEN);
-    } else if (res == -1) {
-      throw new WebApplicationException("error ", Status.INTERNAL_SERVER_ERROR);
+    if (!interestUCC.markInterest(interestDTO)) {
+      throw new UnexpectedException("The interest hasn't been added");
     }
-    return res;
   }
 }

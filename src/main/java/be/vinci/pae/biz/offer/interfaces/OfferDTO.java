@@ -4,7 +4,7 @@ import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.objects.OfferImpl;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @JsonDeserialize(as = OfferImpl.class)
 public interface OfferDTO {
@@ -13,9 +13,9 @@ public interface OfferDTO {
 
   void setId(int id);
 
-  Date getDate();
+  Timestamp getDate();
 
-  void setDate(Date date);
+  void setDate(Timestamp date);
 
   String getTimeSlot();
 

@@ -48,7 +48,6 @@ CREATE TABLE project_pae.items
     title            VARCHAR(50)  NOT NULL,
     offer_status     VARCHAR(10)  NOT NULL,
     last_offer_date  TIMESTAMP    NULL,
-    --FOREIGN KEY (id_photo) REFERENCES project_pae.photos (id_photo),
     FOREIGN KEY (id_type) REFERENCES project_pae.items_types (id_type),
     FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
 );
@@ -161,10 +160,6 @@ VALUES ('Vélo trotinette'); -- 11
 INSERT INTO project_pae.items_types (item_type)
 VALUES ('Vêtements');
 -- 12
-
--- PHOTOS TABLE
---INSERT INTO  project_pae.photos(id_photo, link_photo)
---VALUES (default, 'https://img.le-dictionnaire.com/paysage-campagne.jpg');
 
 -- ITEMS TABLE
 INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title,

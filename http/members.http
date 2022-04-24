@@ -10,18 +10,9 @@ Authorization: {{token}}
 GET {{baseUrl}}/members/list_denied
 Authorization: {{token}}
 
-### Login with default user credentials
-POST {{baseUrl}}/members/login
-Content-Type: application/json
-
-{
-  "username": "bri ",
-  "password": "Rad;293"
-}
-
-> {%
-  client.global.set("token", response.body.token);
-%}
+###
+GET {{baseUrl}}/members/me
+Authorization: {{token}}
 
 ### Confirm registration
 PUT {{baseUrl}}/members/confirm/3
@@ -39,9 +30,8 @@ Authorization: {{token}}
 GET {{baseUrl}}/members/list_member
 
 ###
-GET {{baseUrl}}/members/is_admin
+HEAD {{baseUrl}}/members/is_admin
 Authorization: {{token}}
-Content-Type: application/json
 
 ### Create One memberDTO
 POST {{baseUrl}}/members/register
@@ -71,6 +61,35 @@ Content-Type: application/json
   }
 }
 
-### Get One Member
-GET {{baseUrl}}/members/profil/4
+### Login with default user credentials
+POST {{baseUrl}}/members/login
+Content-Type: application/json
+
+{
+  "username": "bri ",
+  "password": "Rad;293"
+}
+
+> {%
+  client.global.set("token", response.body.token);
+%}
+
+
+### Modify Member
+PUT {{baseUrl}}/members/modify
 Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "id": 5,
+  "username": "wuhuuu",
+  "password": "ololollo",
+  "lastName": "Iov",
+  "firstName": "Dimitri",
+  "phoneNumber": "0477810580"
+}
+
+### Get One Member
+GET {{baseUrl}}/members/4
+Authorization: {{token}}
+

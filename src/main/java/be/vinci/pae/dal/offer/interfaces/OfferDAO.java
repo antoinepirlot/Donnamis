@@ -16,11 +16,11 @@ public interface OfferDAO {
    */
   boolean createOffer(OfferDTO offerDTO);
 
-  List<OfferDTO> getLatestOffers();
-
-  List<OfferDTO> getAllOffers();
+  List<OfferDTO> getAllOffers(String offerStatus) throws SQLException;
 
   OfferDTO getOne(int id);
+
+  boolean offerExist(OfferDTO offerDTO);
 
   /**
    * Get the last offer of the itemDTO.

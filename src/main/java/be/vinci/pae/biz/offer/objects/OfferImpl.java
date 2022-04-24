@@ -7,7 +7,8 @@ import be.vinci.pae.views.Views;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
-import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @JsonInclude(Include.NON_NULL)
 public class OfferImpl implements Offer {
@@ -15,7 +16,7 @@ public class OfferImpl implements Offer {
   @JsonView(Views.Public.class)
   private int id;
   @JsonView(Views.Public.class)
-  private Date date;
+  private Timestamp date;
   @JsonView(Views.Public.class)
   private String timeSlot;
   @JsonView(Views.Public.class)
@@ -24,7 +25,7 @@ public class OfferImpl implements Offer {
   private Member member;
 
   public OfferImpl() {
-    this.date = new Date(System.currentTimeMillis());
+    this.date = Timestamp.valueOf(LocalDateTime.now());
   }
 
   public int getId() {
@@ -35,11 +36,11 @@ public class OfferImpl implements Offer {
     this.id = id;
   }
 
-  public Date getDate() {
+  public Timestamp getDate() {
     return date;
   }
 
-  public void setDate(Date date) {
+  public void setDate(Timestamp date) {
     this.date = date;
   }
 

@@ -4,7 +4,7 @@ import {Redirect} from "../Router/Router";
 import {showError} from "../../utils/ShowError";
 
 const registerFormHtml = `
-
+<h1 class="display-3" id="login_title">S'inscrire</h1>
 <div class="form">
   <h3>Mes infos</h3>
   <form  id="registerForm">

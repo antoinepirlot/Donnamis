@@ -1,12 +1,13 @@
 package be.vinci.pae.biz.member.objects;
 
-import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
+import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import jakarta.inject.Inject;
+import java.sql.SQLException;
 import java.util.List;
 
 public class MemberUCCImpl implements MemberUCC {
@@ -18,165 +19,132 @@ public class MemberUCCImpl implements MemberUCC {
 
 
   @Override
-  public List<MemberDTO> getAllMembers() {
-    dalServices.start();
-    List<MemberDTO> memberDTOList = memberDAO.getAllMembers();
-    if (memberDTOList == null) {
-      dalServices.rollback();
-    }
-    dalServices.commit();
-    return memberDTOList;
-  }
-
-
-  @Override
-  public List<MemberDTO> getMembersRegistered() {
-    dalServices.start();
-    List<MemberDTO> listMember = memberDAO.getMembersRegistered();
-    if (listMember == null) {
-      dalServices.rollback();
-    } else {
+  public List<MemberDTO> getAllMembers() throws SQLException {
+    try {
+      dalServices.start();
+      List<MemberDTO> memberDTOList = memberDAO.getAllMembers();
       dalServices.commit();
+      return memberDTOList;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
     }
-    return listMember;
   }
 
   @Override
-  public List<MemberDTO> getMembersDenied() {
-    dalServices.start();
-    List<MemberDTO> listMember = memberDAO.getMembersDenied();
-    if (listMember == null) {
-      dalServices.rollback();
-    } else {
+  public MemberDTO getOneMember(int id) throws SQLException {
+    try {
+      dalServices.start();
+      MemberDTO memberDTO = memberDAO.getOne(id);
       dalServices.commit();
+      return memberDTO;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
     }
-    return listMember;
   }
 
   @Override
-  public MemberDTO getOneMember(int id) {
-    dalServices.start();
-    MemberDTO memberDTO = memberDAO.getOneMember(id);
-    if (memberDTO == null) {
-      dalServices.rollback();
-      return null;
-    }
-    dalServices.commit();
-    return memberDTO;
-  }
-
-  @Override
-  public AddressDTO getAddressMember(int id) {
-    dalServices.start();
-    AddressDTO addressDTO = memberDAO.getAddressMember(id);
-    if (addressDTO == null) {
-      dalServices.rollback();
-      return null;
-    }
-    dalServices.commit();
-    return addressDTO;
-  }
-
-  @Override
-  public MemberDTO confirmMember(int id) {
-    dalServices.start();
-    Member member = (Member) memberDAO.getOneMember(id);
-    if (member == null) {
-      dalServices.rollback();
-      return null;
-    }
-    if (!member.verifyState("registered") && !member.verifyState("denied")) {
-      dalServices.rollback();
-      return null;
-    }
-    MemberDTO memberDTO = memberDAO.confirmMember(id);
-    if (memberDTO == null) {
-      dalServices.rollback();
-    } else {
-      dalServices.commit();
-    }
-    return memberDTO;
-  }
-
-  @Override
-  public MemberDTO denyMember(int id, String refusalText) {
-    dalServices.start();
-    Member member = (Member) memberDAO.getOneMember(id);
-    if (member == null) {
-      dalServices.rollback();
-      return null;
-    }
-    if (!member.verifyState("registered")) {
-      dalServices.rollback();
-      return null;
-    }
-    MemberDTO memberDTO = memberDAO.denyMember(id, refusalText);
-    if (memberDTO == null) {
-      dalServices.rollback();
-    } else {
-      dalServices.commit();
-    }
-    return memberDTO;
-  }
-
-  /**
-   * Verify the state of the member and then change the state of the member to confirmed.
-   *
-   * @param id of the member
-   * @return True if success
-   */
-  public MemberDTO confirmAdmin(int id) {
-    dalServices.start();
-    Member member = (Member) memberDAO.getOneMember(id);
-    if (member == null) {
-      dalServices.rollback();
-      return null;
-    }
-    if (!member.verifyState("registered") && !member.verifyState("denied")) {
-      dalServices.rollback();
-      return null;
-    }
-    MemberDTO memberDTO = memberDAO.confirmMember(id);
-    if (memberDTO == null) {
-      dalServices.rollback();
-      return null;
-    }
-    memberDTO = memberDAO.isAdmin(id);
-    if (memberDTO == null) {
-      dalServices.rollback();
-    }
-    dalServices.commit();
-    return memberDTO;
-  }
-
-  @Override
-  public MemberDTO login(MemberDTO memberToLogIn) {
-    dalServices.start();
-    Member memberToLogin = (Member) memberToLogIn;
-    Member loggedMember = (Member) memberDAO.getOne(memberToLogin);
-    if (
-        loggedMember == null
-            || !loggedMember.checkPassword(memberToLogin.getPassword(), loggedMember.getPassword())
-            || !loggedMember.verifyState("confirmed")
-    ) {
-      dalServices.rollback();
-      return null;
-    }
-    dalServices.commit();
-    return loggedMember;
-  }
-
-  @Override
-  public boolean register(MemberDTO memberDTO) {
-    dalServices.start();
+  public MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException {
     Member member = (Member) memberDTO;
     member.hashPassword();
-    if (!memberDAO.register(member)) {
-      dalServices.rollback();
-      return false;
-    } else {
+    try {
+      dalServices.start();
+      MemberDTO modifyMember = memberDAO.modifyMember(memberDTO);
       dalServices.commit();
-      return true;
+      return modifyMember;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public boolean confirmMember(MemberDTO memberDTO) throws SQLException {
+    try {
+      dalServices.start();
+      boolean isConfirmed = memberDAO.confirmMember(memberDTO);
+      dalServices.commit();
+      return isConfirmed;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public boolean denyMember(RefusalDTO refusalDTO) throws SQLException {
+    try {
+      dalServices.start();
+      boolean isDenied = memberDAO.denyMember(refusalDTO);
+      dalServices.commit();
+      return isDenied;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public boolean memberExist(MemberDTO memberDTO, int idMember) throws SQLException {
+    try {
+      dalServices.start();
+      boolean doesExist = this.memberDAO.memberExist(memberDTO, idMember);
+      dalServices.commit();
+      return doesExist;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public MemberDTO login(MemberDTO memberToLogIn) throws SQLException {
+    Member memberToLogin = (Member) memberToLogIn;
+    try {
+      dalServices.start();
+      Member loggedMember = (Member) memberDAO.getOne(memberToLogin);
+      dalServices.commit();
+      if (
+          loggedMember == null
+              || !loggedMember.checkPassword(memberToLogin.getPassword(),
+              loggedMember.getPassword())
+              || !loggedMember.verifyState("confirmed")
+      ) {
+        return null;
+      }
+      return loggedMember;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public boolean register(MemberDTO memberDTO) throws SQLException {
+    Member member = (Member) memberDTO;
+    member.hashPassword();
+    try {
+      dalServices.start();
+      boolean isRegistered = memberDAO.register(member);
+      dalServices.commit();
+      return isRegistered;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public List<MemberDTO> getInterestedMembers(int idOffer) throws SQLException {
+    try {
+      this.dalServices.start();
+      List<MemberDTO> memberDTOList = this.memberDAO.getInterestedMembers(idOffer);
+      this.dalServices.commit();
+      return memberDTOList;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
     }
   }
 }

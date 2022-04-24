@@ -35,8 +35,9 @@ const navBarHtml = `
           </li>
         </ul>
       </div>
+      <div id="usernameNavbar">
+      </div>
     </div>
-    <div id="usernameNavbar"></div>
   </nav>
 `;
 
@@ -64,6 +65,12 @@ const listMemberLinkHtml = `
           </li>
 `;
 
+const searchMembersLinkHtml = `
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-uri="/search_members">Rechercher des membres</a>
+          </li>
+`;
+
 const allItemsLinkHtml = `
           <li class="nav-item">
             <a class="nav-link" href="#" data-uri="/all_items">Tous les objets</a>
@@ -88,22 +95,37 @@ const myItemsLinkHtml = `
           </li>
 `;
 
+const profilLinkHtml = `
+  <a id="memberUsername" class="nav-link" href="#" data-uri="/profil"></a>`;
+
+const myAssignedItemsLinkHtml = `
+  <li class="nav-item">
+    <a class="nav-link" href="#" data-uri="/assigned_items">Mes objets assignés</a>
+  </li>
+`
+
 const Navbar = async () => {
   const navbarWrapper = document.querySelector("#navbarWrapper");
   navbarWrapper.innerHTML = navBarHtml;
   const memberDTO = getObject("memberDTO");
   const links = document.querySelector("#navbarLinks");
   if (memberDTO) {
-    let memberUsername = document.querySelector("#usernameNavbar");
-    memberUsername.innerHTML = memberDTO.username;
+    const naveBarMemberPlace = document.querySelector("#usernameNavbar");
+    naveBarMemberPlace.innerHTML = profilLinkHtml;
+    const memberUsername = document.querySelector("#memberUsername");
+    memberUsername.innerHTML += memberDTO.username;
     if (await isAdmin()) {
       links.innerHTML += listMemberLinkHtml;
+      links.innerHTML += searchMembersLinkHtml;
       links.innerHTML += allItemsLinkHtml;
-      memberUsername.innerHTML += " (admin)"
+      memberUsername.innerHTML = memberDTO.username + " (admin)";
+      console.log(memberUsername.innerHTML);
     }
     links.innerHTML += allOfferedItemsLinkHtml;
     links.innerHTML += offerAnItemLinkHtml;
     links.innerHTML += myItemsLinkHtml;
+    links.innerHTML += myAssignedItemsLinkHtml
+
     links.innerHTML += logoutLinkHtml;
   } else {
     links.innerHTML += loginLinkHtml;

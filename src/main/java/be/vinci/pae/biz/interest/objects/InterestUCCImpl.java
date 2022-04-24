@@ -1,12 +1,11 @@
 package be.vinci.pae.biz.interest.objects;
 
+import be.vinci.pae.biz.interest.interfaces.InterestDTO;
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
-import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.dal.interest.interfaces.InterestDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import jakarta.inject.Inject;
-import java.sql.Date;
-import java.time.LocalDate;
+import java.sql.SQLException;
 
 public class InterestUCCImpl implements InterestUCC {
 
@@ -16,49 +15,28 @@ public class InterestUCCImpl implements InterestUCC {
   private DALServices dalServices;
 
   @Override
-  public int markInterest(MemberDTO memberDTO, int idItem, boolean callWanted) {
-    dalServices.start();
-    Date date = Date.valueOf(LocalDate.now());
-    int res = interestDAO.markInterest(memberDTO, idItem, callWanted, date);
-    if (res == -1) {
+  public boolean markInterest(InterestDTO interestDTO) throws SQLException {
+    try {
+      dalServices.start();
+      boolean isDone = interestDAO.markInterest(interestDTO);
+      dalServices.commit();
+      return isDone;
+    } catch (SQLException e) {
       dalServices.rollback();
-      return -1;
+      throw e;
     }
-    dalServices.commit();
-    return 1;
   }
 
   @Override
-  public boolean offerExist(int idOffer) {
-    dalServices.start();
-    if (!interestDAO.offerExist(idOffer)) {
+  public boolean interestExist(InterestDTO interestDTO) throws SQLException {
+    try {
+      dalServices.start();
+      boolean interestExist = this.interestDAO.interestExist(interestDTO);
+      dalServices.commit();
+      return interestExist;
+    } catch (SQLException e) {
       dalServices.rollback();
-      return false;
+      throw e;
     }
-    dalServices.commit();
-    return true;
   }
-
-  @Override
-  public boolean memberExist(MemberDTO memberDTO) {
-    dalServices.start();
-    if (!interestDAO.memberExist(memberDTO)) {
-      dalServices.rollback();
-      return false;
-    }
-    dalServices.commit();
-    return true;
-  }
-
-  @Override
-  public boolean interestExist(int idItem, MemberDTO memberDTO) {
-    dalServices.start();
-    if (!interestDAO.interestExist(idItem, memberDTO)) {
-      dalServices.rollback();
-      return false;
-    }
-    dalServices.commit();
-    return true;
-  }
-
 }

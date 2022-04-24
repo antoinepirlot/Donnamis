@@ -37,7 +37,30 @@ PUT {{baseUrl}}/items/cancel/2
 Authorization: {{token}}
 
 ### See all items by member id
-GET {{baseUrl}}/items/all_items/3
+GET {{baseUrl}}/items/member_items/1
+Authorization: {{token}}
+
+###
+GET {{baseUrl}}/items/assigned_item/5
+Authorization: {{token}}
+
+### Modify Offer
+PUT {{baseUrl}}/items/modify
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "id": 4,
+  "itemDescription": "Pour boire café",
+  "itemType": {
+    "itemType": "Matériel de cuisine"
+  },
+  "photo": "Mug",
+  "title": "Mug Rose"
+}
+
+###
+GET {{baseUrl}}/items/count/4/given
 Authorization: {{token}}
 
 ### See item by its id

@@ -1,4 +1,4 @@
-package be.vinci.pae.ihm.filter.utils;
+package be.vinci.pae.ihm.utils;
 
 import be.vinci.pae.exceptions.webapplication.TokenDecodingException;
 import be.vinci.pae.exceptions.webapplication.UnauthorizedException;
@@ -47,13 +47,11 @@ public class TokenDecoder {
       } catch (Exception e) {
         String message = "Malformed token : " + e.getMessage() + "\n"
             + Arrays.toString(e.getStackTrace());
-        logger.log(Level.INFO, message);
         throw new UnauthorizedException(message);
       }
     }
     if (decodedJWT == null) {
       String message = "Null is returned by decode token.";
-      logger.log(Level.SEVERE, message);
       throw new TokenDecodingException(message);
     }
     return decodedJWT;

@@ -3,11 +3,13 @@ package be.vinci.pae.biz.interest.objects;
 import be.vinci.pae.biz.interest.interfaces.Interest;
 import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.offer.interfaces.Offer;
+import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.views.Views;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @JsonInclude(Include.NON_NULL)
@@ -18,11 +20,11 @@ public class InterestImpl implements Interest {
   @JsonView(Views.Public.class)
   private boolean callWanted;
   @JsonView(Views.Public.class)
-  private int idItem;
+  private Offer offer;
   @JsonView(Views.Public.class)
   private Member member;
   @JsonView(Views.Public.class)
-  private Date date;
+  private Timestamp date;
 
   public InterestImpl() {
 
@@ -49,13 +51,13 @@ public class InterestImpl implements Interest {
   }
 
   @Override
-  public int getIdItem() {
-    return idItem;
+  public OfferDTO getOffer() {
+    return offer;
   }
 
   @Override
-  public void setIdItem(int idItem) {
-    this.idItem = idItem;
+  public void setOffer(OfferDTO offerDTO) {
+    this.offer = (Offer) offerDTO;
   }
 
   @Override
@@ -69,12 +71,12 @@ public class InterestImpl implements Interest {
   }
 
   @Override
-  public Date getDate() {
+  public Timestamp getDate() {
     return date;
   }
 
   @Override
-  public void setDate(Date date) {
+  public void setDate(Timestamp date) {
     this.date = date;
   }
 
@@ -88,13 +90,13 @@ public class InterestImpl implements Interest {
     }
     InterestImpl interest = (InterestImpl) o;
     return id == interest.id && callWanted == interest.callWanted
-        && idItem == interest.idItem && member == interest.member
+        && offer == interest.offer && member == interest.member
         && Objects.equals(date, interest.date);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, callWanted, idItem, member, date);
+    return Objects.hash(id, callWanted, offer, member, date);
   }
 
   @Override
@@ -102,7 +104,7 @@ public class InterestImpl implements Interest {
     return "Interest{"
         + "id_interest=" + id
         + ", call_wanted=" + callWanted
-        + ", id_offer=" + idItem
+        + ", id_offer=" + offer
         + ", id_member=" + member
         + ", date=" + date
         + '}';
