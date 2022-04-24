@@ -28,13 +28,14 @@ public class ImageRessource {
   public Response uploadFile(@FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDisposition) throws IOException {
     java.nio.file.Path path = java.nio.file.Path.of(Config.getProperty("photoPath"));
+    System.out.println("*********************************");
 
     UUID uuid = UUID.randomUUID();
     String fileName = String.valueOf(uuid);
     String extension = FilenameUtils.getExtension(fileDisposition.getName());
     fileName += extension;
 
-    Files.copy(file, Paths.get(fileName));
+    //Files.copy(file, Paths.get(fileName));
     Files.copy(file, path);
 
     return Response.ok(fileName).header("Access-Control-Allow-Origin", "*").build();
