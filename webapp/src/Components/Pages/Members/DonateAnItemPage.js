@@ -25,10 +25,8 @@ const htmlForm = `
       <textarea id="timeSlotForm" cols="30" rows="3"></textarea><br>
       <br>
       Type de l'objet<span id="asterisk">*</span>:<br>
-      <input id="itemTypeFormList" list="itemsTypes" placeholder="Séléctionne le type d'objet"><br>
-      <!--/!\/!\DONT CHANGE DATALIST ID ONLY THIS ID WORKS, YOU CHANGE, THE LIST DOESNT APPEARS
-          I DONT KNOW WHY/!\/!\-->
-      <datalist id="itemsTypes"></datalist>
+      <input id="itemTypeFormList" list="itemsTypesDonateAnItemPage" placeholder="Séléctionne le type d'objet"><br>
+      <datalist id="itemsTypesDonateAnItemPage"></datalist>
       <br>
       <input type="submit" value="Offrir">
     </form>
@@ -47,7 +45,7 @@ const DonateAnItemPage = async () => {
   page.innerHTML = htmlForm;
   const offerItemForm = document.querySelector("#offerItemForm");
   itemsTypes = await getItemsTypes();
-  showItemsTypes("#itemsTypes", itemsTypes);
+  showItemsTypes("#itemsTypesDonateAnItemPage", itemsTypes);
   offerItemForm.addEventListener("submit", await offerItem);
 };
 
