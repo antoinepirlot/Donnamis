@@ -6,7 +6,7 @@ import {
   modifyTheItem,
   postInterest as postInterestBackEnd
 } from "../../../utils/BackEndRequests";
-import {openModal} from "../../../utils/Modals";
+import {closeModal, openModal} from "../../../utils/Modals";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3">
@@ -19,16 +19,14 @@ const viewOfferHtml = `
         <h5 id="description" class="card-text"></h5>
         <h5 id="availabilities" class="card-text"></h5>
         <h5 id="pubDate" class="card-text"></h5>
-
-        <form id="interestForm">
-           <input id="interestButton" type="submit" class="btn btn-primary">
-       </form>
+        <button id="interestButton" class="btn btn-primary">
       </div>
     </div>
     <div class="col-md-4">
       <img src="" class="card-img" alt="JS">
     </div>
   </div>
+  <div id="viewItemPageError"></div>
 </div>
 <!-- Modal Modify Offer -->
 <div id="modifyItemModal" class="modal">
@@ -47,8 +45,8 @@ const viewOfferHtml = `
       <p></p>
       <input type="submit" value="Modifier">
     </form>
+    <div id="modifyInterestMessage"></div>
   </div>
-  <div id="errorMessage"></div>
 </div>
 <!-- Modal Post Interest -->
 <div id="interestModal" class="modal">
@@ -62,15 +60,17 @@ const viewOfferHtml = `
       <input class="form-check-input" type="checkbox" id="callWanted">
       <label class="form-check-label" for="callWanted">J'accepte d'être appelé</label>
       <div id="phoneNumberInputDiv"></div>
-      <p></p>
-      <input type="submit" value="Confirmer">
+      <br>
+      <input type="submit" class="btn btn-primary" value="Confirmer">
     </form>
+    <div id="postInterestMessage"></div>
   </div>
-  <div id="errorMessage"></div>
 </div>
 `;
 
 let lastOffer;
+let idItem;
+let errorMessageDiv;
 
 /**
  * Render the OfferPage :
@@ -83,27 +83,26 @@ async function ViewItemPage() {
   //get param from url
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const page = document.querySelector("#page");
-  const idItem = urlParams.get("id");
-  page.innerHTML = viewOfferHtml;
+  idItem = urlParams.get("id");
 
-  const button = document.querySelector("#offerCard");
-  const form = document.querySelector("#offerCard");
-  //get offer's infos with the id in param
+  const page = document.querySelector("#page");
+  page.innerHTML = viewOfferHtml;
+  errorMessageDiv = document.querySelector("#viewItemPageError")
+
+  const postInterestButton = document.querySelector("#interestButton");
+  //get item's information with the id in param
 
   const item = await getItemInfo();
   const modifyMember = getObject("memberDTO");
-  const button2 = document.querySelector("#interestButton");
 
-  if (item.member.id == modifyMember.id) {
-    button2.value = "Modifier";
+  if (item.member.id === modifyMember.id) {
+    postInterestButton.innerText = "Modifier";
     //modify item
-    form.addEventListener("submit", showModifyForm);
+    postInterestButton.addEventListener("click", showModifyForm);
   } else {
-
-    button2.value = "Je suis interessé(e) !";
+    postInterestButton.innerText = "Je suis interessé(e) !";
     //post an interest
-    form.addEventListener("submit", showInterestForm);
+    postInterestButton.addEventListener("click", showInterestForm);
   }
 }
 
@@ -130,18 +129,9 @@ function showPhoneNumberInput() {
 
 async function getItemInfo() {
   try {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const idItem = urlParams.get("id");
-    console.log("Test - 1");
-    console.log("Test : " + queryString);
-    console.log(urlParams);
-    console.log(idItem);
     const item = await getItem(idItem);
-    console.log("Test - 2");
-
     lastOffer = item.offerList[0];
-    var date = new Date(lastOffer.date);
+    let date = new Date(lastOffer.date);
     date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
         + date.getFullYear();
 
@@ -163,19 +153,21 @@ async function getItemInfo() {
 }
 
 async function postInterest(e) {
-
   e.preventDefault();
-  const interestMessage = document.querySelector("#errorMessage");
+  const interestMessage = document.querySelector("#postInterestMessage");
   console.log(interestMessage);
 
   const callWanted = document.querySelector("#callWanted").checked;
   const date = document.querySelector("#dateForm").value;
+  if (!date) {
+    showError("La date n'a pas été choisie.", "danger", interestMessage);
+    return;
+  }
   const memberInterested = {
     id: getPayload().id
   };
   if (callWanted) {
-    memberInterested.phoneNumber = document.querySelector(
-        "#phoneNumberInput").value;
+    memberInterested.phoneNumber = document.querySelector("#phoneNumberInputDiv").value;
   }
   const interest = {
     callWanted: callWanted,
@@ -184,16 +176,15 @@ async function postInterest(e) {
     date: date
   };
   try {
-    await postInterestBackEnd(interest, interestMessage);
+    await postInterestBackEnd(interest, errorMessageDiv);
     if (callWanted) {
       await checkToken();
     }
   } catch (err) {
-    showError("Votre intérêt n'a pas pu être ajouté", "danger",
-        interestMessage);
     console.error(err);
+  } finally {
+    closeModal("#interestModal");
   }
-
 }
 
 async function showModifyForm(e) {
@@ -206,7 +197,6 @@ async function showModifyForm(e) {
 
 async function showInterestForm(e) {
   e.preventDefault();
-
   openModal("#interestModal", "#interestCloseModal");
 
   const callWantedCheckbox = document.querySelector("#callWanted");
@@ -241,7 +231,7 @@ async function modifyItem(e) {
 
   try {
     await modifyTheItem(item);
-    const errorMessage = document.querySelector("#errorMessage");
+    const errorMessage = document.querySelector("#modifyInterestMessage");
     showError("Modification validé", "success", errorMessage);
     await ViewItemPage();
   } catch (error) {
