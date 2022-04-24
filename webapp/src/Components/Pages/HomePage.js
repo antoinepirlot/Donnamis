@@ -15,7 +15,7 @@ const tableHtml = `
   <div id="homePageModal" class="modal">
     <div class="modal-content">
       <span id="homePageModalCloseButton" class="close">&times;</span>
-      <h5>Vous n'êtes pas connecté. Avez vous déjà un compte?"</h5><br>
+      <h5>Vous devez être connecté pour voir les détails de cet objet</h5><br>
       <button id="iHaveAnAccountButton" type="submit" class="btn btn-primary" >J'ai déjà un compte</button>
       <button id="iDontHaveAnAccountButton" type="submit" class="btn btn-danger" >Je veux créer un compte</button>
     </div>
