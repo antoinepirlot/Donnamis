@@ -54,9 +54,16 @@ public class ObjectsInstanceCreator {
     itemDTO.setOfferStatus(
         StringEscapeUtils.escapeHtml4(rs.getString("offer_status"))
     );
-    itemDTO.setItemType(createItemsTypeInstance(factory, rs));
-    itemDTO.setMember(createMemberInstance(factory, rs));
-    System.out.println(itemDTO);
+    try {
+      itemDTO.setItemType(createItemsTypeInstance(factory, rs));
+    } catch (SQLException e) {
+      itemDTO.setItemType(null);
+    }
+    try {
+      itemDTO.setMember(createMemberInstance(factory, rs));
+    } catch (SQLException e) {
+      System.out.println("No member for the item.");
+    }
     return itemDTO;
   }
 
@@ -89,26 +96,10 @@ public class ObjectsInstanceCreator {
   public static MemberDTO createMemberInstance(Factory factory, ResultSet rs) throws SQLException {
     System.out.println("Setting all member attributes");
     MemberDTO memberDTO = factory.getMember();
-    try {
-      memberDTO.setUsername(StringEscapeUtils.escapeHtml4(rs.getString("username")));
-    } catch (SQLException ignored) {
-
-    }
-    try {
-      memberDTO.setLastName(StringEscapeUtils.escapeHtml4(rs.getString("last_name")));
-    } catch (SQLException ignored) {
-
-    }
-    try {
-      memberDTO.setFirstName(StringEscapeUtils.escapeHtml4(rs.getString("first_name")));
-    } catch (SQLException ignored) {
-
-    }
-    try {
-      memberDTO.setId(rs.getInt("id_member"));
-    } catch (SQLException e) {
-      System.out.println("No id selected for this member");
-    }
+    memberDTO.setId(rs.getInt("id_member"));
+    memberDTO.setUsername(StringEscapeUtils.escapeHtml4(rs.getString("username")));
+    memberDTO.setLastName(StringEscapeUtils.escapeHtml4(rs.getString("last_name")));
+    memberDTO.setFirstName(StringEscapeUtils.escapeHtml4(rs.getString("first_name")));
     try {
       memberDTO.setActualState(StringEscapeUtils.escapeHtml4(rs.getString("state")));
     } catch (SQLException e) {
@@ -163,6 +154,15 @@ public class ObjectsInstanceCreator {
     return addressDTO;
   }
 
+  /**
+   * Create a refusal instance with the factory and set all its attributes with data selected from
+   * the db.
+   *
+   * @param factory the factory that gives an address
+   * @param rs      the result set that contains address's data
+   * @return a new refusal instance with initialized attributes
+   * @throws SQLException if an attributes is not in the result set
+   */
   public static RefusalDTO createRefusalInstance(Factory factory, ResultSet rs)
       throws SQLException {
     RefusalDTO refusalDTO = factory.getRefusalDTO();

@@ -1,6 +1,5 @@
 package be.vinci.pae.biz.member.objects;
 
-import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
@@ -39,19 +38,6 @@ public class MemberUCCImpl implements MemberUCC {
       MemberDTO memberDTO = memberDAO.getOne(id);
       dalServices.commit();
       return memberDTO;
-    } catch (SQLException e) {
-      dalServices.rollback();
-      throw e;
-    }
-  }
-
-  @Override
-  public AddressDTO getAddressMember(int id) throws SQLException {
-    try {
-      dalServices.start();
-      AddressDTO addressDTO = memberDAO.getAddressMember(id);
-      dalServices.commit();
-      return addressDTO;
     } catch (SQLException e) {
       dalServices.rollback();
       throw e;

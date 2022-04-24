@@ -58,3 +58,7 @@ Content-Type: application/json
   "photo": "Mug",
   "title": "Mug Rose"
 }
+
+###
+GET {{baseUrl}}/items/count/4/given
+Authorization: {{token}}

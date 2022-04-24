@@ -33,6 +33,9 @@ async function getRefusal(username) {
   };
   const response = await fetch(`/api/refusals/${username}`, request);
   if (!response.ok) {
+    if (response.status === 404) {
+      return false;
+    }
     throw new Error("Error while fetching refusal message.");
   }
   return await response.json();
@@ -119,6 +122,20 @@ async function getInterestedMembers(idOffer) {
     throw new Error("Error while fetching interested members.");
   }
   return response.status === 200 ? await response.json() : null;
+}
+
+async function getOneMember(idMember) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/members/${idMember}`, request);
+  if (!response.ok) {
+    throw new Error("Error while fetching one user.");
+  }
+  return await response.json();
 }
 
 async function confirmInscription(member) {
@@ -285,6 +302,63 @@ async function getItemsTypes() {
   return await response.json();
 }
 
+async function getAllItemsByMemberIdAndOfferStatus(idMember, offerStatus) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/items/${idMember}/${offerStatus}`, request);
+  if (!response.ok) {
+    throw new Error("Error while fetching member's items");
+  }
+  return await response.json();
+}
+
+async function getNumberOfItems(idMember, offerStatus) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/items/count/${idMember}/${offerStatus}`, request);
+  if (!response.ok) {
+    throw new Error("Error while fetching the number of items.");
+  }
+  return await response.json();
+}
+
+async function getNumberOfReceivedOrNotReceivedItems(idMember, received) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/items/count_assigned_items/${idMember}/${received}`, request);
+  if (!response.ok) {
+    throw new Error("Error while fetching count of received or not received items of member: " + idMember);
+  }
+  return await response.json();
+}
+
+async function addNewItemsType(itemsType) {
+  const request = {
+    method: "POST",
+    headers: {
+      "Authorization": getObject("token"),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(itemsType)
+  };
+  const response = await fetch("/api/items_types", request);
+  if (!response.ok) {
+    throw new Error("Error while adding a new items type.");
+  }
+}
+
 async function offerAnItem(item) {
   const request = {
     method: "POST",
@@ -374,6 +448,32 @@ async function getMyItems() {
   return await response.json()
 }
 
+/**
+ * Fetch to "items" to mark item as given or not given
+ * @param given {boolean} true if it marks item as given or false to not given
+ * @param item the item to update
+ */
+async function markItemAs(given, item) {
+  const request = {
+    method: "PUT",
+    headers: {
+      "Authorization": getObject("token"),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(item)
+  };
+  let url;
+  if (given) {
+    url = "/api/items/given";
+  } else {
+    url = "/api/items/not_given"
+  }
+  const response = await fetch(url, request);
+  if (!response.ok) {
+    throw new Error("Error while updating item's offer status");
+  }
+}
+
 async function cancelOffer(id) {
   const request = {
     method: "DELETE",
@@ -443,6 +543,7 @@ export {
   isAdmin,
   getAllMembers,
   getInterestedMembers,
+  getOneMember,
   confirmInscription,
   confirmAdmin,
   denyMember,
@@ -451,9 +552,14 @@ export {
   getAllOffers,
   getLatestOffers,
   getMyItems,
+  markItemAs,
   cancelOffer,
   getItem,
   getItemsTypes,
+  getAllItemsByMemberIdAndOfferStatus,
+  addNewItemsType,
+  getNumberOfItems,
+  getNumberOfReceivedOrNotReceivedItems,
   offerAnItem,
   offerAgain,
   postInterest,

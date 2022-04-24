@@ -84,33 +84,14 @@ public class MemberDAOImpl implements MemberDAO {
     return null;
   }
 
-  /**
-   * Get the members in the DB with the corresponding id.
-   *
-   * @param id the id of the member
-   * @return the members in the DB with the corresponding id otherwise null
-   */
+  @Override
   public MemberDTO getOne(int id) throws SQLException {
     MemberDTO memberDTO = this.factory.getMember();
     memberDTO.setId(id);
     return this.getOne(memberDTO);
   }
 
-  public AddressDTO getAddressMember(int id) {
-    String query = "SELECT * FROM project_pae.addresses a WHERE a.id_member = ?;";
-    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
-      preparedStatement.setInt(1, id);
-      try (ResultSet rs = preparedStatement.executeQuery()) {
-        if (rs.next()) {
-          return ObjectsInstanceCreator.createAddressInstance(this.factory, rs);
-        }
-      }
-    } catch (SQLException e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
-    }
-    return null;
-  }
-
+  @Override
   public MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException {
     String query = "UPDATE project_pae.members SET username = ?, password = ?, last_name = ?, "
         + "first_name = ?, phone = ? WHERE id_member = ? RETURNING *;";
@@ -124,11 +105,11 @@ public class MemberDAOImpl implements MemberDAO {
       preparedStatement.setInt(6, memberDTO.getId());
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
-          memberDTO = ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
+          modifiedMember = ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
         }
       }
     }
-    return memberDTO;
+    return modifiedMember;
   }
 
   /**
@@ -163,6 +144,7 @@ public class MemberDAOImpl implements MemberDAO {
     return executeQueryWithId(id, query);
   }
 
+  @Override
   public boolean denyMember(RefusalDTO refusalDTO) throws SQLException {
     String query =
         "UPDATE project_pae.members SET state = '" + DENIED_STATE + "' WHERE id_member = ?;"
@@ -201,6 +183,7 @@ public class MemberDAOImpl implements MemberDAO {
     }
   }
 
+  @Override
   public boolean memberExist(MemberDTO memberDTO, int idMember) {
     String query = "SELECT id_member FROM project_pae.members WHERE id_member = ?";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
@@ -221,7 +204,7 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   @Override
-  public List<MemberDTO> getInterestedMembers(int idItem) throws SQLException {
+  public List<MemberDTO> getInterestedMembers(int idOffer) throws SQLException {
     String query = "SELECT  m2.id_member, "
         + "        m2.username, "
         + "        m2.last_name, "
@@ -238,10 +221,10 @@ public class MemberDAOImpl implements MemberDAO {
         + "  AND m2.id_member = int.id_member "
         + "  AND int.id_offer = o.id_offer "
         + "  AND o.id_item = i.id_item "
-        + "  AND i.id_item = ?;";
+        + "  AND o.id_offer = ?;";
     List<MemberDTO> memberDTOList = new ArrayList<>();
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
-      ps.setInt(1, idItem);
+      ps.setInt(1, idOffer);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           memberDTOList.add(ObjectsInstanceCreator.createMemberInstance(this.factory, rs));

@@ -27,4 +27,30 @@ public class ItemsTypeUCCImpl implements ItemsTypeUCC {
       throw e;
     }
   }
+
+  @Override
+  public boolean exists(ItemsTypeDTO itemsTypeDTO) throws SQLException {
+    try {
+      this.dalServices.start();
+      boolean exists = this.itemsTypeDAO.exists(itemsTypeDTO);
+      this.dalServices.commit();
+      return exists;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public boolean addItemsType(ItemsTypeDTO itemsTypeDTO) throws SQLException {
+    try {
+      this.dalServices.start();
+      boolean added = this.itemsTypeDAO.addItemsType(itemsTypeDTO);
+      this.dalServices.commit();
+      return added;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
+    }
+  }
 }

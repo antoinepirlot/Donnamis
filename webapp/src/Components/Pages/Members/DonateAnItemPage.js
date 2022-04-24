@@ -1,7 +1,11 @@
-import {getItemsTypes, offerAnItem} from "../../utils/BackEndRequests";
-import {showError} from "../../utils/ShowError";
-import {getPayload} from "../../utils/session";
-import {Redirect} from "../Router/Router";
+import {
+  addNewItemsType,
+  getItemsTypes,
+  offerAnItem
+} from "../../../utils/BackEndRequests";
+import {showError} from "../../../utils/ShowError";
+import {getPayload} from "../../../utils/session";
+import {Redirect} from "../../Router/Router";
 
 const htmlForm = `
   <div>
@@ -29,7 +33,9 @@ const htmlForm = `
   <div id="errorMessageOfferAnItemPage"></div>
 `;
 
-const OfferAnItemPage = async () => {
+let itemsTypes;
+
+const DonateAnItemPage = async () => {
   if (!getPayload()) {
     Redirect("/");
     return;
@@ -37,12 +43,12 @@ const OfferAnItemPage = async () => {
   const page = document.querySelector("#page");
   page.innerHTML = htmlForm;
   const offerItemForm = document.querySelector("#offerItemForm");
-  await showItemsTypes();
+  itemsTypes = await getItemsTypes();
+  showItemsTypes();
   offerItemForm.addEventListener("submit", await offerItem);
 };
 
-async function showItemsTypes() {
-  const itemsTypes = await getItemsTypes();
+function showItemsTypes() {
   const itemsTypeList = document.querySelector("#itemsTypes");
   itemsTypeList.innerHTML = "";
   itemsTypes.forEach(itemsType => {
@@ -55,6 +61,8 @@ async function showItemsTypes() {
 async function offerItem(e) {
   const date = new Date();
   e.preventDefault();
+  const errorMessageOfferAnItemPage = document.querySelector(
+      "#errorMessageOfferAnItemPage");
   const title = document.querySelector("#titleForm").value;
   const itemDescription = document.querySelector("#itemDescriptionForm").value;
   let photo = document.querySelector("#photoForm").value;
@@ -71,27 +79,29 @@ async function offerItem(e) {
   const member = {
     id: payload.id
   };
-  const itemType = {
+  const itemsType = {
     itemType: itemTypeValue
   };
   const item = {
     itemDescription: itemDescription,
     title: title,
     photo: photo,
-    itemType: itemType,
+    itemType: itemsType,
     member: member,
     offerList: offersList,
     lastOfferDate: date
   }
   try {
+    if (!itemsTypes.find((type) => type.itemType === itemTypeValue)) {
+      await addNewItemsType(itemsType);
+    }
     await offerAnItem(item);
-    const errorMessageOfferAnItemPage = document.querySelector(
-        "#errorMessageOfferAnItemPage");
     const message = "Ajout réussi!"
     showError(message, "success", errorMessageOfferAnItemPage);
   } catch (error) {
     console.error(error);
+    showError("Une erreur est survenue.", "danger", errorMessageOfferAnItemPage);
   }
 }
 
-export {OfferAnItemPage};
+export default DonateAnItemPage;

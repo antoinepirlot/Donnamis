@@ -2,6 +2,7 @@ package be.vinci.pae.ihm.recipient;
 
 import be.vinci.pae.biz.recipient.interfaces.RecipientDTO;
 import be.vinci.pae.biz.recipient.interfaces.RecipientUCC;
+import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import jakarta.inject.Inject;
@@ -21,7 +22,7 @@ public class RecipientResource {
   private RecipientUCC recipientUCC;
 
   /**
-   * Add a recipient into the database
+   * Add a recipient into the database.
    *
    * @param recipientDTO the recipient to add
    * @throws SQLException        if an error occurs while adding it
@@ -38,6 +39,9 @@ public class RecipientResource {
         || recipientDTO.getMember().getUsername().isBlank()
     ) {
       throw new WrongBodyDataException("RecipientDTO is incomplete");
+    }
+    if (this.recipientUCC.exists(recipientDTO)) {
+      throw new ConflictException("This recipient already exists for this offer.");
     }
     if (!this.recipientUCC.chooseRecipient(recipientDTO)) {
       throw new UnexpectedException("choose recipient returned false.");

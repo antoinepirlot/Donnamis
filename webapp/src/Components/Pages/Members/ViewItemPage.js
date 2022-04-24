@@ -1,12 +1,17 @@
 import {getObject, getPayload,} from "../../utils/session";
 import {Redirect} from "../Router/Router";
 import {showError} from "../../utils/ShowError";
+import {checkToken, getObject, getPayload,} from "../../../utils/session";
+import {Redirect} from "../../Router/Router";
+import {showError} from "../../../utils/ShowError";
 import {
   getItem,
   modifyTheItem,
+  getItem, me,
   postInterest as postInterestBackEnd
 } from "../../utils/BackEndRequests";
 import {openModal} from "../../utils/Modals";
+} from "../../../utils/BackEndRequests";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3">
@@ -23,6 +28,13 @@ const viewOfferHtml = `
         <form>
           <div id="call_wanted"></div>
            <input id="interestButton" type="submit" class="btn btn-primary">
+        <form id="interestForm">
+          <div id="interestsInputs" class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="callWanted">
+            <label class="form-check-label" for="callWanted">J'accepte d'être appelé</label>
+            <div id="phoneNumberInputDiv"></div>
+          </div>
+          <input id="interestButton" type="submit" class="btn btn-primary" value="Je suis interessé(e) !">
        </form>
 
        <div class="message" id="interestMessage"></div>
@@ -71,6 +83,11 @@ async function ViewItemPage() {
   const page = document.querySelector("#page");
   const idItem = urlParams.get("id");
   page.innerHTML = viewOfferHtml;
+
+  const callWanted = document.querySelector("#callWanted");
+  callWanted.addEventListener("click", showPhoneNumberInput)
+
+  const button = document.querySelector("#offerCard");
   const form = document.querySelector("#offerCard");
   //get offer's infos with the id in param
 
@@ -90,6 +107,27 @@ async function ViewItemPage() {
     button.value = "Je suis interessé(e) !";
     //post an interest
     form.addEventListener("submit", postInterest);
+  }
+}
+
+function showPhoneNumberInput() {
+  const phoneNumberInputDiv = document.querySelector("#phoneNumberInputDiv");
+  let phoneNumberInputHtml;
+  const memberDTO = getObject("memberDTO");
+  console.log(memberDTO)
+  if (memberDTO.phoneNumber) {
+    phoneNumberInputHtml = `
+      <input id="phoneNumberInput" type="tel" value="${memberDTO.phoneNumber}" pattern="(+?[0-9]{3})[0-9]{13}">
+    `;
+  } else {
+    phoneNumberInputHtml = `
+      <input id="phoneNumberInput" type="tel" placeholder="Téléphone" pattern="(+?[0-9]{3})[0-9]{13}">
+    `;
+  }
+  if (!phoneNumberInputDiv.querySelector("#phoneNumberInput")) {
+    phoneNumberInputDiv.innerHTML = phoneNumberInputHtml;
+  } else {
+    phoneNumberInputDiv.innerHTML = "";
   }
 }
 
@@ -126,14 +164,19 @@ async function postInterest(e) {
   const member = {
     id: getPayload().id
   };
+  if (callWanted) {
+    member.phoneNumber = document.querySelector("#phoneNumberInput").value;
+  }
   const interest = {
     callWanted: callWanted,
     offer: lastOffer,
     member: member
   };
-  console.table(interest);
   try {
     await postInterestBackEnd(interest, interestMessage);
+    if (callWanted) {
+      await checkToken();
+    }
   } catch (err) {
     showError("Votre marque d'intérêt n'a pas pu être ajoutée", "danger",
         interestMessage);

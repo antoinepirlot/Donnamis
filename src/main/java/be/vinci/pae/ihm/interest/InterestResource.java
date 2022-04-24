@@ -48,7 +48,12 @@ public class InterestResource {
     //Verify the content of the request
     if (interestDTO == null
         || interestDTO.getOffer() == null || interestDTO.getOffer().getId() < 1
-        || interestDTO.getMember() == null || interestDTO.getMember().getId() < 1) {
+        || interestDTO.getMember() == null || interestDTO.getMember().getId() < 1
+        || interestDTO.isCallWanted()
+        && (interestDTO.getMember().getPhoneNumber() == null
+            || interestDTO.getMember().getPhoneNumber().isBlank()
+        )
+    ) {
       throw new WrongBodyDataException("idMember required");
     }
     interestDTO.setDate(now);

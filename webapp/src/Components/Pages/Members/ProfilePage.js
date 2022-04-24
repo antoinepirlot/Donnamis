@@ -1,7 +1,7 @@
-import {getObject, getPayload,} from "../../utils/session";
-import {Redirect} from "../Router/Router";
-import {showError} from "../../utils/ShowError";
-import {modifyMember as modifyMemberBackEnd} from "../../utils/BackEndRequests";
+import {getObject, getPayload,} from "../../../utils/session";
+import {Redirect} from "../../Router/Router";
+import {showError} from "../../../utils/ShowError";
+import {modifyMember as modifyMemberBackEnd} from "../../../utils/BackEndRequests";
 
 const viewProfileHtml = `
   <div class="bg-info d-inline-flex d-flex flex-column rounded w-50 p-3">
@@ -94,4 +94,4 @@ async function modifyProfile(e) {
   }
 }
 
-export {ProfilePage};
+export default ProfilePage;

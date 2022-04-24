@@ -1,6 +1,5 @@
 package be.vinci.pae.biz.member.interfaces;
 
-import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import java.sql.SQLException;
 import java.util.List;
@@ -29,14 +28,6 @@ public interface MemberUCC {
    * @return the member or null if there's no member with the id
    */
   MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException;
-
-  /**
-   * Asks the UCC to get the adress of the membe identified by its id.
-   *
-   * @param id the member's id
-   * @return the adress or null if there's no member with the id
-   */
-  AddressDTO getAddressMember(int id) throws SQLException;
 
   /**
    * Confirm the inscription of a member.
@@ -78,7 +69,7 @@ public interface MemberUCC {
   boolean register(MemberDTO memberDTO) throws SQLException;
 
   /**
-   * Get the list of interested member of the item and returns it
+   * Get the list of interested member of the item and returns it.
    *
    * @param idOffer the id of the item
    * @return the list of interested members

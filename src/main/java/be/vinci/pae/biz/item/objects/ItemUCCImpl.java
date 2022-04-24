@@ -45,9 +45,9 @@ public class ItemUCCImpl implements ItemUCC {
   public int addItem(ItemDTO itemDTO) throws SQLException {
     try {
       dalServices.start();
-      int id_item = itemDAO.addItem(itemDTO);
+      int idItem = itemDAO.addItem(itemDTO);
       dalServices.commit();
-      return id_item;
+      return idItem;
     } catch (SQLException e) {
       dalServices.rollback();
       throw e;
@@ -100,6 +100,99 @@ public class ItemUCCImpl implements ItemUCC {
       List<ItemDTO> listItemDTO = this.itemDAO.getAssignedItems(idMember);
       this.dalServices.commit();
       return listItemDTO;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public boolean markItemAsGiven(ItemDTO itemDTO) throws SQLException {
+    return this.markItemAs(true, itemDTO);
+  }
+
+  @Override
+  public boolean markItemAsNotGiven(ItemDTO itemDTO) throws SQLException {
+    return this.markItemAs(false, itemDTO);
+  }
+
+  @Override
+  public int countNumberOfItemsByOfferStatus(int idMember, String offerStatus) throws SQLException {
+    try {
+      this.dalServices.start();
+      int itemsNumber = this.itemDAO.countNumberOfItemsByOfferStatus(idMember, offerStatus);
+      this.dalServices.commit();
+      return itemsNumber;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public int countNumberOfReceivedOrNotReceivedItems(int idMember, boolean received)
+      throws SQLException {
+    try {
+      this.dalServices.start();
+      int numberOfItems = this.itemDAO.countNumberOfReceivedOrNotReceivedItems(idMember, received);
+      this.dalServices.commit();
+      return numberOfItems;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public List<ItemDTO> getMemberItemsByOfferStatus(int idMember, String offerStatus)
+      throws SQLException {
+    try {
+      this.dalServices.start();
+      List<ItemDTO> itemDTOList = this.itemDAO.getMemberItemsByOfferStatus(idMember, offerStatus);
+      this.dalServices.commit();
+      return itemDTOList;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
+    }
+  }
+
+  @Override
+  public List<ItemDTO> getMemberReceivedItems(int idMember) throws SQLException {
+    try {
+      this.dalServices.start();
+      List<ItemDTO> itemDTOList = this.itemDAO.getMemberReceivedItems(idMember);
+      this.dalServices.commit();
+      return itemDTOList;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw e;
+    }
+  }
+
+  /////////////////////////////////////////////////////////
+  ///////////////////////UTILS/////////////////////////////
+  /////////////////////////////////////////////////////////
+
+  /**
+   * mark item as given or not given and update the recipient.
+   *
+   * @param given   true if it marks item as given or false to mark item as not given
+   * @param itemDTO the item to update
+   * @return true if the operation worked as expected otherwise false
+   * @throws SQLException if an error occurs while updating items or recipient
+   */
+  private boolean markItemAs(boolean given, ItemDTO itemDTO) throws SQLException {
+    try {
+      boolean done;
+      this.dalServices.start();
+      if (given) {
+        done = this.itemDAO.markItemAsGiven(itemDTO);
+      } else {
+        done = this.itemDAO.markItemAsNotGiven(itemDTO);
+      }
+      this.dalServices.commit();
+      return done;
     } catch (SQLException e) {
       this.dalServices.rollback();
       throw e;

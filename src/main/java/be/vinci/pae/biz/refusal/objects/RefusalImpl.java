@@ -48,10 +48,10 @@ public class RefusalImpl implements Refusal {
 
   @Override
   public String toString() {
-    return "RefusalImpl{" +
-        "idRefusal=" + idRefusal +
-        ", member=" + member +
-        ", text='" + text + '\'' +
-        '}';
+    return "RefusalImpl{"
+        + "idRefusal=" + idRefusal
+        + ", member=" + member
+        + ", text='" + text + '\''
+        + '}';
   }
 }

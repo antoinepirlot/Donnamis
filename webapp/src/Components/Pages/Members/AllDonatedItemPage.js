@@ -1,5 +1,7 @@
-import {getAllItemsByOfferStatus} from "../../utils/BackEndRequests";
-import {showItems} from "../../utils/HtmlCode";
+import {getAllItemsByOfferStatus} from "../../../utils/BackEndRequests";
+import {getShowItemsHtml} from "../../../utils/HtmlCode";
+import {getPayload} from "../../../utils/session";
+import {Redirect} from "../../Router/Router";
 
 const tableHtml = `
   <div>
@@ -10,11 +12,15 @@ const tableHtml = `
 `;
 
 const AllOfferedItemsPage = async () => {
+  if (!getPayload()) {
+    Redirect("/");
+    return;
+  }
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtml;
   const items = await getAllItemsByOfferStatus("donated");
   let tbody = document.querySelector("#all_offered_items");
-  showItems(items, tbody);
+  tbody.innerHTML = getShowItemsHtml(items);
 };
 
 //function setSeeItemEvent(itemButtons) {

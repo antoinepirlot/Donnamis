@@ -64,7 +64,7 @@ async function login(e) {
   try {
     const content = await loginBackEndRequest(username, password);
     if (!content) {
-      const loginMessage = document.querySelector("#loginMessage");
+
       const refusal = await getRefusal(username);
       if (refusal) {
         const refusalMessage = refusal.text;
@@ -87,6 +87,7 @@ async function login(e) {
     await Navbar();
   } catch (error) {
     console.error("LoginPage::error: ", error);
+    showError("Une erreur est survenue.", "danger", loginMessage);
   }
 }
 

@@ -3,31 +3,20 @@ import {
   chooseRecipient as chooseRecpientBackEnd,
   getInterestedMembers,
   getMyItems,
+  markItemAs as markItemAsaBackEnd,
   offerAgain as offerAgainBackEnd
-} from "../../utils/BackEndRequests";
-import {getPayload} from "../../utils/session";
-import {showError} from "../../utils/ShowError";
-import {openModal} from "../../utils/Modals";
-import {Redirect} from "../Router/Router";
+} from "../../../utils/BackEndRequests";
+import {getPayload} from "../../../utils/session";
+import {showError} from "../../../utils/ShowError";
+import {openModal} from "../../../utils/Modals";
+import {Redirect} from "../../Router/Router";
+import {getShowItemsHtml} from "../../../utils/HtmlCode";
 
 const myItemsPageHtml = `
   <div>
-    <h1 class="display-3">Mes offres</h1>
-    <br>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Titre</th>
-          <th scope="col">Description de l'objet</th>
-          <th scope="col">Photo</th>
-          <th scope="col">Statut de l'offre</th>
-          <th scope="col"></th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody id="tbody_my_items">
-      </tbody>
-    </table>
+    <h1 class="display-3" id="all_items_title">Mes objets</h1>
+    <div class="row" id="myItems">
+    </div>
   </div>
   <div id="errorMessageMyItemsPage"></div>
   
@@ -78,27 +67,55 @@ const MyItemsPage = async () => {
     const errorMessageMyItemsPage = document.querySelector(
         "#errorMessageMyItemsPage");
     showError(message, "info", errorMessageMyItemsPage);
-  } else {
-    showItems(items);
+    return;
   }
+  showButtons(items);
 };
 
-function showItems(items) {
-  const tbody = document.querySelector("#tbody_my_items");
-  tbody.innerHTML = "";
+function showButtons(items) {
+  const myItemsDiv = document.querySelector("#myItems");
+  myItemsDiv.innerHTML = "";
   items.forEach((item) => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${item.title}</td>
-        <td>${item.itemDescription}</td>
-        <td>${item.photo}</td>
-        <td>${item.offerStatus}</td>
-        <td><a id="itemDetails" href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir offre</a></td>
-        <td><button id="offerAgainButton" class="btn btn-primary" value="${item.id}">Offrir à nouveau</button></td>
-        <td><button id="chooseRecipientButton" class="btn btn-primary" value="${item.id}">Choisir un receveur</button></td>
-        <td><button id="itemCancelled" class="btn btn-danger" value="${item.id}">Annuler l'offre</button></td>
-      </tr>
+    let html = `
+      <div class="col-sm-3" id="item-card" >
+        <div class="card">
+        <img class="card-img-top" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">${item.title}</h5>
+            <p class="card-text">${item.itemDescription}</p>
+            <div id="itemButtons">
+              <a href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir les détails</a>
+
     `;
+    const cancelButtonHtml = `<td><button id="itemCancelled" class="btn btn-danger" value="${item.id}">Annuler l'offre</button></td>`;
+    const offerAgainButtonHtml = `<td><button id="offerAgainButton" class="btn btn-primary" value="${item.id}">Offrir à nouveau</button></td>`;
+    const markReceivedButtonHtml = `<td><button id="markReceivedButton" class="btn btn-primary" value="${item.id}">Objet donné</button></td>`;
+    const chooseRecipientButtonHtml = `<td><button id="chooseRecipientButton" class="btn btn-primary" value="${item.id}">Choisir un receveur</button></td>`;
+    const markNotGivenButtonHtml = `<td><button id="markNotGivenButton" class="btn btn-primary" value="${item.id}">Objet non récupéré</button></td>`;
+    if (item.offerStatus === "donated") {
+      html += `
+        ${offerAgainButtonHtml}
+        ${chooseRecipientButtonHtml}
+        ${cancelButtonHtml}
+      `;
+    } else if (item.offerStatus === "cancelled") {
+      html += `
+        ${offerAgainButtonHtml}  
+      `;
+    } else if (item.offerStatus === "assigned") {
+      html += `
+        ${markReceivedButtonHtml}
+        ${markNotGivenButtonHtml}
+        ${cancelButtonHtml}
+      `;
+    }
+    html += `
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    myItemsDiv.innerHTML += html;
   });
 
   /*************/
@@ -142,6 +159,28 @@ function showItems(items) {
       const chooseRecipientModal = document.querySelector(
           "#chooseRecipientModal");
       chooseRecipientModal.addEventListener("submit", await chooseRecipient);
+    });
+  });
+
+  /********************/
+  /*Mark item as given*/
+  /********************/
+  const markReceivedButtons = document.querySelectorAll("#markReceivedButton");
+  markReceivedButtons.forEach((markReceivedButton) => {
+    markReceivedButton.addEventListener("click", async () => {
+      idItem = markReceivedButton.value;
+      await markItemAs(true);
+    });
+  });
+
+  /***************************/
+  /*Mark item as not received*/
+  /***************************/
+  const markNotGivenButtons = document.querySelectorAll("#markNotGivenButton");
+  markNotGivenButtons.forEach((markNotGivenButton) => {
+    markNotGivenButton.addEventListener("click", async () => {
+      idItem = markNotGivenButton.value;
+      await markItemAs(false);
     });
   });
 
@@ -190,8 +229,27 @@ async function chooseRecipient(e) {
     await chooseRecpientBackEnd(recipient)
     showError("Vous avez choisi l'utilisateur " + recipientUsername
         + " comme receveur.", "success", errorDiv);
+    await MyItemsPage();
   } catch (e) {
     showError("Impossible de choisir le receveur.", "danger", errorDiv);
+  }
+}
+
+async function markItemAs(given) {
+  const errorDiv = document.querySelector("#errorMessageMyItemsPage");
+  showError("Le changement est en cours...", "info", errorDiv);
+  const item = {
+    id: idItem,
+    member: {
+      id: getPayload().id
+    }
+  }
+  try {
+    await markItemAsaBackEnd(given, item);
+    showError("L'objet à bien été marqué comme donné.", "success", errorDiv);
+    await MyItemsPage();
+  } catch (e) {
+    showError("L'objet n'a pas été marqué comme donné.", "danger", errorDiv);
   }
 }
 
