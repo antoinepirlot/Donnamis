@@ -309,7 +309,8 @@ async function getAllItemsByMemberIdAndOfferStatus(idMember, offerStatus) {
       "Authorization": getObject("token")
     }
   };
-  const response = await fetch(`/api/items/${idMember}/${offerStatus}`, request);
+  const response = await fetch(`/api/items/${idMember}/${offerStatus}`,
+      request);
   if (!response.ok) {
     throw new Error("Error while fetching member's items");
   }
@@ -323,7 +324,8 @@ async function getNumberOfItems(idMember, offerStatus) {
       "Authorization": getObject("token")
     }
   };
-  const response = await fetch(`/api/items/count/${idMember}/${offerStatus}`, request);
+  const response = await fetch(`/api/items/count/${idMember}/${offerStatus}`,
+      request);
   if (!response.ok) {
     throw new Error("Error while fetching the number of items.");
   }
@@ -337,9 +339,12 @@ async function getNumberOfReceivedOrNotReceivedItems(idMember, received) {
       "Authorization": getObject("token")
     }
   };
-  const response = await fetch(`/api/items/count_assigned_items/${idMember}/${received}`, request);
+  const response = await fetch(
+      `/api/items/count_assigned_items/${idMember}/${received}`, request);
   if (!response.ok) {
-    throw new Error("Error while fetching count of received or not received items of member: " + idMember);
+    throw new Error(
+        "Error while fetching count of received or not received items of member: "
+        + idMember);
   }
   return await response.json();
 }
@@ -504,7 +509,7 @@ async function postInterest(interest, interestMessage) {
     body: JSON.stringify(interest)
   };
   const response = await fetch("api/interests", request);
-  console.table(response);
+
   if (response.ok) {
     showError(
         "Votre intérêt pour cet article à été bien été enregistré.",

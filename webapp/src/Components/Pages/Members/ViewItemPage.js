@@ -20,19 +20,9 @@ const viewOfferHtml = `
         <h5 id="availabilities" class="card-text"></h5>
         <h5 id="pubDate" class="card-text"></h5>
 
-        <form>
-          <div id="call_wanted"></div>
-           <input id="interestButton" type="submit" class="btn btn-primary">
         <form id="interestForm">
-          <div id="interestsInputs" class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="callWanted">
-            <label class="form-check-label" for="callWanted">J'accepte d'être appelé</label>
-            <div id="phoneNumberInputDiv"></div>
-          </div>
-          <input id="interestButton" type="submit" class="btn btn-primary" value="Je suis interessé(e) !">
+           <input id="interestButton" type="submit" class="btn btn-primary">
        </form>
-
-       <div class="message" id="interestMessage"></div>
       </div>
     </div>
     <div class="col-md-4">
@@ -40,7 +30,7 @@ const viewOfferHtml = `
     </div>
   </div>
 </div>
-<!-- The Modal -->
+<!-- Modal Modify Offer -->
 <div id="modifyItemModal" class="modal">
   <div class="modal-content">
     <span id="modifyItemCloseModal" class="close">&times;</span>
@@ -56,6 +46,24 @@ const viewOfferHtml = `
       <input id="itemTypeFormList" list="itemsTypes"><br>
       <p></p>
       <input type="submit" value="Modifier">
+    </form>
+  </div>
+  <div id="errorMessage"></div>
+</div>
+<!-- Modal Post Interest -->
+<div id="interestModal" class="modal">
+  <div class="modal-content">
+    <span id="interestCloseModal" class="close">&times;</span>
+    <form id="interestForm">
+      <h5>Marquer votre intéret pour cette offre</h5><br>
+      <p>Date de récupération</p>
+      <input id="dateForm" type="date">
+      <p></p>
+      <input class="form-check-input" type="checkbox" id="callWanted">
+      <label class="form-check-label" for="callWanted">J'accepte d'être appelé</label>
+      <div id="phoneNumberInputDiv"></div>
+      <p></p>
+      <input type="submit" value="Confirmer">
     </form>
   </div>
   <div id="errorMessage"></div>
@@ -79,14 +87,11 @@ async function ViewItemPage() {
   const idItem = urlParams.get("id");
   page.innerHTML = viewOfferHtml;
 
-  const callWanted = document.querySelector("#callWanted");
-  callWanted.addEventListener("click", showPhoneNumberInput)
-
   const button = document.querySelector("#offerCard");
   const form = document.querySelector("#offerCard");
   //get offer's infos with the id in param
 
-  const item = await getItemInfo(idItem);
+  const item = await getItemInfo();
   const modifyMember = getObject("memberDTO");
   const button2 = document.querySelector("#interestButton");
 
@@ -95,13 +100,10 @@ async function ViewItemPage() {
     //modify item
     form.addEventListener("submit", showModifyForm);
   } else {
-    const call_wanted = document.querySelector("#call_wanted");
-    call_wanted.innerHTML = ` 
-        <input class=\"form-check-input\" type=\"checkbox\" id=\"callWanted\">
-        <label class=\"form-check-label\" for=\"callWanted\">J'accepte d'être appelé</label>`;
+
     button2.value = "Je suis interessé(e) !";
     //post an interest
-    form.addEventListener("submit", postInterest);
+    form.addEventListener("submit", showInterestForm);
   }
 }
 
@@ -112,11 +114,11 @@ function showPhoneNumberInput() {
 
   if (memberDTO.phoneNumber) {
     phoneNumberInputHtml = `
-      <input id="phoneNumberInput" type="tel" value="${memberDTO.phoneNumber}" pattern="(+?[0-9]{3})[0-9]{13}">
+      <input id="phoneNumberInput" type="tel" value="${memberDTO.phoneNumber}">
     `;
   } else {
     phoneNumberInputHtml = `
-      <input id="phoneNumberInput" type="tel" placeholder="Téléphone" pattern="(+?[0-9]{3})[0-9]{13}">
+      <input id="phoneNumberInput" type="tel" placeholder="Téléphone">
     `;
   }
   if (!phoneNumberInputDiv.querySelector("#phoneNumberInput")) {
@@ -126,9 +128,18 @@ function showPhoneNumberInput() {
   }
 }
 
-async function getItemInfo(idItem) {
+async function getItemInfo() {
   try {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const idItem = urlParams.get("id");
+    console.log("Test - 1");
+    console.log("Test : " + queryString);
+    console.log(urlParams);
+    console.log(idItem);
     const item = await getItem(idItem);
+    console.log("Test - 2");
+
     lastOffer = item.offerList[0];
     var date = new Date(lastOffer.date);
     date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
@@ -152,20 +163,25 @@ async function getItemInfo(idItem) {
 }
 
 async function postInterest(e) {
+
   e.preventDefault();
-  const interestMessage = document.querySelector("#interestMessage");
-  //const urlParams = new URLSearchParams(queryString);
+  const interestMessage = document.querySelector("#errorMessage");
+  console.log(interestMessage);
+
   const callWanted = document.querySelector("#callWanted").checked;
-  const member = {
+  const date = document.querySelector("#dateForm").value;
+  const memberInterested = {
     id: getPayload().id
   };
   if (callWanted) {
-    member.phoneNumber = document.querySelector("#phoneNumberInput").value;
+    memberInterested.phoneNumber = document.querySelector(
+        "#phoneNumberInput").value;
   }
   const interest = {
     callWanted: callWanted,
     offer: lastOffer,
-    member: member
+    member: memberInterested,
+    date: date
   };
   try {
     await postInterestBackEnd(interest, interestMessage);
@@ -173,7 +189,7 @@ async function postInterest(e) {
       await checkToken();
     }
   } catch (err) {
-    showError("Votre marque d'intérêt n'a pas pu être ajoutée", "danger",
+    showError("Votre intérêt n'a pas pu être ajouté", "danger",
         interestMessage);
     console.error(err);
   }
@@ -186,6 +202,18 @@ async function showModifyForm(e) {
   openModal("#modifyItemModal", "#modifyItemCloseModal");
   const modifyForm = document.querySelector("#modifyItemForm");
   modifyForm.addEventListener("submit", modifyItem);
+}
+
+async function showInterestForm(e) {
+  e.preventDefault();
+
+  openModal("#interestModal", "#interestCloseModal");
+
+  const callWantedCheckbox = document.querySelector("#callWanted");
+  callWantedCheckbox.addEventListener("click", showPhoneNumberInput);
+
+  const interestForm = document.querySelector("#interestForm");
+  interestForm.addEventListener("submit", postInterest);
 }
 
 async function modifyItem(e) {
