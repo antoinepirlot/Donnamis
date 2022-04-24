@@ -69,8 +69,8 @@ async function ViewItemPage() {
   const urlParams = new URLSearchParams(queryString);
   const idItem = urlParams.get("id");
   const page = document.querySelector("#page");
-  errorMessageDiv = document.querySelector("#viewItemPageError");
   page.innerHTML = viewOfferHtml;
+  errorMessageDiv = document.querySelector("#viewItemPageError");
   try {
     item = await getItem(idItem);
     page.innerHTML += createModifyItemModal();
@@ -176,8 +176,6 @@ function showPhoneNumberInput() {
 async function postInterest(e) {
   e.preventDefault();
   const interestMessage = document.querySelector("#postInterestMessage");
-  console.log(interestMessage);
-
   const callWanted = document.querySelector("#callWanted").checked;
   const date = document.querySelector("#dateForm").value;
   if (!date) {
@@ -188,7 +186,7 @@ async function postInterest(e) {
     id: getPayload().id
   };
   if (callWanted) {
-    memberInterested.phoneNumber = document.querySelector("#phoneNumberInputDiv").value;
+    memberInterested.phoneNumber = document.querySelector("#phoneNumberInput").value;
   }
   const interest = {
     callWanted: callWanted,
