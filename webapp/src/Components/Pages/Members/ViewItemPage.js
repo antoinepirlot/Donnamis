@@ -14,12 +14,12 @@ const viewOfferHtml = `
   <div class="row no-gutters">
   <div class="col-md">
       <div class="card-body">
-        <h2 id="title" class="card-title"></h2>
-        <p id="offerer" class="text-muted"> </p>
-        <h5 id="type" class="card-text"></h5>
-        <h5 id="description" class="card-text"></h5>
-        <h5 id="availabilities" class="card-text"></h5>
-        <h5 id="pubDate" class="card-text"></h5>
+        <h2 id="titleViewItemPage" class="card-title"></h2>
+        <p id="memberViewItemPage" class="text-muted"> </p>
+        <h5 id="itemTypeViewItemPage" class="card-text"></h5>
+        <h5 id="descriptionViewItemPage" class="card-text"></h5>
+        <h5 id="availabilitiesViewItemPage" class="card-text"></h5>
+        <h5 id="pubDateViewItemPage" class="card-text"></h5>
         <button id="interestButton" class="btn btn-primary">
       </div>
     </div>
@@ -94,7 +94,7 @@ async function ViewItemPage() {
   const postInterestButton = document.querySelector("#interestButton");
   //get item's information with the id in param
 
-  const item = await getItemInfo();
+  const item = await showItemInfo();
   const modifyMember = getObject("memberDTO");
 
   if (item.member.id === modifyMember.id) {
@@ -108,7 +108,7 @@ async function ViewItemPage() {
   }
 }
 
-async function getItemInfo() {
+async function showItemInfo() {
   try {
     const item = await getItem(idItem);
     lastOffer = item.offerList[0];
@@ -116,17 +116,18 @@ async function getItemInfo() {
     date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
         + date.getFullYear();
 
-    document.querySelector("#title").innerHTML = item.title
-    document.querySelector(
-        "#offerer").innerHTML = `Offre proposée par : ${item.member.firstName} ${item.member.lastName} `
-    document.querySelector(
-        "#type").innerHTML = `Type : ${item.itemType.itemType}`
-    document.querySelector(
-        "#description").innerHTML = `Description : ${item.itemDescription}`
-    document.querySelector(
-        "#availabilities").innerHTML = `Disponibilités : ${lastOffer.timeSlot}`
-    document.querySelector(
-        "#pubDate").innerHTML = `Date de publication : ${date}`
+    const titleDiv = document.querySelector("#titleViewItemPage");
+    titleDiv.innerHTML = item.title;
+    const memberDiv = document.querySelector("#memberViewItemPage");
+    memberDiv.innerHTML = `Offre proposée par : ${item.member.firstName} ${item.member.lastName} `;
+    const itemType = document.querySelector("#itemTypeViewItemPage");
+    itemType.innerHTML = `Type : ${item.itemType.itemType}`;
+    const descriptionDiv = document.querySelector("#descriptionViewItemPage");
+    descriptionDiv.innerHTML = `Description : ${item.itemDescription}`;
+    const availabilitiesDiv = document.querySelector("#availabilitiesViewItemPage");
+    availabilitiesDiv.innerHTML = `Disponibilités : ${lastOffer.timeSlot}`;
+    const pubDateDiv = document.querySelector("#pubDateViewItemPage");
+    pubDateDiv.innerHTML = `Date de publication : ${date}`;
     return item;
   } catch (err) {
     console.error(err);
