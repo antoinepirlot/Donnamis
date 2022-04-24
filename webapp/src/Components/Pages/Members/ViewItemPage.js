@@ -2,11 +2,12 @@ import {checkToken, getObject, getPayload,} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
 import {showError} from "../../../utils/ShowError";
 import {
-  getItem,
+  getItem, getItemsTypes,
   modifyTheItem,
   postInterest as postInterestBackEnd
 } from "../../../utils/BackEndRequests";
 import {closeModal, openModal} from "../../../utils/Modals";
+import {showItemsTypes} from "../../../utils/HtmlCode";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3">
@@ -41,8 +42,9 @@ const viewOfferHtml = `
       <p>Photo</p>
       <input id="photoForm" type="file">
       <p>Type de l'objet</p>
-      <input id="itemTypeFormList" list="itemsTypes"><br>
-      <p></p>
+      <input id="itemTypeFormList" list="itemsTypesViewItemPage"><br>
+      <datalist id="itemsTypesViewItemPage"></datalist>
+      <br>
       <input type="submit" value="Modifier">
     </form>
     <div id="modifyInterestMessage"></div>
@@ -106,27 +108,6 @@ async function ViewItemPage() {
   }
 }
 
-function showPhoneNumberInput() {
-  const phoneNumberInputDiv = document.querySelector("#phoneNumberInputDiv");
-  let phoneNumberInputHtml;
-  const memberDTO = getObject("memberDTO");
-
-  if (memberDTO.phoneNumber) {
-    phoneNumberInputHtml = `
-      <input id="phoneNumberInput" type="tel" value="${memberDTO.phoneNumber}">
-    `;
-  } else {
-    phoneNumberInputHtml = `
-      <input id="phoneNumberInput" type="tel" placeholder="Téléphone">
-    `;
-  }
-  if (!phoneNumberInputDiv.querySelector("#phoneNumberInput")) {
-    phoneNumberInputDiv.innerHTML = phoneNumberInputHtml;
-  } else {
-    phoneNumberInputDiv.innerHTML = "";
-  }
-}
-
 async function getItemInfo() {
   try {
     const item = await getItem(idItem);
@@ -149,6 +130,38 @@ async function getItemInfo() {
     return item;
   } catch (err) {
     console.error(err);
+  }
+}
+
+async function showInterestForm(e) {
+  e.preventDefault();
+  openModal("#interestModal", "#interestCloseModal");
+
+  const callWantedCheckbox = document.querySelector("#callWanted");
+  callWantedCheckbox.addEventListener("click", showPhoneNumberInput);
+
+  const interestForm = document.querySelector("#interestForm");
+  interestForm.addEventListener("submit", postInterest);
+}
+
+function showPhoneNumberInput() {
+  const phoneNumberInputDiv = document.querySelector("#phoneNumberInputDiv");
+  let phoneNumberInputHtml;
+  const memberDTO = getObject("memberDTO");
+
+  if (memberDTO.phoneNumber) {
+    phoneNumberInputHtml = `
+      <input id="phoneNumberInput" type="tel" value="${memberDTO.phoneNumber}">
+    `;
+  } else {
+    phoneNumberInputHtml = `
+      <input id="phoneNumberInput" type="tel" placeholder="Téléphone">
+    `;
+  }
+  if (!phoneNumberInputDiv.querySelector("#phoneNumberInput")) {
+    phoneNumberInputDiv.innerHTML = phoneNumberInputHtml;
+  } else {
+    phoneNumberInputDiv.innerHTML = "";
   }
 }
 
@@ -189,21 +202,10 @@ async function postInterest(e) {
 
 async function showModifyForm(e) {
   e.preventDefault();
-
   openModal("#modifyItemModal", "#modifyItemCloseModal");
+  showItemsTypes("#itemsTypesViewItemPage", await getItemsTypes());
   const modifyForm = document.querySelector("#modifyItemForm");
   modifyForm.addEventListener("submit", modifyItem);
-}
-
-async function showInterestForm(e) {
-  e.preventDefault();
-  openModal("#interestModal", "#interestCloseModal");
-
-  const callWantedCheckbox = document.querySelector("#callWanted");
-  callWantedCheckbox.addEventListener("click", showPhoneNumberInput);
-
-  const interestForm = document.querySelector("#interestForm");
-  interestForm.addEventListener("submit", postInterest);
 }
 
 async function modifyItem(e) {
