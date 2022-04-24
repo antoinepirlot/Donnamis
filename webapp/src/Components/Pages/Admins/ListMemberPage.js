@@ -51,6 +51,9 @@ const tableHtmlDeniedMembers = `
   </div>
 `;
 
+let tbodyRegisteredMembers;
+let tbodyDeniedMembers;
+
 const ListMemberPage = async () => {
   if (!await isAdmin()) {
     Redirect("/");
@@ -60,6 +63,12 @@ const ListMemberPage = async () => {
   pageDiv.innerHTML = tableHtmlConfirmedMembers;
   pageDiv.innerHTML += tableHtmlDeniedMembers;
   const members = await getAllMembers();
+  tbodyRegisteredMembers = document.querySelector("#tbody_registered_members");
+  tbodyRegisteredMembers.innerHTML = "";
+
+  tbodyDeniedMembers = document.querySelector("#tbody_denied_members");
+  tbodyDeniedMembers.innerHTML = "";
+
   for (const member of members) {
     if (member.actualState === "registered") {
       await showRegisteredMember(member);
@@ -70,10 +79,8 @@ const ListMemberPage = async () => {
 };
 
 async function showRegisteredMember(member) {
-  const tbody = document.querySelector("#tbody_registered_members");
-  tbody.innerHTML = "";
   //For Each Member
-  tbody.innerHTML += `
+  tbodyRegisteredMembers.innerHTML += `
       <tr id="RegisteredLine">
         <td>${member.firstName}</td>
         <td>${member.lastName}</td>
@@ -133,7 +140,6 @@ async function showRegisteredMember(member) {
 
 async function showDeniedMember(member) {
   const tbody = document.querySelector("#tbody_denied_members");
-  tbody.innerHTML = "";
   tbody.innerHTML += `
       <tr id="DeniedLine">
         <td>${member.firstName}</td>
