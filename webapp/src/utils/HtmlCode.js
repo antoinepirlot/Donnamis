@@ -4,6 +4,7 @@
  */
 import {getPayload} from "./session";
 import {Redirect} from "../Components/Router/Router";
+import {openModal} from "./Modals";
 
 function getShowItemsHtml(items) {
   let html = "";
@@ -26,13 +27,21 @@ function getShowItemsHtml(items) {
   return html;
 }
 
-function checkIfMemberLoggedIn() {
+function checkIfMemberLoggedIn(modalId, closeModalId) {
   const itemButtons = document.querySelectorAll("#itemButtons");
   itemButtons.forEach(itemButton => {
     itemButton.addEventListener("click", (e) => {
       if(!getPayload()) {
         e.preventDefault();
-        Redirect("/register");
+        openModal(modalId, closeModalId);
+        const iHaveAnAccountButton = document.querySelector("#iHaveAnAccountButton");
+        const iDontHaveAnAccountButton = document.querySelector("#iDontHaveAnAccountButton");
+        iHaveAnAccountButton.addEventListener("click", () => {
+          Redirect("/login");
+        });
+        iDontHaveAnAccountButton.addEventListener("click", () => {
+          Redirect("/register");
+        })
       }
     });
   })

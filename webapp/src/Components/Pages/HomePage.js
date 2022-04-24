@@ -10,6 +10,16 @@ const tableHtml = `
     <div class="row" id="all_latest_items">
     </div>
   </div>
+  
+    <!-- The Modal ask if the member want to log in or register -->
+  <div id="homePageModal" class="modal">
+    <div class="modal-content">
+      <span id="homePageModalCloseButton" class="close">&times;</span>
+      <h5>Vous n'êtes pas connecté. Avez vous déjà un compte?"</h5><br>
+      <button id="iHaveAnAccountButton" type="submit" class="btn btn-primary" >J'ai déjà un compte</button>
+      <button id="iDontHaveAnAccountButton" type="submit" class="btn btn-danger" >Je veux créer un compte</button>
+    </div>
+  </div>
 `;
 
 const LatestItemsOffersPage = async () => {
@@ -18,7 +28,7 @@ const LatestItemsOffersPage = async () => {
   const items = await getAllItemsByOfferStatus("donated");
   let tbody = document.querySelector("#all_latest_items");
   tbody.innerHTML = getShowItemsHtml(items);
-  checkIfMemberLoggedIn();
+  checkIfMemberLoggedIn("#homePageModal", "#homePageModalCloseButton");
 };
 
 export default LatestItemsOffersPage;
