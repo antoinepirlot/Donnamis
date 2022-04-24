@@ -31,12 +31,13 @@ const htmlForm = `
     <form>
       <label>Select File</label>
       <input name="file" type= "file" /> <br/><br/>
-      <button onclick="return sendFile()">Send</button>
+      <button id="submitPhoto" >Send</button>
     </form>
     
   </div>
   <div id="errorMessageOfferAnItemPage"></div>
 `;
+
 
 let itemsTypes;
 
@@ -51,6 +52,8 @@ const DonateAnItemPage = async () => {
   itemsTypes = await getItemsTypes();
   showItemsTypes();
   offerItemForm.addEventListener("submit", await offerItem);
+  const photoButton = document.querySelector("#submitPhoto");
+  photoButton.addEventListener("click", await sendFile);
 };
 
 function showItemsTypes() {
@@ -109,8 +112,8 @@ async function offerItem(e) {
   }
 }
 
-async function sendFile() {
-  console.log("TESSTTT-----------------")
+async function sendFile(e) {
+  e.preventDefault();
   const fileInput = document.querySelector('input[name=file]');
   const formData = new FormData();
   formData.append('file', fileInput.files[0]);
@@ -118,7 +121,8 @@ async function sendFile() {
     method: 'POST',
     body: formData
   };
-  await fetch('http://localhost:8080/upload/image', options);
+
+  await fetch('/api/upload/image', options);
   return false;
 }
 

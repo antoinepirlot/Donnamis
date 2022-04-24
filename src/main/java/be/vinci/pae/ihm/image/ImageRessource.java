@@ -1,4 +1,4 @@
-package be.vinci.pae.image;
+package be.vinci.pae.ihm.image;
 
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.utils.Config;
@@ -8,6 +8,8 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -24,22 +26,23 @@ public class ImageRessource {
   @POST
   @Path("image")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  @AuthorizeMember
   public Response uploadFile(@FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDisposition) throws IOException {
-    java.nio.file.Path path = java.nio.file.Path.of(Config.getProperty("photoPath"));
     System.out.println("*********************************");
 
+    String path = Config.getProperty("photoPath");
+    System.out.println("File : " + file);
+    System.out.println("File dispo : " + fileDisposition);
     UUID uuid = UUID.randomUUID();
     String fileName = String.valueOf(uuid);
-    String extension = FilenameUtils.getExtension(fileDisposition.getName());
-    fileName += extension;
+    String extension = FilenameUtils.getExtension(fileDisposition.getFileName());
 
-    //Files.copy(file, Paths.get(fileName));
-    Files.copy(file, path);
+    fileName += "." + extension;
+    path += fileName;
+    //System.out.println("Path : " + path);
+    Files.copy(file, Paths.get(fileName));
 
-    return Response.ok(fileName).header("Access-Control-Allow-Origin", "*").build();
+    Files.copy(file, java.nio.file.Path.of(path));
+    return Response.ok().build();
   }
-
-
 }

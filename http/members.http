@@ -1,5 +1,5 @@
 ### get all
-GET {{baseUrl}}/members/list_member
+GET {{baseUrl}}/members
 Authorization: {{token}}
 
 ### getAll confired member
