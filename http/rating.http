@@ -1,0 +1,15 @@
+### Evaluate an item
+POST {{baseUrl}}/ratings/
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "item": {
+    "id": 1
+  },
+  "rating": 4,
+  "text": "Super !",
+  "member": {
+    "id": 1
+  }
+}

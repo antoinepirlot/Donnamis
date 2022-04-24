@@ -316,7 +316,6 @@ public class MemberDAOImpl implements MemberDAO {
       int result = ps.executeUpdate();
       //it adds into the db BUT can't execute getOne(), it returns null
       if (result != 0) {
-        System.out.println("Ajout du membre réussi.");
         return true;
       }
     } catch (SQLException e) {
