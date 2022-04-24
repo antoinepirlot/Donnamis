@@ -11,6 +11,7 @@ import java.util.Properties;
 public class Config {
 
   private static Properties props;
+  private static Properties oneDriveProps;
 
   /**
    * Load the properties file from the specified file path.
@@ -18,8 +19,13 @@ public class Config {
    */
   public static void load(String file) {
     props = new Properties();
-    try (InputStream input = new FileInputStream(file)) {
+    oneDriveProps = new Properties();
+    try (
+        InputStream input = new FileInputStream(file);
+        InputStream oneDriveInput = new FileInputStream("onedrive.properties")
+    ) {
       props.load(input);
+      oneDriveProps.load(oneDriveInput);
     } catch (IOException e) {
       throw new WebApplicationException(
           Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).type("text/plain")
@@ -29,6 +35,10 @@ public class Config {
 
   public static String getProperty(String key) {
     return props.getProperty(key);
+  }
+
+  public static String getPhotoPath() {
+    return oneDriveProps.getProperty("photoPath");
   }
 
   public static Integer getIntProperty(String key) {

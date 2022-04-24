@@ -36,7 +36,7 @@ public class ImageResource {
     if (!checkExtension(extension)) {
       throw new WrongBodyDataException("The file extension is not correct.");
     }
-    String path = Config.getProperty("photoPath");
+    String path = Config.getPhotoPath();
     UUID uuid = UUID.randomUUID();
     String fileName = path + "\\" + uuid + "." + extension;
     try (FileOutputStream fos = new FileOutputStream(fileName)) {
