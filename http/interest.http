@@ -1,0 +1,18 @@
+### Mark Interest
+POST {{baseUrl}}/interests/3
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "id": 1
+}
+
+### Mark Interest
+POST {{baseUrl}}/interests/3?call_wanted=true
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "id": 2,
+  "phoneNumber": "04"
+}

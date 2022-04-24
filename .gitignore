@@ -76,7 +76,7 @@ db.properties
 # Compiled class file
 *.class
 
-# Log file
+# LogLog file
 *.log
 *.log.*
 
@@ -103,3 +103,6 @@ hs_err_pid*
 target/
 
 # End of https://www.toptal.com/developers/gitignore/api/java,eclipse,java-web
+
+# data files
+data

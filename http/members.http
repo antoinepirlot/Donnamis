@@ -1,29 +1,47 @@
 ### get all
-GET {{baseUrl}}/members
+GET {{baseUrl}}/members/list_member
+Authorization: {{token}}
 
-### Login with default user credentials
-POST {{baseUrl}}/members/login
-Content-Type: application/json
+### getAll confired member
+GET {{baseUrl}}/members/list_registered
+Authorization: {{token}}
 
-{
-  "username": "Swapiz",
-  "password": "password"
-}
+###get all denied member
+GET {{baseUrl}}/members/list_denied
+Authorization: {{token}}
 
 ###
+GET {{baseUrl}}/members/me
+Authorization: {{token}}
+
+### Confirm registration
+PUT {{baseUrl}}/members/confirm/3
+Authorization: {{token}}
+
+### Deny member
+PUT {{baseUrl}}/members/denies/2
+Authorization: {{token}}
+
+### Confirm Admin
+PUT {{baseUrl}}/members/confirmAdmin/2
+Authorization: {{token}}
+
+### Get All Members unauthorized excected
+GET {{baseUrl}}/members/list_member
+
+###
+HEAD {{baseUrl}}/members/is_admin
+Authorization: {{token}}
 
 ### Create One memberDTO
-POST {{baseUrl}}/members
+POST {{baseUrl}}/members/register
 Content-Type: application/json
 
 {
   "username": "LePirelot",
   "password": "pswdPasOuf",
   "lastName": "Pirlot",
-  "firstName": "Antoine",
-  "actualState": "confirmed",
-  "phoneNumber": "0478 85 22 64",
-  "admin": false
+  "firstName": "Antoine"
 }
 
 ### Register john
@@ -31,47 +49,47 @@ POST {{baseUrl}}/members/register
 Content-Type: application/json
 
 {
-  "username": "Michel03",
+  "username": "Coucoun n",
   "password": "Securitas",
   "lastName": "DuMoulin",
   "firstName": "Michel",
-  "actualState": "confirmed",
-  "phoneNumber": "0478 79 69 32",
-  "admin": false
+  "address": {
+    "street": "Avenue Beau Voisin",
+    "buildingNumber": 11,
+    "postcode": "1410",
+    "commune": "Waterloo"
+  }
 }
 
-### Refresh nikesakou's token, should work
-POST {{baseUrl}}/members/refreshToken
+### Login with default user credentials
+POST {{baseUrl}}/members/login
 Content-Type: application/json
 
 {
-  "username": "nikesakou",
-  "id": 1
+  "username": "bri ",
+  "password": "Rad;293"
 }
 
-### Refresh nikesakou's token with bad id, should not work
-POST {{baseUrl}}/members/refreshToken
+> {%
+  client.global.set("token", response.body.token);
+%}
+
+
+### Modify Member
+PUT {{baseUrl}}/members/modify
+Authorization: {{token}}
 Content-Type: application/json
 
 {
-  "username": "nikesakou",
-  "id": 3
+  "id": 5,
+  "username": "wuhuuu",
+  "password": "ololollo",
+  "lastName": "Iov",
+  "firstName": "Dimitri",
+  "phoneNumber": "0477810580"
 }
 
-### Refresh user with id 1 token with bad username, should not work
-POST {{baseUrl}}/members/refreshToken
-Content-Type: application/json
+### Get One Member
+GET {{baseUrl}}/members/4
+Authorization: {{token}}
 
-{
-  "username": "Navial",
-  "id": 1
-}
-
-### Refresh token of inexistent user and id, should not work
-POST {{baseUrl}}/members/refreshToken
-Content-Type: application/json
-
-{
-  "username": "ViviLeGrosBg",
-  "id": 42069
-}

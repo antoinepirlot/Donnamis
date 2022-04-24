@@ -3,24 +3,34 @@ import {
   setLocalObject,
   setSessionObject
 } from "../../utils/session";
+import {
+  getRefusal,
+  login as loginBackEndRequest
+} from "../../utils/BackEndRequests";
 import {Redirect} from "../Router/Router";
 import Navbar from "../Navbar/Navbar";
+import {showError} from "../../utils/ShowError";
 
 const loginFormHtml = `
-  <div>
-    <form id="loginForm">
-      Pseudo: <input id="usernameInput" type="text"
-               placeholder="Ecris ton pseudo ici"><br>
-      <br>
-      Mot de passe: <input id="passwordInput" type="password"
-                     placeholder="Mot de passe"><br>
-      <br>
-      <input id="rememberMeInput" type="checkbox"> Se souvenir de moi<br>
-      <br>
-      <input type="submit">
-    </form>
-    <div id="loginFormNotification"></div>
-  </div>
+<h1 class="display-3" id="login_title">Se connecter</h1>
+<div class="form">
+  <form  id="loginForm">
+    <div class="mb-3">
+      <label class="form-label">Pseudo</label>
+      <input type="text" class="form-control" id="usernameInput">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Mot de passe</label>
+      <input type="password" class="form-control" id="passwordInput">
+    </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="rememberMeInput">
+      <label class="form-check-label" >Se souvenir de moi</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <div class="message" id="loginMessage"></div>
+  </form>
+</div>
 `;
 
 /**
@@ -28,8 +38,8 @@ const loginFormHtml = `
  * Just an example to demonstrate how to use the router
  * to "redirect" to a new page
  */
-async function LoginPage() {
-  if (await getPayload()) {
+function LoginPage() {
+  if (getPayload()) {
     Redirect("/");
     return;
   }
@@ -41,36 +51,43 @@ async function LoginPage() {
 
 async function login(e) {
   e.preventDefault();
+  const loginMessage = document.querySelector("#loginMessage");
+  showError("Connexion en cours...", "info", loginMessage);
   const username = document.querySelector("#usernameInput").value;
   const password = document.querySelector("#passwordInput").value;
   const rememberMe = document.querySelector("#rememberMeInput").checked;
-
+  if (username === "" ||
+      password === "") {
+    showError("Tous les champs doivent être complet", "danger", loginMessage)
+    return;
+  }
   try {
-    const request = {
-      method: "POST",
-      headers: {
-        "Content-Type":
-            "application/json"
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password
-      })
-    };
-    const response = await fetch("api/members/login", request);
-    if (!response.ok) {
-      throw new Error("Problème lors du fetch");
-    }
-    const token = await response.json();
-    if (rememberMe) {
-      setLocalObject("token", token);
+    const content = await loginBackEndRequest(username, password);
+    if (!content) {
+
+      const refusal = await getRefusal(username);
+      if (refusal) {
+        const refusalMessage = refusal.text;
+        showError(refusalMessage, "danger", loginMessage);
+      } else {
+        showError("Aucun utilisateur pour ce username et ce mot de passe",
+            "danger", loginMessage);
+      }
+      return;
     } else {
-      setSessionObject("token", token);
+      if (rememberMe) {
+        setLocalObject("token", content.token);
+        setLocalObject("memberDTO", content.memberDTO);
+      } else {
+        setSessionObject("token", content.token);
+        setSessionObject("memberDTO", content.memberDTO);
+      }
     }
     Redirect("/");
-    Navbar();
-  } catch (err) {
-    console.error(err);
+    await Navbar();
+  } catch (error) {
+    console.error("LoginPage::error: ", error);
+    showError("Une erreur est survenue.", "danger", loginMessage);
   }
 }
 

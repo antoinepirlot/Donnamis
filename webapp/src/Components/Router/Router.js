@@ -1,12 +1,35 @@
-import HomePage from "../Pages/HomePage";
 import LoginPage from "../Pages/LoginPage";
 import Logout from "../Logout/Logout";
+import ListMemberPage from "../Pages/Admins/ListMemberPage";
+import AllItemsPage from "../Pages/Admins/AllItemsPage"
+import RegisterPage from "../Pages/RegisterPage";
+import AllOfferedItemsPage from "../Pages/Members/AllDonatedItemPage";
+import ViewItemPage from "../Pages/Members/ViewItemPage";
+import DonateAnItemPage from "../Pages/Members/DonateAnItemPage";
+import MyItemsPage from "../Pages/Members/MyItemsPage";
+import ProfilePage from "../Pages/Members/ProfilePage";
+import HomePage from "../Pages/HomePage";
+import MyAssignedItems from "../Pages/Members/MyAssignedItems";
+import MemberPage from "../Pages/Admins/MemberPage";
+import SearchMembersPage from "../Pages/Admins/SearchMembersPage";
 
 // Configure your routes here
 const routes = {
   "/": HomePage,
   "/login": LoginPage,
+  "/register": RegisterPage,
   "/logout": Logout,
+  "/list_member": ListMemberPage,
+  //"/latest_items": LatestItemsOffersPage,
+  "/all_items": AllItemsPage,
+  "/all_offered_items": AllOfferedItemsPage,
+  "/item": ViewItemPage,
+  "/offer_item": DonateAnItemPage,
+  "/my_items": MyItemsPage,
+  "/profil": ProfilePage,
+  "/assigned_items": MyAssignedItems,
+  "/search_members": SearchMembersPage,
+  "/member": MemberPage,
 };
 
 /**
@@ -43,10 +66,11 @@ const Router = () => {
   /* Route the right component when the page is loaded / refreshed */
   window.addEventListener("load", (e) => {
     const componentToRender = routes[window.location.pathname];
-    if (!componentToRender)
+    if (!componentToRender) {
       throw Error(
-        "The " + window.location.pathname + " ressource does not exist."
+          "The " + window.location.pathname + " ressource does not exist."
       );
+    }
 
     componentToRender();
   });
@@ -76,4 +100,4 @@ const Redirect = (uri) => {
   }
 };
 
-export { Router, Redirect };
+export {Router, Redirect};

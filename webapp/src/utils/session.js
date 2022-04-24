@@ -4,7 +4,10 @@
  * @param {string} storeName
  * @returns the retrived object
  */
-const getObject = (storeName) => {
+import {me} from "./BackEndRequests";
+import {Redirect} from "../Components/Router/Router";
+
+function getObject(storeName) {
   let retrievedObject = localStorage.getItem(storeName);
   if (!retrievedObject) {
     retrievedObject = sessionStorage.getItem(storeName);
@@ -13,13 +16,13 @@ const getObject = (storeName) => {
     return;
   }
   return JSON.parse(retrievedObject);
-};
+}
 
 /**
  * Get the token payload from the local or session storage.
  * @returns the payload object
  */
-const getPayload = async () => {
+function getPayload() {
   let token = localStorage.getItem("token");
   if (!token) {
     token = sessionStorage.getItem("token");
@@ -28,44 +31,8 @@ const getPayload = async () => {
     return;
   }
   let payload = token.split('.')[1];
-  console.log("Payload : " + payload)
-  console.log("token : " + token)
   payload = JSON.parse(window.atob(payload));
-  // we divided by 1000 because jwt token does contains only 10 digit and 13 for Date.now()
-  if(Date.now() / 1000 >= payload.exp){
-    console.log("TOKEN EXPIRED")
-    await refreshToken(payload.username, payload.id)
-    await getPayload();
-  }
   return payload;
-};
-
-const refreshToken = async (username, id) => {
-  const request = {
-    method : "POST",
-    headers: {
-      "Content-Type":
-          "application/json"
-    },
-    body: JSON.stringify({
-      username: username,
-      id: id
-    })
-  };
-  try{
-    const response = await fetch("api/members/refreshToken", request);
-    if(!response.ok){
-      throw new Error("Problème lors du refresh du token");
-    }
-    const token = await response.json();
-    if(localStorage.getItem("token")){
-      setLocalObject("token", JSON.stringify(token));
-    }else{
-      setSessionObject("token", JSON.stringify(token));
-    }
-  }catch (e){
-    console.error(e);
-  }
 }
 
 /**
@@ -74,10 +41,10 @@ const refreshToken = async (username, id) => {
  * @param {string} storeName
  * @param {Object} object
  */
-const setSessionObject = (storeName, object) => {
+function setSessionObject(storeName, object) {
   const storageValue = JSON.stringify(object);
   sessionStorage.setItem(storeName, storageValue);
-};
+}
 
 /**
  * Set the object in the localStorage under the storeName key.
@@ -85,17 +52,65 @@ const setSessionObject = (storeName, object) => {
  * @param {string} storeName
  * @param {Object} object
  */
-const setLocalObject = (storeName, object) => {
+function setLocalObject(storeName, object) {
   const storageValue = JSON.stringify(object);
   localStorage.setItem(storeName, storageValue);
-};
+}
+
+/**
+ * Remove the local object
+ * @param storeName the path to the object
+ * @returns {string} the removed object
+ */
+function removeLocalObject(storeName) {
+  const removedObject = localStorage.getItem(storeName);
+  localStorage.removeItem(storeName);
+  return JSON.parse(removedObject);
+}
+
+/**
+ * Remove the session object
+ * @param storeName the path to the object
+ * @returns {string} the removed object
+ */
+function removeSessionObject(storeName) {
+  const removedObject = sessionStorage.getItem(storeName);
+  sessionStorage.removeItem(storeName);
+  return JSON.parse(removedObject);
+}
 
 /**
  * Remove the object in the localStorage under the storeName key
  */
-const disconnect = () => {
+function disconnect() {
   localStorage.clear();
   sessionStorage.clear();
-};
+}
 
-export {getObject, getPayload, setSessionObject, setLocalObject, disconnect};
+async function checkToken() {
+  try {
+    const response = await me();
+    if (localStorage.getItem("token")) {
+      setLocalObject("token", response.token);
+      setLocalObject("memberDTO", response.memberDTO)
+    } else {
+      setSessionObject("token", response.token);
+      setSessionObject("memberDTO", response.memberDTO);
+    }
+  } catch (e) {
+    console.error(e)
+    Redirect("/logout");
+  }
+
+}
+
+export {
+  getObject,
+  getPayload,
+  setSessionObject,
+  setLocalObject,
+  disconnect,
+  removeLocalObject,
+  removeSessionObject,
+  checkToken,
+};

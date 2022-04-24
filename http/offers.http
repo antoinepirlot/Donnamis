@@ -1,0 +1,11 @@
+### get all offers
+GET {{baseUrl}}/offers/all_offers
+Authorization: {{token}}
+
+### get all donated offers
+GET {{baseUrl}}/offers/all_offers/donated
+Authorization: {{token}}
+
+### get offer with id 1
+GET {{baseUrl}}/offers/1
+

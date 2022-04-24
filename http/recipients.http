@@ -1,0 +1,12 @@
+POST {{baseUrl}}/recipients
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "item": {
+    "id": 1
+  },
+  "member": {
+    "username": "bri"
+  }
+}

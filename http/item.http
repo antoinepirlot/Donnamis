@@ -1,0 +1,49 @@
+### See all items
+GET {{baseUrl}}/items/all_items
+Authorization: {{token}}
+
+### See all offered items
+GET {{baseUrl}}/items/all_items/donated
+Authorization: {{token}}
+
+### GET one
+GET {{baseUrl}}/items/1
+Authorization: {{token}}
+
+### Offer an item for the first time
+POST {{baseUrl}}/items/offer
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "itemDescription": "itemDescription",
+  "title": "title",
+  "photo": "photo",
+  "itemType": {
+    "itemType": "Décoration"
+  },
+  "member": {
+    "id": 2
+  },
+  "offerList": [
+    {
+      "timeSlot": "timeSlot"
+    }
+  ]
+}
+
+### Cancel Offer
+PUT {{baseUrl}}/items/cancel/2
+Authorization: {{token}}
+
+### See all items by member id
+GET {{baseUrl}}/items/member_items/1
+Authorization: {{token}}
+
+###
+GET {{baseUrl}}/items/assigned_item/5
+Authorization: {{token}}
+
+###
+GET {{baseUrl}}/items/count/4/given
+Authorization: {{token}}

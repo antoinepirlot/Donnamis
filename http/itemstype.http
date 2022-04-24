@@ -1,0 +1,6 @@
+###GET
+GET {{baseUrl}}/items_types/all
+Authorization: {{token}}
+
+### GET 401 expected
+GET {{baseUrl}}/items_types/all
