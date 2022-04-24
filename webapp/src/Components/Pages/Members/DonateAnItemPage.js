@@ -6,6 +6,7 @@ import {
 import {showError} from "../../../utils/ShowError";
 import {getPayload} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
+import {showItemsTypes} from "../../../utils/HtmlCode";
 
 const htmlForm = `
   <div>
@@ -25,6 +26,8 @@ const htmlForm = `
       <br>
       Type de l'objet<span id="asterisk">*</span>:<br>
       <input id="itemTypeFormList" list="itemsTypes" placeholder="Séléctionne le type d'objet"><br>
+      <!--/!\/!\DONT CHANGE DATALIST ID ONLY THIS ID WORKS, YOU CHANGE, THE LIST DOESNT APPEARS
+          I DONT KNOW WHY/!\/!\-->
       <datalist id="itemsTypes"></datalist>
       <br>
       <input type="submit" value="Offrir">
@@ -44,19 +47,9 @@ const DonateAnItemPage = async () => {
   page.innerHTML = htmlForm;
   const offerItemForm = document.querySelector("#offerItemForm");
   itemsTypes = await getItemsTypes();
-  showItemsTypes();
+  showItemsTypes("#itemsTypes", itemsTypes);
   offerItemForm.addEventListener("submit", await offerItem);
 };
-
-function showItemsTypes() {
-  const itemsTypeList = document.querySelector("#itemsTypes");
-  itemsTypeList.innerHTML = "";
-  itemsTypes.forEach(itemsType => {
-    itemsTypeList.innerHTML += `
-      <option value="${itemsType.itemType}">
-    `;
-  });
-}
 
 async function offerItem(e) {
   const date = new Date();
