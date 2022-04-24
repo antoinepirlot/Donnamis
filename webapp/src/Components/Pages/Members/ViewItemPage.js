@@ -210,27 +210,21 @@ async function showModifyForm(e) {
 
 async function modifyItem(e) {
   e.preventDefault();
-
-  const title = document.querySelector("#titleForm");
-  const itemDescription = document.querySelector("#itemDescriptionForm");
-  const photo = document.querySelector("#photoForm");
-  const newItemType = document.querySelector("#itemTypeFormList");
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const idItem = urlParams.get("id");
+  const title = document.querySelector("#titleForm").value;
+  const itemDescription = document.querySelector("#itemDescriptionForm").value;
+  const photo = document.querySelector("#photoForm").value;
+  const itemTypeValue = document.querySelector("#itemTypeFormList").value;
 
   const itemType = {
-    itemType: newItemType.value
+    itemType: itemTypeValue
   }
-
   const item = {
     id: idItem,
-    itemDescription: itemDescription.value,
+    itemDescription: itemDescription,
     itemType: itemType,
-    photo: photo.value,
-    title: title.value,
+    photo: photo,
+    title: title,
   }
-
   try {
     await modifyTheItem(item);
     const errorMessage = document.querySelector("#modifyInterestMessage");
@@ -238,6 +232,7 @@ async function modifyItem(e) {
     await ViewItemPage();
   } catch (error) {
     console.error(error);
+    closeModal("#modifyItemModal");
   }
 }
 
