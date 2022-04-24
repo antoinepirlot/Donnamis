@@ -1,5 +1,5 @@
 import {getAllItemsByOfferStatus} from "../../utils/BackEndRequests";
-import {getShowItemsHtml} from "../../utils/HtmlCode";
+import {checkIfMemberLoggedIn, getShowItemsHtml} from "../../utils/HtmlCode";
 
 const tableHtml = `
   <div>
@@ -18,16 +18,7 @@ const LatestItemsOffersPage = async () => {
   const items = await getAllItemsByOfferStatus("donated");
   let tbody = document.querySelector("#all_latest_items");
   tbody.innerHTML = getShowItemsHtml(items);
+  checkIfMemberLoggedIn();
 };
 
-//function setSeeItemEvent(itemButtons) {
-//  itemButtons.forEach(itemButton => {
-//    itemButton.addEventListener("click", (e) => {
-//      e.preventDefault();
-//      const id = itemButton.querySelector("#itemIdButton").value;
-//      //setLocalObject("idItem", id);
-//      Redirect(`/item?id=${id}`);
-//    });
-//  })
-//}
 export default LatestItemsOffersPage;
