@@ -53,80 +53,80 @@ const sendFile = () => {
 
 
 const OfferAnItemPage = async () => {
-    const page = document.querySelector("#page");
-    page.innerHTML = htmlForm;
-    const offerItemForm = document.querySelector("#offerItemForm");
-    await showItemsTypes();
-    offerItemForm.addEventListener("submit", await offerItem);
-let itemsTypes;
-
-const DonateAnItemPage = async () => {
-  if (!getPayload()) {
-    Redirect("/");
-    return;
-  }
   const page = document.querySelector("#page");
   page.innerHTML = htmlForm;
   const offerItemForm = document.querySelector("#offerItemForm");
-  itemsTypes = await getItemsTypes();
-  showItemsTypes();
+  await showItemsTypes();
   offerItemForm.addEventListener("submit", await offerItem);
-};
+  let itemsTypes;
 
-function showItemsTypes() {
-  const itemsTypeList = document.querySelector("#itemsTypes");
-  itemsTypeList.innerHTML = "";
-  itemsTypes.forEach(itemsType => {
-    itemsTypeList.innerHTML += `
+  const DonateAnItemPage = async () => {
+    if (!getPayload()) {
+      Redirect("/");
+      return;
+    }
+    const page = document.querySelector("#page");
+    page.innerHTML = htmlForm;
+    const offerItemForm = document.querySelector("#offerItemForm");
+    itemsTypes = await getItemsTypes();
+    showItemsTypes();
+    offerItemForm.addEventListener("submit", await offerItem);
+  };
+
+  function showItemsTypes() {
+    const itemsTypeList = document.querySelector("#itemsTypes");
+    itemsTypeList.innerHTML = "";
+    itemsTypes.forEach(itemsType => {
+      itemsTypeList.innerHTML += `
       <option value="${itemsType.itemType}">
     `;
-  });
-}
+    });
+  }
 
-async function offerItem(e) {
-  const date = new Date();
-  e.preventDefault();
-  const errorMessageOfferAnItemPage = document.querySelector(
-      "#errorMessageOfferAnItemPage");
-  const title = document.querySelector("#titleForm").value;
-  const itemDescription = document.querySelector("#itemDescriptionForm").value;
-  let photo = document.querySelector("#photoForm").value;
-  if (photo === "") {
-    photo = null;
-  }
-  const timeSlot = document.querySelector("#timeSlotForm").value;
-  const itemTypeValue = document.querySelector("#itemTypeFormList").value;
-  const payload = getPayload();
-  const offer = {
-    timeSlot: timeSlot
-  };
-  const offersList = [offer];
-  const member = {
-    id: payload.id
-  };
-  const itemsType = {
-    itemType: itemTypeValue
-  };
-  const item = {
-    itemDescription: itemDescription,
-    title: title,
-    photo: photo,
-    itemType: itemsType,
-    member: member,
-    offerList: offersList,
-    lastOfferDate: date
-  }
-  try {
-    if (!itemsTypes.find((type) => type.itemType === itemTypeValue)) {
-      await addNewItemsType(itemsType);
+  async function offerItem(e) {
+    const date = new Date();
+    e.preventDefault();
+    const errorMessageOfferAnItemPage = document.querySelector(
+        "#errorMessageOfferAnItemPage");
+    const title = document.querySelector("#titleForm").value;
+    const itemDescription = document.querySelector("#itemDescriptionForm").value;
+    let photo = document.querySelector("#photoForm").value;
+    if (photo === "") {
+      photo = null;
     }
-    await offerAnItem(item);
-    const message = "Ajout réussi!"
-    showError(message, "success", errorMessageOfferAnItemPage);
-  } catch (error) {
-    console.error(error);
-    showError("Une erreur est survenue.", "danger", errorMessageOfferAnItemPage);
+    const timeSlot = document.querySelector("#timeSlotForm").value;
+    const itemTypeValue = document.querySelector("#itemTypeFormList").value;
+    const payload = getPayload();
+    const offer = {
+      timeSlot: timeSlot
+    };
+    const offersList = [offer];
+    const member = {
+      id: payload.id
+    };
+    const itemsType = {
+      itemType: itemTypeValue
+    };
+    const item = {
+      itemDescription: itemDescription,
+      title: title,
+      photo: photo,
+      itemType: itemsType,
+      member: member,
+      offerList: offersList,
+      lastOfferDate: date
+    }
+    try {
+      if (!itemsTypes.find((type) => type.itemType === itemTypeValue)) {
+        await addNewItemsType(itemsType);
+      }
+      await offerAnItem(item);
+      const message = "Ajout réussi!"
+      showError(message, "success", errorMessageOfferAnItemPage);
+    } catch (error) {
+      console.error(error);
+      showError("Une erreur est survenue.", "danger", errorMessageOfferAnItemPage);
+    }
   }
 }
-
 export {OfferAnItemPage};
