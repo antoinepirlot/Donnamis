@@ -15,7 +15,11 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
 import java.rmi.UnexpectedException;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Singleton
 @Path("interests")
@@ -47,6 +51,8 @@ public class InterestResource {
     if (interestDTO == null
         || interestDTO.getOffer() == null || interestDTO.getOffer().getId() < 1
         || interestDTO.getMember() == null || interestDTO.getMember().getId() < 1
+        || interestDTO.getDate() == null
+        || interestDTO.getDate().before(Timestamp.valueOf(LocalDateTime.now()))
     ) {
       throw new WrongBodyDataException("Wrong body");
     }
