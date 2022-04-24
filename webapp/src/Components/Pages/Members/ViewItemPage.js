@@ -5,8 +5,8 @@ import {
   getItem,
   modifyTheItem,
   postInterest as postInterestBackEnd
-} from "../../utils/BackEndRequests";
-import {openModal} from "../../utils/Modals";
+} from "../../../utils/BackEndRequests";
+import {openModal} from "../../../utils/Modals";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3">
