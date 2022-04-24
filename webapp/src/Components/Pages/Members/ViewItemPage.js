@@ -199,6 +199,8 @@ async function postInterest(e) {
     if (callWanted) {
       await checkToken();
     }
+    const pageErrorDiv = document.querySelector("#viewItemPageError");
+    showError("L'intérêt a bien été prit en compte.", "success", pageErrorDiv);
   } catch (err) {
     console.error(err);
   } finally {
