@@ -21,9 +21,11 @@ const viewProfileHtml = `
       <p>Pseudo :</p>
       <input id="usernameForm" type = "text">
       <p>Mot de passe :</p>
-      <input id="passwordForm" type = "text">
+      <input id="passwordForm" type = "password">
+      <p>Confirmez le mot de passe :</p>
+      <input id="passwordConfirmationForm" type = "password">
       <p>Téléphone :</p>
-      <input id="phoneForm" type = "text">
+      <input id="phoneForm" type = "tel">
       <p></p>
       <input type= "submit" value = "Modifier">
     </form> 
@@ -70,12 +72,18 @@ function showProfile() {
 
 async function modifyProfile(e) {
   e.preventDefault();
-
+  const errorMessage = document.querySelector("#errorMessage");
+  const password = document.querySelector("#passwordForm").value;
+  const passwordConfirmation = document.querySelector("#passwordConfirmationForm").value;
+  if (password !== passwordConfirmation) {
+    const message = "Les mots de passes ne sont pas identiques. Les modification n'ont pas été acceptées?";
+    showError(message, "danger", errorMessage);
+  }
   const lastName = document.querySelector("#nameForm").value;
   const firstName = document.querySelector("#firstnameForm").value;
   const username = document.querySelector("#usernameForm").value;
-  const password = document.querySelector("#passwordForm").value;
   const phoneNumber = document.querySelector("#phoneForm").value;
+
 
   const member = {
     id: getPayload().id,
@@ -87,7 +95,6 @@ async function modifyProfile(e) {
   };
   try {
     await modifyMemberBackEnd(member);
-    const errorMessage = document.querySelector("#errorMessage");
     showError("Modification validé", "success", errorMessage);
   } catch (error) {
     console.error(error);
