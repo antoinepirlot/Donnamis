@@ -2,7 +2,8 @@ import {checkToken, getObject, getPayload,} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
 import {showError} from "../../../utils/ShowError";
 import {
-  getItem, getItemsTypes,
+  getItem,
+  getItemsTypes,
   modifyTheItem,
   postInterest as postInterestBackEnd
 } from "../../../utils/BackEndRequests";
@@ -29,27 +30,8 @@ const viewOfferHtml = `
   </div>
   <div id="viewItemPageError"></div>
 </div>
-<!-- Modal Modify Offer -->
-<div id="modifyItemModal" class="modal">
-  <div class="modal-content">
-    <span id="modifyItemCloseModal" class="close">&times;</span>
-    <form id="modifyItemForm">
-      <h5>Modifier votre objet</h5><br>
-      <p>Nom de l'objet</p>
-      <input id="titleForm" type="text">
-      <p>Description de l'objet</p>
-      <input id="itemDescriptionForm" type="text">
-      <p>Photo</p>
-      <input id="photoForm" type="file">
-      <p>Type de l'objet</p>
-      <input id="itemTypeFormList" list="itemsTypesViewItemPage"><br>
-      <datalist id="itemsTypesViewItemPage"></datalist>
-      <br>
-      <input type="submit" value="Modifier">
-    </form>
-    <div id="modifyInterestMessage"></div>
-  </div>
-</div>
+<!-- Modal Modify Item is in createModifyItemModal function-->
+
 <!-- Modal Post Interest -->
 <div id="interestModal" class="modal">
   <div class="modal-content">
@@ -71,7 +53,7 @@ const viewOfferHtml = `
 `;
 
 let lastOffer;
-let idItem;
+let item;
 let errorMessageDiv;
 
 /**
@@ -85,53 +67,78 @@ async function ViewItemPage() {
   //get param from url
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  idItem = urlParams.get("id");
-
+  const idItem = urlParams.get("id");
   const page = document.querySelector("#page");
+  errorMessageDiv = document.querySelector("#viewItemPageError");
   page.innerHTML = viewOfferHtml;
-  errorMessageDiv = document.querySelector("#viewItemPageError")
-
-  const postInterestButton = document.querySelector("#interestButton");
-  //get item's information with the id in param
-
-  const item = await showItemInfo();
-  const modifyMember = getObject("memberDTO");
-
-  if (item.member.id === modifyMember.id) {
-    postInterestButton.innerText = "Modifier";
-    //modify item
-    postInterestButton.addEventListener("click", showModifyForm);
-  } else {
-    postInterestButton.innerText = "Je suis interessé(e) !";
-    //post an interest
-    postInterestButton.addEventListener("click", showInterestForm);
+  try {
+    item = await getItem(idItem);
+    page.innerHTML += createModifyItemModal();
+    showItemInfo();
+    const modifyMember = getObject("memberDTO");
+    const postInterestButton = document.querySelector("#interestButton");
+    if (item.member.id === modifyMember.id) {
+      postInterestButton.innerText = "Modifier";
+      //modify item
+      postInterestButton.addEventListener("click", showModifyForm);
+    } else {
+      postInterestButton.innerText = "Je suis interessé(e) !";
+      //post an interest
+      postInterestButton.addEventListener("click", showInterestForm);
+    }
+  } catch (e) {
+    console.error(e);
   }
 }
 
-async function showItemInfo() {
-  try {
-    const item = await getItem(idItem);
-    lastOffer = item.offerList[0];
-    let date = new Date(lastOffer.date);
-    date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
-        + date.getFullYear();
+function createModifyItemModal() {
+  let title = item.title ? item.title : "";
+  let itemDescription = item.itemDescription ? item.itemDescription : "";
+  let itemType = item.itemType.itemType ? item.itemType.itemType : "";
+  return `
+    <!-- Modal Modify Item -->
+    <div id="modifyItemModal" class="modal">
+      <div class="modal-content">
+        <span id="modifyItemCloseModal" class="close">&times;</span>
+        <form id="modifyItemForm">
+          <h5>Modifier votre objet</h5><br>
+          <p>Nom de l'objet</p>
+          <input id="titleForm" type="text" value="${title}">
+          <p>Description de l'objet</p>
+          <input id="itemDescriptionForm" type="text" value="${itemDescription}">
+          <p>Photo</p>
+          <input id="photoForm" type="file">
+          <p>Type de l'objet</p>
+          <input id="itemTypeFormList" list="itemsTypesViewItemPage" value="${itemType}"><br>
+          <datalist id="itemsTypesViewItemPage"></datalist>
+          <br>
+          <input type="submit" value="Modifier">
+        </form>
+        <div id="modifyItemMessage"></div>
+      </div>
+    </div>
+  `;
+}
 
-    const titleDiv = document.querySelector("#titleViewItemPage");
-    titleDiv.innerHTML = item.title;
-    const memberDiv = document.querySelector("#memberViewItemPage");
-    memberDiv.innerHTML = `Offre proposée par : ${item.member.firstName} ${item.member.lastName} `;
-    const itemType = document.querySelector("#itemTypeViewItemPage");
-    itemType.innerHTML = `Type : ${item.itemType.itemType}`;
-    const descriptionDiv = document.querySelector("#descriptionViewItemPage");
-    descriptionDiv.innerHTML = `Description : ${item.itemDescription}`;
-    const availabilitiesDiv = document.querySelector("#availabilitiesViewItemPage");
-    availabilitiesDiv.innerHTML = `Disponibilités : ${lastOffer.timeSlot}`;
-    const pubDateDiv = document.querySelector("#pubDateViewItemPage");
-    pubDateDiv.innerHTML = `Date de publication : ${date}`;
-    return item;
-  } catch (err) {
-    console.error(err);
-  }
+function showItemInfo() {
+  lastOffer = item.offerList[0];
+  let date = new Date(lastOffer.date);
+  date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
+      + date.getFullYear();
+
+  const titleDiv = document.querySelector("#titleViewItemPage");
+  titleDiv.innerHTML = item.title;
+  const memberDiv = document.querySelector("#memberViewItemPage");
+  memberDiv.innerHTML = `Offre proposée par : ${item.member.firstName} ${item.member.lastName} `;
+  const itemType = document.querySelector("#itemTypeViewItemPage");
+  itemType.innerHTML = `Type : ${item.itemType.itemType}`;
+  const descriptionDiv = document.querySelector("#descriptionViewItemPage");
+  descriptionDiv.innerHTML = `Description : ${item.itemDescription}`;
+  const availabilitiesDiv = document.querySelector(
+      "#availabilitiesViewItemPage");
+  availabilitiesDiv.innerHTML = `Disponibilités : ${lastOffer.timeSlot}`;
+  const pubDateDiv = document.querySelector("#pubDateViewItemPage");
+  pubDateDiv.innerHTML = `Date de publication : ${date}`;
 }
 
 async function showInterestForm(e) {
@@ -219,16 +226,16 @@ async function modifyItem(e) {
   const itemType = {
     itemType: itemTypeValue
   }
-  const item = {
-    id: idItem,
+  const newItem = {
+    id: item.id,
     itemDescription: itemDescription,
     itemType: itemType,
     photo: photo,
     title: title,
   }
   try {
-    await modifyTheItem(item);
-    const errorMessage = document.querySelector("#modifyInterestMessage");
+    await modifyTheItem(newItem);
+    const errorMessage = document.querySelector("#modifyItemMessage");
     showError("Modification validé", "success", errorMessage);
     await ViewItemPage();
   } catch (error) {
