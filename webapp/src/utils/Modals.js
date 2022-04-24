@@ -27,4 +27,4 @@ function setCloseModalEvent(modal, elementId) {
 
 export {
   openModal
-}
+};

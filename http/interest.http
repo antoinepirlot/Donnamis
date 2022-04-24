@@ -1,18 +1,15 @@
 ### Mark Interest
-POST {{baseUrl}}/interests/3
+POST {{baseUrl}}/interests/
 Authorization: {{token}}
 Content-Type: application/json
 
 {
-  "id": 1
-}
-
-### Mark Interest
-POST {{baseUrl}}/interests/3?call_wanted=true
-Authorization: {{token}}
-Content-Type: application/json
-
-{
-  "id": 2,
-  "phoneNumber": "04"
+  "callWanted": true,
+  "offer": {
+    "id": 3
+  },
+  "member": {
+    "id": 2
+  },
+  "date": "2022-05-12"
 }

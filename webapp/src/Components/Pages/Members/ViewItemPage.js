@@ -1,17 +1,12 @@
-import {getObject, getPayload,} from "../../utils/session";
-import {Redirect} from "../Router/Router";
-import {showError} from "../../utils/ShowError";
 import {checkToken, getObject, getPayload,} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
 import {showError} from "../../../utils/ShowError";
 import {
   getItem,
   modifyTheItem,
-  getItem, me,
   postInterest as postInterestBackEnd
 } from "../../utils/BackEndRequests";
 import {openModal} from "../../utils/Modals";
-} from "../../../utils/BackEndRequests";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3">
@@ -93,10 +88,10 @@ async function ViewItemPage() {
 
   const item = await getItemInfo(idItem);
   const modifyMember = getObject("memberDTO");
-  const button = document.querySelector("#interestButton");
+  const button2 = document.querySelector("#interestButton");
 
   if (item.member.id == modifyMember.id) {
-    button.value = "Modifier";
+    button2.value = "Modifier";
     //modify item
     form.addEventListener("submit", showModifyForm);
   } else {
@@ -104,7 +99,7 @@ async function ViewItemPage() {
     call_wanted.innerHTML = ` 
         <input class=\"form-check-input\" type=\"checkbox\" id=\"callWanted\">
         <label class=\"form-check-label\" for=\"callWanted\">J'accepte d'être appelé</label>`;
-    button.value = "Je suis interessé(e) !";
+    button2.value = "Je suis interessé(e) !";
     //post an interest
     form.addEventListener("submit", postInterest);
   }
@@ -114,7 +109,7 @@ function showPhoneNumberInput() {
   const phoneNumberInputDiv = document.querySelector("#phoneNumberInputDiv");
   let phoneNumberInputHtml;
   const memberDTO = getObject("memberDTO");
-  console.log(memberDTO)
+
   if (memberDTO.phoneNumber) {
     phoneNumberInputHtml = `
       <input id="phoneNumberInput" type="tel" value="${memberDTO.phoneNumber}" pattern="(+?[0-9]{3})[0-9]{13}">

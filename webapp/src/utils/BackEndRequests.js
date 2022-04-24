@@ -564,6 +564,6 @@ export {
   offerAgain,
   postInterest,
   modifyMember,
-  chooseRecipient
+  chooseRecipient,
   modifyTheItem,
 };
