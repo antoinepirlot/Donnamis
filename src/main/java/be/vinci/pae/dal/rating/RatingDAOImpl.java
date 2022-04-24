@@ -32,7 +32,7 @@ public class RatingDAOImpl implements RatingDAO {
   @Override
   public boolean evaluate(RatingDTO ratingDTO) throws SQLException {
     String query = "INSERT INTO project_pae.ratings (id_item, rating, text, id_member) VALUES"
-        + "(?, ?, ?, ?);";
+        + "(?, ?, ?, ?) RETURNING *;";
 
     try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
       ps.setInt(1, ratingDTO.getItem().getId());

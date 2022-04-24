@@ -1,11 +1,10 @@
 package be.vinci.pae.biz.rating;
 
-import be.vinci.pae.biz.interest.objects.InterestImpl;
 import be.vinci.pae.biz.item.interfaces.Item;
 import be.vinci.pae.biz.member.interfaces.Member;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-@JsonDeserialize(as = InterestImpl.class)
+@JsonDeserialize(as = RatingImpl.class)
 public interface RatingDTO {
 
   Item getItem();
