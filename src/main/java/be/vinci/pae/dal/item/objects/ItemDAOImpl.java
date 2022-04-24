@@ -107,7 +107,7 @@ public class ItemDAOImpl implements ItemDAO {
           itemDTO.getItemType().getItemType()
       ));
       ps.setInt(3, itemDTO.getMember().getId());
-      ps.setString(4, StringEscapeUtils.escapeHtml4(itemDTO.getPhoto()));
+      ps.setString(4, itemDTO.getPhoto());
       ps.setString(5, StringEscapeUtils.escapeHtml4(itemDTO.getTitle()));
       ps.setString(6, DEFAULT_OFFER_STATUS);
       ps.setTimestamp(7, itemDTO.getLastOfferDate());
