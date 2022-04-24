@@ -119,7 +119,6 @@ const Navbar = async () => {
       links.innerHTML += searchMembersLinkHtml;
       links.innerHTML += allItemsLinkHtml;
       memberUsername.innerHTML = memberDTO.username + " (admin)";
-      console.log(memberUsername.innerHTML);
     }
     links.innerHTML += allOfferedItemsLinkHtml;
     links.innerHTML += offerAnItemLinkHtml;

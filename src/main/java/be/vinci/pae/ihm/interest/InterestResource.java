@@ -47,12 +47,8 @@ public class InterestResource {
     if (interestDTO == null
         || interestDTO.getOffer() == null || interestDTO.getOffer().getId() < 1
         || interestDTO.getMember() == null || interestDTO.getMember().getId() < 1
-        || interestDTO.isCallWanted()
-        && (interestDTO.getMember().getPhoneNumber() == null
-            || interestDTO.getMember().getPhoneNumber().isBlank()
-        )
     ) {
-      throw new WrongBodyDataException("idMember required");
+      throw new WrongBodyDataException("Wrong body");
     }
 
     //Verify if the offer already exist

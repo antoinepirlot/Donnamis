@@ -3,66 +3,58 @@ import {Redirect} from "../../Router/Router";
 import {showError} from "../../../utils/ShowError";
 import {
   getItem,
+  getItemsTypes,
   modifyTheItem,
   postInterest as postInterestBackEnd
 } from "../../../utils/BackEndRequests";
-import {openModal} from "../../../utils/Modals";
+import {closeModal, openModal} from "../../../utils/Modals";
+import {showItemsTypes} from "../../../utils/HtmlCode";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3">
   <div class="row no-gutters">
   <div class="col-md">
       <div class="card-body">
-        <h2 id="title" class="card-title"></h2>
-        <p id="offerer" class="text-muted"> </p>
-        <h5 id="type" class="card-text"></h5>
-        <h5 id="description" class="card-text"></h5>
-        <h5 id="availabilities" class="card-text"></h5>
-        <h5 id="pubDate" class="card-text"></h5>
-
-        <form>
-          <div id="call_wanted"></div>
-           <input id="interestButton" type="submit" class="btn btn-primary">
-        <form id="interestForm">
-          <div id="interestsInputs" class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="callWanted">
-            <label class="form-check-label" for="callWanted">J'accepte d'être appelé</label>
-            <div id="phoneNumberInputDiv"></div>
-          </div>
-          <input id="interestButton" type="submit" class="btn btn-primary" value="Je suis interessé(e) !">
-       </form>
-
-       <div class="message" id="interestMessage"></div>
+        <h2 id="titleViewItemPage" class="card-title"></h2>
+        <p id="memberViewItemPage" class="text-muted"> </p>
+        <h5 id="itemTypeViewItemPage" class="card-text"></h5>
+        <h5 id="descriptionViewItemPage" class="card-text"></h5>
+        <h5 id="availabilitiesViewItemPage" class="card-text"></h5>
+        <h5 id="pubDateViewItemPage" class="card-text"></h5>
+        <button id="interestButton" class="btn btn-primary">
       </div>
     </div>
     <div class="col-md-4">
       <img src="" class="card-img" alt="JS">
     </div>
   </div>
+  <div id="viewItemPageError"></div>
 </div>
-<!-- The Modal -->
-<div id="modifyItemModal" class="modal">
+<!-- Modal Modify Item is in createModifyItemModal function-->
+
+<!-- Modal Post Interest -->
+<div id="interestModal" class="modal">
   <div class="modal-content">
-    <span id="modifyItemCloseModal" class="close">&times;</span>
-    <form id="modifyItemForm">
-      <h5>Modifier votre objet</h5><br>
-      <p>Nom de l'objet</p>
-      <input id="titleForm" type="text">
-      <p>Description de l'objet</p>
-      <input id="itemDescriptionForm" type="text">
-      <p>Photo</p>
-      <input id="photoForm" type="file">
-      <p>Type de l'objet</p>
-      <input id="itemTypeFormList" list="itemsTypes"><br>
+    <span id="interestCloseModal" class="close">&times;</span>
+    <form id="interestForm">
+      <h5>Marquer votre intéret pour cette offre</h5><br>
+      <p>Date de récupération</p>
+      <input id="dateForm" type="date">
       <p></p>
-      <input type="submit" value="Modifier">
+      <input class="form-check-input" type="checkbox" id="callWanted">
+      <label class="form-check-label" for="callWanted">J'accepte d'être appelé</label>
+      <div id="phoneNumberInputDiv"></div>
+      <br>
+      <input type="submit" class="btn btn-primary" value="Confirmer">
     </form>
+    <div id="postInterestMessage"></div>
   </div>
-  <div id="errorMessage"></div>
 </div>
 `;
 
 let lastOffer;
+let item;
+let errorMessageDiv;
 
 /**
  * Render the OfferPage :
@@ -75,34 +67,89 @@ async function ViewItemPage() {
   //get param from url
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const page = document.querySelector("#page");
   const idItem = urlParams.get("id");
+  const page = document.querySelector("#page");
+  errorMessageDiv = document.querySelector("#viewItemPageError");
   page.innerHTML = viewOfferHtml;
-
-  const callWanted = document.querySelector("#callWanted");
-  callWanted.addEventListener("click", showPhoneNumberInput)
-
-  const button = document.querySelector("#offerCard");
-  const form = document.querySelector("#offerCard");
-  //get offer's infos with the id in param
-
-  const item = await getItemInfo(idItem);
-  const modifyMember = getObject("memberDTO");
-  const button2 = document.querySelector("#interestButton");
-
-  if (item.member.id == modifyMember.id) {
-    button2.value = "Modifier";
-    //modify item
-    form.addEventListener("submit", showModifyForm);
-  } else {
-    const call_wanted = document.querySelector("#call_wanted");
-    call_wanted.innerHTML = ` 
-        <input class=\"form-check-input\" type=\"checkbox\" id=\"callWanted\">
-        <label class=\"form-check-label\" for=\"callWanted\">J'accepte d'être appelé</label>`;
-    button2.value = "Je suis interessé(e) !";
-    //post an interest
-    form.addEventListener("submit", postInterest);
+  try {
+    item = await getItem(idItem);
+    page.innerHTML += createModifyItemModal();
+    showItemInfo();
+    const modifyMember = getObject("memberDTO");
+    const postInterestButton = document.querySelector("#interestButton");
+    if (item.member.id === modifyMember.id) {
+      postInterestButton.innerText = "Modifier";
+      //modify item
+      postInterestButton.addEventListener("click", showModifyForm);
+    } else {
+      postInterestButton.innerText = "Je suis interessé(e) !";
+      //post an interest
+      postInterestButton.addEventListener("click", showInterestForm);
+    }
+  } catch (e) {
+    console.error(e);
   }
+}
+
+function createModifyItemModal() {
+  let title = item.title ? item.title : "";
+  let itemDescription = item.itemDescription ? item.itemDescription : "";
+  let itemType = item.itemType.itemType ? item.itemType.itemType : "";
+  return `
+    <!-- Modal Modify Item -->
+    <div id="modifyItemModal" class="modal">
+      <div class="modal-content">
+        <span id="modifyItemCloseModal" class="close">&times;</span>
+        <form id="modifyItemForm">
+          <h5>Modifier votre objet</h5><br>
+          <p>Nom de l'objet</p>
+          <input id="titleForm" type="text" value="${title}">
+          <p>Description de l'objet</p>
+          <input id="itemDescriptionForm" type="text" value="${itemDescription}">
+          <p>Photo</p>
+          <input id="photoForm" type="file">
+          <p>Type de l'objet</p>
+          <input id="itemTypeFormList" list="itemsTypesViewItemPage" value="${itemType}"><br>
+          <datalist id="itemsTypesViewItemPage"></datalist>
+          <br>
+          <input type="submit" value="Modifier">
+        </form>
+        <div id="modifyItemMessage"></div>
+      </div>
+    </div>
+  `;
+}
+
+function showItemInfo() {
+  lastOffer = item.offerList[0];
+  let date = new Date(lastOffer.date);
+  date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
+      + date.getFullYear();
+
+  const titleDiv = document.querySelector("#titleViewItemPage");
+  titleDiv.innerHTML = item.title;
+  const memberDiv = document.querySelector("#memberViewItemPage");
+  memberDiv.innerHTML = `Offre proposée par : ${item.member.firstName} ${item.member.lastName} `;
+  const itemType = document.querySelector("#itemTypeViewItemPage");
+  itemType.innerHTML = `Type : ${item.itemType.itemType}`;
+  const descriptionDiv = document.querySelector("#descriptionViewItemPage");
+  descriptionDiv.innerHTML = `Description : ${item.itemDescription}`;
+  const availabilitiesDiv = document.querySelector(
+      "#availabilitiesViewItemPage");
+  availabilitiesDiv.innerHTML = `Disponibilités : ${lastOffer.timeSlot}`;
+  const pubDateDiv = document.querySelector("#pubDateViewItemPage");
+  pubDateDiv.innerHTML = `Date de publication : ${date}`;
+}
+
+async function showInterestForm(e) {
+  e.preventDefault();
+  openModal("#interestModal", "#interestCloseModal");
+
+  const callWantedCheckbox = document.querySelector("#callWanted");
+  callWantedCheckbox.addEventListener("click", showPhoneNumberInput);
+
+  const interestForm = document.querySelector("#interestForm");
+  interestForm.addEventListener("submit", postInterest);
 }
 
 function showPhoneNumberInput() {
@@ -112,11 +159,11 @@ function showPhoneNumberInput() {
 
   if (memberDTO.phoneNumber) {
     phoneNumberInputHtml = `
-      <input id="phoneNumberInput" type="tel" value="${memberDTO.phoneNumber}" pattern="(+?[0-9]{3})[0-9]{13}">
+      <input id="phoneNumberInput" type="tel" value="${memberDTO.phoneNumber}">
     `;
   } else {
     phoneNumberInputHtml = `
-      <input id="phoneNumberInput" type="tel" placeholder="Téléphone" pattern="(+?[0-9]{3})[0-9]{13}">
+      <input id="phoneNumberInput" type="tel" placeholder="Téléphone">
     `;
   }
   if (!phoneNumberInputDiv.querySelector("#phoneNumberInput")) {
@@ -126,98 +173,74 @@ function showPhoneNumberInput() {
   }
 }
 
-async function getItemInfo(idItem) {
-  try {
-    const item = await getItem(idItem);
-    lastOffer = item.offerList[0];
-    var date = new Date(lastOffer.date);
-    date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
-        + date.getFullYear();
-
-    document.querySelector("#title").innerHTML = item.title
-    document.querySelector(
-        "#offerer").innerHTML = `Offre proposée par : ${item.member.firstName} ${item.member.lastName} `
-    document.querySelector(
-        "#type").innerHTML = `Type : ${item.itemType.itemType}`
-    document.querySelector(
-        "#description").innerHTML = `Description : ${item.itemDescription}`
-    document.querySelector(
-        "#availabilities").innerHTML = `Disponibilités : ${lastOffer.timeSlot}`
-    document.querySelector(
-        "#pubDate").innerHTML = `Date de publication : ${date}`
-    return item;
-  } catch (err) {
-    console.error(err);
-  }
-}
-
 async function postInterest(e) {
   e.preventDefault();
-  const interestMessage = document.querySelector("#interestMessage");
-  //const urlParams = new URLSearchParams(queryString);
+  const interestMessage = document.querySelector("#postInterestMessage");
+  console.log(interestMessage);
+
   const callWanted = document.querySelector("#callWanted").checked;
-  const member = {
+  const date = document.querySelector("#dateForm").value;
+  if (!date) {
+    showError("La date n'a pas été choisie.", "danger", interestMessage);
+    return;
+  }
+  const memberInterested = {
     id: getPayload().id
   };
   if (callWanted) {
-    member.phoneNumber = document.querySelector("#phoneNumberInput").value;
+    memberInterested.phoneNumber = document.querySelector("#phoneNumberInputDiv").value;
   }
   const interest = {
     callWanted: callWanted,
     offer: lastOffer,
-    member: member
+    member: memberInterested,
+    date: date
   };
   try {
-    await postInterestBackEnd(interest, interestMessage);
+    await postInterestBackEnd(interest, errorMessageDiv);
     if (callWanted) {
       await checkToken();
     }
   } catch (err) {
-    showError("Votre marque d'intérêt n'a pas pu être ajoutée", "danger",
-        interestMessage);
     console.error(err);
+  } finally {
+    closeModal("#interestModal");
   }
-
 }
 
 async function showModifyForm(e) {
   e.preventDefault();
-
   openModal("#modifyItemModal", "#modifyItemCloseModal");
+  showItemsTypes("#itemsTypesViewItemPage", await getItemsTypes());
   const modifyForm = document.querySelector("#modifyItemForm");
   modifyForm.addEventListener("submit", modifyItem);
 }
 
 async function modifyItem(e) {
   e.preventDefault();
-
-  const title = document.querySelector("#titleForm");
-  const itemDescription = document.querySelector("#itemDescriptionForm");
-  const photo = document.querySelector("#photoForm");
-  const newItemType = document.querySelector("#itemTypeFormList");
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const idItem = urlParams.get("id");
+  const title = document.querySelector("#titleForm").value;
+  const itemDescription = document.querySelector("#itemDescriptionForm").value;
+  const photo = document.querySelector("#photoForm").value;
+  const itemTypeValue = document.querySelector("#itemTypeFormList").value;
 
   const itemType = {
-    itemType: newItemType.value
+    itemType: itemTypeValue
   }
-
-  const item = {
-    id: idItem,
-    itemDescription: itemDescription.value,
+  const newItem = {
+    id: item.id,
+    itemDescription: itemDescription,
     itemType: itemType,
-    photo: photo.value,
-    title: title.value,
+    photo: photo,
+    title: title,
   }
-
   try {
-    await modifyTheItem(item);
-    const errorMessage = document.querySelector("#errorMessage");
+    await modifyTheItem(newItem);
+    const errorMessage = document.querySelector("#modifyItemMessage");
     showError("Modification validé", "success", errorMessage);
     await ViewItemPage();
   } catch (error) {
     console.error(error);
+    closeModal("#modifyItemModal");
   }
 }
 

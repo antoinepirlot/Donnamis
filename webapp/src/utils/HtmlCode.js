@@ -47,7 +47,23 @@ function checkIfMemberLoggedIn(modalId, closeModalId) {
   })
 }
 
+/**
+ * Insert items types into the datalist.
+ * @param datalistId the datalist to add items types
+ * @param itemsTypes the items types to add into the datalist
+ */
+function showItemsTypes(datalistId, itemsTypes) {
+  const itemsTypeList = document.querySelector(datalistId);
+  itemsTypeList.innerHTML = "";
+  itemsTypes.forEach(itemsType => {
+    itemsTypeList.innerHTML += `
+      <option value="${itemsType.itemType}">
+    `;
+  });
+}
+
 export {
   getShowItemsHtml,
   checkIfMemberLoggedIn,
+  showItemsTypes,
 }
