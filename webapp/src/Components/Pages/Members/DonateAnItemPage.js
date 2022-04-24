@@ -113,7 +113,7 @@ async function sendFile(e) {
     body: formData
   };
 
-  await fetch('/api/upload/image', options);
+  await fetch('/api/image/upload', options);
   return false;
 }
 
