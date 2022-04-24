@@ -16,8 +16,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
 import java.rmi.UnexpectedException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Singleton
 @Path("interests")
@@ -44,7 +42,7 @@ public class InterestResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public void markInterest(InterestDTO interestDTO) throws SQLException, UnexpectedException {
-    Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+
     //Verify the content of the request
     if (interestDTO == null
         || interestDTO.getOffer() == null || interestDTO.getOffer().getId() < 1
@@ -56,7 +54,7 @@ public class InterestResource {
     ) {
       throw new WrongBodyDataException("idMember required");
     }
-    interestDTO.setDate(now);
+
     //Verify if the offer already exist
     if (!this.offerUCC.offerExist(interestDTO.getOffer())) {
       System.out.println("offer does not exist");

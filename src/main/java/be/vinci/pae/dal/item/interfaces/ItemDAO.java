@@ -30,6 +30,8 @@ public interface ItemDAO {
    */
   List<ItemDTO> getAssignedItems(int idMember) throws SQLException;
 
+  ItemDTO modifyItem(ItemDTO itemDTO) throws SQLException;
+
   /**
    * Mark the item identified by its id as given.
    * @param itemDTO the item to update
