@@ -215,6 +215,7 @@ async function modifyItem(e) {
     await modifyTheItem(item);
     const errorMessage = document.querySelector("#errorMessage");
     showError("Modification validé", "success", errorMessage);
+    await ViewItemPage();
   } catch (error) {
     console.error(error);
   }
