@@ -32,6 +32,7 @@ public class ImageResource {
   @POST
   @Path("upload")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @AuthorizeMember
   public void uploadFile(@FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDisposition) {
     String extension = FilenameUtils.getExtension(fileDisposition.getFileName());
