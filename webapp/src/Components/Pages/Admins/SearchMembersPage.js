@@ -1,4 +1,3 @@
-import {getPayload,} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
 import {getAllMembers, isAdmin} from "../../../utils/BackEndRequests";
 
@@ -33,14 +32,17 @@ async function SearchMembersPage() {
   //Listener pour chaque frappe au clavier
   const searchInput = document.getElementById('searchInput');
   searchInput.addEventListener('keyup', function () {
+        //'he' is a library to decode HTML element from a string
+        let he = require('he');
+
         //Empty the table
         tbody.innerHTML = "";
 
-        const input = searchInput.value.toLowerCase();
+        const input = searchInput.value.toLowerCase().trim();
 
         const result = members.filter(
-            member => member.lastName.toLowerCase().includes(input)
-                || member.firstName.toLowerCase().includes(
+            member => he.decode(member.lastName).toLowerCase().includes(input)
+                || he.decode(member.firstName).toLowerCase().includes(
                     input))
 
         if (result.length < 1) {

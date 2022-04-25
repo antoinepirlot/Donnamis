@@ -85,6 +85,35 @@ function checkIfMemberLoggedIn(modalId, closeModalId) {
   })
 }
 
+/*
+function searchItem(items) {
+  //Searching an item
+  //Listener pour chaque frappe au clavier
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('keyup', function () {
+    //Empty the table
+    //tbody.innerHTML = "";
+
+    const input = searchInput.value.toLowerCase();
+
+    const result = items.filter(
+        item => item.title.toLowerCase().includes(input)
+            || item.itemDescription.toLowerCase().includes(input)
+    )
+
+    if (result.length < 1) {
+      //tbody.innerHTML = `<h1 class="display-6" id="SearchErrorMessage">Il n'y a aucun résultat pour cette recherche</h1>`;
+      const html = `<h1 class="display-6" id="SearchErrorMessage">Il n'y a aucun résultat pour cette recherche</h1>`;
+      return html
+    } else {
+      //showFilterMembers(result)
+      //tbody.innerHTML = getShowItemsHtml(result);
+      const html = getShowItemsHtml(result);
+      return html;
+    }
+  })
+}*/
+
 /**
  * Insert items types into the datalist.
  * @param datalistId the datalist to add items types
