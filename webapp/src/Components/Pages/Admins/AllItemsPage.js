@@ -43,7 +43,7 @@ const AllItemsPage = async () => {
         item => he.decode(item.title).toLowerCase().includes(input)
             || he.decode(item.itemDescription).toLowerCase().includes(input)
     )
-    console.log(result)
+    
     if (result.length < 1) {
       tbody.innerHTML = `<h1 class="display-6" id="SearchErrorMessage">Il n'y a aucun résultat pour cette recherche</h1>`;
     } else {
