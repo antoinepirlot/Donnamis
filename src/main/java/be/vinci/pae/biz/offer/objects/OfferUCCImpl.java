@@ -7,6 +7,7 @@ import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.dal.offer.interfaces.OfferDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.SQLException;
 import java.util.List;
@@ -19,7 +20,7 @@ public class OfferUCCImpl implements OfferUCC {
   private DALServices dalServices;
 
   @Override
-  public boolean createOffer(OfferDTO offerDTO) throws SQLException {
+  public boolean createOffer(OfferDTO offerDTO) {
     try {
       dalServices.start();
       boolean isCreated = this.offerDAO.createOffer(offerDTO);
@@ -27,12 +28,12 @@ public class OfferUCCImpl implements OfferUCC {
       return isCreated;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public List<OfferDTO> getAllOffers(String offerStatus) throws SQLException {
+  public List<OfferDTO> getAllOffers(String offerStatus) {
     try {
       dalServices.start();
       List<OfferDTO> listOfferDTO = offerDAO.getAllOffers(offerStatus);
@@ -40,12 +41,12 @@ public class OfferUCCImpl implements OfferUCC {
       return listOfferDTO;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public OfferDTO getOneOffer(int id) throws SQLException {
+  public OfferDTO getOneOffer(int id) {
     try {
       dalServices.start();
       OfferDTO offerDTO = offerDAO.getOne(id);
@@ -53,12 +54,12 @@ public class OfferUCCImpl implements OfferUCC {
       return offerDTO;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public void getAllOffersOf(ItemDTO itemDTO) throws SQLException {
+  public void getAllOffersOf(ItemDTO itemDTO) {
     Item item = (Item) itemDTO;
     try {
       dalServices.start();
@@ -67,12 +68,12 @@ public class OfferUCCImpl implements OfferUCC {
       item.addOffer(offerToAdd);
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public boolean offerExist(OfferDTO offerDTO) throws SQLException {
+  public boolean offerExist(OfferDTO offerDTO) {
     try {
       dalServices.start();
       boolean doesExist = this.offerDAO.offerExist(offerDTO);
@@ -80,7 +81,7 @@ public class OfferUCCImpl implements OfferUCC {
       return doesExist;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 }

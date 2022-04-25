@@ -6,21 +6,18 @@ import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.dal.offer.interfaces.OfferDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
-import be.vinci.pae.ihm.logs.LoggerHandler;
+import be.vinci.pae.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.text.StringEscapeUtils;
 
 public class OfferDAOImpl implements OfferDAO {
 
   private static final String DEFAULT_OFFER_STATUS = "donated";
-  private final Logger logger = LoggerHandler.getLogger();
   @Inject
   private DALBackendService dalBackendService;
   @Inject
@@ -33,11 +30,15 @@ public class OfferDAOImpl implements OfferDAO {
     //      return false;
     //    }
     //If the item is correctly added , add the offer in the db with the associated item
-    return addOne(offerDTO);
+    try {
+      return addOne(offerDTO);
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
   }
 
   @Override
-  public List<OfferDTO> getAllOffers(String offerStatus) throws SQLException {
+  public List<OfferDTO> getAllOffers(String offerStatus) {
     List<OfferDTO> offersToReturn = new ArrayList<>();
     String query = "SELECT o.id_offer, "
         + "                o.date, "
@@ -59,9 +60,11 @@ public class OfferDAOImpl implements OfferDAO {
           OfferDTO offerDTO = ObjectsInstanceCreator.createOfferInstance(this.factory, rs);
           offersToReturn.add(offerDTO);
         }
+        return offersToReturn.isEmpty() ? null : offersToReturn;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
-    return offersToReturn;
   }
 
   @Override
@@ -82,15 +85,14 @@ public class OfferDAOImpl implements OfferDAO {
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
-        if (rs.next()) { //We know only one is returned by the db
-          this.logger.log(Level.INFO, "OFFER FOUNDED");
+        if (rs.next()) {
           return ObjectsInstanceCreator.createOfferInstance(this.factory, rs);
         }
+        return null;
       }
     } catch (SQLException e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
+      throw new FatalException(e);
     }
-    return null;
   }
 
   @Override
@@ -99,18 +101,15 @@ public class OfferDAOImpl implements OfferDAO {
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, offerDTO.getId());
       try (ResultSet rs = preparedStatement.executeQuery()) {
-        if (rs.next()) {
-          return true;
-        }
+        return rs.next();
       }
     } catch (SQLException e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
+      throw new FatalException(e);
     }
-    return false;
   }
 
   @Override
-  public OfferDTO getLastOfferOf(ItemDTO itemDTO) throws SQLException {
+  public OfferDTO getLastOfferOf(ItemDTO itemDTO) {
     String query = "SELECT id_offer, date, time_slot, id_item "
         + "FROM project_pae.offers o "
         + "WHERE id_item = ? "
@@ -120,17 +119,16 @@ public class OfferDAOImpl implements OfferDAO {
       preparedStatement.setInt(1, itemDTO.getId());
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) { //We know only one is returned by the db
-          this.logger.log(Level.INFO, "OFFER FOUNDED");
           return ObjectsInstanceCreator.createOfferInstance(this.factory, rs);
         }
+        return null;
       }
     } catch (SQLException e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
-      throw e;
+      throw new FatalException(e);
     }
-    return null;
   }
 
+  //****************************** UTILS *******************************
 
   /**
    * Add the offer to the db.
@@ -138,7 +136,7 @@ public class OfferDAOImpl implements OfferDAO {
    * @param offerDTO the offer to add in the db
    * @return true if the offer has been added to the DB
    */
-  private boolean addOne(OfferDTO offerDTO) {
+  private boolean addOne(OfferDTO offerDTO) throws SQLException {
     String query = "INSERT INTO project_pae.offers (date, time_slot, id_item) "
         + "VALUES (?, ?, ?); "
         + "UPDATE project_pae.items SET offer_status = '" + DEFAULT_OFFER_STATUS + "', "
@@ -153,16 +151,8 @@ public class OfferDAOImpl implements OfferDAO {
       ps.setInt(3, offerDTO.getIdItem());
       ps.setTimestamp(4, offerDTO.getDate());
       ps.setInt(5, offerDTO.getIdItem());
-      int result = ps.executeUpdate();
-      //it adds into the db BUT can't execute getOne(), it returns null
-      if (result != 0) {
-        this.logger.log(Level.INFO, "Ajout de l'offre réussie.");
-        return true;
-      }
-    } catch (SQLException e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
+      return ps.executeUpdate() != 0;
     }
-    return false;
   }
 
   //  /**
@@ -195,6 +185,5 @@ public class OfferDAOImpl implements OfferDAO {
   //    return false;
   //  }
 
-  //****************************** UTILS *******************************
 
 }

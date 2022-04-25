@@ -3,6 +3,7 @@ package be.vinci.pae.dal.interest.objects;
 import be.vinci.pae.biz.interest.interfaces.InterestDTO;
 import be.vinci.pae.dal.interest.interfaces.InterestDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
+import be.vinci.pae.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,7 +16,7 @@ public class InterestDAOImpl implements InterestDAO {
   private DALBackendService dalBackendService;
 
   @Override
-  public boolean markInterest(InterestDTO interestDTO) throws SQLException {
+  public boolean markInterest(InterestDTO interestDTO) {
     String query = "INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date) "
         + "VALUES (?, ?, ?, ?); ";
     if (interestDTO.isCallWanted()) {
@@ -33,16 +34,14 @@ public class InterestDAOImpl implements InterestDAO {
             .escapeHtml4(interestDTO.getMember().getPhoneNumber()));
         ps.setInt(6, interestDTO.getMember().getId());
       }
-      int res = ps.executeUpdate();
-      if (res != 0) {
-        return true;
-      }
+      return ps.executeUpdate() != 0;
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
-    return false;
   }
 
   @Override
-  public boolean interestExist(InterestDTO interestDTO) throws SQLException {
+  public boolean interestExist(InterestDTO interestDTO) {
     String query = "SELECT id_interest "
         + "FROM project_pae.interests "
         + "WHERE id_offer = ? "
@@ -51,11 +50,10 @@ public class InterestDAOImpl implements InterestDAO {
       ps.setInt(1, interestDTO.getOffer().getId());
       ps.setInt(2, interestDTO.getMember().getId());
       try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          return true;
-        }
+        return rs.next();
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
-    return false;
   }
 }

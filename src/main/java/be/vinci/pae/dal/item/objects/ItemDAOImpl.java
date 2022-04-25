@@ -5,15 +5,13 @@ import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
-import be.vinci.pae.ihm.logs.LoggerHandler;
+import be.vinci.pae.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.text.StringEscapeUtils;
 
 public class ItemDAOImpl implements ItemDAO {
@@ -24,14 +22,13 @@ public class ItemDAOImpl implements ItemDAO {
   private static final String WAITING_RECIPIENT_STATUS = "waiting";
   private static final String RECEIVED_RECIPIENT_STATUS = "received";
   private static final String NOT_RECEIVED_RECIPIENT_STATUS = "not_received";
-  private final Logger logger = LoggerHandler.getLogger();
   @Inject
   private Factory factory;
   @Inject
   private DALBackendService dalBackendService;
 
   @Override
-  public List<ItemDTO> getAllItems(String offerStatus) throws SQLException {
+  public List<ItemDTO> getAllItems(String offerStatus) {
     List<ItemDTO> itemsDTOList = new ArrayList<>();
     String query = "SELECT i.id_item, "
         + "                i.item_description, "
@@ -61,13 +58,15 @@ public class ItemDAOImpl implements ItemDAO {
         while (rs.next()) {
           itemsDTOList.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
         }
+        return itemsDTOList.isEmpty() ? null : itemsDTOList;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
-    return itemsDTOList;
   }
 
   @Override
-  public ItemDTO getOneItem(int id) throws SQLException {
+  public ItemDTO getOneItem(int id) {
     String query = ""
         + "SELECT i.id_item, i.item_description, i.photo, i.title, i.offer_status, "
         + "       i.last_offer_date, "
@@ -85,13 +84,15 @@ public class ItemDAOImpl implements ItemDAO {
         if (rs.next()) {
           return ObjectsInstanceCreator.createItemInstance(factory, rs);
         }
+        return null;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
-    return null;
   }
 
   @Override
-  public int addItem(ItemDTO itemDTO) throws SQLException {
+  public int addItem(ItemDTO itemDTO) {
     String selectIdTypeQuery = "SELECT id_type "
         + "FROM project_pae.items_types "
         + "WHERE item_type = ? ";
@@ -112,17 +113,15 @@ public class ItemDAOImpl implements ItemDAO {
       ps.setString(6, DEFAULT_OFFER_STATUS);
       ps.setTimestamp(7, itemDTO.getLastOfferDate());
       try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          this.logger.log(Level.INFO, "Item correctly added");
-          return rs.getInt("id_item");
-        }
+        return rs.next() ? rs.getInt("id_item") : -1;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
-    return -1;
   }
 
   @Override
-  public ItemDTO cancelItem(int id) throws SQLException {
+  public ItemDTO cancelItem(int id) {
     String query = "UPDATE project_pae.items "
         + "SET offer_status = 'cancelled' "
         + "WHERE id_item = ? "
@@ -131,16 +130,17 @@ public class ItemDAOImpl implements ItemDAO {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
-          this.logger.log(Level.INFO, "Item correctly cancelled");
           return ObjectsInstanceCreator.createItemInstance(factory, rs);
         }
+        return null;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
-    return null;
   }
 
   @Override
-  public ItemDTO modifyItem(ItemDTO itemDTO) throws SQLException {
+  public ItemDTO modifyItem(ItemDTO itemDTO) {
     String selectIdTypeQuery = "SELECT id_type "
         + "FROM project_pae.items_types "
         + "WHERE item_type = ? ";
@@ -156,15 +156,15 @@ public class ItemDAOImpl implements ItemDAO {
         if (rs.next()) {
           return ObjectsInstanceCreator.createItemInstance(this.factory, rs);
         }
+        return null;
       }
     } catch (SQLException e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
+      throw new FatalException(e);
     }
-    return null;
   }
 
   @Override
-  public List<ItemDTO> getAllItemsOfAMember(int idMember) throws SQLException {
+  public List<ItemDTO> getAllItemsOfAMember(int idMember) {
     List<ItemDTO> itemsDTO = new ArrayList<>();
     String query = "SELECT i.id_item, "
         + "                i.item_description, "
@@ -191,13 +191,15 @@ public class ItemDAOImpl implements ItemDAO {
           ItemDTO itemDTO = ObjectsInstanceCreator.createItemInstance(this.factory, rs);
           itemsDTO.add(itemDTO);
         }
+        return itemsDTO.isEmpty() ? null : itemsDTO;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
-    return itemsDTO;
   }
 
   @Override
-  public List<ItemDTO> getAssignedItems(int idMember) throws SQLException {
+  public List<ItemDTO> getAssignedItems(int idMember) {
     String query = "SELECT DISTINCT i.id_item, "
         + "                i.item_description, "
         + "                i.id_type, "
@@ -228,23 +230,33 @@ public class ItemDAOImpl implements ItemDAO {
         while (rs.next()) {
           listItemDTO.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
         }
+        return listItemDTO.isEmpty() ? null : listItemDTO;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
-    return listItemDTO;
   }
 
   @Override
-  public boolean markItemAsGiven(ItemDTO itemDTO) throws SQLException {
-    return this.markItemAs(true, itemDTO);
+  public boolean markItemAsGiven(ItemDTO itemDTO) {
+    try {
+      return this.markItemAs(true, itemDTO);
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
   }
 
   @Override
-  public boolean markItemAsNotGiven(ItemDTO itemDTO) throws SQLException {
-    return this.markItemAs(false, itemDTO);
+  public boolean markItemAsNotGiven(ItemDTO itemDTO) {
+    try {
+      return this.markItemAs(false, itemDTO);
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
   }
 
   @Override
-  public int countNumberOfItemsByOfferStatus(int idMember, String offerStatus) throws SQLException {
+  public int countNumberOfItemsByOfferStatus(int idMember, String offerStatus) {
     String query = "SELECT COUNT(id_item) "
         + "FROM project_pae.items "
         + "WHERE id_member = ? "
@@ -253,15 +265,15 @@ public class ItemDAOImpl implements ItemDAO {
       ps.setInt(1, idMember);
       ps.setString(2, StringEscapeUtils.escapeHtml4(offerStatus));
       try (ResultSet rs = ps.executeQuery()) {
-        rs.next();
-        return rs.getInt(1);
+        return rs.next() ? rs.getInt(1) : -1;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public int countNumberOfReceivedOrNotReceivedItems(int idMember, boolean received)
-      throws SQLException {
+  public int countNumberOfReceivedOrNotReceivedItems(int idMember, boolean received) {
     String query = "SELECT COUNT(DISTINCT id_item) "
         + "FROM     project_pae.recipients "
         + "WHERE id_member = ? "
@@ -274,15 +286,15 @@ public class ItemDAOImpl implements ItemDAO {
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setInt(1, idMember);
       try (ResultSet rs = ps.executeQuery()) {
-        rs.next();
-        return rs.getInt(1);
+        return rs.next() ? rs.getInt(1) : -1;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public List<ItemDTO> getMemberItemsByOfferStatus(int idMember, String offerStatus)
-      throws SQLException {
+  public List<ItemDTO> getMemberItemsByOfferStatus(int idMember, String offerStatus) {
     String query = "SELECT i.id_item, "
         + "                i.item_description, "
         + "                i.photo, "
@@ -316,11 +328,13 @@ public class ItemDAOImpl implements ItemDAO {
         }
         return itemDTOList.isEmpty() ? null : itemDTOList;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public List<ItemDTO> getMemberReceivedItems(int idMember) throws SQLException {
+  public List<ItemDTO> getMemberReceivedItems(int idMember) {
     String query = "SELECT i.id_item, "
         + "       i.item_description, "
         + "       i.photo, "
@@ -345,6 +359,8 @@ public class ItemDAOImpl implements ItemDAO {
         }
         return itemDTOList.isEmpty() ? null : itemDTOList;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 

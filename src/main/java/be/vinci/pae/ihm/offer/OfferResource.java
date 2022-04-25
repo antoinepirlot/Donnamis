@@ -17,7 +17,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import java.sql.SQLException;
 import java.util.List;
 
 @Singleton
@@ -41,8 +40,7 @@ public class OfferResource {
   @Path("all_offers")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public List<OfferDTO> getAllOffers()
-      throws SQLException {
+  public List<OfferDTO> getAllOffers() {
     return this.getAllOffers(null);
   }
 
@@ -56,8 +54,7 @@ public class OfferResource {
   @Consumes(MediaType.TEXT_PLAIN)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public List<OfferDTO> getAllOffers(@PathParam("offer_status") String offerStatus)
-      throws SQLException {
+  public List<OfferDTO> getAllOffers(@PathParam("offer_status") String offerStatus) {
     List<OfferDTO> listOfferDTO = offerUCC.getAllOffers(offerStatus);
     if (listOfferDTO == null) {
       throw new ObjectNotFoundException("No offers into the database.");
@@ -75,8 +72,7 @@ public class OfferResource {
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public OfferDTO getOneOffer(@PathParam("id") int id)
-      throws SQLException {
+  public OfferDTO getOneOffer(@PathParam("id") int id) {
     OfferDTO offerDTO = offerUCC.getOneOffer(id);
     if (offerDTO == null) {
       throw new ObjectNotFoundException("No offers into the database.");
@@ -97,7 +93,7 @@ public class OfferResource {
   @Path("add_offer")
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public void addOffer(OfferDTO offerDTO) throws SQLException {
+  public void addOffer(OfferDTO offerDTO) {
     // Get and check credentials
     if (offerDTO == null || offerDTO.getIdItem() < 1) {
       String message;
