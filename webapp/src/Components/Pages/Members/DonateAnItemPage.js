@@ -6,6 +6,7 @@ import {
 import {showError} from "../../../utils/ShowError";
 import {getPayload} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
+import {showItemsTypes} from "../../../utils/HtmlCode";
 
 const htmlForm = `
   <div>
@@ -24,8 +25,8 @@ const htmlForm = `
       <textarea id="timeSlotForm" cols="30" rows="3"></textarea><br>
       <br>
       Type de l'objet<span id="asterisk">*</span>:<br>
-      <input id="itemTypeFormList" list="itemsTypes" placeholder="Séléctionne le type d'objet"><br>
-      <datalist id="itemsTypes"></datalist>
+      <input id="itemTypeFormList" list="itemsTypesDonateAnItemPage" placeholder="Séléctionne le type d'objet"><br>
+      <datalist id="itemsTypesDonateAnItemPage"></datalist>
       <br>
       <input type="submit" value="Offrir">
     </form>
@@ -44,19 +45,9 @@ const DonateAnItemPage = async () => {
   page.innerHTML = htmlForm;
   const offerItemForm = document.querySelector("#offerItemForm");
   itemsTypes = await getItemsTypes();
-  showItemsTypes();
+  showItemsTypes("#itemsTypesDonateAnItemPage", itemsTypes);
   offerItemForm.addEventListener("submit", await offerItem);
 };
-
-function showItemsTypes() {
-  const itemsTypeList = document.querySelector("#itemsTypes");
-  itemsTypeList.innerHTML = "";
-  itemsTypes.forEach(itemsType => {
-    itemsTypeList.innerHTML += `
-      <option value="${itemsType.itemType}">
-    `;
-  });
-}
 
 async function offerItem(e) {
   const date = new Date();

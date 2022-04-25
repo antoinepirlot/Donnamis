@@ -4,6 +4,7 @@ import be.vinci.pae.biz.interest.interfaces.InterestDTO;
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
+import be.vinci.pae.exceptions.FatalException;
 import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
@@ -14,8 +15,8 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
-import java.rmi.UnexpectedException;
-import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Singleton
 @Path("interests")
@@ -41,12 +42,14 @@ public class InterestResource {
   @Path("")
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public void markInterest(InterestDTO interestDTO) throws SQLException, UnexpectedException {
+  public void markInterest(InterestDTO interestDTO) {
 
     //Verify the content of the request
     if (interestDTO == null
         || interestDTO.getOffer() == null || interestDTO.getOffer().getId() < 1
         || interestDTO.getMember() == null || interestDTO.getMember().getId() < 1
+        || interestDTO.getDate() == null
+        || interestDTO.getDate().before(Timestamp.valueOf(LocalDateTime.now()))
     ) {
       throw new WrongBodyDataException("Wrong body");
     }
@@ -68,7 +71,7 @@ public class InterestResource {
     }
     //Add the interest
     if (!interestUCC.markInterest(interestDTO)) {
-      throw new UnexpectedException("The interest hasn't been added");
+      throw new FatalException("The interest hasn't been added");
     }
   }
 }

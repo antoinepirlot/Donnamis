@@ -2,6 +2,7 @@ package be.vinci.pae.ihm.filter;
 
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
+import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.ihm.logs.LoggerHandler;
 import be.vinci.pae.ihm.utils.TokenDecoder;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -13,7 +14,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.Provider;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,11 +40,9 @@ public class AuthorizationAdminRequestFilter implements ContainerRequestFilter {
   public void filter(ContainerRequestContext containerRequestContext) {
     DecodedJWT decodedJWT = TokenDecoder.decodeToken(containerRequestContext);
     int id = decodedJWT.getClaim("id").asInt();
-    MemberDTO authenticatedMember = null;
-    try {
-      authenticatedMember = memberUCC.getOneMember(id);
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
+    MemberDTO authenticatedMember = memberUCC.getOneMember(id);
+    if (authenticatedMember == null) {
+      throw new ObjectNotFoundException("No member for id: " + id);
     }
     if (!authenticatedMember.isAdmin()) {
       String message = "The member with id: " + id + " can't access a admin method";
