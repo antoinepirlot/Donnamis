@@ -195,43 +195,6 @@ async function getAssignedItems() {
   return await response.json();
 }
 
-async function getAllOffers() {
-  const request = {
-    method: "GET",
-    headers: {
-      "Authorization": getObject("token")
-    }
-  };
-  const response = await fetch("/api/offers/all_offers", request);
-  if (!response.ok) {
-    if (response.status === 401) {
-      Redirect("/logout");
-    }
-    // status code was not 200, error status code
-    throw new Error(
-        "fetch error : " + response.status + " : " + response.statusText
-    );
-  }
-  return await response.json();
-}
-
-async function getLatestOffers() {
-  const request = {
-    method: "GET",
-    headers: {
-      "Authorization": getObject("token")
-    }
-  };
-  const response = await fetch("/api/offers/latest_offers", request);
-  if (!response.ok) {
-    // status code was not 200, error status code
-    throw new Error(
-        "fetch error : " + response.status + " : " + response.statusText
-    );
-  }
-  return await response.json();
-}
-
 async function getItem(idItem) {
   const request = {
     method: "GET",
@@ -573,8 +536,6 @@ export {
   denyMember,
   getAllItemsByOfferStatus,
   getAssignedItems,
-  getAllOffers,
-  getLatestOffers,
   getMyItems,
   markItemAs,
   cancelOffer,
