@@ -1,7 +1,8 @@
 package be.vinci.pae.dal.rating;
 
-import be.vinci.pae.biz.rating.RatingDTO;
+import be.vinci.pae.biz.rating.interfaces.RatingDTO;
 import java.sql.SQLException;
+import java.util.List;
 
 public interface RatingDAO {
 
@@ -9,4 +10,11 @@ public interface RatingDAO {
 
   boolean evaluate(RatingDTO ratingDTO) throws SQLException;
 
+  /**
+   * Get all ratings of a specified member
+   *
+   * @param idMember the member's id
+   * @return the list of member's ratings
+   */
+  List<RatingDTO> getAllRatingsOfMember(int idMember);
 }

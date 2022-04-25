@@ -1,5 +1,6 @@
 import {
   evaluateItemBackEnd,
+  getAllRatings,
   getAssignedItems
 } from "../../../utils/BackEndRequests";
 import {getAssignedItemHtml, getGivenItemHtml} from "../../../utils/HtmlCode";
@@ -50,7 +51,8 @@ let html = `
         <p>Commentaire</p>
         <input type="text" id="textForm">
         <br>
-        <button id="ratingButtonModal" class="btn btn-primary">Evaluer</button>
+        <!--Value of button is defined later and it match with item'id-->
+        <button id="ratingButtonModal" class="btn btn-primary" value="">Evaluer</button>
       </form>
     </div>
     <div id="errorMessage"></div>
@@ -71,11 +73,12 @@ const MyAssignedItems = async () => {
   myAssignedItems.innerHTML = "";
   const myReceivedItems = document.querySelector("#myReceivedItems");
   myReceivedItems.innerHTML = "";
+  const ratings = await getAllRatings();
   items.forEach((item) => {
     if (item.offerStatus === "assigned") {
       myAssignedItems.innerHTML += getAssignedItemHtml(item);
     } else if (item.offerStatus === "given") {
-      myReceivedItems.innerHTML += getGivenItemHtml(item);
+      myReceivedItems.innerHTML += getGivenItemHtml(item, ratings);
     }
   });
   const ratingButtons = document.querySelectorAll("#ratingButton");
@@ -116,14 +119,13 @@ async function evaluateItem(e) {
   const ratingNote = document.querySelector(
       'input[name="rating"]:checked').value;
   const text = document.querySelector("#textForm").value;
+  const idItem = document.querySelector("#ratingButtonModal").value;
   const member = {
     id: getPayload().id
   };
-  // ATTENTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   const item = {
-    id: 4
+    id: idItem
   };
-  // ATTENTION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   const rating = {
     item: item,

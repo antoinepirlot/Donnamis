@@ -172,23 +172,15 @@ async function confirmAdmin(id) {
 }
 
 async function denyMember(refusal) {
-  try {
-    const request = {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": getObject("token")
-      },
-      body: JSON.stringify(refusal)
-    };
-    const reponse = await fetch("/api/members/deny", request);
-    if (!reponse.ok) {
-      throw new Error(
-          "fetch error : " + reponse.status + " : " + reponse.statusText
-      );
-    }
-  } catch (error) {
-    console.error("ListMemberPage::error::deny registration:", error);
+  const request = {
+    method: "PUT", headers: {
+      "Content-Type": "application/json", "Authorization": getObject("token")
+    }, body: JSON.stringify(refusal)
+  };
+  const response = await fetch("/api/members/deny", request);
+  if (!response.ok) {
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText);
   }
 }
 
@@ -543,14 +535,27 @@ async function postInterest(interest, interestMessage) {
   return response.ok;
 }
 
+async function getAllRatings() {
+  const request = {
+    method: "GET", headers: {
+      "Authorization": getObject("token"), "Content-Type": "application/json"
+    }
+  };
+  const response = await fetch(`/api/ratings/all/${getPayload().id}`, request);
+  if (!response.ok) {
+    if (response.status === 404) {
+      return;
+    }
+    throw new Error("Error while getting all ratings of a member");
+  }
+  return await response.json();
+}
+
 async function evaluateItemBackEnd(rating, ratingMessage) {
   const request = {
-    method: "POST",
-    headers: {
-      "Authorization": getObject("token"),
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(rating)
+    method: "POST", headers: {
+      "Authorization": getObject("token"), "Content-Type": "application/json"
+    }, body: JSON.stringify(rating)
   };
   const response = await fetch("api/ratings", request);
 
@@ -560,15 +565,10 @@ async function evaluateItemBackEnd(rating, ratingMessage) {
         "success", ratingMessage
     );
   } else if (response.status === 409) {
-    showError(
-        "Vous ne pouvez évaluer une offre qu'une seule fois",
-        "danger", ratingMessage
-    );
-  } else if (response.status == 400) {
-    showError(
-        "Information manquante",
-        "danger", ratingMessage
-    );
+    showError("Vous ne pouvez évaluer une offre qu'une seule fois", "danger",
+        ratingMessage);
+  } else if (response.status === 400) {
+    showError("Information manquante", "danger", ratingMessage);
   }
   return response.ok;
 }
@@ -621,4 +621,5 @@ export {
   chooseRecipient,
   modifyTheItem,
   evaluateItemBackEnd,
+  getAllRatings,
 };

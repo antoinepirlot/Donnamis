@@ -6,6 +6,7 @@ import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
+import be.vinci.pae.biz.rating.interfaces.RatingDTO;
 import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -45,15 +46,30 @@ public class ObjectsInstanceCreator {
   public static ItemDTO createItemInstance(Factory factory, ResultSet rs) throws SQLException {
     ItemDTO itemDTO = factory.getItem();
     itemDTO.setId(rs.getInt("id_item"));
-    itemDTO.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("title")));
-    itemDTO.setPhoto(StringEscapeUtils.escapeHtml4(rs.getString("photo")));
-    itemDTO.setLastOfferDate(rs.getTimestamp("last_offer_date"));
-    itemDTO.setItemDescription(
-        StringEscapeUtils.escapeHtml4(rs.getString("item_description"))
-    );
-    itemDTO.setOfferStatus(
-        StringEscapeUtils.escapeHtml4(rs.getString("offer_status"))
-    );
+    try {
+      itemDTO.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("title")));
+    } catch (SQLException ignored) {
+    }
+    try {
+      itemDTO.setPhoto(StringEscapeUtils.escapeHtml4(rs.getString("photo")));
+    } catch (SQLException ignored) {
+    }
+    try {
+      itemDTO.setLastOfferDate(rs.getTimestamp("last_offer_date"));
+    } catch (SQLException ignored) {
+    }
+    try {
+      itemDTO.setItemDescription(
+          StringEscapeUtils.escapeHtml4(rs.getString("item_description"))
+      );
+    } catch (SQLException ignored) {
+    }
+    try {
+      itemDTO.setOfferStatus(
+          StringEscapeUtils.escapeHtml4(rs.getString("offer_status"))
+      );
+    } catch (SQLException ignored) {
+    }
     try {
       itemDTO.setItemType(createItemsTypeInstance(factory, rs));
     } catch (SQLException e) {
@@ -158,16 +174,39 @@ public class ObjectsInstanceCreator {
    * Create a refusal instance with the factory and set all its attributes with data selected from
    * the db.
    *
-   * @param factory the factory that gives an address
-   * @param rs      the result set that contains address's data
+   * @param factory the factory that gives a refusal instance
+   * @param rs      the result set that contains refusal's data
    * @return a new refusal instance with initialized attributes
    * @throws SQLException if an attributes is not in the result set
    */
   public static RefusalDTO createRefusalInstance(Factory factory, ResultSet rs)
       throws SQLException {
-    RefusalDTO refusalDTO = factory.getRefusalDTO();
+    RefusalDTO refusalDTO = factory.getRefusal();
     refusalDTO.setIdRefusal(rs.getInt("id_refusal"));
     refusalDTO.setText(rs.getString("text"));
     return refusalDTO;
+  }
+
+  /**
+   * Create a rating instance with the factory and set all its attributes with data selected from
+   * the db.
+   *
+   * @param factory the factory that gives a rating instance
+   * @param rs      the result set that contains address's data
+   * @return a new refusal instance with initialized attributes
+   * @throws SQLException if an attributes is not in the result set
+   */
+  public static RatingDTO createRatingInstance(Factory factory, ResultSet rs) throws SQLException {
+    RatingDTO ratingDTO = factory.getRating();
+    ratingDTO.setId(rs.getInt("id_rating"));
+    ratingDTO.setRating(rs.getInt("rating"));
+    ratingDTO.setText(rs.getString("text"));
+    try {
+      ratingDTO.setMember(createMemberInstance(factory, rs));
+    } catch (SQLException e) {
+      ratingDTO.setMember(null);
+    }
+    ratingDTO.setItem(createItemInstance(factory, rs));
+    return ratingDTO;
   }
 }

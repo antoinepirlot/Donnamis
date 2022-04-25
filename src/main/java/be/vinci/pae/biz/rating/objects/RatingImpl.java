@@ -1,7 +1,10 @@
-package be.vinci.pae.biz.rating;
+package be.vinci.pae.biz.rating.objects;
 
 import be.vinci.pae.biz.item.interfaces.Item;
+import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.member.interfaces.Member;
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.rating.interfaces.Rating;
 import be.vinci.pae.views.Views;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -10,6 +13,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 @JsonInclude(Include.NON_NULL)
 public class RatingImpl implements Rating {
 
+  @JsonView(Views.Public.class)
+  private int id;
   @JsonView(Views.Public.class)
   private Item item;
   @JsonView(Views.Public.class)
@@ -24,13 +29,23 @@ public class RatingImpl implements Rating {
   }
 
   @Override
-  public Item getItem() {
+  public int getId() {
+    return id;
+  }
+
+  @Override
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  @Override
+  public ItemDTO getItem() {
     return item;
   }
 
   @Override
-  public void setItem(Item item) {
-    this.item = item;
+  public void setItem(ItemDTO itemDTO) {
+    this.item = (Item) itemDTO;
   }
 
   @Override
@@ -54,12 +69,12 @@ public class RatingImpl implements Rating {
   }
 
   @Override
-  public Member getMember() {
+  public MemberDTO getMember() {
     return member;
   }
 
   @Override
-  public void setMember(Member member) {
-    this.member = member;
+  public void setMember(MemberDTO memberDTO) {
+    this.member = (Member) memberDTO;
   }
 }

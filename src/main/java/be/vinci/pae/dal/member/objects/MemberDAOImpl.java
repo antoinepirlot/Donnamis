@@ -273,7 +273,7 @@ public class MemberDAOImpl implements MemberDAO {
       if (idMember == -1) {
         return false;
       }
-      return addAddress(memberDTO.getId(), memberDTO.getAddress());
+      return addAddress(idMember, memberDTO.getAddress());
     } catch (SQLException e) {
       throw new FatalException(e);
     }

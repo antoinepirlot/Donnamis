@@ -25,7 +25,7 @@ CREATE TABLE project_pae.addresses
     id_address      SERIAL PRIMARY KEY,
     street          VARCHAR(150) NOT NULL,
     building_number VARCHAR(20)  NOT NULL,
-    unit_number     VARCHAR(10) NULL,
+    unit_number     VARCHAR(10)  NULL,
     postcode        VARCHAR(10)  NOT NULL,
     commune         VARCHAR(100) NOT NULL,
     id_member       INTEGER      NOT NULL,
@@ -54,10 +54,11 @@ CREATE TABLE project_pae.items
 
 CREATE TABLE project_pae.ratings
 (
-    id_item   SERIAL PRIMARY KEY,
+    id_rating SERIAL PRIMARY KEY,
     rating    INTEGER      NOT NULL,
     text      VARCHAR(500) NOT NULL,
     id_member INTEGER      NOT NULL,
+    id_item   INTEGER      NOT NULL,
     FOREIGN KEY (id_item) REFERENCES project_pae.items (id_item),
     FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
 );
