@@ -2,11 +2,12 @@ import {
   getAllItemsByMemberIdAndOfferStatus,
   getNumberOfItems,
   getNumberOfReceivedOrNotReceivedItems,
-  getOneMember, isAdmin
+  getOneMember
 } from "../../../utils/BackEndRequests";
 import {showError} from "../../../utils/ShowError";
 import {getShowItemsHtml} from "../../../utils/HtmlCode";
 import {Redirect} from "../../Router/Router";
+import {isAdmin} from "../../../utils/session";
 
 const memberPageHtml = `
   <div id="memberPageContent" class="bg-info d-inline-flex d-flex flex-column rounded w-50 p-3">
@@ -26,7 +27,7 @@ const memberPageHtml = `
 let idMember;
 
 const MemberPage = async () => {
-  if (!await isAdmin()) {
+  if (!isAdmin()) {
     Redirect("/");
     return;
   }

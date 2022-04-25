@@ -12,6 +12,7 @@ import {showItemsTypes} from "../../../utils/HtmlCode";
 const htmlForm = `
   <div>
     <h1 class="display-3">Offrir un objet</h1>
+    <div id="errorMessageOfferAnItemPage"></div>
     <form id="offerItemForm">
       Nom de l'objet<span id="asterisk">*</span>: <br>
       <textarea id="titleForm" cols="30" rows="3"></textarea><br>
@@ -34,7 +35,6 @@ const htmlForm = `
     </form>
     
   </div>
-  <div id="errorMessageOfferAnItemPage"></div>
 `;
 
 let itemsTypes;

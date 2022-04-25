@@ -101,7 +101,10 @@ async function checkToken() {
     console.error(e)
     Redirect("/logout");
   }
+}
 
+function isAdmin() {
+  return getObject("memberDTO").isAdmin;
 }
 
 export {
@@ -113,4 +116,5 @@ export {
   removeLocalObject,
   removeSessionObject,
   checkToken,
+  isAdmin,
 };

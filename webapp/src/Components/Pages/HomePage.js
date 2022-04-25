@@ -24,6 +24,7 @@ const tableHtml = `
 
 const LatestItemsOffersPage = async () => {
   const pageDiv = document.querySelector("#page");
+  console.log("he")
   pageDiv.innerHTML = tableHtml;
   const items = await getAllItemsByOfferStatus("donated");
   let tbody = document.querySelector("#all_latest_items");
