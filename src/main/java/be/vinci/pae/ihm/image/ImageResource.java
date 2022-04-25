@@ -30,7 +30,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 public class ImageResource {
 
   private final Logger logger = LoggerHandler.getLogger();
-  private static final String[] ALLOWED_EXTENSIONS = {"jpg", "png"};
+  private static final String[] ALLOWED_EXTENSIONS = {"jpg", "png", "jpeg"};
 
   @Inject
   private ItemUCC itemUCC;
