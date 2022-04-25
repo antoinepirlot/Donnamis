@@ -288,6 +288,7 @@ public class ItemResource {
   @Consumes(MediaType.APPLICATION_JSON)
   public void markItemAsGiven(ItemDTO itemDTO) {
     this.checkMarkItem(itemDTO);
+
     if (!this.itemUCC.markItemAsGiven(itemDTO)) {
       throw new FatalException("marking item " + itemDTO.getId() + " as given failed.");
     }
@@ -349,11 +350,16 @@ public class ItemResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public ItemDTO modifyItem(ItemDTO itemDTO) {
-      ItemDTO modifyItem = itemUCC.modifyItem(itemDTO);
-      if (modifyItem == null) {
-        throw new ObjectNotFoundException("Item not found");
-      }
-      return modifyItem;
+    ItemDTO modifyItem = itemUCC.modifyItem(itemDTO);
+    if (modifyItem == null) {
+      throw new ObjectNotFoundException("Item not found");
+    }
+
+    if (itemDTO.getVersion() != itemUCC.getOneItem(itemDTO.getId()).getVersion()) {
+      throw new FatalException("Error with version");
+    }
+
+    return modifyItem;
   }
 
   /////////////////////////////////////////////////////////
@@ -399,6 +405,10 @@ public class ItemResource {
     }
     if (existingItem.getOfferStatus().equals("given")) {
       throw new ForbiddenException("The item " + itemDTO.getId() + " is already given.");
+    }
+
+    if (itemDTO.getVersion() != itemUCC.getOneItem(itemDTO.getId()).getVersion()) {
+      throw new FatalException("Error with version");
     }
   }
 }
