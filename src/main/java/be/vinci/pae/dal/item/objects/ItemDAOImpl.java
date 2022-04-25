@@ -5,15 +5,12 @@ import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
-import be.vinci.pae.ihm.logs.LoggerHandler;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.text.StringEscapeUtils;
 
 public class ItemDAOImpl implements ItemDAO {
@@ -24,7 +21,6 @@ public class ItemDAOImpl implements ItemDAO {
   private static final String WAITING_RECIPIENT_STATUS = "waiting";
   private static final String RECEIVED_RECIPIENT_STATUS = "received";
   private static final String NOT_RECEIVED_RECIPIENT_STATUS = "not_received";
-  private final Logger logger = LoggerHandler.getLogger();
   @Inject
   private Factory factory;
   @Inject
@@ -61,9 +57,9 @@ public class ItemDAOImpl implements ItemDAO {
         while (rs.next()) {
           itemsDTOList.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
         }
+        return itemsDTOList.isEmpty() ? null : itemsDTOList;
       }
     }
-    return itemsDTOList;
   }
 
   @Override
@@ -85,9 +81,9 @@ public class ItemDAOImpl implements ItemDAO {
         if (rs.next()) {
           return ObjectsInstanceCreator.createItemInstance(factory, rs);
         }
+        return null;
       }
     }
-    return null;
   }
 
   @Override
@@ -112,13 +108,9 @@ public class ItemDAOImpl implements ItemDAO {
       ps.setString(6, DEFAULT_OFFER_STATUS);
       ps.setTimestamp(7, itemDTO.getLastOfferDate());
       try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          this.logger.log(Level.INFO, "Item correctly added");
-          return rs.getInt("id_item");
-        }
+        return rs.next() ? rs.getInt("id_item") : -1;
       }
     }
-    return -1;
   }
 
   @Override
@@ -131,12 +123,11 @@ public class ItemDAOImpl implements ItemDAO {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
-          this.logger.log(Level.INFO, "Item correctly cancelled");
           return ObjectsInstanceCreator.createItemInstance(factory, rs);
         }
+        return null;
       }
     }
-    return null;
   }
 
   @Override
@@ -156,11 +147,9 @@ public class ItemDAOImpl implements ItemDAO {
         if (rs.next()) {
           return ObjectsInstanceCreator.createItemInstance(this.factory, rs);
         }
+        return null;
       }
-    } catch (SQLException e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
     }
-    return null;
   }
 
   @Override
@@ -191,9 +180,9 @@ public class ItemDAOImpl implements ItemDAO {
           ItemDTO itemDTO = ObjectsInstanceCreator.createItemInstance(this.factory, rs);
           itemsDTO.add(itemDTO);
         }
+        return itemsDTO.isEmpty() ? null : itemsDTO;
       }
     }
-    return itemsDTO;
   }
 
   @Override
@@ -228,9 +217,9 @@ public class ItemDAOImpl implements ItemDAO {
         while (rs.next()) {
           listItemDTO.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
         }
+        return listItemDTO.isEmpty() ? null : listItemDTO;
       }
     }
-    return listItemDTO;
   }
 
   @Override
@@ -253,8 +242,7 @@ public class ItemDAOImpl implements ItemDAO {
       ps.setInt(1, idMember);
       ps.setString(2, StringEscapeUtils.escapeHtml4(offerStatus));
       try (ResultSet rs = ps.executeQuery()) {
-        rs.next();
-        return rs.getInt(1);
+        return rs.next() ? rs.getInt(1) : -1;
       }
     }
   }
@@ -274,8 +262,7 @@ public class ItemDAOImpl implements ItemDAO {
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setInt(1, idMember);
       try (ResultSet rs = ps.executeQuery()) {
-        rs.next();
-        return rs.getInt(1);
+        return rs.next() ? rs.getInt(1) : -1;
       }
     }
   }

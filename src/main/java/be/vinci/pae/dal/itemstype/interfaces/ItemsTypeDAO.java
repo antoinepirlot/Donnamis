@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ItemsTypeDAO {
 
-  List<ItemsTypeDTO> getAll();
+  List<ItemsTypeDTO> getAll() throws SQLException;
 
   /**
    * Checks if the items type already exists in the database.

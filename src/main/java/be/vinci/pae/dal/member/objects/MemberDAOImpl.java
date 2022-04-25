@@ -74,9 +74,8 @@ public class MemberDAOImpl implements MemberDAO {
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) { //We know only one is returned by the db
           return ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
-        } else {
-          return null;
         }
+        return null;
       }
     }
   }
@@ -102,9 +101,8 @@ public class MemberDAOImpl implements MemberDAO {
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
           return ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
-        } else {
-          return null;
         }
+        return null;
       }
     }
   }
@@ -231,9 +229,8 @@ public class MemberDAOImpl implements MemberDAO {
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
           return ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
-        } else {
-          return null;
         }
+        return null;
       }
     }
   }

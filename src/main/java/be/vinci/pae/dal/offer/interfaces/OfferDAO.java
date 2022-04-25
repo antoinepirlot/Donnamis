@@ -14,13 +14,13 @@ public interface OfferDAO {
    * @param offerDTO the offer to add in the db
    * @return true if the offer has been created
    */
-  boolean createOffer(OfferDTO offerDTO);
+  boolean createOffer(OfferDTO offerDTO) throws SQLException;
 
   List<OfferDTO> getAllOffers(String offerStatus) throws SQLException;
 
-  OfferDTO getOne(int id);
+  OfferDTO getOne(int id) throws SQLException;
 
-  boolean offerExist(OfferDTO offerDTO);
+  boolean offerExist(OfferDTO offerDTO) throws SQLException;
 
   /**
    * Get the last offer of the itemDTO.

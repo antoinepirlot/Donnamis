@@ -33,12 +33,8 @@ public class InterestDAOImpl implements InterestDAO {
             .escapeHtml4(interestDTO.getMember().getPhoneNumber()));
         ps.setInt(6, interestDTO.getMember().getId());
       }
-      int res = ps.executeUpdate();
-      if (res != 0) {
-        return true;
-      }
+      return ps.executeUpdate() != 0;
     }
-    return false;
   }
 
   @Override
@@ -51,11 +47,8 @@ public class InterestDAOImpl implements InterestDAO {
       ps.setInt(1, interestDTO.getOffer().getId());
       ps.setInt(2, interestDTO.getMember().getId());
       try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          return true;
-        }
+        return rs.next();
       }
     }
-    return false;
   }
 }
