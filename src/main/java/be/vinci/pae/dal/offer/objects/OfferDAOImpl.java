@@ -6,6 +6,7 @@ import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.dal.offer.interfaces.OfferDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
+import be.vinci.pae.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,17 +24,21 @@ public class OfferDAOImpl implements OfferDAO {
   private Factory factory;
 
   @Override
-  public boolean createOffer(OfferDTO offerDTO) throws SQLException {
+  public boolean createOffer(OfferDTO offerDTO) {
     //Add first the item in the db
     //    if (!addItem(offerDTO)) {
     //      return false;
     //    }
     //If the item is correctly added , add the offer in the db with the associated item
-    return addOne(offerDTO);
+    try {
+      return addOne(offerDTO);
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
   }
 
   @Override
-  public List<OfferDTO> getAllOffers(String offerStatus) throws SQLException {
+  public List<OfferDTO> getAllOffers(String offerStatus) {
     List<OfferDTO> offersToReturn = new ArrayList<>();
     String query = "SELECT o.id_offer, "
         + "                o.date, "
@@ -57,11 +62,13 @@ public class OfferDAOImpl implements OfferDAO {
         }
         return offersToReturn.isEmpty() ? null : offersToReturn;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public OfferDTO getOne(int id) throws SQLException {
+  public OfferDTO getOne(int id) {
     String query =
 
         "SELECT item.id_item, item.photo, item.offer_status, item.title, "
@@ -83,22 +90,26 @@ public class OfferDAOImpl implements OfferDAO {
         }
         return null;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public boolean offerExist(OfferDTO offerDTO) throws SQLException {
+  public boolean offerExist(OfferDTO offerDTO) {
     String query = "SELECT id_offer FROM project_pae.offers WHERE id_offer = ?";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, offerDTO.getId());
       try (ResultSet rs = preparedStatement.executeQuery()) {
         return rs.next();
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public OfferDTO getLastOfferOf(ItemDTO itemDTO) throws SQLException {
+  public OfferDTO getLastOfferOf(ItemDTO itemDTO) {
     String query = "SELECT id_offer, date, time_slot, id_item "
         + "FROM project_pae.offers o "
         + "WHERE id_item = ? "
@@ -112,9 +123,12 @@ public class OfferDAOImpl implements OfferDAO {
         }
         return null;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 
+  //****************************** UTILS *******************************
 
   /**
    * Add the offer to the db.
@@ -171,6 +185,5 @@ public class OfferDAOImpl implements OfferDAO {
   //    return false;
   //  }
 
-  //****************************** UTILS *******************************
 
 }

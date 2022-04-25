@@ -5,6 +5,7 @@ import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.dal.itemstype.interfaces.ItemsTypeDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
+import be.vinci.pae.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,7 +22,7 @@ public class ItemsTypeDAOImpl implements ItemsTypeDAO {
   private DALBackendService dalBackendService;
 
   @Override
-  public List<ItemsTypeDTO> getAll() throws SQLException {
+  public List<ItemsTypeDTO> getAll() {
     List<ItemsTypeDTO> itemsTypesToReturn = new ArrayList<>();
     String query = "SELECT id_type, item_type "
         + "FROM project_pae.items_types;";
@@ -34,11 +35,13 @@ public class ItemsTypeDAOImpl implements ItemsTypeDAO {
         }
         return itemsTypesToReturn.isEmpty() ? null : itemsTypesToReturn;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public boolean exists(ItemsTypeDTO itemsTypeDTO) throws SQLException {
+  public boolean exists(ItemsTypeDTO itemsTypeDTO) {
     String query = "SELECT DISTINCT item_type "
         + "FROM project_pae.items_types "
         + "WHERE item_type = ?;";
@@ -47,16 +50,20 @@ public class ItemsTypeDAOImpl implements ItemsTypeDAO {
       try (ResultSet rs = ps.executeQuery()) {
         return rs.next();
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public boolean addItemsType(ItemsTypeDTO itemsTypeDTO) throws SQLException {
+  public boolean addItemsType(ItemsTypeDTO itemsTypeDTO) {
     String query = "INSERT INTO project_pae.items_types (item_type) "
         + "VALUES (?);";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setString(1, StringEscapeUtils.escapeHtml4(itemsTypeDTO.getItemType()));
       return ps.executeUpdate() != 0;
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 }

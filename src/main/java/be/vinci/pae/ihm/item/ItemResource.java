@@ -5,6 +5,7 @@ import be.vinci.pae.biz.item.interfaces.ItemUCC;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
+import be.vinci.pae.exceptions.FatalException;
 import be.vinci.pae.exceptions.webapplication.ForbiddenException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
@@ -23,9 +24,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import java.rmi.UnexpectedException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -48,8 +47,12 @@ public class ItemResource {
   @Path("all_items")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public List<ItemDTO> getAllItems() throws SQLException {
-    return this.getAllItemsByOfferStatusOrIdMember(null, -1);
+  public List<ItemDTO> getAllItems() {
+    try {
+      return this.getAllItemsByOfferStatusOrIdMember(null, -1);
+    } catch (SQLException e) {
+      throw new FatalException("Can't get all items");
+    }
   }
 
   /**
@@ -60,8 +63,7 @@ public class ItemResource {
   @GET
   @Path("all_items/{offer_status}")
   @Produces(MediaType.APPLICATION_JSON)
-  public List<ItemDTO> getAllItemsByOfferStatus(@PathParam("offer_status") String offerStatus)
-      throws SQLException {
+  public List<ItemDTO> getAllItemsByOfferStatus(@PathParam("offer_status") String offerStatus) {
     if (offerStatus == null || offerStatus.isBlank()
         || !offerStatus.equals("donated")
         && !offerStatus.equals("assigned")
@@ -70,7 +72,11 @@ public class ItemResource {
     ) {
       throw new WrongBodyDataException("Offer status " + offerStatus + " is not valid.");
     }
-    return this.getAllItemsByOfferStatusOrIdMember(offerStatus, -1);
+    try {
+      return this.getAllItemsByOfferStatusOrIdMember(offerStatus, -1);
+    } catch (SQLException e) {
+      throw new FatalException("Can't get all items by offer status: " + offerStatus);
+    }
   }
 
   /**
@@ -83,15 +89,18 @@ public class ItemResource {
   @Path("member_items/{idMember}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public List<ItemDTO> getAllItemsByMemberIdAndOfferStatus(@PathParam("idMember") int idMember)
-      throws SQLException {
+  public List<ItemDTO> getAllItemsByMemberId(@PathParam("idMember") int idMember) {
     if (idMember < 1) {
       throw new WrongBodyDataException("The idMember must be grater than 1");
     }
     if (!this.memberUCC.memberExist(null, idMember)) {
       throw new ObjectNotFoundException("This member doesn't exists.");
     }
-    return this.getAllItemsByOfferStatusOrIdMember(null, idMember);
+    try {
+      return this.getAllItemsByOfferStatusOrIdMember(null, idMember);
+    } catch (SQLException e) {
+      throw new FatalException("Can't get all items by member id: " + idMember);
+    }
   }
 
   /**
@@ -100,15 +109,14 @@ public class ItemResource {
    * @param idMember    the member's id
    * @param offerStatus the item's offer status
    * @return the list of member's donated items
-   * @throws SQLException if an error occurs while getting items
    */
   @GET
   @Path("{idMember}/{offerStatus}")
   @Consumes(MediaType.TEXT_PLAIN)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public List<ItemDTO> getAllItemsByMemberIdAndOfferStatus(@PathParam("idMember") int idMember,
-      @PathParam("offerStatus") String offerStatus) throws SQLException {
+  public List<ItemDTO> getAllItemsByMemberId(@PathParam("idMember") int idMember,
+      @PathParam("offerStatus") String offerStatus) {
     if (idMember < 1
         || offerStatus == null || offerStatus.isBlank()
         || !offerStatus.equals("donated")
@@ -121,7 +129,11 @@ public class ItemResource {
       return this.jsonUtil
           .filterPublicJsonViewAsList(itemUCC.getMemberItemsByOfferStatus(idMember, offerStatus));
     }
-    return this.jsonUtil.filterPublicJsonViewAsList(this.itemUCC.getMemberReceivedItems(idMember));
+    List<ItemDTO> itemDTOList = this.itemUCC.getMemberReceivedItems(idMember);
+    if (itemDTOList == null) {
+      throw new ObjectNotFoundException("No items for the member");
+    }
+    return this.jsonUtil.filterPublicJsonViewAsList(itemDTOList);
   }
 
   /**
@@ -134,15 +146,12 @@ public class ItemResource {
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public ItemDTO getItem(@PathParam("id") int id) throws SQLException {
+  public ItemDTO getItem(@PathParam("id") int id) {
     ItemDTO itemDTO = itemUCC.getOneItem(id);
     if (itemDTO == null) {
-      throw new WebApplicationException(
-          Response.status(Response.Status.NOT_FOUND).entity("Ressource not found")
-              .type("text/plain").build());
+      throw new ObjectNotFoundException("No item matching id: " + id);
     }
     this.offerUCC.getAllOffersOf(itemDTO);
-    System.out.println(itemDTO);
     return this.jsonUtil.filterPublicJsonView(itemDTO);
   }
 
@@ -151,17 +160,20 @@ public class ItemResource {
    *
    * @param idMember the member's id
    * @return the list of assigned items of the member
-   * @throws SQLException if an error occurs in the UCC method
    */
   @GET
   @Path("assigned_items/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public List<ItemDTO> getAssignedItems(@PathParam("id") int idMember) throws SQLException {
+  public List<ItemDTO> getAssignedItems(@PathParam("id") int idMember) {
     if (idMember < 0) {
       throw new WrongBodyDataException("idMember < 0 for get assigned items");
     }
-    return this.jsonUtil.filterPublicJsonViewAsList(this.itemUCC.getAssignedItems(idMember));
+    List<ItemDTO> itemDTOList = this.itemUCC.getAssignedItems(idMember);
+    if (itemDTOList == null) {
+      throw new ObjectNotFoundException("No assigned items");
+    }
+    return this.jsonUtil.filterPublicJsonViewAsList(itemDTOList);
   }
 
   /**
@@ -170,7 +182,6 @@ public class ItemResource {
    * @param idMember    the member's id
    * @param offerStatus the offer status can only be "donated" or "given"
    * @return the number of items that match offer status
-   * @throws SQLException            if an error occurs while counting.
    * @throws WrongBodyDataException  if the offer status is invalid
    * @throws ObjectNotFoundException if the member doesn't exist
    */
@@ -179,7 +190,7 @@ public class ItemResource {
   @Consumes(MediaType.TEXT_PLAIN)
   @AuthorizeAdmin
   public int countNumberOfItemsByOfferStatus(@PathParam("idMember") int idMember,
-      @PathParam("offer_status") String offerStatus) throws SQLException {
+      @PathParam("offer_status") String offerStatus) {
     if (idMember < 1
         || offerStatus == null || offerStatus.isBlank()
         || !offerStatus.equals("donated") && !offerStatus.equals("given")
@@ -189,7 +200,11 @@ public class ItemResource {
     if (!this.memberUCC.memberExist(null, idMember)) {
       throw new ObjectNotFoundException("The member " + idMember + " doesn't exist.");
     }
-    return this.itemUCC.countNumberOfItemsByOfferStatus(idMember, offerStatus);
+    int count = this.itemUCC.countNumberOfItemsByOfferStatus(idMember, offerStatus);
+    if (count == -1) {
+      throw new FatalException("count number of items returned -1.");
+    }
+    return count;
   }
 
   /**
@@ -202,7 +217,6 @@ public class ItemResource {
    * @param received true if the item has been received by the member false if the member had marked
    *                 its interest but never take the item.
    * @return the number of the number of items received or not received
-   * @throws SQLException            if an error occurs while counting items
    * @throws WrongBodyDataException  if the id member is lower than 1
    * @throws ObjectNotFoundException if the member doesn't exist in the database
    */
@@ -210,14 +224,18 @@ public class ItemResource {
   @Path("count_assigned_items/{idMember}/{received}")
   @AuthorizeAdmin
   public int countNumberOfReceivedOrNotReceivedItems(@PathParam("idMember") int idMember,
-      @PathParam("received") boolean received) throws SQLException {
+      @PathParam("received") boolean received) {
     if (idMember < 1) {
       throw new WrongBodyDataException("idMember is lower than 1");
     }
     if (!this.memberUCC.memberExist(null, idMember)) {
       throw new ObjectNotFoundException("The member " + idMember + " doesn't exist.");
     }
-    return this.itemUCC.countNumberOfReceivedOrNotReceivedItems(idMember, received);
+    int count = this.itemUCC.countNumberOfReceivedOrNotReceivedItems(idMember, received);
+    if (count == -1) {
+      throw new FatalException("Count number returned -1");
+    }
+    return count;
   }
 
   /////////////////////////////////////////////////////////
@@ -233,13 +251,13 @@ public class ItemResource {
   @Path("")
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public void addItem(ItemDTO itemDTO) throws SQLException {
-    System.out.println(itemDTO.getOfferList());
+  public void addItem(ItemDTO itemDTO) {
     if (itemDTO.getItemDescription() == null || itemDTO.getItemDescription().isBlank()
         || itemDTO.getItemType() == null || itemDTO.getItemType().getItemType() == null
         || itemDTO.getItemType().getItemType().isBlank() || itemDTO.getMember() == null
         || itemDTO.getMember().getId() < 1 || itemDTO.getTitle() == null || itemDTO.getTitle()
-        .isBlank() || itemDTO.getLastOfferDate() == null || itemDTO.getOfferList().get(0) == null) {
+        .isBlank() || itemDTO.getLastOfferDate() == null
+        || itemDTO.getOfferList().get(0) == null) {
       throw new WebApplicationException("Wrong item body", Status.BAD_REQUEST);
     }
     int idItem = this.itemUCC.addItem(itemDTO);
@@ -263,17 +281,14 @@ public class ItemResource {
    * Mark the item identified by its id as given.
    *
    * @param itemDTO the item to update
-   * @throws SQLException        if an error occurs while updating item
-   * @throws UnexpectedException if marking item as given returned false
    */
   @PUT
   @Path("given")
   @Consumes(MediaType.APPLICATION_JSON)
-  public void markItemAsGiven(ItemDTO itemDTO)
-      throws SQLException, UnexpectedException {
+  public void markItemAsGiven(ItemDTO itemDTO) {
     this.checkMarkItem(itemDTO);
     if (!this.itemUCC.markItemAsGiven(itemDTO)) {
-      throw new UnexpectedException("marking item " + itemDTO.getId() + " as given failed.");
+      throw new FatalException("marking item " + itemDTO.getId() + " as given failed.");
     }
   }
 
@@ -281,17 +296,14 @@ public class ItemResource {
    * Mark the item identified by its id as donated and update recipient to not received.
    *
    * @param itemDTO the item to update
-   * @throws SQLException        if an error occurs while updating item
-   * @throws UnexpectedException if marking item as given returned false
    */
   @PUT
   @Path("not_given")
   @Consumes(MediaType.APPLICATION_JSON)
-  public void markItemAsNotGiven(ItemDTO itemDTO)
-      throws SQLException, UnexpectedException {
+  public void markItemAsNotGiven(ItemDTO itemDTO) {
     this.checkMarkItem(itemDTO);
     if (!this.itemUCC.markItemAsNotGiven(itemDTO)) {
-      throw new UnexpectedException("marking item " + itemDTO.getId() + " as not given failed.");
+      throw new FatalException("marking item " + itemDTO.getId() + " as not given failed.");
     }
   }
 
@@ -309,11 +321,14 @@ public class ItemResource {
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public ItemDTO cancelOffer(@PathParam("id") int id) throws SQLException {
+  public ItemDTO cancelOffer(@PathParam("id") int id) {
     if (itemUCC.getOneItem(id) == null) {
       throw new ObjectNotFoundException("Item not found");
     }
     ItemDTO itemDTO = itemUCC.cancelItem(id);
+    if (itemDTO == null) {
+      throw new FatalException("Canceling item returned null");
+    }
     return this.jsonUtil.filterPublicJsonView(itemDTO);
   }
 
@@ -333,15 +348,11 @@ public class ItemResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public ItemDTO modifyItem(ItemDTO itemDTO) {
-    try {
       ItemDTO modifyItem = itemUCC.modifyItem(itemDTO);
       if (modifyItem == null) {
         throw new ObjectNotFoundException("Item not found");
       }
       return modifyItem;
-    } catch (Exception e) {
-      return null;
-    }
   }
 
   /////////////////////////////////////////////////////////
@@ -369,9 +380,8 @@ public class ItemResource {
    * Check itemDTO for mark item as {offerStatus}.
    *
    * @param itemDTO the item to check
-   * @throws SQLException if an error occurs while getting item from database
    */
-  private void checkMarkItem(ItemDTO itemDTO) throws SQLException {
+  private void checkMarkItem(ItemDTO itemDTO) {
     if (itemDTO == null
         || itemDTO.getId() < 1
         || itemDTO.getMember() == null || itemDTO.getMember().getId() < 1
@@ -383,7 +393,8 @@ public class ItemResource {
       throw new ObjectNotFoundException("The item " + itemDTO.getId() + " doesn't exist.");
     }
     if (existingItem.getMember().getId() != itemDTO.getMember().getId()) {
-      throw new WrongBodyDataException("The member's id and item's member's id are not associated");
+      throw new WrongBodyDataException(
+          "The member's id and item's member's id are not associated");
     }
     if (existingItem.getOfferStatus().equals("given")) {
       throw new ForbiddenException("The item " + itemDTO.getId() + " is already given.");

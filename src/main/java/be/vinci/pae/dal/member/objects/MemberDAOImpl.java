@@ -7,6 +7,7 @@ import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
+import be.vinci.pae.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,7 +32,7 @@ public class MemberDAOImpl implements MemberDAO {
    *
    * @return all the members otherwise null
    */
-  public List<MemberDTO> getAllMembers() throws SQLException {
+  public List<MemberDTO> getAllMembers() {
     List<MemberDTO> listMemberDTO = new ArrayList<>();
     String query = "SELECT id_member, "
         + "                username, "
@@ -43,7 +44,11 @@ public class MemberDAOImpl implements MemberDAO {
         + "FROM project_pae.members";
 
     //Execute the query
-    return getMembersDTO(listMemberDTO, query);
+    try {
+      return getMembersDTO(listMemberDTO, query);
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
   }
 
   /**
@@ -53,7 +58,7 @@ public class MemberDAOImpl implements MemberDAO {
    * @return the member got from the db
    */
   @Override
-  public MemberDTO getOne(MemberDTO memberDTO) throws SQLException {
+  public MemberDTO getOne(MemberDTO memberDTO) {
     String query = "SELECT m.id_member, m.username, m.password, m.last_name, m.first_name, "
         + "m.is_admin, m.state, m.phone, a.id_address, a.street, a.building_number, a.unit_number,"
         + "a.postcode, a.commune "
@@ -77,18 +82,20 @@ public class MemberDAOImpl implements MemberDAO {
         }
         return null;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public MemberDTO getOne(int id) throws SQLException {
+  public MemberDTO getOne(int id) {
     MemberDTO memberDTO = this.factory.getMember();
     memberDTO.setId(id);
     return this.getOne(memberDTO);
   }
 
   @Override
-  public MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException {
+  public MemberDTO modifyMember(MemberDTO memberDTO) {
     String query = "UPDATE project_pae.members SET username = ?, password = ?, last_name = ?, "
         + "first_name = ?, phone = ? WHERE id_member = ? RETURNING *;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
@@ -104,6 +111,8 @@ public class MemberDAOImpl implements MemberDAO {
         }
         return null;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 
@@ -113,7 +122,7 @@ public class MemberDAOImpl implements MemberDAO {
    * @param memberDTO the member to confirm
    * @return boolean
    */
-  public boolean confirmMember(MemberDTO memberDTO) throws SQLException {
+  public boolean confirmMember(MemberDTO memberDTO) {
     String query = "UPDATE project_pae.members "
         + "SET state = '" + CONFIRMED_STATE + "', is_admin = ? "
         + "WHERE id_member = ?;";
@@ -121,6 +130,8 @@ public class MemberDAOImpl implements MemberDAO {
       preparedStatement.setBoolean(1, memberDTO.isAdmin());
       preparedStatement.setInt(2, memberDTO.getId());
       return preparedStatement.executeUpdate() != 0;
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 
@@ -130,16 +141,20 @@ public class MemberDAOImpl implements MemberDAO {
    * @param id the id of the member
    * @return boolean
    */
-  public MemberDTO isAdmin(int id) throws SQLException {
+  public MemberDTO isAdmin(int id) {
     String query = "UPDATE project_pae.members SET is_admin = true WHERE id_member = ? "
         + "RETURNING *;";
-    return executeQueryWithId(id, query);
+    try {
+      return executeQueryWithId(id, query);
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
   }
 
   @Override
-  public boolean denyMember(RefusalDTO refusalDTO) throws SQLException {
+  public boolean denyMember(RefusalDTO refusalDTO) {
     String query =
-        "UPDATE project_pae.members SET state = '" + DENIED_STATE + "' WHERE id_member = ?;"
+        "UPDATE project_pae.members SET state = '" + DENIED_STATE + "' WHERE id_member = ?; "
             + "INSERT INTO project_pae.refusals (text, id_member) VALUES (?, ?);";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, refusalDTO.getMember().getId());
@@ -148,11 +163,13 @@ public class MemberDAOImpl implements MemberDAO {
       );
       preparedStatement.setInt(3, refusalDTO.getMember().getId());
       return preparedStatement.executeUpdate() != 0;
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public boolean memberExist(MemberDTO memberDTO, int idMember) throws SQLException {
+  public boolean memberExist(MemberDTO memberDTO, int idMember) {
     String query = "SELECT id_member FROM project_pae.members WHERE id_member = ?";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       if (memberDTO == null) {
@@ -163,11 +180,13 @@ public class MemberDAOImpl implements MemberDAO {
       try (ResultSet rs = preparedStatement.executeQuery()) {
         return rs.next();
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public List<MemberDTO> getInterestedMembers(int idOffer) throws SQLException {
+  public List<MemberDTO> getInterestedMembers(int idOffer) {
     String query = "SELECT  m2.id_member, "
         + "        m2.username, "
         + "        m2.last_name, "
@@ -192,9 +211,11 @@ public class MemberDAOImpl implements MemberDAO {
         while (rs.next()) {
           memberDTOList.add(ObjectsInstanceCreator.createMemberInstance(this.factory, rs));
         }
+        return memberDTOList.isEmpty() ? null : memberDTOList;
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
-    return memberDTOList.isEmpty() ? null : memberDTOList;
   }
 
   //****************************** UTILS *******************************
@@ -241,17 +262,21 @@ public class MemberDAOImpl implements MemberDAO {
    * @param memberDTO the member to add in the db
    * @return true if the member has been  registered
    */
-  public boolean register(MemberDTO memberDTO) throws SQLException {
+  public boolean register(MemberDTO memberDTO) {
     MemberDTO memberDB = this.getOne(memberDTO);
     if (memberDB != null) { // the user already exists !
       return false;
     }
-    //Add the member to the db then the address
-    int idMember = addOne(memberDTO);
-    if (idMember == -1) {
-      return false;
+    try {
+      //Add the member to the db then the address
+      int idMember = addOne(memberDTO);
+      if (idMember == -1) {
+        return false;
+      }
+      return addAddress(memberDTO.getId(), memberDTO.getAddress());
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
-    return addAddress(memberDTO.getId(), memberDTO.getAddress());
   }
 
   /**
