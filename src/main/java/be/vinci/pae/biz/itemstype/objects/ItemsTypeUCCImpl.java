@@ -4,6 +4,7 @@ import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeUCC;
 import be.vinci.pae.dal.itemstype.interfaces.ItemsTypeDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.SQLException;
 import java.util.List;
@@ -16,7 +17,7 @@ public class ItemsTypeUCCImpl implements ItemsTypeUCC {
   private DALServices dalServices;
 
   @Override
-  public List<ItemsTypeDTO> getAll() throws SQLException {
+  public List<ItemsTypeDTO> getAll() {
     try {
       this.dalServices.start();
       List<ItemsTypeDTO> itemsTypeDTOList = this.itemsTypeDAO.getAll();
@@ -24,12 +25,12 @@ public class ItemsTypeUCCImpl implements ItemsTypeUCC {
       return itemsTypeDTOList;
     } catch (SQLException e) {
       this.dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public boolean exists(ItemsTypeDTO itemsTypeDTO) throws SQLException {
+  public boolean exists(ItemsTypeDTO itemsTypeDTO) {
     try {
       this.dalServices.start();
       boolean exists = this.itemsTypeDAO.exists(itemsTypeDTO);
@@ -37,12 +38,12 @@ public class ItemsTypeUCCImpl implements ItemsTypeUCC {
       return exists;
     } catch (SQLException e) {
       this.dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public boolean addItemsType(ItemsTypeDTO itemsTypeDTO) throws SQLException {
+  public boolean addItemsType(ItemsTypeDTO itemsTypeDTO) {
     try {
       this.dalServices.start();
       boolean added = this.itemsTypeDAO.addItemsType(itemsTypeDTO);
@@ -50,7 +51,7 @@ public class ItemsTypeUCCImpl implements ItemsTypeUCC {
       return added;
     } catch (SQLException e) {
       this.dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 }

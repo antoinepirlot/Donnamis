@@ -4,6 +4,7 @@ import be.vinci.pae.biz.recipient.interfaces.RecipientDTO;
 import be.vinci.pae.biz.recipient.interfaces.RecipientUCC;
 import be.vinci.pae.dal.recipient.interfaces.RecipientDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.SQLException;
 
@@ -15,7 +16,7 @@ public class RecipientUCCImpl implements RecipientUCC {
   private RecipientDAO recipientDAO;
 
   @Override
-  public boolean chooseRecipient(RecipientDTO recipientDTO) throws SQLException {
+  public boolean chooseRecipient(RecipientDTO recipientDTO) {
     try {
       boolean done;
       this.dalServices.start();
@@ -24,12 +25,12 @@ public class RecipientUCCImpl implements RecipientUCC {
       return done;
     } catch (SQLException e) {
       this.dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public boolean exists(RecipientDTO recipientDTO) throws SQLException {
+  public boolean exists(RecipientDTO recipientDTO) {
     try {
       boolean exists;
       this.dalServices.start();
@@ -38,7 +39,7 @@ public class RecipientUCCImpl implements RecipientUCC {
       return exists;
     } catch (SQLException e) {
       this.dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 }

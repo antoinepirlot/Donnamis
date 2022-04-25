@@ -1,7 +1,5 @@
 package be.vinci.pae.biz.interest.interfaces;
 
-import java.sql.SQLException;
-
 public interface InterestUCC {
 
   /**
@@ -9,7 +7,7 @@ public interface InterestUCC {
    *
    * @param interestDTO the interest to add
    */
-  boolean markInterest(InterestDTO interestDTO) throws SQLException;
+  boolean markInterest(InterestDTO interestDTO);
 
   /**
    * Verify if the interest exist in the DB.
@@ -17,5 +15,5 @@ public interface InterestUCC {
    * @param interestDTO the interest to check
    * @return true if exist in the DB false if not
    */
-  boolean interestExist(InterestDTO interestDTO) throws SQLException;
+  boolean interestExist(InterestDTO interestDTO);
 }

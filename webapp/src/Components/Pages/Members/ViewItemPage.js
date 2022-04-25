@@ -109,7 +109,7 @@ function createModifyItemModal() {
           <p>Photo</p>
           <input id="photoForm" type="file">
           <p>Type de l'objet</p>
-          <input id="itemTypeFormList" list="itemsTypesViewItemPage" value="${itemType}"><br>
+          <input id="itemTypeFormList" list="itemsTypesViewItemPage" placeholder="${itemType}"><br>
           <datalist id="itemsTypesViewItemPage"></datalist>
           <br>
           <input type="submit" value="Modifier">

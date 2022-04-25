@@ -6,6 +6,7 @@ import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.SQLException;
 import java.util.List;
@@ -19,7 +20,7 @@ public class MemberUCCImpl implements MemberUCC {
 
 
   @Override
-  public List<MemberDTO> getAllMembers() throws SQLException {
+  public List<MemberDTO> getAllMembers() {
     try {
       dalServices.start();
       List<MemberDTO> memberDTOList = memberDAO.getAllMembers();
@@ -27,12 +28,12 @@ public class MemberUCCImpl implements MemberUCC {
       return memberDTOList;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public MemberDTO getOneMember(int id) throws SQLException {
+  public MemberDTO getOneMember(int id) {
     try {
       dalServices.start();
       MemberDTO memberDTO = memberDAO.getOne(id);
@@ -40,12 +41,12 @@ public class MemberUCCImpl implements MemberUCC {
       return memberDTO;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException {
+  public MemberDTO modifyMember(MemberDTO memberDTO) {
     Member member = (Member) memberDTO;
     member.hashPassword();
     try {
@@ -55,12 +56,12 @@ public class MemberUCCImpl implements MemberUCC {
       return modifyMember;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public boolean confirmMember(MemberDTO memberDTO) throws SQLException {
+  public boolean confirmMember(MemberDTO memberDTO) {
     try {
       dalServices.start();
       boolean isConfirmed = memberDAO.confirmMember(memberDTO);
@@ -68,12 +69,12 @@ public class MemberUCCImpl implements MemberUCC {
       return isConfirmed;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public boolean denyMember(RefusalDTO refusalDTO) throws SQLException {
+  public boolean denyMember(RefusalDTO refusalDTO) {
     try {
       dalServices.start();
       boolean isDenied = memberDAO.denyMember(refusalDTO);
@@ -81,12 +82,12 @@ public class MemberUCCImpl implements MemberUCC {
       return isDenied;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public boolean memberExist(MemberDTO memberDTO, int idMember) throws SQLException {
+  public boolean memberExist(MemberDTO memberDTO, int idMember) {
     try {
       dalServices.start();
       boolean doesExist = this.memberDAO.memberExist(memberDTO, idMember);
@@ -94,12 +95,12 @@ public class MemberUCCImpl implements MemberUCC {
       return doesExist;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public MemberDTO login(MemberDTO memberToLogIn) throws SQLException {
+  public MemberDTO login(MemberDTO memberToLogIn) {
     Member memberToLogin = (Member) memberToLogIn;
     try {
       dalServices.start();
@@ -116,12 +117,12 @@ public class MemberUCCImpl implements MemberUCC {
       return loggedMember;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public boolean register(MemberDTO memberDTO) throws SQLException {
+  public boolean register(MemberDTO memberDTO) {
     Member member = (Member) memberDTO;
     member.hashPassword();
     try {
@@ -131,12 +132,12 @@ public class MemberUCCImpl implements MemberUCC {
       return isRegistered;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public List<MemberDTO> getInterestedMembers(int idOffer) throws SQLException {
+  public List<MemberDTO> getInterestedMembers(int idOffer) {
     try {
       this.dalServices.start();
       List<MemberDTO> memberDTOList = this.memberDAO.getInterestedMembers(idOffer);
@@ -144,7 +145,7 @@ public class MemberUCCImpl implements MemberUCC {
       return memberDTOList;
     } catch (SQLException e) {
       this.dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 }

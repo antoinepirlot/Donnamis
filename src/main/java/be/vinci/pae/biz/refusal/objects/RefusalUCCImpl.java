@@ -4,6 +4,7 @@ import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import be.vinci.pae.biz.refusal.interfaces.RefusalUCC;
 import be.vinci.pae.dal.refusal.interfaces.RefusalDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.SQLException;
 
@@ -16,7 +17,7 @@ public class RefusalUCCImpl implements RefusalUCC {
   private RefusalDAO refusalDAO;
 
   @Override
-  public RefusalDTO getRefusal(String username) throws SQLException {
+  public RefusalDTO getRefusal(String username) {
     try {
       this.dalServices.start();
       RefusalDTO refusalDTO = this.refusalDAO.getRefusal(username);
@@ -24,7 +25,7 @@ public class RefusalUCCImpl implements RefusalUCC {
       return refusalDTO;
     } catch (SQLException e) {
       this.dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 }

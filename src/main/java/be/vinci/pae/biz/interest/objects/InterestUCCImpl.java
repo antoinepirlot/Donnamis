@@ -4,6 +4,7 @@ import be.vinci.pae.biz.interest.interfaces.InterestDTO;
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
 import be.vinci.pae.dal.interest.interfaces.InterestDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.SQLException;
 
@@ -15,7 +16,7 @@ public class InterestUCCImpl implements InterestUCC {
   private DALServices dalServices;
 
   @Override
-  public boolean markInterest(InterestDTO interestDTO) throws SQLException {
+  public boolean markInterest(InterestDTO interestDTO) {
     try {
       dalServices.start();
       boolean isDone = interestDAO.markInterest(interestDTO);
@@ -23,12 +24,12 @@ public class InterestUCCImpl implements InterestUCC {
       return isDone;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public boolean interestExist(InterestDTO interestDTO) throws SQLException {
+  public boolean interestExist(InterestDTO interestDTO) {
     try {
       dalServices.start();
       boolean interestExist = this.interestDAO.interestExist(interestDTO);
@@ -36,7 +37,7 @@ public class InterestUCCImpl implements InterestUCC {
       return interestExist;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 }

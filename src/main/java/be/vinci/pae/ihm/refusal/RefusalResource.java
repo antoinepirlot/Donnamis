@@ -13,7 +13,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import java.sql.SQLException;
 
 @Singleton
 @Path("refusals")
@@ -28,13 +27,12 @@ public class RefusalResource {
    *
    * @param username the member's username
    * @return the refusal message
-   * @throws SQLException if an error occurs while getting refusal information
    */
   @GET
   @Path("{idMember}")
   @Consumes(MediaType.TEXT_PLAIN)
   @Produces(MediaType.APPLICATION_JSON)
-  public RefusalDTO getRefusal(@PathParam("idMember") String username) throws SQLException {
+  public RefusalDTO getRefusal(@PathParam("idMember") String username) {
     if (username == null || username.isBlank()) {
       throw new WrongBodyDataException("username is lower than 1.");
     }

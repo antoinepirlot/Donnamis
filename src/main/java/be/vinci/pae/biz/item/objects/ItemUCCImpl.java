@@ -4,6 +4,7 @@ import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.exceptions.FatalException;
 import jakarta.inject.Inject;
 import java.sql.SQLException;
 import java.util.List;
@@ -16,7 +17,7 @@ public class ItemUCCImpl implements ItemUCC {
   private DALServices dalServices;
 
   @Override
-  public List<ItemDTO> getAllItems(String offerStatus) throws SQLException {
+  public List<ItemDTO> getAllItems(String offerStatus) {
     try {
       dalServices.start();
       List<ItemDTO> listItemDTO = itemDAO.getAllItems(offerStatus);
@@ -24,12 +25,12 @@ public class ItemUCCImpl implements ItemUCC {
       return listItemDTO;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public ItemDTO getOneItem(int id) throws SQLException {
+  public ItemDTO getOneItem(int id) {
     try {
       dalServices.start();
       ItemDTO itemDTO = itemDAO.getOneItem(id);
@@ -37,12 +38,12 @@ public class ItemUCCImpl implements ItemUCC {
       return itemDTO;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public int addItem(ItemDTO itemDTO) throws SQLException {
+  public int addItem(ItemDTO itemDTO) {
     try {
       dalServices.start();
       int idItem = itemDAO.addItem(itemDTO);
@@ -50,12 +51,12 @@ public class ItemUCCImpl implements ItemUCC {
       return idItem;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public ItemDTO cancelItem(int id) throws SQLException {
+  public ItemDTO cancelItem(int id) {
     try {
       dalServices.start();
       ItemDTO itemDTO = itemDAO.cancelItem(id);
@@ -63,12 +64,12 @@ public class ItemUCCImpl implements ItemUCC {
       return itemDTO;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public ItemDTO modifyItem(ItemDTO itemDTO) throws SQLException {
+  public ItemDTO modifyItem(ItemDTO itemDTO) {
     try {
       dalServices.start();
       ItemDTO modifyItem = itemDAO.modifyItem(itemDTO);
@@ -76,12 +77,12 @@ public class ItemUCCImpl implements ItemUCC {
       return modifyItem;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public List<ItemDTO> getAllItemsOfAMember(int idMember) throws SQLException {
+  public List<ItemDTO> getAllItemsOfAMember(int idMember) {
     try {
       dalServices.start();
       List<ItemDTO> listItemDTO = itemDAO.getAllItemsOfAMember(idMember);
@@ -89,12 +90,12 @@ public class ItemUCCImpl implements ItemUCC {
       return listItemDTO;
     } catch (SQLException e) {
       dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public List<ItemDTO> getAssignedItems(int idMember) throws SQLException {
+  public List<ItemDTO> getAssignedItems(int idMember) {
     try {
       this.dalServices.start();
       List<ItemDTO> listItemDTO = this.itemDAO.getAssignedItems(idMember);
@@ -102,22 +103,22 @@ public class ItemUCCImpl implements ItemUCC {
       return listItemDTO;
     } catch (SQLException e) {
       this.dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public boolean markItemAsGiven(ItemDTO itemDTO) throws SQLException {
+  public boolean markItemAsGiven(ItemDTO itemDTO) {
     return this.markItemAs(true, itemDTO);
   }
 
   @Override
-  public boolean markItemAsNotGiven(ItemDTO itemDTO) throws SQLException {
+  public boolean markItemAsNotGiven(ItemDTO itemDTO) {
     return this.markItemAs(false, itemDTO);
   }
 
   @Override
-  public int countNumberOfItemsByOfferStatus(int idMember, String offerStatus) throws SQLException {
+  public int countNumberOfItemsByOfferStatus(int idMember, String offerStatus) {
     try {
       this.dalServices.start();
       int itemsNumber = this.itemDAO.countNumberOfItemsByOfferStatus(idMember, offerStatus);
@@ -125,13 +126,12 @@ public class ItemUCCImpl implements ItemUCC {
       return itemsNumber;
     } catch (SQLException e) {
       this.dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public int countNumberOfReceivedOrNotReceivedItems(int idMember, boolean received)
-      throws SQLException {
+  public int countNumberOfReceivedOrNotReceivedItems(int idMember, boolean received) {
     try {
       this.dalServices.start();
       int numberOfItems = this.itemDAO.countNumberOfReceivedOrNotReceivedItems(idMember, received);
@@ -139,13 +139,12 @@ public class ItemUCCImpl implements ItemUCC {
       return numberOfItems;
     } catch (SQLException e) {
       this.dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public List<ItemDTO> getMemberItemsByOfferStatus(int idMember, String offerStatus)
-      throws SQLException {
+  public List<ItemDTO> getMemberItemsByOfferStatus(int idMember, String offerStatus) {
     try {
       this.dalServices.start();
       List<ItemDTO> itemDTOList = this.itemDAO.getMemberItemsByOfferStatus(idMember, offerStatus);
@@ -153,12 +152,12 @@ public class ItemUCCImpl implements ItemUCC {
       return itemDTOList;
     } catch (SQLException e) {
       this.dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public List<ItemDTO> getMemberReceivedItems(int idMember) throws SQLException {
+  public List<ItemDTO> getMemberReceivedItems(int idMember) {
     try {
       this.dalServices.start();
       List<ItemDTO> itemDTOList = this.itemDAO.getMemberReceivedItems(idMember);
@@ -166,7 +165,7 @@ public class ItemUCCImpl implements ItemUCC {
       return itemDTOList;
     } catch (SQLException e) {
       this.dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 
@@ -180,9 +179,8 @@ public class ItemUCCImpl implements ItemUCC {
    * @param given   true if it marks item as given or false to mark item as not given
    * @param itemDTO the item to update
    * @return true if the operation worked as expected otherwise false
-   * @throws SQLException if an error occurs while updating items or recipient
    */
-  private boolean markItemAs(boolean given, ItemDTO itemDTO) throws SQLException {
+  private boolean markItemAs(boolean given, ItemDTO itemDTO) {
     try {
       boolean done;
       this.dalServices.start();
@@ -195,7 +193,7 @@ public class ItemUCCImpl implements ItemUCC {
       return done;
     } catch (SQLException e) {
       this.dalServices.rollback();
-      throw e;
+      throw new FatalException(e);
     }
   }
 }
