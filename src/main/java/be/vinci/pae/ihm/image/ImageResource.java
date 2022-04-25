@@ -12,6 +12,8 @@ import jakarta.ws.rs.core.MediaType;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,7 +33,7 @@ public class ImageResource {
   @Path("upload")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public void uploadFile(@FormDataParam("file") InputStream file,
-      @FormDataParam("file") FormDataContentDisposition fileDisposition) throws IOException {
+      @FormDataParam("file") FormDataContentDisposition fileDisposition) {
     String extension = FilenameUtils.getExtension(fileDisposition.getFileName());
     if (!checkExtension(extension)) {
       throw new WrongBodyDataException("The file extension is not correct.");
@@ -39,13 +41,12 @@ public class ImageResource {
     String path = Config.getPhotoPath();
     UUID uuid = UUID.randomUUID();
     String fileName = path + "\\" + uuid + "." + extension;
-    try (FileOutputStream fos = new FileOutputStream(fileName)) {
-      int c;
-      while ((c = file.read()) != -1) {
-        fos.write(c);
-      }
-      this.logger.log(Level.INFO, "An image has been copied.");
+    try {
+      Files.copy(file, Paths.get(fileName));
+    }catch (IOException e){
+      e.printStackTrace();
     }
+    this.logger.log(Level.INFO, "An image has been copied.");
   }
 
   private boolean checkExtension(String fileExtension) {
