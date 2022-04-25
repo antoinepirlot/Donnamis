@@ -196,4 +196,17 @@ public class ItemUCCImpl implements ItemUCC {
       throw new FatalException(e);
     }
   }
+
+  @Override
+  public boolean addPhoto(int idItem, String photoName) {
+    try {
+      this.dalServices.start();
+      boolean added = this.itemDAO.addPhoto(idItem, photoName);
+      this.dalServices.commit();
+      return added;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw new FatalException(e);
+    }
+  }
 }

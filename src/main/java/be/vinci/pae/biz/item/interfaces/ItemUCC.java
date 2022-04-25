@@ -111,4 +111,13 @@ public interface ItemUCC {
    * @return the list of member's received items
    */
   List<ItemDTO> getMemberReceivedItems(int idMember);
+
+  /**
+   * Add photo name to the database for the idItem
+   *
+   * @param idItem    the item's id
+   * @param photoName the photo's name
+   * @return true if the photo has been added otherwise false
+   */
+  boolean addPhoto(int idItem, String photoName);
 }

@@ -405,4 +405,18 @@ public class ItemDAOImpl implements ItemDAO {
       return ps.executeUpdate() != 0;
     }
   }
+
+  @Override
+  public boolean addPhoto(int idItem, String photoName) {
+    String query = "UPDATE project_pae.items "
+        + "SET photo = ? "
+        + "WHERE id_item = ?;";
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setString(1, photoName);
+      ps.setInt(2, idItem);
+      return ps.executeUpdate() != 0;
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
+  }
 }
