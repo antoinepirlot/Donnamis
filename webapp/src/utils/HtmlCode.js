@@ -7,6 +7,27 @@ import {Redirect} from "../Components/Router/Router";
 import {openModal} from "./Modals";
 
 function getShowItemsHtml(items) {
+  let html = "";
+  items.forEach((item) => {
+    html += `
+      <div class="col-sm-3" id="item-card" >
+        <div class="card">
+        <img class="card-img-top" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">${item.title}</h5>
+            <p class="card-text">${item.itemDescription}</p>
+            <div id="itemButtons">
+              <a href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir les détails</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  return html;
+}
+
+function getShowItemsGivenAndAssignedHtml(items) {
   let divAssigned = "";
   let divGiven = "";
   items.forEach((item) => {
@@ -39,7 +60,7 @@ function getShowItemsHtml(items) {
             </div>
             <br>
             <div id="ratingButtons">
-              <a type="button" class="btn btn-primary">Evaluer</a>
+              <input value="Evaluer" type="submit" class="btn btn-primary">
             </div>
           </div>
         </div>
@@ -89,4 +110,5 @@ function checkIfMemberLoggedIn(modalId, closeModalId) {
 export {
   getShowItemsHtml,
   checkIfMemberLoggedIn,
+  getShowItemsGivenAndAssignedHtml,
 }
