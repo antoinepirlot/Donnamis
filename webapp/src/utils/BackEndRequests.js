@@ -543,6 +543,36 @@ async function postInterest(interest, interestMessage) {
   return response.ok;
 }
 
+async function evaluateItemBackEnd(rating, ratingMessage) {
+  const request = {
+    method: "POST",
+    headers: {
+      "Authorization": getObject("token"),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(rating)
+  };
+  const response = await fetch("api/ratings", request);
+
+  if (response.ok) {
+    showError(
+        "Evaluation enregistrée",
+        "success", ratingMessage
+    );
+  } else if (response.status === 409) {
+    showError(
+        "Vous ne pouvez évaluer une offre qu'une seule fois",
+        "danger", ratingMessage
+    );
+  } else if (response.status == 400) {
+    showError(
+        "Information manquante",
+        "danger", ratingMessage
+    );
+  }
+  return response.ok;
+}
+
 async function chooseRecipient(recipient) {
   const request = {
     method: "POST",
@@ -590,4 +620,5 @@ export {
   modifyMember,
   chooseRecipient,
   modifyTheItem,
+  evaluateItemBackEnd,
 };

@@ -221,7 +221,6 @@ public class ItemDAOImpl implements ItemDAO {
         + "WHERE i.id_type = it.id_type "
         + "  AND r.id_member = m.id_member "
         + "  AND r.id_item = i.id_item "
-        + "  AND r.received = '" + WAITING_RECIPIENT_STATUS + "' "
         + "  AND m.id_member = ?;";
     List<ItemDTO> listItemDTO = new ArrayList<>();
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
