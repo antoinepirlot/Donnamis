@@ -2,13 +2,25 @@ import {
   evaluateItemBackEnd,
   getAssignedItems
 } from "../../../utils/BackEndRequests";
-import {getShowItemsGivenAndAssignedHtml} from "../../../utils/HtmlCode";
+import {getAssignedItemHtml, getGivenItemHtml} from "../../../utils/HtmlCode";
 import {getPayload} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
 import {showError} from "../../../utils/ShowError";
 import {openModal} from "../../../utils/Modals";
 
-let ratingModal = `
+let html = `
+  <div>
+    <div>
+      <h1 class="display-3">Mes objets attribués</h1>
+      <h5 class="text-secondary">Voici vos objets attribués en attente de votre récupération</h5>
+    </div>
+    <div id="myAssignedItems"></div>
+    <div id="">
+      <h1 class="display-3">Mes objets reçus</h1>
+      <h5 class="text-secondary">Voici vos objets reçus, vous pouvez les évaluers</h5>
+    </div>
+    <div id="myReceivedItems"></div>
+  </div>
   <div id="ratingModal" class="modal">
     <div class="modal-content">
       <span id="ratingCloseModal" class="close">&times;</span>
@@ -37,13 +49,13 @@ let ratingModal = `
         </div>
         <p>Commentaire</p>
         <input type="text" id="textForm">
-        <p></p>
-        <input type="submit" value="Evaluer">
+        <br>
+        <button id="evaluateButton" class="btn btn-primary">Evaluer</button>
       </form>
     </div>
     <div id="errorMessage"></div>
   </div>
-  `;
+`;
 
 const MyAssignedItems = async () => {
   if (!getPayload()) {
@@ -51,12 +63,23 @@ const MyAssignedItems = async () => {
     return;
   }
   const pageDiv = document.querySelector("#page");
+  pageDiv.innerHTML = html;
   const items = await getAssignedItems();
-  pageDiv.innerHTML = getShowItemsGivenAndAssignedHtml(items);
 
-  pageDiv.innerHTML += ratingModal;
+  //Show items
+  const myAssignedItems = document.querySelector("#myAssignedItems");
+  myAssignedItems.innerHTML = "";
+  const myReceivedItems = document.querySelector("#myReceivedItems");
+  myReceivedItems.innerHTML = "";
+  items.forEach((item) => {
+    if (item.offerStatus === "assigned") {
+      myAssignedItems.innerHTML += getAssignedItemHtml(item);
+    } else if (item.offerStatus === "given") {
+      myReceivedItems.innerHTML += getGivenItemHtml(item);
+    }
+  });
 
-  if (items.length == 0) {
+  if (items.length === 0) {
     pageDiv.innerHTML = `
    <h1 class="display-3">Aucun objets assignés</h1>
    <h5 class="text-secondary">Vous n'avez aucun objets assignés pour le moment</h5>
@@ -69,7 +92,8 @@ const MyAssignedItems = async () => {
 
 function showRatingForm(e) {
   e.preventDefault();
-
+  const showRatingButton = document.querySelector("#evaluateButton");
+  showRatingButton.value = item.id;
   openModal("#ratingModal", "#ratingCloseModal");
   const ratingForm = document.querySelector("#ratingForm");
   ratingForm.addEventListener("submit", evaluateItem);
