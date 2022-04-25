@@ -251,7 +251,7 @@ public class ItemResource {
   @Path("")
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public void addItem(ItemDTO itemDTO) {
+  public int addItem(ItemDTO itemDTO) {
     if (itemDTO.getItemDescription() == null || itemDTO.getItemDescription().isBlank()
         || itemDTO.getItemType() == null || itemDTO.getItemType().getItemType() == null
         || itemDTO.getItemType().getItemType().isBlank() || itemDTO.getMember() == null
@@ -271,6 +271,7 @@ public class ItemResource {
       String message = "The offer can't be added to the db due to a unexpected error";
       throw new WebApplicationException(message, Status.BAD_REQUEST);
     }
+    return idItem;
   }
 
   /////////////////////////////////////////////////////////

@@ -1,7 +1,8 @@
 import {
   addNewItemsType,
   getItemsTypes,
-  offerAnItem, sendPicture
+  offerAnItem,
+  sendPicture
 } from "../../../utils/BackEndRequests";
 import {showError} from "../../../utils/ShowError";
 import {getPayload} from "../../../utils/session";
@@ -39,8 +40,8 @@ const htmlForm = `
   <div id="errorMessageOfferAnItemPage"></div>
 `;
 
-
 let itemsTypes;
+let idItem;
 let errorMessageOfferAnItemPage;
 
 const DonateAnItemPage = async () => {
@@ -94,7 +95,7 @@ async function offerItem(e) {
     if (!itemsTypes.find((type) => type.itemType === itemTypeValue)) {
       await addNewItemsType(itemsType);
     }
-    await offerAnItem(item);
+    idItem = await offerAnItem(item);
     const message = "Ajout réussi!"
     showError(message, "success", errorMessageOfferAnItemPage);
   } catch (error) {
@@ -109,7 +110,7 @@ async function sendFile(e) {
   const formData = new FormData();
   formData.append('file', fileInput.files[0]);
   try {
-    await sendPicture(formData)
+    await sendPicture(idItem, formData)
     showError("L'iùage à été uploadé.", "success", errorMessageOfferAnItemPage);
   } catch (e) {
     console.error(e);

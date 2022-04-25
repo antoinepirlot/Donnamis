@@ -381,10 +381,10 @@ async function offerAnItem(item) {
         "fetch error : " + response.status + " : " + response.statusText
     );
   }
-  return response.ok;
+  return await response.json();
 }
 
-async function sendPicture(formData) {
+async function sendPicture(idItem, formData) {
   const request = {
     method: 'POST',
     headers: {
@@ -392,7 +392,7 @@ async function sendPicture(formData) {
     },
     body: formData
   };
-  const response = await fetch('/api/image/upload', request);
+  const response = await fetch(`/api/images/upload/${idItem}`, request);
   if (!response.ok) {
     throw new Error("Error while uploading an image.");
   }
