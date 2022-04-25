@@ -10,8 +10,7 @@
  * - the router will show the Page associated to this URI when the user click on a nav-link
  */
 
-import {getObject} from "../../utils/session";
-import {isAdmin} from "../../utils/BackEndRequests";
+import {getObject, isAdmin} from "../../utils/session";
 
 const navBarHtml = `
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -31,7 +30,7 @@ const navBarHtml = `
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul id="navbarLinks" class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" data-uri="/">Acceuil</a>
+            <a class="nav-link" aria-current="page" data-uri="/">Accueil</a>
           </li>
         </ul>
       </div>
@@ -114,7 +113,7 @@ const Navbar = async () => {
     naveBarMemberPlace.innerHTML = profilLinkHtml;
     const memberUsername = document.querySelector("#memberUsername");
     memberUsername.innerHTML += memberDTO.username;
-    if (await isAdmin()) {
+    if (isAdmin()) {
       links.innerHTML += listMemberLinkHtml;
       links.innerHTML += searchMembersLinkHtml;
       links.innerHTML += allItemsLinkHtml;
