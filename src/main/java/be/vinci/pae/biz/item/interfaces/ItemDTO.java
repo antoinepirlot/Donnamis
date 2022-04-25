@@ -47,4 +47,7 @@ public interface ItemDTO {
 
   void setLastOfferDate(Timestamp lastOfferDate);
 
+  int getVersion();
+
+  void setVersion(int version);
 }

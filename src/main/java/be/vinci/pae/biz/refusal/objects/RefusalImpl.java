@@ -13,8 +13,9 @@ public class RefusalImpl implements Refusal {
   @JsonView(Views.Public.class)
   private Member member;
   @JsonView(Views.Public.class)
-
   private String text;
+  @JsonView(Views.Public.class)
+  private int version;
 
   @Override
   public int getIdRefusal() {
@@ -44,6 +45,16 @@ public class RefusalImpl implements Refusal {
   @Override
   public void setText(String text) {
     this.text = text;
+  }
+
+  @Override
+  public int getVersion() {
+    return version;
+  }
+
+  @Override
+  public void setVersion(int version) {
+    this.version = version;
   }
 
   @Override

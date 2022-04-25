@@ -28,4 +28,8 @@ public interface InterestDTO {
   Timestamp getDate();
 
   void setDate(Timestamp date);
+
+  int getVersion();
+
+  void setVersion(int version);
 }

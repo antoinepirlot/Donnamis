@@ -42,4 +42,8 @@ public interface MemberDTO {
   AddressDTO getAddress();
 
   void setAddress(AddressDTO addressDTO);
+
+  int getVersion();
+
+  void setVersion(int version);
 }

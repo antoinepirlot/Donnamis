@@ -23,49 +23,71 @@ public class OfferImpl implements Offer {
   private int idItem;
   @JsonView(Views.Public.class)
   private Member member;
+  @JsonView(Views.Public.class)
+  private int version;
 
   public OfferImpl() {
     this.date = Timestamp.valueOf(LocalDateTime.now());
   }
 
+  @Override
   public int getId() {
     return id;
   }
 
+  @Override
   public void setId(int id) {
     this.id = id;
   }
 
+  @Override
   public Timestamp getDate() {
     return date;
   }
 
+  @Override
   public void setDate(Timestamp date) {
     this.date = date;
   }
 
+  @Override
   public String getTimeSlot() {
     return timeSlot;
   }
 
+  @Override
   public void setTimeSlot(String timeSlot) {
     this.timeSlot = timeSlot;
   }
 
+  @Override
   public int getIdItem() {
     return idItem;
   }
 
+  @Override
   public void setIdItem(int idItem) {
     this.idItem = idItem;
   }
 
+  @Override
   public Member getMember() {
     return member;
   }
 
+  @Override
   public void setMember(MemberDTO memberDTO) {
     this.member = (Member) memberDTO;
+  }
+
+  @Override
+  public int getVersion() {
+    return version;
+  }
+
+  @Override
+  public void setVersion(int version) {
+    this.version = version;
   }
 
   @Override

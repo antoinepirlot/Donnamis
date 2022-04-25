@@ -37,6 +37,8 @@ public class ItemImpl implements Item {
   private List<Offer> offerList = new ArrayList<>();
   @JsonView(Views.Public.class)
   private Timestamp lastOfferDate;
+  @JsonView(Views.Public.class)
+  private int version;
 
   public ItemImpl() {
   }
@@ -144,6 +146,16 @@ public class ItemImpl implements Item {
         .filter(offer -> offer.getDate().equals(this.lastOfferDate))
         .findFirst()
         .orElse(null);
+  }
+
+  @Override
+  public int getVersion() {
+    return version;
+  }
+
+  @Override
+  public void setVersion(int version) {
+    this.version = version;
   }
 
   @Override

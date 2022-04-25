@@ -18,6 +18,8 @@ public class RatingImpl implements Rating {
   private String text;
   @JsonView(Views.Public.class)
   private Member member;
+  @JsonView(Views.Public.class)
+  private int version;
 
   public RatingImpl() {
 
@@ -61,5 +63,15 @@ public class RatingImpl implements Rating {
   @Override
   public void setMember(Member member) {
     this.member = member;
+  }
+
+  @Override
+  public int getVersion() {
+    return version;
+  }
+
+  @Override
+  public void setVersion(int version) {
+    this.version = version;
   }
 }
