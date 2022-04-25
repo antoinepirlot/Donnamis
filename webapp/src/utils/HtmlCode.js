@@ -42,7 +42,6 @@ function getAssignedItemHtml(item) {
       </div>
     </div>
   `;
-  // creer le add event listener ici pour ouvrir le modal
 }
 
 function getGivenItemHtml(item) {
@@ -57,9 +56,7 @@ function getGivenItemHtml(item) {
             <a href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir les détails</a>
           </div>
           <br>
-          <div id="ratingButtons">
-            <input value="Evaluer" type="submit" class="btn btn-primary">
-          </div>
+          <button id="ratingButton" type="submit" class="btn btn-primary" value="${item.id}">Evaluer</button>
         </div>
       </div>
     </div>

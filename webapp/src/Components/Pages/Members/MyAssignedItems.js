@@ -50,7 +50,7 @@ let html = `
         <p>Commentaire</p>
         <input type="text" id="textForm">
         <br>
-        <button id="evaluateButton" class="btn btn-primary">Evaluer</button>
+        <button id="ratingButtonModal" class="btn btn-primary">Evaluer</button>
       </form>
     </div>
     <div id="errorMessage"></div>
@@ -78,6 +78,15 @@ const MyAssignedItems = async () => {
       myReceivedItems.innerHTML += getGivenItemHtml(item);
     }
   });
+  const ratingButtons = document.querySelectorAll("#ratingButton");
+  const ratingButtonModal = document.querySelector("#ratingButtonModal");
+  ratingButtons.forEach((ratingButton) => {
+    ratingButton.addEventListener("click", () => {
+      openModal("#ratingModal", "#ratingCloseModal");
+      ratingButtonModal.value = ratingButton.value;
+    });
+  });
+  pageDiv.addEventListener("submit", await evaluateItem);
 
   if (items.length === 0) {
     pageDiv.innerHTML = `
