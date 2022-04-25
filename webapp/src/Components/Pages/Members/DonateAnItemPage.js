@@ -47,7 +47,8 @@ const DonateAnItemPage = async () => {
   }
   const page = document.querySelector("#page");
   page.innerHTML = htmlForm;
-  errorMessageOfferAnItemPage = document.querySelector("#errorMessageOfferAnItemPage");
+  errorMessageOfferAnItemPage = document.querySelector(
+      "#errorMessageOfferAnItemPage");
   const offerItemForm = document.querySelector("#offerItemForm");
   itemsTypes = await getItemsTypes();
   showItemsTypes("#itemsTypesDonateAnItemPage", itemsTypes);
@@ -87,10 +88,7 @@ async function offerItem(e) {
   }
   try {
     if (!itemsTypes.find((type) => type.itemType === itemTypeValue)) {
-      try {
-        await addNewItemsType(itemsType);
-      } catch (e) {
-      }
+      await addNewItemsType(itemsType);
     }
     const idItem = await offerAnItem(item);
     await sendFile(idItem);
@@ -98,7 +96,8 @@ async function offerItem(e) {
     showError(message, "success", errorMessageOfferAnItemPage);
   } catch (error) {
     console.error(error);
-    showError("Une erreur est survenue.", "danger", errorMessageOfferAnItemPage);
+    showError("Une erreur est survenue.", "danger",
+        errorMessageOfferAnItemPage);
   }
 }
 
@@ -115,6 +114,5 @@ async function sendFile(idItem) {
         errorMessageOfferAnItemPage);
   }
 }
-
 
 export default DonateAnItemPage;

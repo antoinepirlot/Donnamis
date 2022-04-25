@@ -361,6 +361,9 @@ async function addNewItemsType(itemsType) {
   };
   const response = await fetch("/api/items_types", request);
   if (!response.ok) {
+    if (response.status === 409) {//Conflict
+      return;
+    }
     throw new Error("Error while adding a new items type.");
   }
 }
