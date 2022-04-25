@@ -7,15 +7,12 @@ import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
-import be.vinci.pae.ihm.logs.LoggerHandler;
 import jakarta.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.text.StringEscapeUtils;
 
 public class MemberDAOImpl implements MemberDAO {
@@ -24,7 +21,6 @@ public class MemberDAOImpl implements MemberDAO {
   private static final String CONFIRMED_STATE = "confirmed";
   private static final String DENIED_STATE = "denied";
   private static final boolean DEFAULT_IS_ADMIN = false;
-  private final Logger logger = LoggerHandler.getLogger();
   @Inject
   private DALBackendService dalBackendService;
   @Inject
@@ -35,7 +31,7 @@ public class MemberDAOImpl implements MemberDAO {
    *
    * @return all the members otherwise null
    */
-  public List<MemberDTO> getAllMembers() {
+  public List<MemberDTO> getAllMembers() throws SQLException {
     List<MemberDTO> listMemberDTO = new ArrayList<>();
     String query = "SELECT id_member, "
         + "                username, "
@@ -78,10 +74,11 @@ public class MemberDAOImpl implements MemberDAO {
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) { //We know only one is returned by the db
           return ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
+        } else {
+          return null;
         }
       }
     }
-    return null;
   }
 
   @Override
@@ -95,7 +92,6 @@ public class MemberDAOImpl implements MemberDAO {
   public MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException {
     String query = "UPDATE project_pae.members SET username = ?, password = ?, last_name = ?, "
         + "first_name = ?, phone = ? WHERE id_member = ? RETURNING *;";
-    MemberDTO modifiedMember = null;
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setString(1, memberDTO.getUsername());
       preparedStatement.setString(2, memberDTO.getPassword());
@@ -105,11 +101,12 @@ public class MemberDAOImpl implements MemberDAO {
       preparedStatement.setInt(6, memberDTO.getId());
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
-          modifiedMember = ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
+          return ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
+        } else {
+          return null;
         }
       }
     }
-    return modifiedMember;
   }
 
   /**
@@ -125,11 +122,8 @@ public class MemberDAOImpl implements MemberDAO {
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setBoolean(1, memberDTO.isAdmin());
       preparedStatement.setInt(2, memberDTO.getId());
-      if (preparedStatement.executeUpdate() != 0) {
-        return true;
-      }
+      return preparedStatement.executeUpdate() != 0;
     }
-    return false;
   }
 
   /**
@@ -138,7 +132,7 @@ public class MemberDAOImpl implements MemberDAO {
    * @param id the id of the member
    * @return boolean
    */
-  public MemberDTO isAdmin(int id) {
+  public MemberDTO isAdmin(int id) throws SQLException {
     String query = "UPDATE project_pae.members SET is_admin = true WHERE id_member = ? "
         + "RETURNING *;";
     return executeQueryWithId(id, query);
@@ -155,36 +149,12 @@ public class MemberDAOImpl implements MemberDAO {
           StringEscapeUtils.escapeHtml4(refusalDTO.getText())
       );
       preparedStatement.setInt(3, refusalDTO.getMember().getId());
-      preparedStatement.executeUpdate();
-      return true;
-    }
-  }
-
-  /**
-   * Load the member's id and set it into memberDTO.
-   *
-   * @param memberDTO the member DTO that needs the id being loaded
-   */
-  private void loadMemberId(MemberDTO memberDTO) {
-    String query = "SELECT id_member FROM project_pae.members WHERE username = ?";
-    try (
-        PreparedStatement ps = dalBackendService.getPreparedStatement(query)
-    ) {
-      ps.setString(1, StringEscapeUtils.escapeHtml4(memberDTO.getUsername()));
-      try (
-          ResultSet rs = ps.executeQuery()
-      ) {
-        if (rs.next()) {
-          memberDTO.setId(rs.getInt("id_member"));
-        }
-      }
-    } catch (SQLException e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
+      return preparedStatement.executeUpdate() != 0;
     }
   }
 
   @Override
-  public boolean memberExist(MemberDTO memberDTO, int idMember) {
+  public boolean memberExist(MemberDTO memberDTO, int idMember) throws SQLException {
     String query = "SELECT id_member FROM project_pae.members WHERE id_member = ?";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       if (memberDTO == null) {
@@ -193,14 +163,9 @@ public class MemberDAOImpl implements MemberDAO {
         preparedStatement.setInt(1, memberDTO.getId());
       }
       try (ResultSet rs = preparedStatement.executeQuery()) {
-        if (rs.next()) {
-          return true;
-        }
+        return rs.next();
       }
-    } catch (SQLException e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
     }
-    return false;
   }
 
   @Override
@@ -241,18 +206,16 @@ public class MemberDAOImpl implements MemberDAO {
    *
    * @return a list of member
    */
-  private List<MemberDTO> getMembersDTO(List<MemberDTO> listMemberDTO, String query) {
+  private List<MemberDTO> getMembersDTO(List<MemberDTO> listMemberDTO, String query)
+      throws SQLException {
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       try (ResultSet rs = preparedStatement.executeQuery()) {
         while (rs.next()) {
           listMemberDTO.add(ObjectsInstanceCreator.createMemberInstance(this.factory, rs));
         }
-        return listMemberDTO;
+        return listMemberDTO.isEmpty() ? null : listMemberDTO;
       }
-    } catch (SQLException e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
     }
-    return null;
   }
 
   /**
@@ -262,18 +225,17 @@ public class MemberDAOImpl implements MemberDAO {
    * @param query the query to execute
    * @return boolean
    */
-  private MemberDTO executeQueryWithId(int id, String query) {
+  private MemberDTO executeQueryWithId(int id, String query) throws SQLException {
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
         if (rs.next()) {
           return ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
+        } else {
+          return null;
         }
       }
-    } catch (SQLException e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
     }
-    return null;
   }
 
   /**
@@ -288,10 +250,10 @@ public class MemberDAOImpl implements MemberDAO {
       return false;
     }
     //Add the member to the db then the address
-    if (!addOne(memberDTO)) {
+    int idMember = addOne(memberDTO);
+    if (idMember == -1) {
       return false;
     }
-    loadMemberId(memberDTO);
     return addAddress(memberDTO.getId(), memberDTO.getAddress());
   }
 
@@ -301,9 +263,10 @@ public class MemberDAOImpl implements MemberDAO {
    * @param memberDTO the member to add in the db
    * @return true if the member has been added to the DB
    */
-  private boolean addOne(MemberDTO memberDTO) {
+  private int addOne(MemberDTO memberDTO) throws SQLException {
     String query = "INSERT INTO project_pae.members (username, password, last_name, first_name, "
-        + "is_admin, state) VALUES (?, ?, ?, ?, ?, ?)";
+        + "is_admin, state) VALUES (?, ?, ?, ?, ?, ?)"
+        + "RETURNING id_member;";
     try (
         PreparedStatement ps = dalBackendService.getPreparedStatement(query)
     ) {
@@ -313,31 +276,27 @@ public class MemberDAOImpl implements MemberDAO {
       ps.setString(4, StringEscapeUtils.escapeHtml4(memberDTO.getFirstName()));
       ps.setBoolean(5, DEFAULT_IS_ADMIN);
       ps.setString(6, DEFAULT_STATE);
-      int result = ps.executeUpdate();
-      //it adds into the db BUT can't execute getOne(), it returns null
-      if (result != 0) {
-        System.out.println("Ajout du membre réussi.");
-        return true;
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          return rs.getInt(1);
+        } else {
+          return -1;
+        }
       }
-    } catch (SQLException e) {
-      this.logger.log(Level.SEVERE, e.getMessage());
     }
-    return false;
   }
 
   /**
-   * Add the address associated with the member'id to the DB.
+   * Add the address associated with the member's id to the DB.
    *
    * @param addressDTO the address to add into the db
    * @return true if the address has been added, otherwise false
    */
-  private boolean addAddress(int memberId, AddressDTO addressDTO) {
+  private boolean addAddress(int memberId, AddressDTO addressDTO) throws SQLException {
     String query = "INSERT INTO project_pae.addresses (street, building_number, unit_number, "
         + "postcode, commune, id_member) "
         + "VALUES (?, ?, ?, ?, ?, ?);";
-    try (
-        PreparedStatement ps = dalBackendService.getPreparedStatement(query)
-    ) {
+    try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
       ps.setString(1, StringEscapeUtils.escapeHtml4(addressDTO.getStreet()));
       ps.setString(2, StringEscapeUtils.escapeHtml4(addressDTO.getBuildingNumber()));
       ps.setString(3, StringEscapeUtils.escapeHtml4(addressDTO.getUnitNumber()));
@@ -345,14 +304,7 @@ public class MemberDAOImpl implements MemberDAO {
       ps.setString(5, StringEscapeUtils.escapeHtml4(addressDTO.getCommune()));
       ps.setInt(6, memberId);
       int result = ps.executeUpdate();
-      if (result != 0) {
-        System.out.println("Ajout de l'adresse réussi");
-        return true;
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-      this.logger.log(Level.SEVERE, e.getMessage());
+      return result != 0;
     }
-    return false;
   }
 }

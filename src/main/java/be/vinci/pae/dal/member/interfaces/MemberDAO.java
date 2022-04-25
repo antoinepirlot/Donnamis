@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface MemberDAO {
 
-  List<MemberDTO> getAllMembers();
+  List<MemberDTO> getAllMembers() throws SQLException;
 
   /**
    * Get one member with member information, use the username.
@@ -44,10 +44,11 @@ public interface MemberDAO {
 
   /**
    * Checks if the member is admin.
+   *
    * @param id the member's id
    * @return the member if the member is admin otherwise null
    */
-  MemberDTO isAdmin(int id);
+  MemberDTO isAdmin(int id) throws SQLException;
 
   /**
    * Modify the member's information.
@@ -66,13 +67,13 @@ public interface MemberDAO {
   boolean denyMember(RefusalDTO refusalDTO) throws SQLException;
 
   /**
-   * Checks if the member exists into the database.
-   * if memberDTO is null it checks with idMember.
+   * Checks if the member exists into the database. if memberDTO is null it checks with idMember.
+   *
    * @param memberDTO the member to check
-   * @param idMember the member's id to check
+   * @param idMember  the member's id to check
    * @return true if the member exists otherwise false
    */
-  boolean memberExist(MemberDTO memberDTO, int idMember);
+  boolean memberExist(MemberDTO memberDTO, int idMember) throws SQLException;
 
   /**
    * Get all interested members of the item identified by its id.
