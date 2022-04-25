@@ -144,22 +144,6 @@ async function confirmInscription(member) {
   }
 }
 
-async function confirmAdmin(id) {
-  const request = {
-    method: "PUT",
-    headers: {
-      "Authorization": getObject("token")
-    }
-  };
-  const url = `/api/members/confirmAdmin/${id}`;
-  const response = await fetch(url, request);
-  if (!response.ok) {
-    throw new Error(
-        "fetch error : " + response.status + " : " + response.statusText
-    );
-  }
-}
-
 async function denyMember(refusal) {
   const request = {
     method: "PUT", headers: {
@@ -586,7 +570,6 @@ export {
   getInterestedMembers,
   getOneMember,
   confirmInscription,
-  confirmAdmin,
   denyMember,
   getAllItemsByOfferStatus,
   getAssignedItems,
