@@ -1,9 +1,7 @@
-import {
-  getAllItemsByOfferStatus,
-  isAdmin
-} from "../../../utils/BackEndRequests";
+import {getAllItemsByOfferStatus} from "../../../utils/BackEndRequests";
 import {Redirect} from "../../Router/Router";
 import {getShowItemsHtml} from "../../../utils/HtmlCode";
+import {isAdmin} from "../../../utils/session";
 
 const tableHtml = `
   <div>
@@ -17,7 +15,7 @@ const tableHtml = `
 `;
 
 const AllItemsPage = async () => {
-  if (!await isAdmin()) {
+  if (!isAdmin()) {
     Redirect("/");
     return;
   }
@@ -43,7 +41,7 @@ const AllItemsPage = async () => {
         item => he.decode(item.title).toLowerCase().includes(input)
             || he.decode(item.itemDescription).toLowerCase().includes(input)
     )
-    
+
     if (result.length < 1) {
       tbody.innerHTML = `<h1 class="display-6" id="SearchErrorMessage">Il n'y a aucun résultat pour cette recherche</h1>`;
     } else {

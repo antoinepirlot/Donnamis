@@ -77,17 +77,6 @@ async function register(member) {
       "success", registerMessage)
 }
 
-async function isAdmin() {
-  const request = {
-    method: "HEAD",
-    headers: {
-      "Authorization": getObject("token")
-    }
-  }
-  const response = await fetch("/api/members/is_admin", request);
-  return response.ok;
-}
-
 /**
  * Get all members from the database
  * @returns all members
@@ -593,7 +582,6 @@ export {
   getRefusal,
   me,
   register,
-  isAdmin,
   getAllMembers,
   getInterestedMembers,
   getOneMember,

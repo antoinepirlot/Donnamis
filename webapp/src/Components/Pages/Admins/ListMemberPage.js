@@ -4,10 +4,10 @@
 import {
   confirmInscription,
   denyMember,
-  getAllMembers,
-  isAdmin
+  getAllMembers
 } from "../../../utils/BackEndRequests";
 import {Redirect} from "../../Router/Router";
+import {isAdmin} from "../../../utils/session";
 
 const tableHtmlConfirmedMembers = `
   <div>
@@ -55,7 +55,7 @@ let tbodyRegisteredMembers;
 let tbodyDeniedMembers;
 
 const ListMemberPage = async () => {
-  if (!await isAdmin()) {
+  if (!isAdmin()) {
     Redirect("/");
     return;
   }
