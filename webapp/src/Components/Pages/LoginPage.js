@@ -28,7 +28,7 @@ const loginFormHtml = `
       <input type="checkbox" class="form-check-input" id="rememberMeInput">
       <label class="form-check-label" >Se souvenir de moi</label>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Se connecter</button>
     <div class="message" id="loginMessage"></div>
   </form>
 </div>
