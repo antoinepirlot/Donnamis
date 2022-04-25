@@ -28,12 +28,9 @@ const htmlForm = `
       <input id="itemTypeFormList" list="itemsTypesDonateAnItemPage" placeholder="Séléctionne le type d'objet"><br>
       <datalist id="itemsTypesDonateAnItemPage"></datalist>
       <br>
-      <input type="submit" value="Offrir">
-    </form> <br><br>
-    <form>
       <label>Select File</label>
-      <input name="file" type= "file" /> <br/><br/>
-      <button id="submitPhoto" >Send</button>
+      <input id="photoName" name="file" type= "file" /> <br/><br/>
+      <input type="submit" value="Offrir">
     </form>
     
   </div>
@@ -41,7 +38,6 @@ const htmlForm = `
 `;
 
 let itemsTypes;
-let idItem;
 let errorMessageOfferAnItemPage;
 
 const DonateAnItemPage = async () => {
@@ -56,8 +52,6 @@ const DonateAnItemPage = async () => {
   itemsTypes = await getItemsTypes();
   showItemsTypes("#itemsTypesDonateAnItemPage", itemsTypes);
   offerItemForm.addEventListener("submit", await offerItem);
-  const photoButton = document.querySelector("#submitPhoto");
-  photoButton.addEventListener("click", await sendFile);
 };
 
 async function offerItem(e) {
@@ -65,9 +59,9 @@ async function offerItem(e) {
   e.preventDefault();
   const title = document.querySelector("#titleForm").value;
   const itemDescription = document.querySelector("#itemDescriptionForm").value;
-  let photo = document.querySelector("#photoForm").value;
-  if (photo === "") {
-    photo = null;
+  let photoName = document.querySelector("#photoName").value;
+  if (photoName === "") {
+    photoName = null;
   }
   const timeSlot = document.querySelector("#timeSlotForm").value;
   const itemTypeValue = document.querySelector("#itemTypeFormList").value;
@@ -85,7 +79,7 @@ async function offerItem(e) {
   const item = {
     itemDescription: itemDescription,
     title: title,
-    photo: photo,
+    photo: photoName,
     itemType: itemsType,
     member: member,
     offerList: offersList,
@@ -93,10 +87,14 @@ async function offerItem(e) {
   }
   try {
     if (!itemsTypes.find((type) => type.itemType === itemTypeValue)) {
-      await addNewItemsType(itemsType);
+      try {
+        await addNewItemsType(itemsType);
+      } catch (e) {
+      }
     }
-    idItem = await offerAnItem(item);
-    const message = "Ajout réussi!"
+    const idItem = await offerAnItem(item);
+    await sendFile(idItem);
+    const message = "Ajout réussi!";
     showError(message, "success", errorMessageOfferAnItemPage);
   } catch (error) {
     console.error(error);
@@ -104,8 +102,7 @@ async function offerItem(e) {
   }
 }
 
-async function sendFile(e) {
-  e.preventDefault();
+async function sendFile(idItem) {
   const fileInput = document.querySelector('input[name=file]');
   const formData = new FormData();
   formData.append('file', fileInput.files[0]);
@@ -114,7 +111,8 @@ async function sendFile(e) {
     showError("L'iùage à été uploadé.", "success", errorMessageOfferAnItemPage);
   } catch (e) {
     console.error(e);
-    showError("Problème lors de l'upload de l'image.", "danger", errorMessageOfferAnItemPage);
+    showError("Problème lors de l'upload de l'image.", "danger",
+        errorMessageOfferAnItemPage);
   }
 }
 
