@@ -68,11 +68,14 @@
 body {
   color: #1a202c;
   text-align: left;
+  /*Couleur 1*/
   background: linear-gradient(lightblue, lightpink);
 
+  /*Couleur 2*/
   /*background: rgb(34, 193, 195);*/
   /*background: linear-gradient(0deg, rgba(34, 193, 195, 1) 0%, rgba(45, 203, 253, 1) 100%);*/
 
+  /*Couleur 3*/
   /*background-image: url("../img/tumblr2.jpg");*/
   /*background-size: cover;*/
   /*background-repeat: repeat-y;*/
