@@ -2,7 +2,7 @@ package be.vinci.pae.biz.rating.objects;
 
 import be.vinci.pae.biz.rating.interfaces.RatingDTO;
 import be.vinci.pae.biz.rating.interfaces.RatingUCC;
-import be.vinci.pae.dal.rating.RatingDAO;
+import be.vinci.pae.dal.rating.interfaces.RatingDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.exceptions.FatalException;
 import jakarta.inject.Inject;

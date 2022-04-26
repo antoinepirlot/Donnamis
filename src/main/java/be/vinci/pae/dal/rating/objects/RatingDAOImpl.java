@@ -1,7 +1,8 @@
-package be.vinci.pae.dal.rating;
+package be.vinci.pae.dal.rating.objects;
 
 import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.rating.interfaces.RatingDTO;
+import be.vinci.pae.dal.rating.interfaces.RatingDAO;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
 import be.vinci.pae.exceptions.FatalException;
