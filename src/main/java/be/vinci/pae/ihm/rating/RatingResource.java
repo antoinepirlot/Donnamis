@@ -58,7 +58,7 @@ public class RatingResource {
   @Path("")
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public boolean evaluateItem(RatingDTO ratingDTO) {
+  public void evaluateItem(RatingDTO ratingDTO) {
     //Verify the content of the request
     if (ratingDTO == null
         || ratingDTO.getRating() < 1 || ratingDTO.getRating() > 5
@@ -75,6 +75,5 @@ public class RatingResource {
     if (!ratingUCC.evaluate(ratingDTO)) {
       throw new FatalException("Rating not add");
     }
-    return true;
   }
 }
