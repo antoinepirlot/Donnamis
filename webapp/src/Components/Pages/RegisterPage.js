@@ -6,18 +6,9 @@ import {showError} from "../../utils/ShowError";
 const registerFormHtml = `
 <h1 class="display-3" id="login_title">S'inscrire</h1>
 <div class="form">
-  <h3>Mes infos</h3>
+  
   <form  id="registerForm">
-    <div class="mb-3">
-      <label class="form-label">Pseudo</label>
-      <input type="text" class="form-control" id="usernameInput">
-    </div>
-    
-    <div class="mb-3">
-      <label class="form-label">Mot de passe</label>
-      <input type="password" class="form-control" id="passwordInput">
-    </div>
-    
+    <h3>Mes infos</h3>
     <div class="mb-3">
       <label class="form-label">Prénom</label>
       <input type="text" class="form-control" id="firstNameInput">
@@ -26,6 +17,16 @@ const registerFormHtml = `
     <div class="mb-3">
       <label class="form-label">Nom</label>
       <input type="text" class="form-control" id="lastNameInput">
+    </div>
+    
+    <div class="mb-3">
+      <label class="form-label">Pseudo</label>
+      <input type="text" class="form-control" id="usernameInput">
+    </div>
+    
+    <div class="mb-3">
+      <label class="form-label">Mot de passe</label>
+      <input type="password" class="form-control" id="passwordInput">
     </div>
     
     <h3>Adresse</h3>

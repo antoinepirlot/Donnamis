@@ -57,6 +57,19 @@
   position: relative;
 }
 
+
+body {
+  color: #1a202c;
+  text-align: left;
+  background: linear-gradient(lightblue, lightpink);
+}
+
+#loginForm, #registerForm, #tbody_registered_members, #tbody_denied_members, #tbody_all_members {
+  background-color: white;
+  border-radius: 5px;
+  padding: 10% 10% 10% 10%;
+}
+
 /*MODAL*/
 /* The Modal (background) */
 .modal {
