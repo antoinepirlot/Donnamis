@@ -141,6 +141,8 @@ async function evaluateItem(e) {
         ratingMessage);
   }
 
+  Redirect("/assigned_items")
+
 }
 
 export default MyAssignedItems;
