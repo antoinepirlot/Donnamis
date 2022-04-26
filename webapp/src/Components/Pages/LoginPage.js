@@ -22,6 +22,7 @@ const loginFormHtml = `
     <div class="mb-3">
       <label class="form-label">Mot de passe</label>
       <input type="password" class="form-control" id="passwordInput">
+      <input type="checkbox" id="checkPassword">Show Password
     </div>
     <div class="mb-3 form-check">
       <input type="checkbox" class="form-check-input" id="rememberMeInput">
@@ -46,7 +47,8 @@ function LoginPage() {
   const page = document.querySelector("#page");
   page.innerHTML = loginFormHtml;
   page.addEventListener("submit", login);
-
+  const checkPassword = document.getElementById("checkPassword")
+  checkPassword.addEventListener("click", seePassword);
 }
 
 async function login(e) {
@@ -88,6 +90,16 @@ async function login(e) {
   } catch (error) {
     console.error("LoginPage::error: ", error);
     showError("Une erreur est survenue.", "danger", loginMessage);
+  }
+}
+
+// to see the input password
+function seePassword() {
+  let x = document.getElementById("passwordInput");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
   }
 }
 
