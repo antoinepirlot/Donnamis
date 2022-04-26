@@ -88,6 +88,9 @@ public class DALServicesImpl implements DALServices, DALBackendService {
   @Override
   public PreparedStatement getPreparedStatement(String query) throws SQLException {
     Connection connection = dbThreadLocal.get();
+    if (connection == null) {
+      logger.log(Level.SEVERE, "Connection is null");
+    }
     return connection.prepareStatement(query);
   }
 
