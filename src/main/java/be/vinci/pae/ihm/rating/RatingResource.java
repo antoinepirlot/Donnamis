@@ -8,6 +8,7 @@ import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
+import be.vinci.pae.ihm.filter.utils.Json;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -29,6 +30,8 @@ public class RatingResource {
   @Inject
   private MemberUCC memberUCC;
 
+  private Json<RatingDTO> json = new Json<>(RatingDTO.class);
+
   /////////////////////////////////////////////////////////
   ///////////////////////GET///////////////////////////////
   /////////////////////////////////////////////////////////
@@ -48,7 +51,7 @@ public class RatingResource {
     if (ratingDTOList == null) {
       throw new ObjectNotFoundException("No ratings for the member " + idMember);
     }
-    return ratingDTOList;
+    return this.json.filterPublicJsonViewAsList(ratingDTOList);
   }
 
   /////////////////////////////////////////////////////////

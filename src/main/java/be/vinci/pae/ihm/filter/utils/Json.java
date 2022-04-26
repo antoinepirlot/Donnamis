@@ -1,5 +1,6 @@
 package be.vinci.pae.ihm.filter.utils;
 
+import be.vinci.pae.exceptions.FatalException;
 import be.vinci.pae.views.Views;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
@@ -32,8 +33,7 @@ public class Json<T> {
       return this.jsonMapper.readerWithView(Views.Public.class).forType(type)
           .readValue(publicItemListAsString);
     } catch (JsonProcessingException e) {
-      e.printStackTrace();
-      return null;
+      throw new FatalException(e);
     }
   }
 
@@ -53,8 +53,7 @@ public class Json<T> {
       return this.jsonMapper.readerWithView(Views.Public.class).forType(type)
           .readValue(publicItemAsString);
     } catch (JsonProcessingException e) {
-      e.printStackTrace();
-      return null;
+      throw new FatalException(e);
     }
 
   }

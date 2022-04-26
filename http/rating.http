@@ -1,3 +1,7 @@
+### Get all
+GET {{baseUrl}}/ratings/all/5
+Authorization: {{token}}
+
 ### Evaluate an item
 POST {{baseUrl}}/ratings/
 Authorization: {{token}}

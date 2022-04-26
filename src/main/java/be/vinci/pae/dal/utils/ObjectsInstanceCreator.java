@@ -112,10 +112,27 @@ public class ObjectsInstanceCreator {
   public static MemberDTO createMemberInstance(Factory factory, ResultSet rs) throws SQLException {
     System.out.println("Setting all member attributes");
     MemberDTO memberDTO = factory.getMember();
-    memberDTO.setId(rs.getInt("id_member"));
-    memberDTO.setUsername(StringEscapeUtils.escapeHtml4(rs.getString("username")));
-    memberDTO.setLastName(StringEscapeUtils.escapeHtml4(rs.getString("last_name")));
-    memberDTO.setFirstName(StringEscapeUtils.escapeHtml4(rs.getString("first_name")));
+    try {
+      memberDTO.setId(rs.getInt("id_member"));
+    } catch (SQLException e) {
+      System.out.println("No id_member selected");
+    }
+    try {
+      String username = rs.getString("username");
+      memberDTO.setUsername(StringEscapeUtils.escapeHtml4(username));
+    } catch (SQLException e) {
+      System.out.println("No username selected");
+    }
+    try {
+      memberDTO.setLastName(StringEscapeUtils.escapeHtml4(rs.getString("last_name")));
+    } catch (SQLException e) {
+      System.out.println("No id_member selected");
+    }
+    try {
+      memberDTO.setFirstName(StringEscapeUtils.escapeHtml4(rs.getString("first_name")));
+    } catch (SQLException e) {
+      System.out.println("No id_member selected");
+    }
     try {
       memberDTO.setActualState(StringEscapeUtils.escapeHtml4(rs.getString("state")));
     } catch (SQLException e) {

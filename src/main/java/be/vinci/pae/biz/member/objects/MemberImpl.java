@@ -45,6 +45,9 @@ public class MemberImpl implements Member {
   }
 
   public void setUsername(String username) {
+    if (username == null) {
+      return;
+    }
     this.username = username.toLowerCase().trim();
   }
 
