@@ -47,7 +47,7 @@ async function SearchMembersPage() {
                     input))
 
         if (result.length < 1) {
-          tbody.innerHTML = `<h1 class="display-6" id="SearchErrorMessage">Il n'y a aucun résultat pour cette recherche</h1>`;
+          tbody.innerHTML = `<h1 class="display-6" id="SearchErrorMessageMember">Il n'y a aucun résultat pour cette recherche</h1>`;
         } else {
           showFilterMembers(result)
         }

@@ -52,9 +52,16 @@
 
 #SearchErrorMessage {
   margin-top: 5rem;
-  margin-left: 7rem;
+  margin-left: auto;
   color: #696969;
-  position: relative;
+  position: absolute;
+}
+
+#SearchErrorMessageMember {
+  margin-top: 5rem;
+  margin-left: 15rem;
+  color: #696969;
+  position: absolute;
 }
 
 
