@@ -7,7 +7,7 @@ const tableHtml = `
   <div>
     <h1 class="display-3" id="all_offered_items_title">Tous les objets offerts</h1>
     <div class="">
-      <input class="form-control me-2" id="searchInput" type="search" placeholder="Rechercher un objet" aria-label="Rechercher"> 
+      <input class="form-control me-2 w-75 d-inline-block" id="searchInput" type="search" placeholder="Rechercher un objet" aria-label="Rechercher"> 
     </div> 
      
     <div class="row" id="all_offered_items">

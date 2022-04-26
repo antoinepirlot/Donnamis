@@ -13,7 +13,7 @@
 import {getObject, isAdmin} from "../../utils/session";
 
 const navBarHtml = `
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" id="nav">
     <div class="container-fluid">
       <a class="navbar-brand" data-uri="/" >Donnamis</a>
       <button
