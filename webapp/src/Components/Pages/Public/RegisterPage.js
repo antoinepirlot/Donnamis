@@ -1,7 +1,7 @@
-import {getPayload,} from "../../utils/session";
-import {register as registerBackEndRequest} from "../../utils/BackEndRequests";
-import {Redirect} from "../Router/Router";
-import {showError} from "../../utils/ShowError";
+import {getPayload,} from "../../../utils/session";
+import {register as registerBackEndRequest} from "../../../utils/BackEndRequests";
+import {Redirect} from "../../Router/Router";
+import {showError} from "../../../utils/ShowError";
 
 const registerFormHtml = `
 <h1 class="display-3" id="login_title">S'inscrire</h1>

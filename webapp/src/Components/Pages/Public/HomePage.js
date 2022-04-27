@@ -1,6 +1,6 @@
-import {getAllItemsByOfferStatus} from "../../utils/BackEndRequests";
-import {getShowItemsHtml} from "../../utils/HtmlCode";
-import {getPayload} from "../../utils/session";
+import {getAllItemsByOfferStatus} from "../../../utils/BackEndRequests";
+import {getShowItemsHtml} from "../../../utils/HtmlCode";
+import {getPayload} from "../../../utils/session";
 
 const tableHtml = `
   <div>

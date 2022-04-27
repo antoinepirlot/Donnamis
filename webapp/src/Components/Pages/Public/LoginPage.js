@@ -2,14 +2,14 @@ import {
   getPayload,
   setLocalObject,
   setSessionObject
-} from "../../utils/session";
+} from "../../../utils/session";
 import {
   getRefusal,
   login as loginBackEndRequest
-} from "../../utils/BackEndRequests";
-import {Redirect} from "../Router/Router";
-import Navbar from "../Navbar/Navbar";
-import {showError} from "../../utils/ShowError";
+} from "../../../utils/BackEndRequests";
+import {Redirect} from "../../Router/Router";
+import Navbar from "../../Navbar/Navbar";
+import {showError} from "../../../utils/ShowError";
 
 const loginFormHtml = `
 <h1 class="display-3" id="login_title">Se connecter</h1>
