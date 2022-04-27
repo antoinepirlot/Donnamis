@@ -430,8 +430,7 @@ public class ItemResource {
     try {
       fileContent = FileUtils.readFileToByteArray(new File(photoPath));
     } catch (IOException e) {
-      e.printStackTrace();
-      return null;
+      throw new FatalException(e);
     }
     return Base64.getEncoder().encodeToString(fileContent);
   }
