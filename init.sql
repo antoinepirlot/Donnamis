@@ -54,10 +54,11 @@ CREATE TABLE project_pae.items
 
 CREATE TABLE project_pae.ratings
 (
-    id_item   SERIAL PRIMARY KEY,
+    id_rating SERIAL PRIMARY KEY,
     rating    INTEGER      NOT NULL,
     text      VARCHAR(500) NOT NULL,
     id_member INTEGER      NOT NULL,
+    id_item   INTEGER      NOT NULL,
     FOREIGN KEY (id_item) REFERENCES project_pae.items (id_item),
     FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
 );
