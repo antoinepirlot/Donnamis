@@ -378,7 +378,6 @@ public class ItemResource {
    * Modify the item.
    *
    * @param itemDTO the new item
-   * @return the modify item
    */
   @PUT
   @Path("modify")
@@ -422,10 +421,13 @@ public class ItemResource {
   }
 
   private String transformImageToBase64(ItemDTO itemDTO) throws IOException {
+    if (itemDTO == null
+    || itemDTO.getPhoto() == null || itemDTO.getPhoto().isBlank()) {
+      return null;
+    }
     String photoSignature = itemDTO.getPhoto();
     String path = Config.getPhotoPath();
     String photoPath = path + "\\" + photoSignature;
-    System.out.println("Photo path :  " + photoPath);
     byte[] fileContent;
     try {
       fileContent = FileUtils.readFileToByteArray(new File(photoPath));
