@@ -5,14 +5,14 @@
 import {getPayload} from "./session";
 import {Redirect} from "../Components/Router/Router";
 import {openModal} from "./Modals";
-
 function getShowItemsHtml(items) {
-  let html = "";
-  items.forEach((item) => {
-    html += `
+   let html = "";
+   for (const item of items) {
+    console.log(item.photo);
+     html += `
       <div class="col-sm-3" id="item-card" >
         <div class="card">
-        <img class="card-img-top" alt="Card image cap">
+        <img src="data:image/png;base64,${item.photo}" class="card-img-top" alt="Card image cap" src="">
           <div class="card-body">
             <h5 class="card-title">${item.title}</h5>
             <p class="card-text">${item.itemDescription}</p>
@@ -23,9 +23,9 @@ function getShowItemsHtml(items) {
         </div>
       </div>
     `;
-  });
-  return html;
-}
+   }
+   return html;
+ }
 
 function getAssignedItemHtml(item) {
   return `

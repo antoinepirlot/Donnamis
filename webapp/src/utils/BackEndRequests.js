@@ -552,6 +552,6 @@ export {
   modifyMember,
   chooseRecipient,
   modifyTheItem,
-  evaluateItemBackEnd,
   getAllRatings,
+  evaluateItemBackEnd
 };
