@@ -9,6 +9,16 @@
   margin-right: 1rem;
 }
 
+.nav-item{
+  background-color: #bbd7f6;
+  border-radius: 5px;
+  margin-left: 5px;
+}
+
+#admin-page{
+ background-color: #e1b3f6;
+}
+
 .message {
   margin: 1rem;
 }
