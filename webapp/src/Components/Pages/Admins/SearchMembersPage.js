@@ -40,7 +40,6 @@ async function SearchMembersPage() {
         tbody.innerHTML = "";
 
         const input = searchInput.value.toLowerCase().trim();
-        console.log(members)
         const result = members.filter(
             member => he.decode(member.lastName).toLowerCase().includes(input)
                 || he.decode(member.firstName).toLowerCase().includes(
