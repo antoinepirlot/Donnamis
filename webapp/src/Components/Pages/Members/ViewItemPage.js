@@ -13,7 +13,7 @@ import {showItemsTypes} from "../../../utils/HtmlCode";
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3">
   <div class="row no-gutters">
-  <div class="col-md">
+    <div class="col-md" >
       <div class="card-body">
         <h2 id="titleViewItemPage" class="card-title"></h2>
         <p id="memberViewItemPage" class="text-muted"> </p>
@@ -25,7 +25,6 @@ const viewOfferHtml = `
       </div>
     </div>
     <div class="col-md-4" id="imageItem">
-      <img src="" class="card-img" alt="JS">
     </div>
   </div>
   <div id="viewItemPageError"></div>
@@ -146,7 +145,7 @@ function showItemInfo() {
 
   const image = document.querySelector("#imageItem");
   image.innerHTML = `
-    <img src="data:image/png;base64,${item.photo}" alt="Card image cap" >
+      <img src="data:image/png;base64,${item.photo}" id="bigImageItem" alt="Card image cap" >
   `
 }
 
