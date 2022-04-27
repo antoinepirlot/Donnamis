@@ -22,6 +22,8 @@ let html = `
     </div>
     <div id="myReceivedItems"></div>
   </div>
+  
+  <!--Rating Modal-->
   <div id="ratingModal" class="modal">
     <div class="modal-content">
       <span id="ratingCloseModal" class="close">&times;</span>
@@ -59,6 +61,8 @@ let html = `
   </div>
 `;
 
+let idIdem;
+
 const MyAssignedItems = async () => {
   if (!getPayload()) {
     Redirect("/login");
@@ -74,38 +78,37 @@ const MyAssignedItems = async () => {
   const myReceivedItems = document.querySelector("#myReceivedItems");
   myReceivedItems.innerHTML = "";
   const ratings = await getAllRatings();
-  items.forEach((item) => {
-    if (item.offerStatus === "assigned") {
-      myAssignedItems.innerHTML += getAssignedItemHtml(item);
-    } else if (item.offerStatus === "given") {
-      myReceivedItems.innerHTML += getGivenItemHtml(item, ratings);
-    }
-  });
-  const ratingButtons = document.querySelectorAll("#ratingButton");
-  const ratingButtonModal = document.querySelector("#ratingButtonModal");
-  ratingButtons.forEach((ratingButton) => {
-    ratingButton.addEventListener("click", () => {
-      openModal("#ratingModal", "#ratingCloseModal");
-      ratingButtonModal.value = ratingButton.value;
-    });
-  });
-  pageDiv.addEventListener("submit", await evaluateItem);
-
-  if (items.length === 0) {
+  if (!items) {
     pageDiv.innerHTML = `
-   <h1 class="display-3">Aucun objets assignés</h1>
-   <h5 class="text-secondary">Vous n'avez aucun objets assignés pour le moment</h5>
-  `;
+      <h1 class="display-3">Aucun objets assignés</h1>
+      <h5 class="text-secondary">Vous n'avez aucun objets assignés pour le moment</h5>
+    `;
   } else {
-    const ratingButton = document.querySelector("#ratingButtons");
-    ratingButton.addEventListener("click", showRatingForm);
+    items.forEach((item) => {
+      if (item.offerStatus === "assigned") {
+        myAssignedItems.innerHTML += getAssignedItemHtml(item);
+      } else if (item.offerStatus === "given") {
+        myReceivedItems.innerHTML += getGivenItemHtml(item, ratings);
+      }
+    });
+    const ratingButtons = document.querySelectorAll("#ratingButton");
+    const ratingButtonModal = document.querySelector("#ratingButtonModal");
+    ratingButtons.forEach((ratingButton) => {
+      idIdem = ratingButton.value;
+      ratingButton.addEventListener("click", () => {
+        openModal("#ratingModal", "#ratingCloseModal");
+        ratingButtonModal.value = idIdem;
+        ratingButton.addEventListener("click", showRatingForm);
+      });
+    });
+    pageDiv.addEventListener("submit", await evaluateItem);
   }
 }
 
 function showRatingForm(e) {
   e.preventDefault();
-  const showRatingButton = document.querySelector("#evaluateButton");
-  showRatingButton.value = item.id;
+  const showRatingButton = document.querySelector("#ratingButtonModal");
+  showRatingButton.value = idIdem;
   openModal("#ratingModal", "#ratingCloseModal");
   const ratingForm = document.querySelector("#ratingForm");
   ratingForm.addEventListener("submit", evaluateItem);
