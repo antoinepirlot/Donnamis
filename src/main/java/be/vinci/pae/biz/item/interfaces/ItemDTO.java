@@ -3,6 +3,7 @@ package be.vinci.pae.biz.item.interfaces;
 import be.vinci.pae.biz.item.objects.ItemImpl;
 import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.offer.interfaces.Offer;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.sql.Timestamp;
@@ -43,8 +44,8 @@ public interface ItemDTO {
 
   void setOfferList(List<OfferDTO> offerList);
 
-  Timestamp getLastOfferDate();
+  OfferDTO getLastOffer();
 
-  void setLastOfferDate(Timestamp lastOfferDate);
+  void setLastOffer(OfferDTO lastOffer);
 
 }

@@ -133,7 +133,7 @@ public class ItemResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<ItemDTO> getAllItemsByMemberId(@PathParam("idMember") int idMember,
-      @PathParam("offerStatus") String offerStatus){
+      @PathParam("offerStatus") String offerStatus) {
     if (idMember < 1
         || offerStatus == null || offerStatus.isBlank()
         || !offerStatus.equals("donated")
@@ -293,7 +293,7 @@ public class ItemResource {
         || itemDTO.getItemType() == null || itemDTO.getItemType().getItemType() == null
         || itemDTO.getItemType().getItemType().isBlank() || itemDTO.getMember() == null
         || itemDTO.getMember().getId() < 1 || itemDTO.getTitle() == null || itemDTO.getTitle()
-        .isBlank() || itemDTO.getLastOfferDate() == null
+        .isBlank() || itemDTO.getLastOffer() == null
         || itemDTO.getOfferList().get(0) == null) {
       throw new WebApplicationException("Wrong item body", Status.BAD_REQUEST);
     }
@@ -383,14 +383,21 @@ public class ItemResource {
   @PUT
   @Path("modify")
   @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public ItemDTO modifyItem(ItemDTO itemDTO) {
-    ItemDTO modifyItem = itemUCC.modifyItem(itemDTO);
-    if (modifyItem == null) {
-      throw new ObjectNotFoundException("Item not found");
+  public void modifyItem(ItemDTO itemDTO) {
+    if (itemDTO == null
+        || itemDTO.getId() < 1
+        || itemDTO.getItemDescription() == null || itemDTO.getItemDescription().isBlank()
+        || itemDTO.getLastOffer() == null || itemDTO.getLastOffer().getTimeSlot() == null
+        || itemDTO.getLastOffer().getTimeSlot().isBlank()) {
+      throw new WrongBodyDataException("itemDTO not complete.");
     }
-    return modifyItem;
+    if (this.itemUCC.getOneItem(itemDTO.getId()) == null) {
+      throw new ObjectNotFoundException("No item with the id : " + itemDTO.getId());
+    }
+    if (!itemUCC.modifyItem(itemDTO)) {
+      throw new FatalException("Unexpected error");
+    }
   }
 
   /////////////////////////////////////////////////////////

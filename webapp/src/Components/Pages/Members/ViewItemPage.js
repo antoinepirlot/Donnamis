@@ -90,9 +90,8 @@ async function ViewItemPage() {
 }
 
 function createModifyItemModal() {
-  let title = item.title ? item.title : "";
   let itemDescription = item.itemDescription ? item.itemDescription : "";
-  let itemType = item.itemType.itemType ? item.itemType.itemType : "";
+  let timeSlot = item.timeSlot ? item.timeSlot : "";
   return `
     <!-- Modal Modify Item -->
     <div id="modifyItemModal" class="modal">
@@ -100,15 +99,12 @@ function createModifyItemModal() {
         <span id="modifyItemCloseModal" class="close">&times;</span>
         <form id="modifyItemForm">
           <h5>Modifier votre objet</h5><br>
-          <p>Nom de l'objet</p>
-          <input id="titleForm" type="text" value="${title}">
           <p>Description de l'objet</p>
           <input id="itemDescriptionForm" type="text" value="${itemDescription}">
           <p>Photo</p>
-          <input id="photoForm" type="file">
-          <p>Type de l'objet</p>
-          <input id="itemTypeFormList" list="itemsTypesViewItemPage" placeholder="${itemType}"><br>
-          <datalist id="itemsTypesViewItemPage"></datalist>
+          <input id="photoForm" type="file"><br>
+          <br>
+          <textarea id="timeSlotModifyForm" cols="30" rows="3">${timeSlot}</textarea>
           <br>
           <input type="submit" value="Modifier">
         </form>
@@ -219,27 +215,23 @@ async function postInterest(e) {
 async function showModifyForm(e) {
   e.preventDefault();
   openModal("#modifyItemModal", "#modifyItemCloseModal");
-  showItemsTypes("#itemsTypesViewItemPage", await getItemsTypes());
   const modifyForm = document.querySelector("#modifyItemForm");
   modifyForm.addEventListener("submit", modifyItem);
 }
 
 async function modifyItem(e) {
   e.preventDefault();
-  const title = document.querySelector("#titleForm").value;
   const itemDescription = document.querySelector("#itemDescriptionForm").value;
   const photo = document.querySelector("#photoForm").value;
-  const itemTypeValue = document.querySelector("#itemTypeFormList").value;
-
-  const itemType = {
-    itemType: itemTypeValue
-  }
+  const timeSlot = document.querySelector("#timeSlotModifyForm").value;
+  console.log(timeSlot)
   const newItem = {
     id: item.id,
     itemDescription: itemDescription,
-    itemType: itemType,
     photo: photo,
-    title: title,
+    lastOffer: {
+      timeSlot: timeSlot
+    }
   }
   try {
     await modifyTheItem(newItem);

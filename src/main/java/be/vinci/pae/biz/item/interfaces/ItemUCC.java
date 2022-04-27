@@ -38,9 +38,9 @@ public interface ItemUCC {
    * Modify the item.
    *
    * @param itemDTO the new item
-   * @return the modify item
+   * @return true if the modification was done otherwise false
    */
-  ItemDTO modifyItem(ItemDTO itemDTO);
+  boolean modifyItem(ItemDTO itemDTO);
 
   /**
    * Ask itemDAO to get all the items identified by the member id.

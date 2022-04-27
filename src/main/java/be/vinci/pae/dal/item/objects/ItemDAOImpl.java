@@ -111,7 +111,7 @@ public class ItemDAOImpl implements ItemDAO {
       ps.setString(4, itemDTO.getPhoto());
       ps.setString(5, StringEscapeUtils.escapeHtml4(itemDTO.getTitle()));
       ps.setString(6, DEFAULT_OFFER_STATUS);
-      ps.setTimestamp(7, itemDTO.getLastOfferDate());
+      ps.setTimestamp(7, itemDTO.getLastOffer().getDate());
       try (ResultSet rs = ps.executeQuery()) {
         return rs.next() ? rs.getInt("id_item") : -1;
       }
@@ -140,24 +140,25 @@ public class ItemDAOImpl implements ItemDAO {
   }
 
   @Override
-  public ItemDTO modifyItem(ItemDTO itemDTO) {
-    String selectIdTypeQuery = "SELECT id_type "
-        + "FROM project_pae.items_types "
-        + "WHERE item_type = ? ";
-    String query = "UPDATE project_pae.items SET item_description = ?, photo = ?, title = ?, "
-        + "id_type = (" + selectIdTypeQuery + ") WHERE id_item = ? RETURNING *";
+  public boolean modifyItem(ItemDTO itemDTO) {
+    String selectLastIdOffer = "(SELECT id_offer "
+        + "FROM project_pae.offers "
+        + "WHERE id_item = ? "
+        + "ORDER BY date DESC "
+        + "LIMIT 1)";
+    String query = "UPDATE project_pae.items SET item_description = ?, photo = ? "
+        + "WHERE id_item = ?; "
+        + "UPDATE project_pae.offers "
+        + "SET time_slot = ? "
+        + "WHERE id_item = "+selectLastIdOffer+";";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setString(1, itemDTO.getItemDescription());
       preparedStatement.setString(2, itemDTO.getPhoto());
-      preparedStatement.setString(3, itemDTO.getTitle());
-      preparedStatement.setString(4, itemDTO.getItemType().getItemType());
+      preparedStatement.setInt(3, itemDTO.getId());
+      preparedStatement.setString(4, StringEscapeUtils
+          .escapeHtml4(itemDTO.getLastOffer().getTimeSlot()));
       preparedStatement.setInt(5, itemDTO.getId());
-      try (ResultSet rs = preparedStatement.executeQuery()) {
-        if (rs.next()) {
-          return ObjectsInstanceCreator.createItemInstance(this.factory, rs);
-        }
-        return null;
-      }
+      return preparedStatement.executeUpdate() != 0;
     } catch (SQLException e) {
       throw new FatalException(e);
     }

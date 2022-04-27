@@ -5,6 +5,7 @@ import be.vinci.pae.biz.factory.interfaces.Factory;
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.offer.interfaces.Offer;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.rating.interfaces.RatingDTO;
 import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
@@ -55,7 +56,9 @@ public class ObjectsInstanceCreator {
     } catch (SQLException ignored) {
     }
     try {
-      itemDTO.setLastOfferDate(rs.getTimestamp("last_offer_date"));
+      OfferDTO offerDTO = factory.getOffer();
+      offerDTO.setDate(rs.getTimestamp("last_offer_date"));
+      itemDTO.setLastOffer(offerDTO);
     } catch (SQLException ignored) {
     }
     try {
