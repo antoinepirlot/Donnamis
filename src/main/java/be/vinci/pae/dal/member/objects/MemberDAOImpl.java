@@ -34,14 +34,22 @@ public class MemberDAOImpl implements MemberDAO {
    */
   public List<MemberDTO> getAllMembers() {
     List<MemberDTO> listMemberDTO = new ArrayList<>();
-    String query = "SELECT id_member, "
-        + "                username, "
-        + "                last_name, "
-        + "                first_name, "
-        + "                is_admin, "
-        + "                state, "
-        + "                phone "
-        + "FROM project_pae.members";
+    String query = "SELECT m.id_member, "
+        + "                m.username, "
+        + "                m.last_name, "
+        + "                m.first_name, "
+        + "                m.is_admin, "
+        + "                m.state, "
+        + "                m.phone, "
+        + "                a.id_address, "
+        + "                a.street, "
+        + "                a.building_number, "
+        + "                a.unit_number, "
+        + "                a.postcode, "
+        + "                a.commune "
+        + "FROM project_pae.members m, "
+        + "     project_pae.addresses a "
+        + "WHERE m.id_member = a.id_member;";
 
     //Execute the query
     try {
