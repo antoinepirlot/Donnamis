@@ -42,7 +42,7 @@ public class ImageResource {
 
   private final Json<ItemDTO> jsonUtil = new Json<>(ItemDTO.class);
   private final Logger logger = LoggerHandler.getLogger();
-  private static final String[] ALLOWED_EXTENSIONS = {"jpg", "png", "jpeg"};
+  private static final String[] ALLOWED_EXTENSIONS = {"jpg", "png", "jpeg", "JPG", "PNG", "JPEG"};
 
   @Inject
   private ItemUCC itemUCC;
@@ -59,10 +59,10 @@ public class ImageResource {
     }
     String path = Config.getPhotoPath();
     UUID uuid = UUID.randomUUID();
-    String photoPath = path + "\\" + uuid + "." + extension;
+    String photoPath = path + "\\" + uuid + ".png";
     try {
       Files.copy(file, Paths.get(photoPath));
-      if (!this.itemUCC.addPhoto(idItem, uuid + "." + extension)) {
+      if (!this.itemUCC.addPhoto(idItem, uuid + ".png")) {
         throw new FatalException("The image hasn't been added into the database");
       }
     } catch (IOException e) {
