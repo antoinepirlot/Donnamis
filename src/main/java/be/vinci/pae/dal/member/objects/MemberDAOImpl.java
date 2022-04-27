@@ -41,7 +41,7 @@ public class MemberDAOImpl implements MemberDAO {
         + "                is_admin, "
         + "                state, "
         + "                phone, "
-        + "                version"
+        + "                version "
         + "FROM project_pae.members";
 
     //Execute the query

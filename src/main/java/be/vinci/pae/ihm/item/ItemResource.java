@@ -170,9 +170,11 @@ public class ItemResource {
       throw new WrongBodyDataException("idMember < 0 for get assigned items");
     }
     List<ItemDTO> itemDTOList = this.itemUCC.getAssignedItems(idMember);
-    if (itemDTOList == null) {
-      throw new ObjectNotFoundException("No assigned items");
-    }
+
+    //Si aucun objet assigné ==> INUTILE
+    //if (itemDTOList == null) {
+    //  throw new ObjectNotFoundException("No assigned items");
+    //}
     return this.jsonUtil.filterPublicJsonViewAsList(itemDTOList);
   }
 
@@ -350,13 +352,14 @@ public class ItemResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public ItemDTO modifyItem(ItemDTO itemDTO) {
-    ItemDTO modifyItem = itemUCC.modifyItem(itemDTO);
-    if (modifyItem == null) {
-      throw new ObjectNotFoundException("Item not found");
-    }
 
     if (itemDTO.getVersion() != itemUCC.getOneItem(itemDTO.getId()).getVersion()) {
       throw new FatalException("Error with version");
+    }
+
+    ItemDTO modifyItem = itemUCC.modifyItem(itemDTO);
+    if (modifyItem == null) {
+      throw new ObjectNotFoundException("Item not found");
     }
 
     return modifyItem;
