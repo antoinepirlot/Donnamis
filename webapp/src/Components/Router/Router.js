@@ -3,7 +3,6 @@ import Logout from "../Logout/Logout";
 import ListMemberPage from "../Pages/Admins/ListMemberPage";
 import AllItemsPage from "../Pages/Admins/AllItemsPage"
 import RegisterPage from "../Pages/RegisterPage";
-import AllDonatedItemsPage from "../Pages/Members/AllDonatedItemPage";
 import ViewItemPage from "../Pages/Members/ViewItemPage";
 import DonateAnItemPage from "../Pages/Members/DonateAnItemPage";
 import MyItemsPage from "../Pages/Members/MyItemsPage";
@@ -22,7 +21,6 @@ const routes = {
   "/list_member": ListMemberPage,
   //"/latest_items": LatestItemsOffersPage,
   "/all_items": AllItemsPage,
-  "/all_donated_items": AllDonatedItemsPage,
   "/item": ViewItemPage,
   "/offer_item": DonateAnItemPage,
   "/my_items": MyItemsPage,
