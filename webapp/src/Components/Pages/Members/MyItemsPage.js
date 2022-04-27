@@ -121,7 +121,7 @@ async function showButtons(items) {
   /*Offer again*/
   /*************/
   const offerAgainButtons = document.querySelectorAll("#offerAgainButton");
-  offerAgainButtons.forEach(async (offerAgainButton) => {
+  offerAgainButtons.forEach((offerAgainButton) => {
     offerAgainButton.addEventListener("click", async () => {
       idItem = offerAgainButton.value;
       openModal("#myItemsPageModal", "#myItemsPageModalCloseButton");
@@ -135,7 +135,7 @@ async function showButtons(items) {
   /*********************************/
   const chooseRecipientButtons = document.querySelectorAll(
       "#chooseRecipientButton");
-  chooseRecipientButtons.forEach(async (chooseRecipientButton) => {
+  chooseRecipientButtons.forEach((chooseRecipientButton) => {
     chooseRecipientButton.addEventListener("click", async () => {
       idItem = chooseRecipientButton.value;
       const item = items.find((item) => item.id == idItem);
