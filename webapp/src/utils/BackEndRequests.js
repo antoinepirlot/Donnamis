@@ -203,6 +203,30 @@ async function getAllItemsByOfferStatus(offerStatus) {
   return await response.json();
 }
 
+//async function getImageByItemId(idItem) {
+//  const request = {
+//    method: "GET",
+//    headers: {
+//      "Authorization": getObject("token")
+//    }
+//  };
+//  let url = `/api/images/1`;
+//
+//  console.log(url)
+//  const response = await fetch(url, request);
+//  if (!response.ok) {
+//    throw new Error("Erreur lors du fetch");
+//  }
+//  //let res = null;
+//  //try {
+//  //  res = await response.formData();
+//  //}catch (e){
+//  //  console.log(e);
+//  //}
+//  console.log(response.body)
+//  return response;
+//}
+
 async function getAssignedItems() {
   const idMember = getPayload().id;
   const request = {
@@ -608,5 +632,5 @@ export {
   modifyMember,
   chooseRecipient,
   modifyTheItem,
-  evaluateItemBackEnd,
+  evaluateItemBackEnd
 };

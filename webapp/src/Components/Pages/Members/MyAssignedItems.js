@@ -72,6 +72,7 @@ const MyAssignedItems = async () => {
   const myReceivedItems = document.querySelector("#myReceivedItems");
   myReceivedItems.innerHTML = "";
   items.forEach((item) => {
+
     if (item.offerStatus === "assigned") {
       myAssignedItems.innerHTML += getAssignedItemHtml(item);
     } else if (item.offerStatus === "given") {

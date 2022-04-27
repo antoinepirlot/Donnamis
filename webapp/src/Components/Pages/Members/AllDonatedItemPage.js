@@ -25,7 +25,6 @@ const AllOfferedItemsPage = async () => {
       const items = await getAllItemsByOfferStatus("donated");
       let tbody = document.querySelector("#all_offered_items");
       tbody.innerHTML = getShowItemsHtml(items);
-      //tbody.innerHTML = searchItem(items);
 
       //Searching an item
       //Listener pour chaque frappe au clavier

@@ -1,6 +1,6 @@
 import {
   cancelOffer as cancelOfferBackEnd,
-  chooseRecipient as chooseRecpientBackEnd,
+  chooseRecipient as chooseRecpientBackEnd, getImageByItemId,
   getInterestedMembers,
   getMyItems,
   markItemAs as markItemAsaBackEnd,
@@ -10,7 +10,6 @@ import {getPayload} from "../../../utils/session";
 import {showError} from "../../../utils/ShowError";
 import {openModal} from "../../../utils/Modals";
 import {Redirect} from "../../Router/Router";
-import {getShowItemsHtml} from "../../../utils/HtmlCode";
 
 const myItemsPageHtml = `
   <div>
@@ -72,10 +71,10 @@ const MyItemsPage = async () => {
   showButtons(items);
 };
 
-function showButtons(items) {
+async function showButtons(items) {
   const myItemsDiv = document.querySelector("#myItems");
   myItemsDiv.innerHTML = "";
-  items.forEach((item) => {
+  for (const item of items) {
     let html = `
       <div class="col-sm-3" id="item-card" >
         <div class="card">
@@ -116,7 +115,7 @@ function showButtons(items) {
       </div>
     `;
     myItemsDiv.innerHTML += html;
-  });
+  }
 
   /*************/
   /*Offer again*/
