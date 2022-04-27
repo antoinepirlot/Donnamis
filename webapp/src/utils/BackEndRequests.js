@@ -168,7 +168,6 @@ async function getAllItemsByOfferStatus(offerStatus) {
   if (offerStatus) {
     url += "/" + offerStatus;
   }
-  console.log(url)
   const response = await fetch(url, request);
   if (!response.ok) {
     if (response.status === 401) {
