@@ -78,7 +78,7 @@ async function showButtons(items) {
     let html = `
       <div class="col-sm-3" id="item-card" >
         <div class="card">
-        <img class="card-img-top" alt="Card image cap">
+        <img src="data:image/png;base64,${item.photo}" class="card-img-top" alt="Card image cap">
           <div class="card-body">
             <h5 class="card-title">${item.title}</h5>
             <p class="card-text">${item.itemDescription}</p>
