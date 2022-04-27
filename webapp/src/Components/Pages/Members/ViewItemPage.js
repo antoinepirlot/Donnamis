@@ -24,7 +24,7 @@ const viewOfferHtml = `
         <button id="interestButton" class="btn btn-primary">
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4" id="imageItem">
       <img src="" class="card-img" alt="JS">
     </div>
   </div>
@@ -40,7 +40,6 @@ const viewOfferHtml = `
       <h5>Marquer votre intéret pour cette offre</h5><br>
       <p>Date de récupération</p>
       <input id="dateForm" type="date">
-      <p></p>
       <input class="form-check-input" type="checkbox" id="callWanted">
       <label class="form-check-label" for="callWanted">J'accepte d'être appelé</label>
       <div id="phoneNumberInputDiv"></div>
@@ -128,17 +127,27 @@ function showItemInfo() {
 
   const titleDiv = document.querySelector("#titleViewItemPage");
   titleDiv.innerHTML = item.title;
+
   const memberDiv = document.querySelector("#memberViewItemPage");
   memberDiv.innerHTML = `Offre proposée par : ${item.member.firstName} ${item.member.lastName} `;
+
   const itemType = document.querySelector("#itemTypeViewItemPage");
   itemType.innerHTML = `Type : ${item.itemType.itemType}`;
+
   const descriptionDiv = document.querySelector("#descriptionViewItemPage");
   descriptionDiv.innerHTML = `Description : ${item.itemDescription}`;
+
   const availabilitiesDiv = document.querySelector(
       "#availabilitiesViewItemPage");
   availabilitiesDiv.innerHTML = `Disponibilités : ${lastOffer.timeSlot}`;
+
   const pubDateDiv = document.querySelector("#pubDateViewItemPage");
   pubDateDiv.innerHTML = `Date de publication : ${date}`;
+
+  const image = document.querySelector("#imageItem");
+  image.innerHTML = `
+    <img src="data:image/png;base64,${item.photo}" alt="Card image cap" >
+  `
 }
 
 async function showInterestForm(e) {

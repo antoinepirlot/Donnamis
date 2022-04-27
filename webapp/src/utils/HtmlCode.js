@@ -5,14 +5,14 @@
 import {getPayload} from "./session";
 import {Redirect} from "../Components/Router/Router";
 import {openModal} from "./Modals";
+
 function getShowItemsHtml(items) {
    let html = "";
    for (const item of items) {
-    console.log(item.photo);
      html += `
       <div class="col-sm-3" id="item-card" >
         <div class="card">
-        <img src="data:image/png;base64,${item.photo}" class="card-img-top" alt="Card image cap" src="">
+        <img src="data:image/png;base64,${item.photo}" class="card-img-top" alt="Card image cap">
           <div class="card-body">
             <h5 class="card-title">${item.title}</h5>
             <p class="card-text">${item.itemDescription}</p>
@@ -44,8 +44,8 @@ function getAssignedItemHtml(item) {
   `;
 }
 
-function getGivenItemHtml(item) {
-  return `
+function getGivenItemHtml(item, ratings) {
+  let html = `
     <div class="col-sm-3" id="item-card" >
       <div class="card">
       <img class="card-img-top" alt="Card image cap">
@@ -56,11 +56,16 @@ function getGivenItemHtml(item) {
             <a href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir les détails</a>
           </div>
           <br>
+  `;
+  if (!ratings || !ratings.find((rating) => rating.item.id === item.id)) {
+    html += `
           <button id="ratingButton" type="submit" class="btn btn-primary" value="${item.id}">Evaluer</button>
         </div>
+       </div>
       </div>
-    </div>
-  `;
+    `;
+  }
+  return html;
 }
 
 function checkIfMemberLoggedIn(modalId, closeModalId) {
