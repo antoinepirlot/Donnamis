@@ -36,10 +36,12 @@ const AllOfferedItemsPage = async () => {
         tbody.innerHTML = "";
 
         const input = searchInput.value.toLowerCase().trim();
-
         const result = items.filter(
-            item => he.decode(item.title).toLowerCase().includes(input)
-                || he.decode(item.itemDescription).toLowerCase().includes(input)
+            item => he.decode(item.member.firstName).toLowerCase().includes(input)
+            || he.decode(item.member.lastName).toLowerCase().includes(input)
+            || he.decode(item.itemType.itemType).toLowerCase().includes(input)
+            || he.decode(item.offerStatus).toLowerCase().includes(input)
+            || he.decode(item.itemDescription).toLowerCase().includes(input)
         )
 
         if (result.length < 1) {
