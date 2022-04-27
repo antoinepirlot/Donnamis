@@ -12,6 +12,7 @@ import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeAdmin;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.filter.utils.Json;
+import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -25,8 +26,12 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response.Status;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.List;
+import org.apache.maven.surefire.shared.io.FileUtils;
 
 @Singleton
 @Path("items")
@@ -49,8 +54,12 @@ public class ItemResource {
   @AuthorizeAdmin
   public List<ItemDTO> getAllItems() {
     try {
-      return this.getAllItemsByOfferStatusOrIdMember(null, -1);
-    } catch (SQLException e) {
+      List<ItemDTO> itemDTOList = this.getAllItemsByOfferStatusOrIdMember(null, -1);
+      for (ItemDTO itemDTO : itemDTOList) {
+        itemDTO.setPhoto(transformImageToBase64(itemDTO));
+      }
+      return itemDTOList;
+    } catch (SQLException | IOException e) {
       throw new FatalException("Can't get all items");
     }
   }
@@ -73,8 +82,12 @@ public class ItemResource {
       throw new WrongBodyDataException("Offer status " + offerStatus + " is not valid.");
     }
     try {
-      return this.getAllItemsByOfferStatusOrIdMember(offerStatus, -1);
-    } catch (SQLException e) {
+      List<ItemDTO> itemDTOList = this.getAllItemsByOfferStatusOrIdMember(offerStatus, -1);
+      for (ItemDTO itemDTO : itemDTOList) {
+        itemDTO.setPhoto(transformImageToBase64(itemDTO));
+      }
+      return itemDTOList;
+    } catch (SQLException | IOException e) {
       throw new FatalException("Can't get all items by offer status: " + offerStatus);
     }
   }
@@ -97,8 +110,12 @@ public class ItemResource {
       throw new ObjectNotFoundException("This member doesn't exists.");
     }
     try {
-      return this.getAllItemsByOfferStatusOrIdMember(null, idMember);
-    } catch (SQLException e) {
+      List<ItemDTO> itemDTOList = this.getAllItemsByOfferStatusOrIdMember(null, idMember);
+      for (ItemDTO itemDTO : itemDTOList) {
+        itemDTO.setPhoto(transformImageToBase64(itemDTO));
+      }
+      return itemDTOList;
+    } catch (SQLException | IOException e) {
       throw new FatalException("Can't get all items by member id: " + idMember);
     }
   }
@@ -116,7 +133,7 @@ public class ItemResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<ItemDTO> getAllItemsByMemberId(@PathParam("idMember") int idMember,
-      @PathParam("offerStatus") String offerStatus) {
+      @PathParam("offerStatus") String offerStatus){
     if (idMember < 1
         || offerStatus == null || offerStatus.isBlank()
         || !offerStatus.equals("donated")
@@ -133,6 +150,14 @@ public class ItemResource {
     if (itemDTOList == null) {
       throw new ObjectNotFoundException("No items for the member");
     }
+    for (ItemDTO itemDTO : itemDTOList) {
+      try {
+        itemDTO.setPhoto(transformImageToBase64(itemDTO));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
     return this.jsonUtil.filterPublicJsonViewAsList(itemDTOList);
   }
 
@@ -150,6 +175,11 @@ public class ItemResource {
     ItemDTO itemDTO = itemUCC.getOneItem(id);
     if (itemDTO == null) {
       throw new ObjectNotFoundException("No item matching id: " + id);
+    }
+    try {
+      itemDTO.setPhoto(transformImageToBase64(itemDTO));
+    } catch (IOException e) {
+      e.printStackTrace();
     }
     this.offerUCC.getAllOffersOf(itemDTO);
     return this.jsonUtil.filterPublicJsonView(itemDTO);
@@ -172,6 +202,13 @@ public class ItemResource {
     List<ItemDTO> itemDTOList = this.itemUCC.getAssignedItems(idMember);
     if (itemDTOList == null) {
       throw new ObjectNotFoundException("No assigned items");
+    }
+    for (ItemDTO itemDTO : itemDTOList) {
+      try {
+        itemDTO.setPhoto(transformImageToBase64(itemDTO));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
     return this.jsonUtil.filterPublicJsonViewAsList(itemDTOList);
   }
@@ -349,11 +386,11 @@ public class ItemResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public ItemDTO modifyItem(ItemDTO itemDTO) {
-      ItemDTO modifyItem = itemUCC.modifyItem(itemDTO);
-      if (modifyItem == null) {
-        throw new ObjectNotFoundException("Item not found");
-      }
-      return modifyItem;
+    ItemDTO modifyItem = itemUCC.modifyItem(itemDTO);
+    if (modifyItem == null) {
+      throw new ObjectNotFoundException("Item not found");
+    }
+    return modifyItem;
   }
 
   /////////////////////////////////////////////////////////
@@ -375,6 +412,21 @@ public class ItemResource {
       this.offerUCC.getAllOffersOf(itemDTO);
     }
     return listItemDTO;
+  }
+
+  private String transformImageToBase64(ItemDTO itemDTO) throws IOException {
+    String photoSignature = itemDTO.getPhoto();
+    String path = Config.getPhotoPath();
+    String photoPath = path + "\\" + photoSignature;
+    System.out.println("Photo path :  " + photoPath);
+    byte[] fileContent;
+    try {
+      fileContent = FileUtils.readFileToByteArray(new File(photoPath));
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
+    return Base64.getEncoder().encodeToString(fileContent);
   }
 
   /**
