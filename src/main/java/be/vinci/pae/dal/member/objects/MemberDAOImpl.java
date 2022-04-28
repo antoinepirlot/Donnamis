@@ -71,7 +71,7 @@ public class MemberDAOImpl implements MemberDAO {
   public MemberDTO getOne(MemberDTO memberDTO) {
     String query = "SELECT m.id_member, m.username, m.password, m.last_name, m.first_name, "
         + "m.is_admin, m.state, m.phone, m.version_member, a.id_address, a.street, a.building_number, a.unit_number,"
-        + "a.postcode, a.commune "
+        + "a.postcode, a.commune, a.version_address "
         + "FROM project_pae.members m, project_pae.addresses a "
         + "WHERE a.id_member = m.id_member ";
     if (memberDTO.getUsername() != null) {
