@@ -41,7 +41,7 @@ public class MemberDAOImpl implements MemberDAO {
         + "                m.is_admin, "
         + "                m.state, "
         + "                m.phone, "
-        + "                m.version_member "
+        + "                m.version_member, "
         + "                a.id_address, "
         + "                a.street, "
         + "                a.building_number, "
