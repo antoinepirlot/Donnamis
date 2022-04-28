@@ -4,10 +4,8 @@
 import {
   confirmInscription,
   denyMember,
-  getAllMembers
   getAllMembers,
-  getOneMember,
-  isAdmin
+  getOneMember
 } from "../../../utils/BackEndRequests";
 import {Redirect} from "../../Router/Router";
 import {isAdmin} from "../../../utils/session";

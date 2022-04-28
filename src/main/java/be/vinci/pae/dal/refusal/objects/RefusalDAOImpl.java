@@ -22,7 +22,7 @@ public class RefusalDAOImpl implements RefusalDAO {
   @Override
   public RefusalDTO getRefusal(String username) {
     String query = "SELECT r.id_refusal, "
-        + "                r.text, r.version "
+        + "                r.text, r.version_refusal "
         + "FROM project_pae.refusals r, "
         + "     project_pae.members m "
         + "WHERE r.id_member = m.id_member "

@@ -1,4 +1,3 @@
-
 package be.vinci.pae.dal.rating;
 
 import be.vinci.pae.biz.factory.interfaces.Factory;
@@ -41,7 +40,7 @@ public class RatingDAOImpl implements RatingDAO {
   @Override
   public boolean evaluate(RatingDTO ratingDTO) throws SQLException {
     String query =
-        "INSERT INTO project_pae.ratings (id_item, rating, text, id_member, version) VALUES"
+        "INSERT INTO project_pae.ratings (id_item, rating, text, id_member, version_rating) VALUES"
             + "(?, ?, ?, ?, 1) RETURNING *;";
 
     try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
@@ -65,7 +64,8 @@ public class RatingDAOImpl implements RatingDAO {
         + "                rating, "
         + "                id_item, "
         + "                text, "
-        + "                id_member "
+        + "                id_member, "
+        + "                version_rating "
         + "FROM project_pae.ratings "
         + "WHERE id_member = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {

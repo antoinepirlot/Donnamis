@@ -70,7 +70,7 @@ public class MemberDAOImpl implements MemberDAO {
   @Override
   public MemberDTO getOne(MemberDTO memberDTO) {
     String query = "SELECT m.id_member, m.username, m.password, m.last_name, m.first_name, "
-        + "m.is_admin, m.state, m.phone, m.version, a.id_address, a.street, a.building_number, a.unit_number,"
+        + "m.is_admin, m.state, m.phone, m.version_member, a.id_address, a.street, a.building_number, a.unit_number,"
         + "a.postcode, a.commune "
         + "FROM project_pae.members m, project_pae.addresses a "
         + "WHERE a.id_member = m.id_member ";
@@ -107,7 +107,7 @@ public class MemberDAOImpl implements MemberDAO {
   @Override
   public MemberDTO modifyMember(MemberDTO memberDTO) {
     String query = "UPDATE project_pae.members SET username = ?, password = ?, last_name = ?, "
-        + "first_name = ?, phone = ?, version = version + 1 WHERE id_member = ? RETURNING *;";
+        + "first_name = ?, phone = ?, version_member = version_member + 1 WHERE id_member = ? RETURNING *;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setString(1, memberDTO.getUsername());
       preparedStatement.setString(2, memberDTO.getPassword());
@@ -134,7 +134,8 @@ public class MemberDAOImpl implements MemberDAO {
    */
   public boolean confirmMember(MemberDTO memberDTO) {
     String query = "UPDATE project_pae.members "
-        + "SET state = '" + CONFIRMED_STATE + "', is_admin = ?, version = version + 1 "
+        + "SET state = '" + CONFIRMED_STATE
+        + "', is_admin = ?, version_member = version_member + 1 "
         + "WHERE id_member = ?;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setBoolean(1, memberDTO.isAdmin());
@@ -152,9 +153,10 @@ public class MemberDAOImpl implements MemberDAO {
    * @return boolean
    */
   public MemberDTO isAdmin(int id) {
-    String query = "UPDATE project_pae.members SET is_admin = true, version = version + 1"
-        + " WHERE id_member = ? "
-        + "RETURNING *;";
+    String query =
+        "UPDATE project_pae.members SET is_admin = true, version_member = version_member + 1"
+            + " WHERE id_member = ? "
+            + "RETURNING *;";
     try {
       return executeQueryWithId(id, query);
     } catch (SQLException e) {
@@ -165,9 +167,10 @@ public class MemberDAOImpl implements MemberDAO {
   @Override
   public boolean denyMember(RefusalDTO refusalDTO) {
     String query =
-        "UPDATE project_pae.members SET state = '" + DENIED_STATE + "', version = version + 1"
+        "UPDATE project_pae.members SET state = '" + DENIED_STATE
+            + "', version_member = version_member + 1"
             + " WHERE id_member = ?; "
-            + "INSERT INTO project_pae.refusals (text, id_member, version) VALUES (?, ?, 1);";
+            + "INSERT INTO project_pae.refusals (text, id_member, version_member) VALUES (?, ?, 1);";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, refusalDTO.getMember().getId());
       preparedStatement.setString(2,
@@ -206,7 +209,7 @@ public class MemberDAOImpl implements MemberDAO {
         + "        m2.is_admin, "
         + "        m2.state, "
         + "        m2.phone, "
-        + "        m2.version "
+        + "        m2.version_member "
         + "FROM project_pae.members m, "
         + "     project_pae.members m2, "
         + "     project_pae.interests int, "
@@ -300,7 +303,7 @@ public class MemberDAOImpl implements MemberDAO {
    */
   private int addOne(MemberDTO memberDTO) throws SQLException {
     String query = "INSERT INTO project_pae.members (username, password, last_name, first_name, "
-        + "is_admin, state, version) VALUES (?, ?, ?, ?, ?, ?, 1)"
+        + "is_admin, state, version_member) VALUES (?, ?, ?, ?, ?, ?, 1)"
         + "RETURNING id_member;";
     try (
         PreparedStatement ps = dalBackendService.getPreparedStatement(query)
@@ -329,7 +332,7 @@ public class MemberDAOImpl implements MemberDAO {
    */
   private boolean addAddress(int memberId, AddressDTO addressDTO) throws SQLException {
     String query = "INSERT INTO project_pae.addresses (street, building_number, unit_number, "
-        + "postcode, commune, id_member, version) "
+        + "postcode, commune, id_member, version_address) "
         + "VALUES (?, ?, ?, ?, ?, ?, 1);";
     try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
       ps.setString(1, StringEscapeUtils.escapeHtml4(addressDTO.getStreet()));

@@ -32,7 +32,7 @@ public class ObjectsInstanceCreator {
     offerDTO.setDate(rs.getTimestamp("date"));
     offerDTO.setTimeSlot(rs.getString("time_slot"));
     offerDTO.setIdItem(rs.getInt("id_item"));
-    offerDTO.setVersion(rs.getInt("version"));
+    offerDTO.setVersion(rs.getInt("version_offer"));
     return offerDTO;
   }
 
@@ -86,7 +86,7 @@ public class ObjectsInstanceCreator {
     } catch (SQLException e) {
       System.out.println("No member for the item.");
     }
-    itemDTO.setVersion(rs.getInt("version"));
+    itemDTO.setVersion(rs.getInt("version_item"));
     return itemDTO;
   }
 
@@ -108,7 +108,7 @@ public class ObjectsInstanceCreator {
     //Set Attributes
     itemsTypeDTO.setId(rs.getInt("id_type"));
     itemsTypeDTO.setItemType(StringEscapeUtils.escapeHtml4(rs.getString("item_type")));
-    itemsTypeDTO.setVersion(rs.getInt("version"));
+    itemsTypeDTO.setVersion(rs.getInt("version_items_type"));
     return itemsTypeDTO;
   }
 
@@ -172,7 +172,7 @@ public class ObjectsInstanceCreator {
     } catch (SQLException e) {
       System.out.println("No address selected for this member");
     }
-    memberDTO.setVersion(rs.getInt("version"));
+    memberDTO.setVersion(rs.getInt("version_member"));
     return memberDTO;
   }
 
@@ -202,7 +202,7 @@ public class ObjectsInstanceCreator {
     );
     addressDTO.setPostcode(StringEscapeUtils.escapeHtml4(rs.getString("postcode")));
     addressDTO.setCommune(StringEscapeUtils.escapeHtml4(rs.getString("commune")));
-    addressDTO.setVersion(rs.getInt("version"));
+    addressDTO.setVersion(rs.getInt("version_address"));
     return addressDTO;
   }
 
@@ -224,7 +224,7 @@ public class ObjectsInstanceCreator {
     //Set Attributes
     refusalDTO.setIdRefusal(rs.getInt("id_refusal"));
     refusalDTO.setText(rs.getString("text"));
-    refusalDTO.setVersion(rs.getInt("version"));
+    refusalDTO.setVersion(rs.getInt("version_refusal"));
     return refusalDTO;
   }
 

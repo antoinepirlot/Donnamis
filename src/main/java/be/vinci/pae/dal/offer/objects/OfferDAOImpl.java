@@ -44,7 +44,7 @@ public class OfferDAOImpl implements OfferDAO {
         + "                o.date, "
         + "                o.time_slot, "
         + "                o.id_item,"
-        + "                o.version "
+        + "                o.version_offer "
         + "FROM project_pae.offers o ";
     if (offerStatus != null) {
       query += ", project_pae.items i "
@@ -75,7 +75,7 @@ public class OfferDAOImpl implements OfferDAO {
         "SELECT item.id_item, item.photo, item.offer_status, item.title, "
             + "item.id_member, item.item_description, "
             + "item_type.item_type, item_type.id_type, "
-            + "offer.id_offer,offer.date, offer.time_slot, offer.version"
+            + "offer.id_offer,offer.date, offer.time_slot, offer.version_offer"
             + "member.first_name, member.last_name, member.username "
             + "FROM project_pae.items item, project_pae.items_types item_type, "
             + "     project_pae.offers offer, project_pae.members member "
@@ -111,7 +111,7 @@ public class OfferDAOImpl implements OfferDAO {
 
   @Override
   public List<OfferDTO> getLastTwoOffersOf(ItemDTO itemDTO) {
-    String query = "SELECT id_offer, date, time_slot, id_item, version "
+    String query = "SELECT id_offer, date, time_slot, id_item, version_offer "
         + "FROM project_pae.offers o "
         + "WHERE id_item = ? "
         + "ORDER BY date DESC "
@@ -139,10 +139,10 @@ public class OfferDAOImpl implements OfferDAO {
    * @return true if the offer has been added to the DB
    */
   private boolean addOne(OfferDTO offerDTO) throws SQLException {
-    String query = "INSERT INTO project_pae.offers (date, time_slot, id_item, version) "
+    String query = "INSERT INTO project_pae.offers (date, time_slot, id_item, version_offer) "
         + "VALUES (?, ?, ?, 1); "
         + "UPDATE project_pae.items SET offer_status = '" + DEFAULT_OFFER_STATUS + "', "
-        + "last_offer_date  = ?, version = version + 1 "
+        + "last_offer_date  = ?, version_offer = version_offer + 1 "
         + "WHERE id_item = ?";
     System.out.println(query);
     try (
