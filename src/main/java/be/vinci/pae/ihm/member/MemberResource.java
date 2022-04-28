@@ -256,11 +256,6 @@ public class MemberResource {
       throw new ObjectNotFoundException("No member with the id: " + refusalDTO.getMember().getId());
     }
 
-    if (refusalDTO.getMember().getVersion() != memberUCC.getOneMember(
-        refusalDTO.getMember().getId()).getVersion()) {
-      throw new FatalException("Error with version");
-    }
-
     if (!memberUCC.denyMember(refusalDTO)) {
       throw new FatalException("An unexpected error happened while denying member.");
     }
