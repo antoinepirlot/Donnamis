@@ -142,7 +142,7 @@ public class OfferDAOImpl implements OfferDAO {
     String query = "INSERT INTO project_pae.offers (date, time_slot, id_item, version_offer) "
         + "VALUES (?, ?, ?, 1); "
         + "UPDATE project_pae.items SET offer_status = '" + DEFAULT_OFFER_STATUS + "', "
-        + "last_offer_date  = ?, version_offer = version_offer + 1 "
+        + "last_offer_date  = ?, version_item = version_item + 1 "
         + "WHERE id_item = ?";
     System.out.println(query);
     try (
