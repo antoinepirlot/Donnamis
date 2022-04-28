@@ -3,15 +3,13 @@ import {Redirect} from "../../Router/Router";
 import {showError} from "../../../utils/ShowError";
 import {
   getItem,
-  getItemsTypes,
   modifyTheItem,
   postInterest as postInterestBackEnd
 } from "../../../utils/BackEndRequests";
 import {closeModal, openModal} from "../../../utils/Modals";
-import {showItemsTypes} from "../../../utils/HtmlCode";
 
 const viewOfferHtml = `
-<div id="offerCard" class="card mb-3">
+<div id="offerCard" class="card mb-3" xmlns="http://www.w3.org/1999/html">
   <div class="row no-gutters">
     <div class="col-md" >
       <div class="card-body">
@@ -21,6 +19,7 @@ const viewOfferHtml = `
         <h5 id="descriptionViewItemPage" class="card-text"></h5>
         <h5 id="availabilitiesViewItemPage" class="card-text"></h5>
         <h5 id="pubDateViewItemPage" class="card-text"></h5>
+        <h5 id="oldPubDateViewItemPage" class="card-text"></h5>
         <button id="interestButton" class="btn btn-primary">
       </div>
     </div>
@@ -86,6 +85,7 @@ async function ViewItemPage() {
     }
   } catch (e) {
     console.error(e);
+    showError("Une erreur est survenue.", "danger", errorMessageDiv);
   }
 }
 
@@ -115,10 +115,20 @@ function createModifyItemModal() {
 }
 
 function showItemInfo() {
+  console.table(item)
   lastOffer = item.offerList[0];
   let date = new Date(lastOffer.date);
   date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
       + date.getFullYear();
+  console.table(item.offerList)
+  if (item.offerList.length === 2) {
+    const oldOffer = item.offerList[1];
+    let oldPubDate = new Date(oldOffer.date);
+    oldPubDate = oldPubDate.getDate() + "/" + (oldPubDate.getMonth() + 1) + "/"
+        + oldPubDate.getFullYear();
+    const oldPubDateDiv = document.querySelector("#oldPubDateViewItemPage");
+    oldPubDateDiv.innerHTML = `Date de publication précédente : ${oldPubDate}`;
+  }
 
   const titleDiv = document.querySelector("#titleViewItemPage");
   titleDiv.innerHTML = item.title;
@@ -142,7 +152,7 @@ function showItemInfo() {
   const image = document.querySelector("#imageItem");
   image.innerHTML = `
       <img src="data:image/png;base64,${item.photo}" id="bigImageItem" alt="Card image cap" >
-  `
+  `;
 }
 
 async function showInterestForm(e) {

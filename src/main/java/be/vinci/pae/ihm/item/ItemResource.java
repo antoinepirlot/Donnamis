@@ -181,7 +181,7 @@ public class ItemResource {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    this.offerUCC.getAllOffersOf(itemDTO);
+    this.offerUCC.getLastTwoOffersOf(itemDTO);
     return this.jsonUtil.filterPublicJsonView(itemDTO);
   }
 
@@ -415,7 +415,7 @@ public class ItemResource {
       throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
     }
     for (ItemDTO itemDTO : listItemDTO) {
-      this.offerUCC.getAllOffersOf(itemDTO);
+      this.offerUCC.getLastTwoOffersOf(itemDTO);
     }
     return listItemDTO;
   }
