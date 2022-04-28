@@ -39,6 +39,10 @@ class InterestUCCImplTest {
     Mockito.when(interestDAO.markInterest(interestDTO)).thenReturn(interestMarked);
   }
 
+  private void setInterestDAOInterestExistsReturnValue(boolean interestMarked) {
+    Mockito.when(interestDAO.interestExist(interestDTO)).thenReturn(interestMarked);
+  }
+
   private void setErrrorDALServiceStart() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).start();
@@ -47,7 +51,7 @@ class InterestUCCImplTest {
     }
   }
 
-  private void setErrrorDALServiceCommit() {
+  private void setErrorDALServiceCommit() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).commit();
     } catch (SQLException e) {
@@ -72,8 +76,15 @@ class InterestUCCImplTest {
   @DisplayName("Test mark interest with commit throwing sql exception ")
   @Test
   void testMarkInterestWithCommitThrowingSQLException() {
-    this.setErrrorDALServiceCommit();
+    this.setErrorDALServiceCommit();
     assertThrows(FatalException.class, () -> interestUCC.markInterest(interestDTO));
+  }
+
+  @DisplayName("Test interest exist with successfully connection")
+  @Test
+  void testMarkInterestExistsWithSuccessfullyConnection() {
+    this.setInterestDAOInterestExistsReturnValue(true);
+    assertTrue(interestUCC.interestExist(interestDTO));
   }
 
 }
