@@ -89,7 +89,8 @@ async function login(e) {
     await Navbar();
   } catch (error) {
     console.error("LoginPage::error: ", error);
-    showError("Une erreur est survenue.", "danger", loginMessage);
+    showError("Une erreur est survenue. Vérifiez votre connexion internet.",
+        "danger", loginMessage);
   }
 }
 
