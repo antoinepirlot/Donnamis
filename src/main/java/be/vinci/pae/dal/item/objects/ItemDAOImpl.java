@@ -225,7 +225,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "                m.username, "
         + "                m.last_name, "
         + "                m.first_name,"
-        + "                m.version_item "
+        + "                m.version_member "
         + "FROM project_pae.items i, "
         + "     project_pae.members m, "
         + "     project_pae.items_types it, "
