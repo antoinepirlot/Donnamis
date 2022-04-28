@@ -34,7 +34,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "                i.item_description, "
         + "                i.photo, "
         + "                i.title, "
-        + "                i.version_item"
+        + "                i.version_item, "
         + "                i.offer_status, "
         + "                i.last_offer_date, "
         + "                it.id_type, "
