@@ -5,6 +5,9 @@ import {
   confirmInscription,
   denyMember,
   getAllMembers
+  getAllMembers,
+  getOneMember,
+  isAdmin
 } from "../../../utils/BackEndRequests";
 import {Redirect} from "../../Router/Router";
 import {isAdmin} from "../../../utils/session";
@@ -110,12 +113,15 @@ async function showRegisteredMember(member) {
           isAdminButtonChecked = button.checked;
         }
       });
-      const member = {
+
+      const member = getOneMember(confirmButton.value);
+
+      const confirmMember = {
         id: confirmButton.value,
         isAdmin: isAdminButtonChecked,
         version: 1
       };
-      await confirmInscription(member);
+      await confirmInscription(confirmMember);
       Redirect("/list_member");
     });
   });
@@ -126,10 +132,10 @@ async function showRegisteredMember(member) {
     denyButton.addEventListener("click", async function () {
       const refusalText = document.querySelector("#refusalText").value;
       //Confirm the registration (Click on the button)
+
       const refusal = {
         member: member,
         text: refusalText,
-        version: 1
       };
       await denyMember(refusal);
       Redirect("/list_member");
@@ -163,12 +169,15 @@ async function showDeniedMember(member) {
           isAdminButtonChecked = button.checked;
         }
       });
-      const member = {
+
+      const member = getOneMember(confirmButton.value);
+
+      const confirmMember = {
         id: confirmButton.value,
         isAdmin: isAdminButtonChecked,
-        version: 1
+        version: member.version
       };
-      await confirmInscription(member);
+      await confirmInscription(confirmMember);
       Redirect("/list_member");
     });
   }

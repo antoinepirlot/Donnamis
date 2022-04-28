@@ -2,6 +2,7 @@ import {
   cancelOffer as cancelOfferBackEnd,
   chooseRecipient as chooseRecpientBackEnd,
   getInterestedMembers,
+  getItem,
   getMyItems,
   markItemAs as markItemAsaBackEnd,
   offerAgain as offerAgainBackEnd
@@ -198,10 +199,10 @@ async function showButtons(items) {
 async function offerAgain(e) {
   e.preventDefault();
   const timeSlot = document.querySelector("#timeSlotFormOfferAgain").value;
+
   const offer = {
     idItem: idItem,
     timeSlot: timeSlot,
-    version: 1
   }
   try {
     await offerAgainBackEnd(offer);
@@ -238,15 +239,18 @@ async function chooseRecipient(e) {
 async function markItemAs(given) {
   const errorDiv = document.querySelector("#errorMessageMyItemsPage");
   showError("Le changement est en cours...", "info", errorDiv);
-  const item = {
+
+  const item = getItem(idItem);
+
+  const itemMark = {
     id: idItem,
     member: {
       id: getPayload().id
     },
-    version: 1
+    version: item.version
   }
   try {
-    await markItemAsaBackEnd(given, item);
+    await markItemAsaBackEnd(given, itemMark);
     showError("L'objet à bien été marqué comme donné.", "success", errorDiv);
     await MyItemsPage();
   } catch (e) {
