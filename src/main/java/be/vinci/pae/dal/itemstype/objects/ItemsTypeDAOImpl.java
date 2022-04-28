@@ -24,7 +24,7 @@ public class ItemsTypeDAOImpl implements ItemsTypeDAO {
   @Override
   public List<ItemsTypeDTO> getAll() {
     List<ItemsTypeDTO> itemsTypesToReturn = new ArrayList<>();
-    String query = "SELECT id_type, item_type "
+    String query = "SELECT id_type, item_type, version "
         + "FROM project_pae.items_types;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       try (ResultSet rs = ps.executeQuery()) {
@@ -42,7 +42,7 @@ public class ItemsTypeDAOImpl implements ItemsTypeDAO {
 
   @Override
   public boolean exists(ItemsTypeDTO itemsTypeDTO) {
-    String query = "SELECT DISTINCT item_type "
+    String query = "SELECT DISTINCT item_type, version "
         + "FROM project_pae.items_types "
         + "WHERE item_type = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
@@ -57,8 +57,8 @@ public class ItemsTypeDAOImpl implements ItemsTypeDAO {
 
   @Override
   public boolean addItemsType(ItemsTypeDTO itemsTypeDTO) {
-    String query = "INSERT INTO project_pae.items_types (item_type) "
-        + "VALUES (?);";
+    String query = "INSERT INTO project_pae.items_types (item_type, version) "
+        + "VALUES (?, 1);";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setString(1, StringEscapeUtils.escapeHtml4(itemsTypeDTO.getItemType()));
       return ps.executeUpdate() != 0;

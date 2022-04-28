@@ -43,7 +43,8 @@ public class OfferDAOImpl implements OfferDAO {
     String query = "SELECT o.id_offer, "
         + "                o.date, "
         + "                o.time_slot, "
-        + "                o.id_item "
+        + "                o.id_item,"
+        + "                o.version "
         + "FROM project_pae.offers o ";
     if (offerStatus != null) {
       query += ", project_pae.items i "
@@ -74,7 +75,7 @@ public class OfferDAOImpl implements OfferDAO {
         "SELECT item.id_item, item.photo, item.offer_status, item.title, "
             + "item.id_member, item.item_description, "
             + "item_type.item_type, item_type.id_type, "
-            + "offer.id_offer,offer.date, offer.time_slot,"
+            + "offer.id_offer,offer.date, offer.time_slot, offer.version"
             + "member.first_name, member.last_name, member.username "
             + "FROM project_pae.items item, project_pae.items_types item_type, "
             + "     project_pae.offers offer, project_pae.members member "
@@ -110,7 +111,7 @@ public class OfferDAOImpl implements OfferDAO {
 
   @Override
   public List<OfferDTO> getLastTwoOffersOf(ItemDTO itemDTO) {
-    String query = "SELECT id_offer, date, time_slot, id_item "
+    String query = "SELECT id_offer, date, time_slot, id_item, version "
         + "FROM project_pae.offers o "
         + "WHERE id_item = ? "
         + "ORDER BY date DESC "
@@ -138,10 +139,10 @@ public class OfferDAOImpl implements OfferDAO {
    * @return true if the offer has been added to the DB
    */
   private boolean addOne(OfferDTO offerDTO) throws SQLException {
-    String query = "INSERT INTO project_pae.offers (date, time_slot, id_item) "
-        + "VALUES (?, ?, ?); "
+    String query = "INSERT INTO project_pae.offers (date, time_slot, id_item, version) "
+        + "VALUES (?, ?, ?, 1); "
         + "UPDATE project_pae.items SET offer_status = '" + DEFAULT_OFFER_STATUS + "', "
-        + "last_offer_date  = ? "
+        + "last_offer_date  = ?, version = version + 1 "
         + "WHERE id_item = ?";
     System.out.println(query);
     try (
@@ -155,36 +156,5 @@ public class OfferDAOImpl implements OfferDAO {
       return ps.executeUpdate() != 0;
     }
   }
-
-  //  /**
-  //   * Add the item associated with the offer'id to the DB.
-  //   *
-  //   * @param itemDTO the item to add into the db
-  //   * @return true if the item has been added, otherwise false
-  //   */
-  //  private boolean addItem(ItemDTO itemDTO) {
-  //    String query = "INSERT INTO project_pae.items (item_description, id_type, id_member, "
-  //        + "photo, title, offer_status) "
-  //        + "VALUES (?, ?, ?, ?, ?, ?);";
-  //    try (
-  //        PreparedStatement ps = dalBackendService.getPreparedStatement(query)
-  //    ) {
-  //      ps.setString(1, StringEscapeUtils.escapeHtml4(itemDTO.getItemDescription()));
-  //      ps.setInt(2, itemDTO.getItemType().getId());
-  //      ps.setInt(3, itemDTO.getMember().getId());
-  //      ps.setString(4, StringEscapeUtils.escapeHtml4(itemDTO.getPhoto()));
-  //      ps.setString(5, StringEscapeUtils.escapeHtml4(itemDTO.getTitle()));
-  //      ps.setString(6, StringEscapeUtils.escapeHtml4(itemDTO.getOfferStatus()));
-  //      int result = ps.executeUpdate();
-  //      if (result != 0) {
-  //        System.out.println("Ajout de l'item réussi");
-  //        return true;
-  //      }
-  //    } catch (SQLException e) {
-  //      e.printStackTrace();
-  //    }
-  //    return false;
-  //  }
-
 
 }

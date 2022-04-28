@@ -13,20 +13,36 @@ public class ItemsTypeImpl implements ItemsType {
   private int id;
   @JsonView(Views.Public.class)
   private String itemType;
+  @JsonView(Views.Public.class)
+  private int version;
 
+  @Override
   public int getId() {
     return id;
   }
 
+  @Override
   public void setId(int id) {
     this.id = id;
   }
 
+  @Override
   public String getItemType() {
     return itemType;
   }
 
+  @Override
   public void setItemType(String itemType) {
     this.itemType = itemType;
+  }
+
+  @Override
+  public int getVersion() {
+    return version;
+  }
+
+  @Override
+  public void setVersion(int version) {
+    this.version = version;
   }
 }

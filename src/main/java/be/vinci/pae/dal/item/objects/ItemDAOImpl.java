@@ -41,7 +41,8 @@ public class ItemDAOImpl implements ItemDAO {
         + "                m.id_member, "
         + "                m.username, "
         + "                m.last_name, "
-        + "                m.first_name "
+        + "                m.first_name, "
+        + "                m.version "
         + "FROM project_pae.items i, "
         + "     project_pae.items_types it, "
         + "     project_pae.members m "
@@ -71,7 +72,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "SELECT i.id_item, i.item_description, i.photo, i.title, i.offer_status, "
         + "       i.last_offer_date, "
         + "       it.id_type, it.item_type, i.last_offer_date, "
-        + "       m.id_member, m.username, m.last_name, m.first_name "
+        + "       m.id_member, m.username, m.last_name, m.first_name, m.version "
         + "FROM project_pae.items i, "
         + "     project_pae.items_types it, "
         + "     project_pae.members m "
@@ -98,8 +99,8 @@ public class ItemDAOImpl implements ItemDAO {
         + "WHERE item_type = ? ";
     String query =
         "INSERT INTO project_pae.items (item_description, id_type, id_member, photo, "
-            + "title, offer_status, last_offer_date) "
-            + "VALUES (?, (" + selectIdTypeQuery + "), ?, ?, ?, ?, ? ) "
+            + "title, offer_status, last_offer_date, version) "
+            + "VALUES (?, (" + selectIdTypeQuery + "), ?, ?, ?, ?, ?, 1) "
             + "RETURNING id_item;";
     try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
       //Select query
@@ -123,7 +124,7 @@ public class ItemDAOImpl implements ItemDAO {
   @Override
   public ItemDTO cancelItem(int id) {
     String query = "UPDATE project_pae.items "
-        + "SET offer_status = 'cancelled' "
+        + "SET offer_status = 'cancelled', version = version + 1 "
         + "WHERE id_item = ? "
         + "RETURNING *";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
@@ -146,11 +147,12 @@ public class ItemDAOImpl implements ItemDAO {
         + "WHERE id_item = ? "
         + "ORDER BY date DESC "
         + "LIMIT 1)";
-    String query = "UPDATE project_pae.items SET item_description = ?, photo = ? "
+    String query = "UPDATE project_pae.items SET item_description = ?, photo = ?, "
+        + "version = version + 1 "
         + "WHERE id_item = ?; "
         + "UPDATE project_pae.offers "
         + "SET time_slot = ? "
-        + "WHERE id_item = "+selectLastIdOffer+";";
+        + "WHERE id_item = " + selectLastIdOffer + ";";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setString(1, itemDTO.getItemDescription());
       preparedStatement.setString(2, itemDTO.getPhoto());
@@ -178,7 +180,8 @@ public class ItemDAOImpl implements ItemDAO {
         + "                m.id_member, "
         + "                m.username, "
         + "                m.last_name, "
-        + "                m.first_name "
+        + "                m.first_name, "
+        + "                m.version "
         + "FROM project_pae.items i, "
         + "     project_pae.items_types it, "
         + "     project_pae.members m "
@@ -214,7 +217,8 @@ public class ItemDAOImpl implements ItemDAO {
         + "                m.id_member, "
         + "                m.username, "
         + "                m.last_name, "
-        + "                m.first_name "
+        + "                m.first_name,"
+        + "                m.version "
         + "FROM project_pae.items i, "
         + "     project_pae.members m, "
         + "     project_pae.items_types it, "
@@ -306,7 +310,8 @@ public class ItemDAOImpl implements ItemDAO {
         + "                m.id_member, "
         + "                m.username, "
         + "                m.last_name, "
-        + "                m.first_name "
+        + "                m.first_name, "
+        + "                m.version"
         + "FROM project_pae.items i, "
         + "     project_pae.items_types it, "
         + "     project_pae.members m "
@@ -341,6 +346,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "       i.title, "
         + "       i.offer_status, "
         + "       i.last_offer_date, "
+        + "       i.version, "
         + "       it.id_type, "
         + "       it.item_type "
         + "FROM project_pae.items i, "
@@ -384,10 +390,10 @@ public class ItemDAOImpl implements ItemDAO {
         + "  AND r.received = ? "
         + "  AND i.id_member = ?";
     String query = "UPDATE project_pae.items "
-        + "SET offer_status = ? "
+        + "SET offer_status = ?, version = version + 1 "
         + "WHERE id_item = ?; "
         + "UPDATE project_pae.recipients "
-        + "SET received = ? "
+        + "SET received = ?, version = version + 1 "
         + "WHERE id_member = (" + selectIdMember + ") "
         + "  AND id_item = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
@@ -409,7 +415,7 @@ public class ItemDAOImpl implements ItemDAO {
   @Override
   public boolean addPhoto(int idItem, String photoName) {
     String query = "UPDATE project_pae.items "
-        + "SET photo = ? "
+        + "SET photo = ?, version = version + 1 "
         + "WHERE id_item = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setString(1, photoName);

@@ -107,13 +107,13 @@ async function showRegisteredMember(member) {
       let isAdminButtonChecked;
       isAdminButtons.forEach(button => {
         if (button.value === confirmButton.value) {
-          console.log(button.checked)
           isAdminButtonChecked = button.checked;
         }
       });
       const member = {
         id: confirmButton.value,
-        isAdmin: isAdminButtonChecked
+        isAdmin: isAdminButtonChecked,
+        version: 1
       };
       await confirmInscription(member);
       Redirect("/list_member");
@@ -128,7 +128,8 @@ async function showRegisteredMember(member) {
       //Confirm the registration (Click on the button)
       const refusal = {
         member: member,
-        text: refusalText
+        text: refusalText,
+        version: 1
       };
       await denyMember(refusal);
       Redirect("/list_member");
@@ -164,7 +165,8 @@ async function showDeniedMember(member) {
       });
       const member = {
         id: confirmButton.value,
-        isAdmin: isAdminButtonChecked
+        isAdmin: isAdminButtonChecked,
+        version: 1
       };
       await confirmInscription(member);
       Redirect("/list_member");

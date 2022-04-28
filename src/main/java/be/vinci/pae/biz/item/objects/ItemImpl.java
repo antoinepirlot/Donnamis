@@ -36,6 +36,8 @@ public class ItemImpl implements Item {
   private List<Offer> offerList = new ArrayList<>();
   @JsonView(Views.Public.class)
   private Offer lastOffer;
+  @JsonView(Views.Public.class)
+  private int version;
 
   public ItemImpl() {
   }
@@ -135,6 +137,16 @@ public class ItemImpl implements Item {
   @Override
   public void addOffer(Offer offer) {
     this.offerList.add(offer);
+  }
+
+  @Override
+  public int getVersion() {
+    return version;
+  }
+
+  @Override
+  public void setVersion(int version) {
+    this.version = version;
   }
 
   @Override

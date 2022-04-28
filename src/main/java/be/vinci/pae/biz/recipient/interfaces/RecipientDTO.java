@@ -23,4 +23,8 @@ public interface RecipientDTO {
   String getReceived();
 
   void setReceived(String received);
+
+  int getVersion();
+
+  void setVersion(int version);
 }

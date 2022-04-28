@@ -1,6 +1,6 @@
 import {
   cancelOffer as cancelOfferBackEnd,
-  chooseRecipient as chooseRecpientBackEnd, getImageByItemId,
+  chooseRecipient as chooseRecpientBackEnd,
   getInterestedMembers,
   getMyItems,
   markItemAs as markItemAsaBackEnd,
@@ -200,7 +200,8 @@ async function offerAgain(e) {
   const timeSlot = document.querySelector("#timeSlotFormOfferAgain").value;
   const offer = {
     idItem: idItem,
-    timeSlot: timeSlot
+    timeSlot: timeSlot,
+    version: 1
   }
   try {
     await offerAgainBackEnd(offer);
@@ -241,7 +242,8 @@ async function markItemAs(given) {
     id: idItem,
     member: {
       id: getPayload().id
-    }
+    },
+    version: 1
   }
   try {
     await markItemAsaBackEnd(given, item);

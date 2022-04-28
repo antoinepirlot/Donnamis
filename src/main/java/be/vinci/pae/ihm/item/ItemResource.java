@@ -200,9 +200,11 @@ public class ItemResource {
       throw new WrongBodyDataException("idMember < 0 for get assigned items");
     }
     List<ItemDTO> itemDTOList = this.itemUCC.getAssignedItems(idMember);
-    if (itemDTOList == null) {
-      throw new ObjectNotFoundException("No assigned items");
-    }
+
+    //Si aucun objet assigné ==> INUTILE
+    //if (itemDTOList == null) {
+    //  throw new ObjectNotFoundException("No assigned items");
+    //}
     for (ItemDTO itemDTO : itemDTOList) {
       try {
         itemDTO.setPhoto(transformImageToBase64(itemDTO));
@@ -325,6 +327,7 @@ public class ItemResource {
   @Consumes(MediaType.APPLICATION_JSON)
   public void markItemAsGiven(ItemDTO itemDTO) {
     this.checkMarkItem(itemDTO);
+
     if (!this.itemUCC.markItemAsGiven(itemDTO)) {
       throw new FatalException("marking item " + itemDTO.getId() + " as given failed.");
     }
@@ -390,6 +393,9 @@ public class ItemResource {
         || itemDTO.getLastOffer() == null || itemDTO.getLastOffer().getTimeSlot() == null
         || itemDTO.getLastOffer().getTimeSlot().isBlank()) {
       throw new WrongBodyDataException("itemDTO not complete.");
+    }
+    if (itemDTO.getVersion() != itemUCC.getOneItem(itemDTO.getId()).getVersion()) {
+      throw new FatalException("Error with version");
     }
     if (this.itemUCC.getOneItem(itemDTO.getId()) == null) {
       throw new ObjectNotFoundException("No item with the id : " + itemDTO.getId());
@@ -459,6 +465,10 @@ public class ItemResource {
     }
     if (existingItem.getOfferStatus().equals("given")) {
       throw new ForbiddenException("The item " + itemDTO.getId() + " is already given.");
+    }
+
+    if (itemDTO.getVersion() != itemUCC.getOneItem(itemDTO.getId()).getVersion()) {
+      throw new FatalException("Error with version");
     }
   }
 }

@@ -25,6 +25,8 @@ public class InterestImpl implements Interest {
   private Member member;
   @JsonView(Views.Public.class)
   private Timestamp date;
+  @JsonView(Views.Public.class)
+  private int version;
 
   public InterestImpl() {
 
@@ -78,6 +80,16 @@ public class InterestImpl implements Interest {
   @Override
   public void setDate(Timestamp date) {
     this.date = date;
+  }
+
+  @Override
+  public int getVersion() {
+    return version;
+  }
+
+  @Override
+  public void setVersion(int version) {
+    this.version = version;
   }
 
   @Override

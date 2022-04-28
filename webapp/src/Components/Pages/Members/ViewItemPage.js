@@ -200,7 +200,8 @@ async function postInterest(e) {
     id: getPayload().id
   };
   if (callWanted) {
-    memberInterested.phoneNumber = document.querySelector("#phoneNumberInput").value;
+    memberInterested.phoneNumber = document.querySelector(
+        "#phoneNumberInput").value;
   }
   const interest = {
     callWanted: callWanted,
@@ -234,14 +235,14 @@ async function modifyItem(e) {
   const itemDescription = document.querySelector("#itemDescriptionForm").value;
   const photo = document.querySelector("#photoForm").value;
   const timeSlot = document.querySelector("#timeSlotModifyForm").value;
-  console.log(timeSlot)
   const newItem = {
     id: item.id,
     itemDescription: itemDescription,
     photo: photo,
     lastOffer: {
       timeSlot: timeSlot
-    }
+    },
+    version: item.version
   }
   try {
     await modifyTheItem(newItem);

@@ -1,7 +1,10 @@
 import {getObject, getPayload,} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
 import {showError} from "../../../utils/ShowError";
-import {modifyMember as modifyMemberBackEnd} from "../../../utils/BackEndRequests";
+import {
+  getOneMember,
+  modifyMember as modifyMemberBackEnd
+} from "../../../utils/BackEndRequests";
 
 const viewProfileHtml = `
   <div class="bg-info d-inline-flex d-flex flex-column rounded w-50 p-3">
@@ -74,7 +77,8 @@ async function modifyProfile(e) {
   e.preventDefault();
   const errorMessage = document.querySelector("#errorMessage");
   const password = document.querySelector("#passwordForm").value;
-  const passwordConfirmation = document.querySelector("#passwordConfirmationForm").value;
+  const passwordConfirmation = document.querySelector(
+      "#passwordConfirmationForm").value;
   if (password !== passwordConfirmation) {
     const message = "Les mots de passes ne sont pas identiques. Les modification n'ont pas été acceptées?";
     showError(message, "danger", errorMessage);
@@ -84,17 +88,19 @@ async function modifyProfile(e) {
   const username = document.querySelector("#usernameForm").value;
   const phoneNumber = document.querySelector("#phoneForm").value;
 
+  const member = getOneMember(getPayload().id);
 
-  const member = {
+  const memberModify = {
     id: getPayload().id,
     username: username,
     password: password,
     lastName: lastName,
     firstName: firstName,
-    phoneNumber: phoneNumber
+    phoneNumber: phoneNumber,
+    version: member.version
   };
   try {
-    await modifyMemberBackEnd(member);
+    await modifyMemberBackEnd(memberModify);
     showError("Modification validé", "success", errorMessage);
   } catch (error) {
     console.error(error);

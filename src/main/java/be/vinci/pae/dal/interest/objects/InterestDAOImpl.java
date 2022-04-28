@@ -17,11 +17,12 @@ public class InterestDAOImpl implements InterestDAO {
 
   @Override
   public boolean markInterest(InterestDTO interestDTO) {
-    String query = "INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date) "
-        + "VALUES (?, ?, ?, ?); ";
+    String query =
+        "INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version) "
+            + "VALUES (?, ?, ?, ?, 1); ";
     if (interestDTO.isCallWanted()) {
       query += "UPDATE project_pae.members "
-          + "SET phone = ? "
+          + "SET phone = ?, version = version + 1 "
           + "WHERE id_member = ?;";
     }
     try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
