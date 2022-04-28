@@ -74,7 +74,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "SELECT i.id_item, i.item_description, i.photo, i.title, i.offer_status, "
         + "       i.last_offer_date, "
         + "       it.id_type, it.item_type, it.version_items_type, "
-        + "       i.last_offer_date, i.version_item "
+        + "       i.last_offer_date, i.version_item, "
         + "       m.id_member, m.username, m.last_name, m.first_name, m.version_member "
         + "FROM project_pae.items i, "
         + "     project_pae.items_types it, "
@@ -102,7 +102,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "WHERE item_type = ? ";
     String query =
         "INSERT INTO project_pae.items (item_description, id_type, id_member, photo, "
-            + "title, offer_status, last_offer_date, version) "
+            + "title, offer_status, last_offer_date, version_item) "
             + "VALUES (?, (" + selectIdTypeQuery + "), ?, ?, ?, ?, ?, 1) "
             + "RETURNING id_item;";
     try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
@@ -220,12 +220,12 @@ public class ItemDAOImpl implements ItemDAO {
         + "                i.version_item, "
         + "                it.id_type, "
         + "                it.item_type,"
-        + "                it.version_items_type "
+        + "                it.version_items_type, "
         + "                m.id_member, "
         + "                m.username, "
         + "                m.last_name, "
         + "                m.first_name,"
-        + "                m.version "
+        + "                m.version_item "
         + "FROM project_pae.items i, "
         + "     project_pae.members m, "
         + "     project_pae.items_types it, "
