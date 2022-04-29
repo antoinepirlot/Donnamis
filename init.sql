@@ -117,38 +117,87 @@ CREATE TABLE project_pae.recipients
 --Mot de passe : password
 INSERT INTO project_pae.members (username, password, last_name, first_name, is_admin, state, phone,
                                  version_member)
-VALUES ('caro', '$2a$10$xakKOBvypQxUzlYFc9Nhz.fJ6voiJsnGzKpmelMZnqJWB5GLTibGq', 'Line',
-        'Caroline', false, 'denied', NULL, 1);
+VALUES ('caro', '$2a$10$tfvcdll/tXK3fZRjmhQUNepc/StPcsWkNPhEhM8lfCsCAAQsDyEH6', 'Line', 'Caroline',
+        true, 'confirmed', NULL, 1);
+
 INSERT INTO project_pae.members (username, password, last_name, first_name, is_admin, state, phone,
                                  version_member)
-VALUES ('achil', '$2a$10$HNgw3caDAFIA4vr4U6sW7OOSZORCLLf./yQOnYxYvbWir88ZTDzZ6', 'Ile',
-        'Achille', false, 'registered', NULL, 1);
+VALUES ('achil', '$2a$10$tfvcdll/tXK3fZRjmhQUNepc/StPcsWkNPhEhM8lfCsCAAQsDyEH6', 'Ile', 'Achille',
+        false, 'denied', NULL, 1);
+
 INSERT INTO project_pae.members (username, password, last_name, first_name, is_admin, state, phone,
                                  version_member)
-VALUES ('bazz', '$2a$10$1biHuxC0nR6Vvjyj8NW9XedY3LCCcwbQyAkCUG8IJmfte/OU4Kxfm', 'Ile', 'Basile',
+VALUES ('bazz', '$2a$10$tfvcdll/tXK3fZRjmhQUNepc/StPcsWkNPhEhM8lfCsCAAQsDyEH6', 'Ile', 'Basile',
         false, 'confirmed', NULL, 1);
+
 INSERT INTO project_pae.members (username, password, last_name, first_name, is_admin, state, phone,
                                  version_member)
-VALUES ('bri', '$2a$10$gafrRJ.P4GA8TkHkcCgPjuB.U5okgAOn3jXeA/HPAe7xqE89PYuhy', 'Lehmann',
+VALUES ('bri', '$2a$10$ZHOKQPhQWXumBaL9n5Lc1.Ib0P4NhRCqtC6gHRPcmpz4p5.Nd1sDq', 'Lehmann',
         'Brigitte', true, 'confirmed', NULL, 1);
+
+INSERT INTO project_pae.members (username, password, last_name, first_name, is_admin, state, phone,
+                                 version_member)
+VALUES ('theo', '$2a$10$UbT5OFs15x0NMGX9wyLqJ.Stdax1i5Er2vUGPhM4AgEwwDoIrpGkK', 'Ile', 'Théophile',
+        false, 'confirmed', NULL, 1);
+
+INSERT INTO project_pae.members (username, password, last_name, first_name, is_admin, state, phone,
+                                 version_member)
+VALUES ('emi', '$2a$10$a7NZyB3bP7mdDejWrX9odurqJLdPxsOWWLuin3hhonMTvP5evyJsS', 'Ile', 'Emile',
+        false, 'denied', NULL, 1);
+
+INSERT INTO project_pae.members (username, password, last_name, first_name, is_admin, state, phone,
+                                 version_member)
+VALUES ('cora', '$2a$10$dbFNL.1zpe4hZ2jWNv6owOre0sNFlarNaWeRApiYaq/mIzzB2aBkm', 'Line', 'Coralie',
+        false, 'denied', NULL, 1);
+
+INSERT INTO project_pae.members (username, password, last_name, first_name, is_admin, state, phone,
+                                 version_member)
+VALUES ('charline', '$2a$10$ecRQNuMsNRxjuNagjEpPvue5ld8QN5T9N6Q8hlzhM9M8nJflmBrw.', 'Line',
+        'Charles', false, 'registered', NULL, 1);
+
 
 -- ADDRESS TABLE
 INSERT INTO project_pae.addresses (street, building_number, unit_number, postcode, commune,
                                    id_member, version_address)
-VALUES ('Rue de l’Eglise', '11', 'B1', '4987', 'Stroumont', 1, 1);
-INSERT INTO project_pae.addresses (street, building_number, postcode, commune, id_member,
-                                   version_address)
-VALUES ('Rue de Renkin', '7', '4800', 'Verviers', 2, 1);
+VALUES ('Rue de l''Eglise', '11', 'B1', '4987', 'Stoumont', 1, 1);
+
+INSERT INTO project_pae.addresses (street, building_number, unit_number, postcode, commune,
+                                   id_member, version_address)
+VALUES ('Rue de Renkin', '7', NULL, '4800', 'Verviers', 2, 1);
+
 INSERT INTO project_pae.addresses (street, building_number, unit_number, postcode, commune,
                                    id_member, version_address)
 VALUES ('Rue Haute Folie', '6', 'A103', '4800', 'Verviers', 3, 1);
-INSERT INTO project_pae.addresses (street, building_number, postcode, commune, id_member,
-                                   version_address)
-VALUES ('Haut-Vinâve', '13', '4845', 'Jalhay', 4, 1);
+
+INSERT INTO project_pae.addresses (street, building_number, unit_number, postcode, commune,
+                                   id_member, version_address)
+VALUES ('Haut-Vinâve', '13', NULL, '4845', 'Jalhay', 4, 1);
+
+INSERT INTO project_pae.addresses (street, building_number, unit_number, postcode, commune,
+                                   id_member, version_address)
+VALUES ('Rue de Rekin', '7', NULL, '4800', 'Verviers', 5, 1);
+
+INSERT INTO project_pae.addresses (street, building_number, unit_number, postcode, commune,
+                                   id_member, version_address)
+VALUES ('Rue de Verviers', '47', NULL, '4000', 'Liège', 6, 1);
+
+INSERT INTO project_pae.addresses (street, building_number, unit_number, postcode, commune,
+                                   id_member, version_address)
+VALUES ('Rue de salpêtré', '789', 'Bis', '1040', 'Bruxelles', 7, 1);
+
+INSERT INTO project_pae.addresses (street, building_number, unit_number, postcode, commune,
+                                   id_member, version_address)
+VALUES ('Rue des Minières', '45', 'Ter', '4800', 'Verviers', 8, 1);
 
 -- REFUSALS TABLE
 INSERT INTO project_pae.refusals (text, id_member, version_refusal)
-VALUES ('Il faudra patienter un jour ou deux.', 1, 1);
+VALUES ('L''application n''est pas encore ouverte à tous.', 2, 1);
+
+INSERT INTO project_pae.refusals (text, id_member, version_refusal)
+VALUES ('L''application n''est pas encore ouverte à tous.', 6, 1);
+
+INSERT INTO project_pae.refusals (text, id_member, version_refusal)
+VALUES ('Vous devez encore attendre quelques jours.', 7, 1);
 
 -- ITEMS TYPE TABLE
 INSERT INTO project_pae.items_types (item_type, version_items_type)
@@ -178,26 +227,153 @@ VALUES ('Vêtements', 1);
 -- 12
 
 -- ITEMS TABLE
-INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title,
-                               offer_status, last_offer_date, version_item)
-VALUES ('Décorations de Noël de couleur rouge', 3, 3, 'christmas-1869533_640.png', 'Titre',
-        'donated',
-        '21-03-22', 1);
-INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title,
-                               offer_status, last_offer_date, version_item)
-VALUES ('Cadre représentant un chien noir sur un fond noir.', 3, 3, 'dog-4118585_640.jpg', 'Titre',
+INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title, offer_status,
+                               last_offer_date, version_item)
+VALUES ('Décorations de Noël de couleur rouge', 3, 3, 'christmas-1869533_640.png', 'Déco',
+        'cancelled', '21-03-22', 1);
+
+INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title, offer_status,
+                               last_offer_date, version_item)
+VALUES ('Cadre représentant un chien noir sur un fond noir.', 3, 3, 'dog-4118585_640.jpg', 'Cadre',
         'donated', '25-03-22', 1);
-INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title,
-                               offer_status, last_offer_date, version_item)
+
+INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title, offer_status,
+                               last_offer_date, version_item)
 VALUES ('Ancien bureau d’écolier.', 8, 4, 'BureauEcolier-7.JPG', 'Titre', 'donated', '25-03-22', 1);
+
+INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title, offer_status,
+                               last_offer_date, version_item)
+VALUES ('Brouette à deux roues à l’avant. Améliore la stabilité et ne fatigue pas le dos', 7, 5,
+        'wheelbarrows-4566619_640.jpg', 'Brouette', 'donated', '28-03-2022', 1);
+
+INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title, offer_status,
+                               last_offer_date, version_item)
+VALUES ('Scie sur perche Gardena', 7, 5, NULL, 'Scie', 'donated', '28-03-2022', 1);
+
+INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title, offer_status,
+                               last_offer_date, version_item)
+VALUES ('Table jardin et deux chaises en bois', 8, 5, 'Table-jardin.jpg', 'Scie', 'donated',
+        '29-03-2022', 1);
+
+INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title, offer_status,
+                               last_offer_date, version_item)
+VALUES ('Table bistro', 8, 5, 'table-bistro.jpg', 'Table', 'donated', '20-03-2022', 1);
+
+INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title, offer_status,
+                               last_offer_date, version_item)
+VALUES ('Table bistro ancienne de couleur bleue', 8, 1, 'table-bistro-carree-bleue.jpg', 'Table',
+        'donated', '14-04-2022', 1);
+
+INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title, offer_status,
+                               last_offer_date, version_item)
+VALUES ('Tableau noir pour enfant', 4, 5, 'Tableau.jpg', 'Tableau', 'assigned', '14-04-2022', 1);
+
+INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title, offer_status,
+                               last_offer_date, version_item)
+VALUES ('Cadre cottage naïf', 3, 5, 'cadre-cottage-1178704_640.jpg', 'Cadre', 'donated',
+        '21-04-2022', 1);
+
+INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title, offer_status,
+                               last_offer_date, version_item)
+VALUES ('Tasse de couleur claire rose & mauve', 6, 5, 'tasse-garden-5037113_640.jpg', 'Tasse',
+        'donated', '21-04-2022', 1);
+
+INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title, offer_status,
+                               last_offer_date, version_item)
+VALUES ('Pâquerettes dans pots rustiques', 9, 1, 'pots-daisy-181905_640.jpg', 'Pâquerettes',
+        'assigned', '21-04-2022', 1);
+
+INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title, offer_status,
+                               last_offer_date, version_item)
+VALUES ('Pots en grès pour petites plantes', 9, 1, 'pots-plants-6520443_640.jpg', 'Pot', 'donated',
+        '21-04-2022', 1);
 
 -- OFFERS TABLE
 INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
 VALUES ('21-03-22', 'Mardi de 17h à 22h', 1, 1);
+
 INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
 VALUES ('25-03-22', 'Lundi de 18h à 22h', 2, 1);
+
 INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
 VALUES ('25-03-22', 'Tous les jours de 15h à 18h', 3, 1);
+
+INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
+VALUES ('28-03-22', 'Tous les matins avant 11h30', 4, 1);
+
+INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
+VALUES ('29-03-22', 'Tous les matins avant 11h30', 5, 1);
+
+INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
+VALUES ('29-03-22', 'En semaine, de 20h à 21h', 6, 1);
+
+INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
+VALUES ('30-03-22', 'Lundi de 18h à 20h', 7, 1);
+
+INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
+VALUES ('14-04-22', 'Samedi en journée', 8, 1);
+
+INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
+VALUES ('14-04-22', 'Lundi de 18h à 20h', 9, 1);
+
+INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
+VALUES ('21-04-22', 'Lundi de 18h30 à 20h', 10, 1);
+
+INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
+VALUES ('21-04-22', 'En semaine, de 20h à 21h', 11, 1);
+
+INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
+VALUES ('21-04-22', 'Lundi de 16h à 17h', 12, 1);
+
+INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
+VALUES ('21-04-22', 'Lundi de 16h à 17h', 13, 1);
+
+-- INTEREST TABLE
+INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version_interest)
+VALUES (false, 3, 5, '16-05-2022', 1);
+
+INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version_interest)
+VALUES (false, 3, 3, '17-05-2022', 1);
+
+INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version_interest)
+VALUES (false, 4, 4, '02-05-2022', 1);
+
+INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version_interest)
+VALUES (false, 4, 2, '02-05-2022', 1);
+
+INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version_interest)
+VALUES (false, 4, 1, '02-05-2022', 1);
+
+INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version_interest)
+VALUES (false, 8, 5, '14-05-2022', 1);
+
+INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version_interest)
+VALUES (false, 8, 4, '14-05-2022', 1);
+
+INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version_interest)
+VALUES (false, 9, 1, '16-05-2022', 1);
+
+INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version_interest)
+VALUES (false, 10, 4, '02-05-2022', 1);
+
+INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version_interest)
+VALUES (false, 10, 3, '02-05-2022', 1);
+
+INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version_interest)
+VALUES (false, 10, 1, '02-05-2022', 1);
+
+INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version_interest)
+VALUES (false, 11, 3, '16-05-2022', 1);
+
+INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version_interest)
+VALUES (false, 11, 1, '16-05-2022', 1);
+
+INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version_interest)
+VALUES (false, 12, 3, '16-05-2022', 1);
+
+-- RECIPIENTS TABLE
+INSERT INTO project_pae.recipients (id_item, id_member, received, version_recipient)
+VALUES (9, 1, false, 1);
 
 -- SELECT
 SELECT m.id_member,
