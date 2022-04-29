@@ -339,7 +339,7 @@ INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, versi
 VALUES (false, 4, 4, '02-05-2022', 1);
 
 INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version_interest)
-VALUES (false, 4, 2, '02-05-2022', 1);
+VALUES (false, 4, 3, '02-05-2022', 1);
 
 INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version_interest)
 VALUES (false, 4, 1, '02-05-2022', 1);
