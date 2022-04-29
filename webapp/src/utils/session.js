@@ -107,7 +107,8 @@ async function checkToken() {
 }
 
 function isAdmin() {
-  return getObject("memberDTO").isAdmin;
+  const member = getObject("memberDTO");
+  return member ? member.isAdmin : undefined;
 }
 
 export {
