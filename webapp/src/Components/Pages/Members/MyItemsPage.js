@@ -126,6 +126,9 @@ async function showButtons(items) {
     offerAgainButton.addEventListener("click", async () => {
       idItem = offerAgainButton.value;
       openModal("#myItemsPageModal", "#myItemsPageModalCloseButton");
+      const item = await getItem(idItem);
+      const timeSlotTextArea = document.querySelector("#timeSlotFormOfferAgain");
+      timeSlotTextArea.innerHTML = item.offerList[0].timeSlot;
       const offerAgainForm = document.querySelector("#offerAgainForm");
       offerAgainForm.addEventListener("submit", await offerAgain);
     })
