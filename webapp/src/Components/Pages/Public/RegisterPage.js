@@ -1,6 +1,6 @@
-import {getPayload,} from "../../../utils/session";
-import {register as registerBackEndRequest} from "../../../utils/BackEndRequests";
-import {Redirect} from "../../Router/Router";
+import {
+  register as registerBackEndRequest
+} from "../../../utils/BackEndRequests";
 import {showError} from "../../../utils/ShowError";
 
 const registerFormHtml = `
@@ -69,10 +69,6 @@ const registerFormHtml = `
  * to "redirect" to a new page
  */
 function RegisterPage() {
-  if (getPayload()) {
-    Redirect("/");
-    return;
-  }
   const page = document.querySelector("#page");
   page.innerHTML = registerFormHtml;
   page.addEventListener("submit", register);
