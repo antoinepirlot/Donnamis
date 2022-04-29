@@ -51,14 +51,24 @@ public class RatingDAOImpl implements RatingDAO {
 
   @Override
   public List<RatingDTO> getAllRatingsOfMember(int idMember) {
-    String query = "SELECT id_rating, "
-        + "                rating, "
-        + "                id_item, "
-        + "                text, "
-        + "                id_member,"
-        + "                version_rating "
-        + "FROM project_pae.ratings "
-        + "WHERE id_member = ?;";
+    String query = "SELECT r.id_rating, "
+        + "                r.rating, "
+        + "                r.id_item, "
+        + "                r.text, "
+        + "                r.id_member,"
+        + "                r.version_rating,"
+        + "                i.id_item, "
+        + "                i.item_description, "
+        + "                i.id_type, "
+        + "                i.id_member, "
+        + "                i.photo, "
+        + "                i.title, "
+        + "                i.offer_status, "
+        + "                i.version_item "
+        + "FROM project_pae.ratings r, "
+        + "     project_pae.items i "
+        + "WHERE r.id_item = i.id_item "
+        + "  AND r.id_member = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setInt(1, idMember);
       try (ResultSet rs = ps.executeQuery()) {

@@ -242,12 +242,17 @@ public class ObjectsInstanceCreator {
     ratingDTO.setId(rs.getInt("id_rating"));
     ratingDTO.setRating(rs.getInt("rating"));
     ratingDTO.setText(rs.getString("text"));
+    ratingDTO.setVersion(rs.getInt("version_rating"));
     try {
       ratingDTO.setMember(createMemberInstance(factory, rs));
     } catch (SQLException e) {
       ratingDTO.setMember(null);
     }
-    ratingDTO.setItem(createItemInstance(factory, rs));
+    try {
+      ratingDTO.setItem(createItemInstance(factory, rs));
+    } catch (SQLException e) {
+      ratingDTO.setItem(null);
+    }
     return ratingDTO;
   }
 }
