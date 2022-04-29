@@ -398,7 +398,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "     project_pae.recipients r "
         + "WHERE r.id_item = i.id_item "
         + "  AND r.received = ? "
-        + "  AND i.id_member = ?";
+        + "  AND i.id_item = ?";
     String query = "UPDATE project_pae.items "
         + "SET offer_status = ?, version_item = version_item + 1 "
         + "WHERE id_item = ?; "
