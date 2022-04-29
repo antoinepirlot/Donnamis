@@ -208,12 +208,17 @@ async function postInterest(e) {
     member: memberInterested,
     date: date
   };
+  const pageErrorDiv = document.querySelector("#viewItemPageError");
   try {
-    await postInterestBackEnd(interest, errorMessageDiv);
+    const status = await postInterestBackEnd(interest, errorMessageDiv);
+    if (status === 409) {
+      showError("Vous avez déjà marqué un intéret pour cette offre.", "danger",
+          pageErrorDiv);
+      return;
+    }
     if (callWanted) {
       await checkToken();
     }
-    const pageErrorDiv = document.querySelector("#viewItemPageError");
     showError("L'intérêt a bien été prit en compte.", "success", pageErrorDiv);
   } catch (err) {
     console.error(err);

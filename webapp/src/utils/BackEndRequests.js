@@ -440,9 +440,9 @@ async function cancelOffer(id) {
 
 /**
  * Ask backend to mark an interest for an item.
- * @returns {Promise<boolean>} true if the request has been done otherwise false
+ * @returns {Promise<number>} true if the request has been done otherwise false
  */
-async function postInterest(interest, interestMessage) {
+async function postInterest(interest) {
   const request = {
     method: "POST",
     headers: {
@@ -453,19 +453,9 @@ async function postInterest(interest, interestMessage) {
   };
   const response = await fetch("api/interests", request);
 
-  if (response.ok) {
-    showError(
-        "Votre intérêt pour cet article à été bien été enregistré.",
-        "success", interestMessage);
-  } else if (response.status === 409) {
-    showError("Vous avez déjà mis une marque d'intérêt pour cette offre",
-        "danger", interestMessage);
-  } else if (response.status === 403) {
-    showError(
-        "Votre numero de téléphone n'est pas renseigné, veuillez l'ajouter si vous désirez être appelé.",
-        "danger", interestMessage);
+  if (!response.ok) {
+    return response.status;
   }
-  return response.ok;
 }
 
 async function getAllRatings() {
