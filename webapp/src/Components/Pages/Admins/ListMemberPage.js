@@ -111,11 +111,11 @@ async function showRegisteredMember(member) {
           isAdminButtonChecked = button.checked;
         }
       });
-
+      const member = await getOneMember(confirmButton.value);
       const confirmMember = {
-        id: confirmButton.value,
+        id: member.id,
         isAdmin: isAdminButtonChecked,
-        version: 1
+        version: member.version
       };
       await confirmInscription(confirmMember);
       Redirect("/list_member");
@@ -168,8 +168,7 @@ async function showDeniedMember(member) {
         }
       });
 
-      const member = getOneMember(confirmButton.value);
-
+      const member = await getOneMember(confirmButton.value);
       const confirmMember = {
         id: confirmButton.value,
         isAdmin: isAdminButtonChecked,
