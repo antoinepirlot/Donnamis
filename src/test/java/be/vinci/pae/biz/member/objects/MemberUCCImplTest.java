@@ -57,7 +57,6 @@ class MemberUCCImplTest {
     Mockito.when(memberDAO.confirmMember(this.memberDTO)).thenReturn(true);
     Mockito.when(memberDAO.denyMember(this.refusalDTO)).thenReturn(true);
     Mockito.when(memberDAO.getOne(99)).thenReturn(memberDTO);
-    Mockito.when(memberDAO.isAdmin(99)).thenReturn(memberDTO);
   }
 
   //Test Confirm Member
