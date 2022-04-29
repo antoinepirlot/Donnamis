@@ -107,7 +107,8 @@ public class MemberDAOImpl implements MemberDAO {
   @Override
   public MemberDTO modifyMember(MemberDTO memberDTO) {
     String query = "UPDATE project_pae.members SET username = ?, password = ?, last_name = ?, "
-        + "first_name = ?, phone = ?, version_member = version_member + 1 WHERE id_member = ? RETURNING *;";
+        + "first_name = ?, phone = ?, version_member = version_member + 1 WHERE id_member = ? "
+        + "RETURNING *;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setString(1, memberDTO.getUsername());
       preparedStatement.setString(2, memberDTO.getPassword());
@@ -146,31 +147,13 @@ public class MemberDAOImpl implements MemberDAO {
     }
   }
 
-  /**
-   * Change the is_admin field to true.
-   *
-   * @param id the id of the member
-   * @return boolean
-   */
-  public MemberDTO isAdmin(int id) {
-    String query =
-        "UPDATE project_pae.members SET is_admin = true, version_member = version_member + 1"
-            + " WHERE id_member = ? "
-            + "RETURNING *;";
-    try {
-      return executeQueryWithId(id, query);
-    } catch (SQLException e) {
-      throw new FatalException(e);
-    }
-  }
-
   @Override
   public boolean denyMember(RefusalDTO refusalDTO) {
     String query =
         "UPDATE project_pae.members SET state = '" + DENIED_STATE
             + "', version_member = version_member + 1"
             + " WHERE id_member = ?; "
-            + "INSERT INTO project_pae.refusals (text, id_member, version_member) VALUES (?, ?, 1);";
+            + "INSERT INTO project_pae.refusals (text, id_member, version_refusal) VALUES (?, ?, 1);";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, refusalDTO.getMember().getId());
       preparedStatement.setString(2,
@@ -249,25 +232,6 @@ public class MemberDAOImpl implements MemberDAO {
           listMemberDTO.add(ObjectsInstanceCreator.createMemberInstance(this.factory, rs));
         }
         return listMemberDTO.isEmpty() ? null : listMemberDTO;
-      }
-    }
-  }
-
-  /**
-   * Execute a query with an id param.
-   *
-   * @param id    the id of the member
-   * @param query the query to execute
-   * @return boolean
-   */
-  private MemberDTO executeQueryWithId(int id, String query) throws SQLException {
-    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
-      preparedStatement.setInt(1, id);
-      try (ResultSet rs = preparedStatement.executeQuery()) {
-        if (rs.next()) {
-          return ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
-        }
-        return null;
       }
     }
   }

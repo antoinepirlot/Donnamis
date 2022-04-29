@@ -29,7 +29,7 @@ public class RecipientDAOImpl implements RecipientDAO {
             + "VALUES (?, (" + selectMemberId + "), '" + RECEIVED_DEFAULT + "', 1); "
             + "UPDATE project_pae.items "
             + "SET offer_status = '" + ASSIGNED_ITEM_STATUS
-            + "', version_recipient = version_recipient + 1"
+            + "', version_item = version_item + 1"
             + "WHERE id_item = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setInt(1, recipientDTO.getItem().getId());

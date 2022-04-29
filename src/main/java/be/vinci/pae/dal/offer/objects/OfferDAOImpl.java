@@ -70,19 +70,32 @@ public class OfferDAOImpl implements OfferDAO {
 
   @Override
   public OfferDTO getOne(int id) {
-    String query =
-
-        "SELECT item.id_item, item.photo, item.offer_status, item.title, "
-            + "item.id_member, item.item_description, "
-            + "item_type.item_type, item_type.id_type, "
-            + "offer.id_offer,offer.date, offer.time_slot, offer.version_offer"
-            + "member.first_name, member.last_name, member.username "
-            + "FROM project_pae.items item, project_pae.items_types item_type, "
-            + "     project_pae.offers offer, project_pae.members member "
-            + "WHERE item.id_type = item_type.id_type "
-            + "  AND item.id_item = offer.id_item "
-            + "  AND item.id_member = member.id_member "
-            + "  AND offer.id_offer = ?;";
+    String query = "SELECT i.id_item, "
+        + "                i.photo, "
+        + "                i.offer_status, "
+        + "                i.title, "
+        + "                i.id_member, "
+        + "                i.item_description,  "
+        + "                i.version_item, "
+        + "                it.item_type,"
+        + "                it.id_type, "
+        + "                it.version_items_type, "
+        + "                o.id_offer, "
+        + "                o.date, "
+        + "                o.time_slot, "
+        + "                o.version_offer, "
+        + "                m.first_name, "
+        + "                m.last_name, "
+        + "                m.username,"
+        + "                m.version_member "
+        + "FROM project_pae.items i, "
+        + "     project_pae.items_types it, "
+        + "     project_pae.offers o, "
+        + "     project_pae.members m "
+        + "WHERE item.id_type = item_type.id_type "
+        + "  AND item.id_item = offer.id_item "
+        + "  AND item.id_member = member.id_member "
+        + "  AND offer.id_offer = ?;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -112,7 +125,7 @@ public class OfferDAOImpl implements OfferDAO {
   @Override
   public List<OfferDTO> getLastTwoOffersOf(ItemDTO itemDTO) {
     String query = "SELECT id_offer, date, time_slot, id_item, version_offer "
-        + "FROM project_pae.offers o "
+        + "FROM project_pae.offers "
         + "WHERE id_item = ? "
         + "ORDER BY date DESC "
         + "LIMIT 2;";
