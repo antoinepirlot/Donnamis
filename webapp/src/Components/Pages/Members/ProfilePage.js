@@ -22,7 +22,7 @@ const viewProfileHtml = `
       <p>Prénom :</p>
       <input id="firstnameForm" type = "text">
       <p>Pseudo :</p>
-      <input id="usernameForm" type = "text">
+      <input id="usernameForm" type = "password">
       <p>Mot de passe :</p>
       <input id="passwordForm" type = "password">
       <p>Confirmez le mot de passe :</p>
@@ -75,6 +75,7 @@ function showProfile() {
 
 async function modifyProfile(e) {
   e.preventDefault();
+  const member = getObject("memberDTO");
   const errorMessage = document.querySelector("#errorMessage");
   const password = document.querySelector("#passwordForm").value;
   const passwordConfirmation = document.querySelector(
@@ -83,12 +84,22 @@ async function modifyProfile(e) {
     const message = "Les mots de passes ne sont pas identiques. Les modification n'ont pas été acceptées?";
     showError(message, "danger", errorMessage);
   }
-  const lastName = document.querySelector("#nameForm").value;
-  const firstName = document.querySelector("#firstnameForm").value;
-  const username = document.querySelector("#usernameForm").value;
-  const phoneNumber = document.querySelector("#phoneForm").value;
-
-  const member = getOneMember(getPayload().id);
+  let lastName = document.querySelector("#nameForm").value;
+  if (!lastName) {
+    lastName = member.lastName;
+  }
+  let firstName = document.querySelector("#firstnameForm").value;
+  if (!firstName) {
+    firstName = member.firstName;
+  }
+  let username = document.querySelector("#usernameForm").value;
+  if (!username) {
+    username = member.username;
+  }
+  let phoneNumber = document.querySelector("#phoneForm").value;
+  if (!phoneNumber) {
+    phoneNumber = member.phoneNumber;
+  }
 
   const memberModify = {
     id: getPayload().id,
