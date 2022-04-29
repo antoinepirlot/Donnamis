@@ -112,8 +112,6 @@ async function showRegisteredMember(member) {
         }
       });
 
-      const member = getOneMember(confirmButton.value);
-
       const confirmMember = {
         id: confirmButton.value,
         isAdmin: isAdminButtonChecked,
@@ -132,7 +130,9 @@ async function showRegisteredMember(member) {
       //Confirm the registration (Click on the button)
 
       const refusal = {
-        member: member,
+        member: {
+          id: denyButton.value
+        },
         text: refusalText,
       };
       await denyMember(refusal);
