@@ -171,13 +171,13 @@ public class ItemImpl implements Item {
     return "Item{"
         + "id=" + id
         + ", itemDescription='" + itemDescription + '\''
-        + ", idItemType='" + itemType + '\''
+        + ", itemType='" + itemType + '\''
         + ", member='" + member + '\''
         + ", photo='" + photo + '\''
         + ", title=" + title
         + ", offerStatus='" + offerStatus + '\''
         + ", offerList" + offerList
-        + ", lastOfferDate='" + lastOffer + '\''
+        + ", lastOffer='" + lastOffer + '\''
         + '}';
   }
 }

@@ -291,7 +291,8 @@ public class ItemResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public int addItem(ItemDTO itemDTO) {
-    if (itemDTO.getItemDescription() == null || itemDTO.getItemDescription().isBlank()
+    if (itemDTO == null
+        || itemDTO.getItemDescription() == null || itemDTO.getItemDescription().isBlank()
         || itemDTO.getItemType() == null || itemDTO.getItemType().getItemType() == null
         || itemDTO.getItemType().getItemType().isBlank() || itemDTO.getMember() == null
         || itemDTO.getMember().getId() < 1 || itemDTO.getTitle() == null || itemDTO.getTitle()

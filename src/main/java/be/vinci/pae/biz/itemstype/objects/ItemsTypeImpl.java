@@ -45,4 +45,13 @@ public class ItemsTypeImpl implements ItemsType {
   public void setVersion(int version) {
     this.version = version;
   }
+
+  @Override
+  public String toString() {
+    return "ItemsTypeImpl{" +
+        "id=" + id +
+        ", itemType='" + itemType + '\'' +
+        ", version=" + version +
+        '}';
+  }
 }

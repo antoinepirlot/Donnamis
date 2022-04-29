@@ -305,7 +305,6 @@ async function offerAnItem(item) {
   };
   const response = await fetch("/api/items", request);
   if (!response.ok) {
-    showError("Can't offer the item");
     throw new Error(
         "fetch error : " + response.status + " : " + response.statusText
     );
