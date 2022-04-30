@@ -358,4 +358,20 @@ class MemberUCCImplTest {
     configureMemberDTO("denied", wrongPassword);
     assertNull(memberUCC.login(memberToLogIn));
   }
+
+  @DisplayName("Test login with start throwing sql exception")
+  @Test
+  void testLoginWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    configureMemberDTO("denied", wrongPassword);
+    assertThrows(FatalException.class, () -> memberUCC.login(memberToLogIn));
+  }
+
+  @DisplayName("Test login with start throwing sql exception")
+  @Test
+  void testLoginWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    configureMemberDTO("denied", wrongPassword);
+    assertThrows(FatalException.class, () -> memberUCC.login(memberToLogIn));
+  }
 }
