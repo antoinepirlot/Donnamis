@@ -76,6 +76,15 @@ class MemberUCCImplTest {
     Mockito.when(this.memberDAO.getAllMembers()).thenReturn(this.memberDTOList);
   }
 
+  private void setGetOneMemberReturnedValue(int idMember) {
+    if (idMember >= 1) {
+      Mockito.when(this.memberDAO.getOne(idMember)).thenReturn(this.memberDTO);
+    } else {
+      Mockito.when(this.memberDAO.getOne(idMember)).thenReturn(null);
+    }
+    Mockito.when(this.memberDAO.getOne(memberDTO)).thenReturn(memberDTO);
+  }
+
   private void setErrorDALServiceStart() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).start();
@@ -109,8 +118,36 @@ class MemberUCCImplTest {
   @DisplayName("Test get all members working as expected")
   @Test
   void testGetAllMembersWithCommitThrowingSQLException() {
-    this.setErrorDALServiceStart();
+    this.setErrorDALServiceCommit();
     assertThrows(FatalException.class, this.memberUCC::getAllMembers);
+  }
+
+  @DisplayName("Test get one member working as expected")
+  @Test
+  void testGetOneMemberWorkingAsExpected() {
+    this.setGetOneMemberReturnedValue(5);
+    assertEquals(this.memberDTO, this.memberUCC.getOneMember(5));
+  }
+
+  @DisplayName("Test get one member with wrong id")
+  @Test
+  void testGetOneMemberWithWrongId() {
+    this.setGetOneMemberReturnedValue(-1);
+    assertNull(this.memberUCC.getOneMember(-1));
+  }
+
+  @DisplayName("Test get one member with start throwing sql exception")
+  @Test
+  void testGetOneMemberWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.memberUCC.getOneMember(5));
+  }
+
+  @DisplayName("Test get one member commit throwing sql exception")
+  @Test
+  void testGetOneMemberWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.memberUCC.getOneMember(5));
   }
 
   //Test Confirm Member
