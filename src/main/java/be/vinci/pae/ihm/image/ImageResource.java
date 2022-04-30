@@ -38,6 +38,12 @@ public class ImageResource {
   @Inject
   private ItemUCC itemUCC;
 
+  /**
+   * Create a copy of the image into the path got from onedrive.properties.
+   * @param idItem the item's id to add the picture
+   * @param file the image to copy
+   * @param fileDisposition the file information that contains file name
+   */
   @POST
   @Path("upload/{idItem}")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
