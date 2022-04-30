@@ -1,5 +1,6 @@
 package be.vinci.pae.biz.interest.objects;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -27,7 +28,7 @@ class InterestUCCImplTest {
 
   private final InterestUCC interestUCC = locator.getService(InterestUCC.class);
 
-  private InterestDTO interestDTO = new InterestImpl();
+  private final InterestDTO interestDTO = new InterestImpl();
 
 
   @BeforeEach
@@ -59,11 +60,18 @@ class InterestUCCImplTest {
     }
   }
 
-  @DisplayName("Test mark interest with successfully connection")
+  @DisplayName("Test mark interest with interest marked")
   @Test
-  void testMarkInterestWithSuccessfullyConnection() {
+  void testMarkInterestWithInterestMarked() {
     this.setInterestDAOMarkInterestReturnValue(true);
     assertTrue(interestUCC.markInterest(interestDTO));
+  }
+
+  @DisplayName("Test mark interest with interest not marked")
+  @Test
+  void testMarkInterestWithInterestNotMarked() {
+    this.setInterestDAOMarkInterestReturnValue(false);
+    assertFalse(interestUCC.markInterest(interestDTO));
   }
 
   @DisplayName("Test mark interest with start throwing sql exception ")
@@ -80,11 +88,32 @@ class InterestUCCImplTest {
     assertThrows(FatalException.class, () -> interestUCC.markInterest(interestDTO));
   }
 
-  @DisplayName("Test interest exist with successfully connection")
+  @DisplayName("Test interest exist with existing interest")
   @Test
-  void testMarkInterestExistsWithSuccessfullyConnection() {
+  void testMarkInterestExistsWithExistingInterest() {
     this.setInterestDAOInterestExistsReturnValue(true);
     assertTrue(interestUCC.interestExist(interestDTO));
+  }
+
+  @DisplayName("Test interest exist with not existing interest")
+  @Test
+  void testMarkInterestExistsWithNotExistingInterest() {
+    this.setInterestDAOInterestExistsReturnValue(false);
+    assertFalse(interestUCC.interestExist(interestDTO));
+  }
+
+  @DisplayName("Test interest exists with start throwing sql exception")
+  @Test
+  void testInterestExistsWithStartThrowingSQLException() {
+    this.setErrrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.interestUCC.interestExist(interestDTO));
+  }
+
+  @DisplayName("Test interest exists with commit throwing sql exception")
+  @Test
+  void testInterestExistsWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.interestUCC.interestExist(interestDTO));
   }
 
 }
