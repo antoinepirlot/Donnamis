@@ -1,15 +1,11 @@
-import {
-  getPayload,
-  setLocalObject,
-  setSessionObject
-} from "../../utils/session";
+import {setLocalObject, setSessionObject} from "../../../utils/session";
 import {
   getRefusal,
   login as loginBackEndRequest
-} from "../../utils/BackEndRequests";
-import {Redirect} from "../Router/Router";
-import Navbar from "../Navbar/Navbar";
-import {showError} from "../../utils/ShowError";
+} from "../../../utils/BackEndRequests";
+import {Redirect} from "../../Router/Router";
+import Navbar from "../../Navbar/Navbar";
+import {showError} from "../../../utils/ShowError";
 
 const loginFormHtml = `
 <h1 class="display-3" id="login_title">Se connecter</h1>
@@ -22,12 +18,13 @@ const loginFormHtml = `
     <div class="mb-3">
       <label class="form-label">Mot de passe</label>
       <input type="password" class="form-control" id="passwordInput">
+      <input type="checkbox" id="checkPassword">Show Password
     </div>
     <div class="mb-3 form-check">
       <input type="checkbox" class="form-check-input" id="rememberMeInput">
       <label class="form-check-label" >Se souvenir de moi</label>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Se connecter</button>
     <div class="message" id="loginMessage"></div>
   </form>
 </div>
@@ -39,14 +36,11 @@ const loginFormHtml = `
  * to "redirect" to a new page
  */
 function LoginPage() {
-  if (getPayload()) {
-    Redirect("/");
-    return;
-  }
   const page = document.querySelector("#page");
   page.innerHTML = loginFormHtml;
   page.addEventListener("submit", login);
-
+  const checkPassword = document.getElementById("checkPassword")
+  checkPassword.addEventListener("click", seePassword);
 }
 
 async function login(e) {
@@ -87,7 +81,18 @@ async function login(e) {
     await Navbar();
   } catch (error) {
     console.error("LoginPage::error: ", error);
-    showError("Une erreur est survenue.", "danger", loginMessage);
+    showError("Une erreur est survenue. Vérifiez votre connexion internet.",
+        "danger", loginMessage);
+  }
+}
+
+// to see the input password
+function seePassword() {
+  let x = document.getElementById("passwordInput");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
   }
 }
 

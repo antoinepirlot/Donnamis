@@ -1,0 +1,3 @@
+### get photo
+GET {{baseUrl}}/images/7
+Authorization: {{token}}

@@ -25,6 +25,16 @@ function setCloseModalEvent(modal, elementId) {
   });
 }
 
-export {
-  openModal
+/**
+ * Close the modal.
+ * @param modalId the modal id in html (must start with "#")
+ */
+function closeModal(modalId) {
+  const modal = document.querySelector(modalId);
+  modal.style.display = "none";
 }
+
+export {
+  openModal,
+  closeModal
+};

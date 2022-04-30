@@ -1,16 +1,16 @@
 package be.vinci.pae.biz.item.objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
-import be.vinci.pae.biz.itemstype.interfaces.ItemsType;
-import be.vinci.pae.biz.itemstype.objects.ItemsTypeImpl;
-import be.vinci.pae.biz.member.interfaces.MemberDTO;
-import be.vinci.pae.biz.member.objects.MemberImpl;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.exceptions.FatalException;
 import be.vinci.pae.utils.ApplicationBinder;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,112 +25,634 @@ import org.mockito.Mockito;
 class ItemUCCImplTest {
 
   private final ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
+
   private final ItemDAO itemDAO = locator.getService(ItemDAO.class);
-  private final ItemUCC itemUCC = locator.getService(ItemUCC.class);
+
   private final DALServices dalServices = locator.getService(DALServices.class);
+
+  private final ItemUCC itemUCC = locator.getService(ItemUCC.class);
+
+  private final ItemDTO itemDTO = new ItemImpl();
+
+  private final String goodOfferStatus = "donated";
+
   private final List<ItemDTO> itemDTOList = new ArrayList<>();
-  private final ItemDTO goodItem = new ItemImpl();
-  private final ItemDTO wrongItem = new ItemImpl();
-  private final ItemDTO cancelledItem = new ItemImpl();
-  private final int givenIdItem = 25;
-  private final int assignedIdItem = 280;
-  private final int notExistingIdItem = 56464;
 
   @BeforeEach
-  void setUp() throws SQLException {
-    this.itemDTOList.add(new ItemImpl());
-    this.itemDTOList.add(new ItemImpl());
-    this.goodItem.setId(5);
-    this.goodItem.setItemDescription("Description");
-    this.goodItem.setOfferStatus("donated");
-    ItemsType itemType = new ItemsTypeImpl();
-    itemType.setId(5);
-    this.goodItem.setItemType(itemType);
-    MemberDTO memberDTO = new MemberImpl();
-    memberDTO.setId(89);
-    this.cancelledItem.setOfferStatus("cancelled");
-    this.goodItem.setMember(memberDTO);
-    this.goodItem.setTitle("title");
-    this.setMockitos();
+  void setUp() {
+    try {
+      Mockito.doNothing().when(this.dalServices).start();
+      Mockito.doNothing().when(this.dalServices).commit();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
-  private void setMockitos() throws SQLException {
-    Mockito.when(this.itemDAO.getAllItems("donated")).thenReturn(this.itemDTOList);
-    Mockito.when(this.itemDAO.getAllItems(null)).thenReturn(this.itemDTOList);
-    Mockito.when(this.itemDAO.getOneItem(this.goodItem.getId())).thenReturn(this.goodItem);
-    Mockito.when(this.itemDAO.getOneItem(this.notExistingIdItem)).thenReturn(null);
-    Mockito.when(this.itemDAO.addItem(this.goodItem)).thenReturn(this.goodItem.getId());
-    Mockito.when(this.itemDAO.addItem(this.wrongItem)).thenReturn(-1);
-    Mockito.when(this.itemDAO.addItem(null)).thenReturn(-1);
-    Mockito.when(this.itemDAO.cancelItem(this.goodItem.getId())).thenReturn(this.cancelledItem);
-    Mockito.when(this.itemDAO.cancelItem(this.notExistingIdItem)).thenReturn(null);
-    Mockito.when(this.itemDAO.cancelItem(this.givenIdItem)).thenReturn(null);
-    Mockito.when(this.itemDAO.cancelItem(this.assignedIdItem)).thenReturn(this.cancelledItem);
+  private void setGetAllItemsReturnedValue(String offerStatus) {
+    if (offerStatus == null
+        || offerStatus.equals("donated") || offerStatus.equals("assigned")
+        || offerStatus.equals("cancelled") || offerStatus.equals("given")
+    ) {
+      Mockito.when(this.itemDAO.getAllItems(offerStatus)).thenReturn(itemDTOList);
+    } else {
+      Mockito.when(this.itemDAO.getAllItems(offerStatus)).thenReturn(null);
+    }
   }
 
-  @DisplayName("Test get all items")
+  private void setGetOneItemReturnedValue(int idItem) {
+    if (idItem >= 1) {
+      Mockito.when(this.itemDAO.getOneItem(idItem)).thenReturn(this.itemDTO);
+    } else {
+      Mockito.when(this.itemDAO.getOneItem(idItem)).thenReturn(null);
+    }
+  }
+
+  private void setAddItemReturnedValue(int newIdItem) {
+    Mockito.when(this.itemDAO.addItem(this.itemDTO)).thenReturn(newIdItem);
+  }
+
+  private void setCancelItemReturnedValue(int idItem) {
+    if (idItem >= 1) {
+      Mockito.when(this.itemDAO.cancelItem(idItem)).thenReturn(this.itemDTO);
+    } else {
+      Mockito.when(this.itemDAO.cancelItem(idItem)).thenReturn(null);
+    }
+  }
+
+  private void setModifyItemReturnedValue(boolean modifyReturnedValue) {
+    Mockito.when(this.itemDAO.modifyItem(this.itemDTO)).thenReturn(modifyReturnedValue);
+  }
+
+  private void setGetOneItemOfAMemberReturnedValue(int idMember) {
+    if (idMember >= 1) {
+      Mockito.when(this.itemDAO.getAllItemsOfAMember(idMember)).thenReturn(this.itemDTOList);
+    } else {
+      Mockito.when(this.itemDAO.getAllItemsOfAMember(idMember)).thenReturn(null);
+    }
+  }
+
+  private void setGetAssignedItems(int idMember) {
+    if (idMember >= 1) {
+      Mockito.when(this.itemDAO.getAssignedItems(idMember)).thenReturn(this.itemDTOList);
+    } else {
+      Mockito.when(this.itemDAO.getAssignedItems(idMember)).thenReturn(null);
+    }
+  }
+
+  private void setMarkItemAsrReturnedValue(boolean given) {
+    if (given) {
+      Mockito.when(this.itemDAO.markItemAsGiven(this.itemDTO)).thenReturn(true);
+    } else {
+      Mockito.when(this.itemDAO.markItemAsNotGiven(this.itemDTO)).thenReturn(true);
+    }
+  }
+
+  private int setCountNumberOfItemsByOfferStatusReturnedValue(int idMember, String offerStatus) {
+    int result = 7;
+    if (idMember >= 1
+        && (offerStatus.equals("donated")
+        || offerStatus.equals("assigned")
+        || offerStatus.equals("cancelled")
+        || offerStatus.equals("given"))
+    ) {
+      Mockito.when(this.itemDAO.countNumberOfItemsByOfferStatus(idMember, offerStatus))
+          .thenReturn(result);
+    }
+    return result;
+  }
+
+  private int setCountNumberOfReceivedOrNotReceivedItemsReturnedValue(int idMember,
+      boolean received) {
+    int result = 5;
+    if (idMember >= 1) {
+      Mockito.when(this.itemDAO.countNumberOfReceivedOrNotReceivedItems(idMember, received))
+          .thenReturn(result);
+    }
+    return result;
+  }
+
+  private void setGetMemberReceivedItemsReturnedValue(int idMember) {
+    if (idMember >= 1) {
+      Mockito.when(this.itemDAO.getMemberReceivedItems(idMember)).thenReturn(this.itemDTOList);
+    } else {
+      Mockito.when(this.itemDAO.getMemberReceivedItems(idMember)).thenReturn(null);
+    }
+  }
+
+  private void setGetMemberItemsByOfferStatusReturnedValue(int idMember, String offerStatus) {
+    if (idMember >= 1
+        && (offerStatus.equals("donated")
+        || offerStatus.equals("assigned")
+        || offerStatus.equals("cancelled")
+        || offerStatus.equals("given"))
+    ) {
+      Mockito.when(this.itemDAO.getMemberItemsByOfferStatus(idMember, offerStatus))
+          .thenReturn(this.itemDTOList);
+    } else {
+      Mockito.when(this.itemDAO.getMemberItemsByOfferStatus(idMember, offerStatus))
+          .thenReturn(null);
+    }
+  }
+
+  private void setAddPhotoReturnedValue(int idItem, String photoName) {
+    if (idItem >= 1 && photoName != null && !photoName.isBlank()) {
+      Mockito.when(this.itemDAO.addPhoto(idItem, photoName)).thenReturn(true);
+    } else {
+      Mockito.when(this.itemDAO.addPhoto(idItem, photoName)).thenReturn(false);
+    }
+  }
+
+  private void setErrorDALServiceStart() {
+    try {
+      Mockito.doThrow(new SQLException()).when(dalServices).start();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private void setErrorDALServiceCommit() {
+    try {
+      Mockito.doThrow(new SQLException()).when(dalServices).commit();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @DisplayName("Test get all items with null offer status")
   @Test
-  void testGetAllItems() throws SQLException {
+  void testGetAllItemsWithNullOfferStatus() {
+    this.setGetAllItemsReturnedValue(null);
     assertEquals(this.itemDTOList, this.itemUCC.getAllItems(null));
   }
 
-  @DisplayName("Test get all donated items")
+  @DisplayName("Test get all items with donated offer status")
   @Test
-  void testGetAllOfferedItems() throws SQLException {
+  void testGetAllItemsWithDonatedOfferStatus() {
+    this.setGetAllItemsReturnedValue("donated");
     assertEquals(this.itemDTOList, this.itemUCC.getAllItems("donated"));
   }
 
-  @DisplayName("Test get one item")
+  @DisplayName("Test get all items with assigned offer status")
   @Test
-  void testGetOneItem() throws SQLException {
-    assertEquals(this.goodItem, this.itemUCC.getOneItem(this.goodItem.getId()));
+  void testGetAllItemsWithAssignedOfferStatus() {
+    this.setGetAllItemsReturnedValue("assigned");
+    assertEquals(this.itemDTOList, this.itemUCC.getAllItems("assigned"));
   }
 
-  @DisplayName("Test get one item with not existing id item")
+  @DisplayName("Test get all items with cancelled offer status")
   @Test
-  void testGetOneItemWithNotExistingIdItem() throws SQLException {
-    assertNull(this.itemUCC.getOneItem(this.notExistingIdItem));
+  void testGetAllItemsWithCancelledOfferStatus() {
+    this.setGetAllItemsReturnedValue("cancelled");
+    assertEquals(this.itemDTOList, this.itemUCC.getAllItems("cancelled"));
   }
 
-  @DisplayName("Test add item with good item")
+  @DisplayName("Test get all items with given offer status")
   @Test
-  void testAddItemWithGoodItem() throws SQLException {
-    assertEquals(this.goodItem.getId(), this.itemUCC.addItem(this.goodItem));
+  void testGetAllItemsWithGivenOfferStatus() {
+    this.setGetAllItemsReturnedValue("given");
+    assertEquals(this.itemDTOList, this.itemUCC.getAllItems("given"));
   }
 
-  @DisplayName("Test add item with wrong item")
+  @DisplayName("Test get all items with not valid offer status")
   @Test
-  void testAddItemWithWrongItem() throws SQLException {
-    assertEquals(-1, this.itemUCC.addItem(this.wrongItem));
+  void testGetAllItemsWithNotValidStatus() {
+    this.setGetAllItemsReturnedValue("not valid status");
+    assertNull(this.itemUCC.getAllItems("not valid status"));
   }
 
-  @DisplayName("Test add item with null item")
+  @DisplayName("Test get all items with start throwing sql exception")
   @Test
-  void testAddItemWithNullItem() throws SQLException {
-    assertEquals(-1, this.itemUCC.addItem(null));
+  void testGetAllItemsWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.getAllItems(null));
   }
 
-  @DisplayName("Test cancel offer with existing item")
+  @DisplayName("Test get all items with commit throwing sql exception")
   @Test
-  void testCancelOfferWithExistingItem() throws SQLException {
-    assertEquals(this.cancelledItem, this.itemUCC.cancelItem(this.goodItem.getId()));
+  void testGetAllItemsWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.itemUCC.getAllItems(null));
   }
 
-  @DisplayName("Test cancel offer with not existing item")
+  @DisplayName("Test get one item with existing id")
   @Test
-  void testCancelOfferWithNotExistingItem() throws SQLException {
-    assertNull(this.itemUCC.cancelItem(this.notExistingIdItem));
+  void testGetOneItemWithGoodId() {
+    this.setGetOneItemReturnedValue(4);
+    assertEquals(this.itemDTO, this.itemUCC.getOneItem(4));
   }
 
-  @DisplayName("Test cancel offer with given item")
+  @DisplayName("Test get one item with not existing id")
   @Test
-  void testCancelOfferWithGivenItem() throws SQLException {
-    assertNull(this.itemUCC.cancelItem(this.givenIdItem));
+  void testGetOneItemWithNotExistingId() {
+    this.setGetOneItemReturnedValue(-1);
+    assertNull(this.itemUCC.getOneItem(-1));
   }
 
-  @DisplayName("Test cancel offer with assigned item")
+  @DisplayName("Test get one item with start throwing sql exception")
   @Test
-  void testCancelOfferWithAssignedItem() throws SQLException {
-    assertEquals(this.cancelledItem, this.itemUCC.cancelItem(this.assignedIdItem));
+  void testGetOneItemWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.getOneItem(4));
+  }
+
+  @DisplayName("Test get one item with commit throwing sql exception")
+  @Test
+  void testGetOneItemWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.itemUCC.getOneItem(4));
+  }
+
+  @DisplayName("Test add item with good item DTO")
+  @Test
+  void testAddItemWithGoodItemDTO() {
+    int newIdItem = 5;
+    this.setAddItemReturnedValue(newIdItem);
+    assertEquals(newIdItem, this.itemUCC.addItem(this.itemDTO));
+  }
+
+  @DisplayName("Test add item with start throwing sql exception")
+  @Test
+  void testAddItemWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.addItem(this.itemDTO));
+  }
+
+  @DisplayName("Test add item with commit throwing sql exception")
+  @Test
+  void testAddItemWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.itemUCC.addItem(this.itemDTO));
+  }
+
+  @DisplayName("Test cancel item with good id")
+  @Test
+  void testCancelItemWithGoodId() {
+    this.setCancelItemReturnedValue(5);
+    assertEquals(this.itemDTO, this.itemUCC.cancelItem(5));
+  }
+
+  @DisplayName("Test cancel item with wrong id")
+  @Test
+  void testCancelItemWithWrongId() {
+    this.setCancelItemReturnedValue(-1);
+    assertNull(this.itemUCC.cancelItem(-1));
+  }
+
+  @DisplayName("Test cancel item with start throwing sql exception")
+  @Test
+  void testCancelItemWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.cancelItem(5));
+  }
+
+  @DisplayName("Test cancel item with commit throwing sql exception")
+  @Test
+  void testCancelItemWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.itemUCC.cancelItem(5));
+  }
+
+  @DisplayName("Test modify item with good item")
+  @Test
+  void testModifyItemWithGoodItem() {
+    this.setModifyItemReturnedValue(true);
+    assertTrue(this.itemUCC.modifyItem(this.itemDTO));
+  }
+
+  @DisplayName("Test modify item with wrong item")
+  @Test
+  void testModifyItemWithWrongItem() {
+    this.setModifyItemReturnedValue(false);
+    assertFalse(this.itemUCC.modifyItem(this.itemDTO));
+  }
+
+  @DisplayName("Test modify item with start throwing sql exception")
+  @Test
+  void testModifyItemWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.modifyItem(this.itemDTO));
+  }
+
+  @DisplayName("Test modify item with commit throwing sql exception")
+  @Test
+  void testModifyItemWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.itemUCC.modifyItem(this.itemDTO));
+  }
+
+  @DisplayName("Test get all items of a member with good id")
+  @Test
+  void testGetAllItemsOfAMemberWithGoodId() {
+    this.setGetOneItemOfAMemberReturnedValue(5);
+    assertEquals(this.itemDTOList, this.itemUCC.getAllItemsOfAMember(5));
+  }
+
+  @DisplayName("Test get all items of a member with wrong id")
+  @Test
+  void testGetAllItemsOfAMemberWithWrongId() {
+    this.setGetOneItemOfAMemberReturnedValue(-1);
+    assertNull(this.itemUCC.getAllItemsOfAMember(-1));
+  }
+
+  @DisplayName("Test get all items of a member with start throwing sql exception")
+  @Test
+  void testGetAllItemsOfAMemberWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.getAllItemsOfAMember(5));
+  }
+
+  @DisplayName("Test get all items of a member with commit throwing sql exception")
+  @Test
+  void testGetAllItemsOfAMemberWithCommitId() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.getAllItemsOfAMember(5));
+  }
+
+  @DisplayName("Test get assigned items of a member with good id")
+  @Test
+  void testGetAssignedItemsWithGoodId() {
+    this.setGetAssignedItems(5);
+    assertEquals(this.itemDTOList, this.itemUCC.getAssignedItems(5));
+  }
+
+  @DisplayName("Test get assigned items of a member with wrong id")
+  @Test
+  void testGetAssignedItemsWithWrongId() {
+    this.setGetAssignedItems(-1);
+    assertNull(this.itemUCC.getAssignedItems(-1));
+  }
+
+  @DisplayName("Test get assigned items of a member with start throwing sql exception")
+  @Test
+  void testGetAssignedItemsWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.getAssignedItems(5));
+  }
+
+  @DisplayName("Test get assigned items of a member with commit throwing sql exception")
+  @Test
+  void testGetAssignedItemsWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.itemUCC.getAssignedItems(5));
+  }
+
+  @DisplayName("Test mark item as given with good item")
+  @Test
+  void testMarkItemAsGivenWithGoodItem() {
+    this.setMarkItemAsrReturnedValue(true);
+    assertTrue(this.itemUCC.markItemAsGiven(this.itemDTO));
+  }
+
+  @DisplayName("Test mark item as given with wrong item")
+  @Test
+  void testMarkItemAsGivenWithWrongItem() {
+    this.setMarkItemAsrReturnedValue(true);
+    assertFalse(this.itemUCC.markItemAsGiven(null));
+  }
+
+  @DisplayName("Test mark item as given with start throwing sql exception")
+  @Test
+  void testMarkItemAsGivenWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.markItemAsGiven(this.itemDTO));
+  }
+
+  @DisplayName("Test mark item as given with commit throwing sql exception")
+  @Test
+  void testMarkItemAsGivenWithCommitThrowingSQLException() {
+    this.setMarkItemAsrReturnedValue(true);
+    assertFalse(this.itemUCC.markItemAsGiven(null));
+  }
+
+  @DisplayName("Test mark item as not given with good item")
+  @Test
+  void testMarkItemAsNotGivenWithGoodItem() {
+    this.setMarkItemAsrReturnedValue(false);
+    assertTrue(this.itemUCC.markItemAsNotGiven(this.itemDTO));
+  }
+
+  @DisplayName("Test mark item as not given with wrong item")
+  @Test
+  void testMarkItemAsNotGivenWithWrongItem() {
+    this.setMarkItemAsrReturnedValue(false);
+    assertFalse(this.itemUCC.markItemAsNotGiven(null));
+  }
+
+  @DisplayName("Test mark item as not given with start throwing sql exception")
+  @Test
+  void testMarkItemAsNotGivenWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.markItemAsNotGiven(this.itemDTO));
+  }
+
+  @DisplayName("Test mark item as not given with commit throwing sql exception")
+  @Test
+  void testMarkItemAsNotGivenWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.itemUCC.markItemAsNotGiven(this.itemDTO));
+  }
+
+  @DisplayName("Test count number of items by offer status with donated offer status")
+  @Test
+  void testCountNumberOfItemsByOfferStatusWithDonatedOfferStatus() {
+    int result =
+        this.setCountNumberOfItemsByOfferStatusReturnedValue(5, "donated");
+    assertEquals(result,
+        this.itemUCC.countNumberOfItemsByOfferStatus(5, "donated"));
+  }
+
+  @DisplayName("Test count number of items by offer status with wrong id member")
+  @Test
+  void testCountNumberOfItemsByOfferStatusWithWrongIdMember() {
+    int result =
+        this.setCountNumberOfItemsByOfferStatusReturnedValue(-1, "donated");
+    assertEquals(0,
+        this.itemUCC.countNumberOfItemsByOfferStatus(-1, "donated"));
+  }
+
+  @DisplayName("Test count number of items by offer status with assigned offer status")
+  @Test
+  void testCountNumberOfItemsByOfferStatusWithAssignedOfferStatus() {
+    int result =
+        this.setCountNumberOfItemsByOfferStatusReturnedValue(5, "assigned");
+    assertEquals(result,
+        this.itemUCC.countNumberOfItemsByOfferStatus(5, "assigned"));
+  }
+
+  @DisplayName("Test count number of items by offer status with cancelled offer status")
+  @Test
+  void testCountNumberOfItemsByOfferStatusWithCancelledOfferStatus() {
+    int result =
+        this.setCountNumberOfItemsByOfferStatusReturnedValue(5, "cancelled");
+    assertEquals(result,
+        this.itemUCC.countNumberOfItemsByOfferStatus(5, "cancelled"));
+  }
+
+  @DisplayName("Test count number of items by offer status with given offer status")
+  @Test
+  void testCountNumberOfItemsByOfferStatusWithGivenOfferStatus() {
+    int result =
+        this.setCountNumberOfItemsByOfferStatusReturnedValue(5, "given");
+    assertEquals(result,
+        this.itemUCC.countNumberOfItemsByOfferStatus(5, "given"));
+  }
+
+  @DisplayName("Test count number of items by offer status with start throwing sql exception")
+  @Test
+  void testCountNumberOfItemsByOfferStatusWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class,
+        () -> this.itemUCC.countNumberOfItemsByOfferStatus(5, "donated"));
+  }
+
+  @DisplayName("Test count number of items by offer status with commit throwing sql exception")
+  @Test
+  void testCountNumberOfItemsByOfferStatusWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class,
+        () -> this.itemUCC.countNumberOfItemsByOfferStatus(5, "donated"));
+  }
+
+  @DisplayName("Test count number of received or not received items with received items")
+  @Test
+  void testCountNumberOfReceivedOrNotReceivedItemsWithReceivedItems() {
+    int result = this.setCountNumberOfReceivedOrNotReceivedItemsReturnedValue(5, true);
+    assertEquals(result, this.itemUCC.countNumberOfReceivedOrNotReceivedItems(5, true));
+  }
+
+  @DisplayName("Test count number of received or not received items with not received items")
+  @Test
+  void testCountNumberOfReceivedOrNotReceivedItemsWithNotReceivedItems() {
+    int result = this.setCountNumberOfReceivedOrNotReceivedItemsReturnedValue(5, false);
+    assertEquals(result, this.itemUCC.countNumberOfReceivedOrNotReceivedItems(5, false));
+  }
+
+  @DisplayName("Test count number of received or not received items with wrong id member")
+  @Test
+  void testCountNumberOfReceivedOrNotReceivedItemsWithWrongIdMember() {
+    this.setCountNumberOfReceivedOrNotReceivedItemsReturnedValue(-1, true);
+    assertEquals(0, this.itemUCC.countNumberOfReceivedOrNotReceivedItems(-1, true));
+  }
+
+  @DisplayName("Test count number of received or not received items "
+      + "with start throwing sql exception")
+  @Test
+  void testCountNumberOfReceivedOrNotReceivedItemsWithStartThrowingSQLExcepttion() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class,
+        () -> this.itemUCC.countNumberOfReceivedOrNotReceivedItems(5, true));
+  }
+
+  @DisplayName("Test count number of received or not received items with commit "
+      + "throwing sql exception")
+  @Test
+  void testCountNumberOfReceivedOrNotReceivedItemsWithCommitThrowingSQLExcepttion() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class,
+        () -> this.itemUCC.countNumberOfReceivedOrNotReceivedItems(5, true));
+  }
+
+  @DisplayName("Test get member items by offer status with donated offer status")
+  @Test
+  void getMemberItemsByOfferStatusWithDonatedOfferStatus() {
+    this.setGetMemberItemsByOfferStatusReturnedValue(5, "donated");
+    assertEquals(this.itemDTOList,
+        this.itemUCC.getMemberItemsByOfferStatus(5, "donated"));
+  }
+
+  @DisplayName("Test get member items by offer status with assigned offer status")
+  @Test
+  void getMemberItemsByOfferStatusWithAssignedOfferStatus() {
+    this.setGetMemberItemsByOfferStatusReturnedValue(5, "assigned");
+    assertEquals(this.itemDTOList,
+        this.itemUCC.getMemberItemsByOfferStatus(5, "assigned"));
+  }
+
+  @DisplayName("Test get member items by offer status with cancelled offer status")
+  @Test
+  void getMemberItemsByOfferStatusWithCancelledOfferStatus() {
+    this.setGetMemberItemsByOfferStatusReturnedValue(5, "cancelled");
+    assertEquals(this.itemDTOList,
+        this.itemUCC.getMemberItemsByOfferStatus(5, "cancelled"));
+  }
+
+  @DisplayName("Test get member items by offer status with given offer status")
+  @Test
+  void getMemberItemsByOfferStatusWithGivenOfferStatus() {
+    this.setGetMemberItemsByOfferStatusReturnedValue(5, "given");
+    assertEquals(this.itemDTOList,
+        this.itemUCC.getMemberItemsByOfferStatus(5, "given"));
+  }
+
+  @DisplayName("Test get member items by offer status with wrong id member")
+  @Test
+  void getMemberItemsByOfferStatusWithWrongIdMember() {
+    this.setGetMemberItemsByOfferStatusReturnedValue(-1, "donated");
+    assertNull(this.itemUCC.getMemberItemsByOfferStatus(-1, "donated"));
+  }
+
+  @DisplayName("Test get member items by offer status with start throwing sql exception")
+  @Test
+  void getMemberItemsByOfferStatusWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class,
+        () -> this.itemUCC.getMemberItemsByOfferStatus(5, "donated"));
+  }
+
+  @DisplayName("Test get member items by offer status with commit throwing sql exception")
+  @Test
+  void getMemberItemsByOfferStatusWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class,
+        () -> this.itemUCC.getMemberItemsByOfferStatus(5, "donated"));
+  }
+
+  @DisplayName("Test get member's received items with good member's id")
+  @Test
+  void testGetMemberReceivedItemsWithGoodId() {
+    this.setGetMemberReceivedItemsReturnedValue(5);
+    assertEquals(this.itemDTOList, this.itemUCC.getMemberReceivedItems(5));
+  }
+
+  @DisplayName("Test get member's received items with wrong member's id")
+  @Test
+  void testGetMemberReceivedItemsWithWrongId() {
+    this.setGetMemberReceivedItemsReturnedValue(-1);
+    assertNull(this.itemUCC.getMemberReceivedItems(-1));
+  }
+
+  @DisplayName("Test get member's received items with start throwing sql exception")
+  @Test
+  void testGetMemberReceivedItemsWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.getMemberReceivedItems(5));
+  }
+
+  @DisplayName("Test get member's received items with commit throwing sql exception")
+  @Test
+  void testGetMemberReceivedItemsWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.itemUCC.getMemberReceivedItems(5));
+  }
+
+  @DisplayName("Test add photo with all working good")
+  @Test
+  void testAddPhotoWithAllWorkingGood() {
+    this.setAddPhotoReturnedValue(5, "photo.png");
+    assertTrue(this.itemUCC.addPhoto(5, "photo.png"));
+  }
+
+  @DisplayName("Test add photo with start throwing sql exception")
+  @Test
+  void testAddPhotoWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.addPhoto(5, "photo.png"));
+  }
+
+  @DisplayName("Test add photo with commit throwing sql exception")
+  @Test
+  void testAddPhotoWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.itemUCC.addPhoto(5, "photo.png"));
   }
 }

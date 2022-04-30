@@ -1,16 +1,16 @@
-import {getPayload,} from "../../../utils/session";
+import {isAdmin,} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
-import {getAllMembers, isAdmin} from "../../../utils/BackEndRequests";
+import {getAllMembers} from "../../../utils/BackEndRequests";
 
 const viewSearchbarHtml = `
   <h1 class="display-3" id="search_member_title">Rechercher des membres</h1>
-  <input class="form-control me-2" id="searchInput" type="search" placeholder="Rechercher un membre" aria-label="Rechercher">
-  <div>
+  <input class="form-control me-2 w-75 d-inline-block" id="searchInput" type="search" placeholder="Rechercher un membre" aria-label="Rechercher">
+  <div class="w-75 d-inline-block">
     <table class="table">
       <thead>
         <tr>
-          <th scope="col">Nom</th>
           <th scope="col">Prénom</th>
+          <th scope="col">Nom</th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -21,7 +21,7 @@ const viewSearchbarHtml = `
 `;
 
 async function SearchMembersPage() {
-  if (!await isAdmin()) {
+  if (!isAdmin()) {
     Redirect("/");
     return;
   }
@@ -33,18 +33,22 @@ async function SearchMembersPage() {
   //Listener pour chaque frappe au clavier
   const searchInput = document.getElementById('searchInput');
   searchInput.addEventListener('keyup', function () {
+        //'he' is a library to decode HTML element from a string
+        let he = require('he');
+
         //Empty the table
         tbody.innerHTML = "";
 
-        const input = searchInput.value.toLowerCase();
-
+        const input = searchInput.value.toLowerCase().trim();
         const result = members.filter(
-            member => member.lastName.toLowerCase().includes(input)
-                || member.firstName.toLowerCase().includes(
-                    input))
+            member => he.decode(member.lastName).toLowerCase().includes(input)
+                || he.decode(member.firstName).toLowerCase().includes(
+                    input)
+                || he.decode(member.address.postcode).includes(input)
+                || he.decode(member.address.commune).toLowerCase().includes(input));
 
         if (result.length < 1) {
-          tbody.innerHTML = `<h1 class="display-6" id="SearchErrorMessage">Il n'y a aucun résultat pour cette recherche</h1>`;
+          tbody.innerHTML = `<h1 class="display-6" id="SearchErrorMessageMember">Il n'y a aucun résultat pour cette recherche</h1>`;
         } else {
           showFilterMembers(result)
         }

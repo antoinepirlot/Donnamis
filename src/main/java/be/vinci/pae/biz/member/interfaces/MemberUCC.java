@@ -1,7 +1,6 @@
 package be.vinci.pae.biz.member.interfaces;
 
 import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
-import java.sql.SQLException;
 import java.util.List;
 
 public interface MemberUCC {
@@ -11,7 +10,7 @@ public interface MemberUCC {
    *
    * @return the list of all members
    */
-  List<MemberDTO> getAllMembers() throws SQLException;
+  List<MemberDTO> getAllMembers();
 
   /**
    * Asks the UCC to get the member identified by its id.
@@ -19,7 +18,7 @@ public interface MemberUCC {
    * @param id the member's id
    * @return the member or null if there's no member with the id
    */
-  MemberDTO getOneMember(int id) throws SQLException;
+  MemberDTO getOneMember(int id);
 
   /**
    * Modify the member identified by its id.
@@ -27,7 +26,7 @@ public interface MemberUCC {
    * @param memberDTO the new member
    * @return the member or null if there's no member with the id
    */
-  MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException;
+  MemberDTO modifyMember(MemberDTO memberDTO);
 
   /**
    * Confirm the inscription of a member.
@@ -35,7 +34,7 @@ public interface MemberUCC {
    * @param memberDTO the member to confirm
    * @return True if success
    */
-  boolean confirmMember(MemberDTO memberDTO) throws SQLException;
+  boolean confirmMember(MemberDTO memberDTO);
 
   /**
    * Verify the state of the member and then change the state of the member to denied.
@@ -43,7 +42,7 @@ public interface MemberUCC {
    * @param refusalDTO the refusal information
    * @return true if deny is complete, otherwise false
    */
-  boolean denyMember(RefusalDTO refusalDTO) throws SQLException;
+  boolean denyMember(RefusalDTO refusalDTO);
 
   /**
    * Verify if the member exist in the DB.
@@ -51,14 +50,14 @@ public interface MemberUCC {
    * @param memberDTO the if od the member
    * @return true if exist in the DB false if not
    */
-  boolean memberExist(MemberDTO memberDTO, int idMember) throws SQLException;
+  boolean memberExist(MemberDTO memberDTO, int idMember);
 
   /**
    * Get the member from the db, checks its state and password.
    *
    * @param memberToLogIn the member who try to log in
    */
-  MemberDTO login(MemberDTO memberToLogIn) throws SQLException;
+  MemberDTO login(MemberDTO memberToLogIn);
 
   /**
    * Ask DAO to insert the member into the db.
@@ -66,7 +65,7 @@ public interface MemberUCC {
    * @param memberDTO member to add in the db
    * @return true if the member has been  registered
    */
-  boolean register(MemberDTO memberDTO) throws SQLException;
+  boolean register(MemberDTO memberDTO);
 
   /**
    * Get the list of interested member of the item and returns it.
@@ -74,5 +73,5 @@ public interface MemberUCC {
    * @param idOffer the id of the item
    * @return the list of interested members
    */
-  List<MemberDTO> getInterestedMembers(int idOffer) throws SQLException;
+  List<MemberDTO> getInterestedMembers(int idOffer);
 }

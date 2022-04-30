@@ -42,7 +42,6 @@ public class DALServicesImpl implements DALServices, DALBackendService {
     //Set the connection in the ThreadLocal Map
     connection.setAutoCommit(false);
     dbThreadLocal.set(connection);
-    this.logger.log(Level.INFO, "Connection to the database successful ");
   }
 
   @Override
@@ -52,7 +51,6 @@ public class DALServicesImpl implements DALServices, DALBackendService {
     connection.setAutoCommit(true);
     connection.close();
     dbThreadLocal.remove();
-    this.logger.log(Level.INFO, "Connection removed");
   }
 
   @Override
@@ -90,6 +88,9 @@ public class DALServicesImpl implements DALServices, DALBackendService {
   @Override
   public PreparedStatement getPreparedStatement(String query) throws SQLException {
     Connection connection = dbThreadLocal.get();
+    if (connection == null) {
+      logger.log(Level.SEVERE, "Connection is null");
+    }
     return connection.prepareStatement(query);
   }
 

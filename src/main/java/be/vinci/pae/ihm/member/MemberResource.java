@@ -4,6 +4,7 @@ import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
+import be.vinci.pae.exceptions.FatalException;
 import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
@@ -21,7 +22,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HEAD;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -30,8 +30,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
-import java.rmi.UnexpectedException;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -48,21 +46,6 @@ public class MemberResource {
   private MemberUCC memberUCC;
 
   /////////////////////////////////////////////////////////
-  ///////////////////////HEAD//////////////////////////////
-  /////////////////////////////////////////////////////////
-
-  /**
-   * Asks UCC to check if the member is admin or not.
-   */
-  @HEAD
-  @Path("is_admin")
-  @Produces(MediaType.TEXT_PLAIN)
-  @AuthorizeAdmin
-  public void isAdmin() {
-    //@AuthorizeAdmin checks if the member is admin or not
-  }
-
-  /////////////////////////////////////////////////////////
   ///////////////////////GET///////////////////////////////
   /////////////////////////////////////////////////////////
 
@@ -76,9 +59,9 @@ public class MemberResource {
   @Path("")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public List<MemberDTO> getAllMembers() throws SQLException {
+  public List<MemberDTO> getAllMembers() {
     List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
-    if (listMemberDTO == null || listMemberDTO.isEmpty()) {
+    if (listMemberDTO == null) {
       throw new ObjectNotFoundException("No member into the database");
     }
     return this.jsonUtil.filterPublicJsonViewAsList(listMemberDTO);
@@ -86,14 +69,14 @@ public class MemberResource {
 
   /**
    * Check if the token is valid. If it's valid create new one.
+   *
    * @param request the request that contains the token
    * @return a new token
-   * @throws SQLException if an error occurs while checking if the member exists
    */
   @GET
   @Path("/me")
   @Produces(MediaType.APPLICATION_JSON)
-  public ObjectNode refreshToken(@Context ContainerRequestContext request) throws SQLException {
+  public ObjectNode refreshToken(@Context ContainerRequestContext request) {
     DecodedJWT decodedJWT = TokenDecoder.decodeToken(request);
     MemberDTO memberDTO = this.memberUCC.getOneMember(decodedJWT.getClaim("id").asInt());
     if (memberDTO == null) {
@@ -106,15 +89,15 @@ public class MemberResource {
 
   /**
    * get a member with its id.
+   *
    * @param id the member's id
    * @return the member that match with the id.
-   * @throws SQLException if an error occurs while getting member
    */
   @GET
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public MemberDTO getMemberById(@PathParam("id") int id) throws SQLException {
+  public MemberDTO getMemberById(@PathParam("id") int id) {
     MemberDTO memberDTO = memberUCC.getOneMember(id);
     if (memberDTO == null) {
       throw new ObjectNotFoundException("Member not found");
@@ -124,20 +107,23 @@ public class MemberResource {
 
   /**
    * Get a list of interested members for an offer identified by the offer's id.
+   *
    * @param idOffer the offer's id
    * @return the list of interested member for the offer
-   * @throws SQLException if an error occurs while getting the list of interested members
    */
   @GET
   @Path("interested/{idOffer}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public List<MemberDTO> getInterestedMembers(@PathParam("idOffer") int idOffer)
-      throws SQLException {
+  public List<MemberDTO> getInterestedMembers(@PathParam("idOffer") int idOffer) {
     if (idOffer < 1) {
       throw new WrongBodyDataException("The idOffer is less than 1");
     }
-    return this.jsonUtil.filterPublicJsonViewAsList(this.memberUCC.getInterestedMembers(idOffer));
+    List<MemberDTO> memberDTO = this.memberUCC.getInterestedMembers(idOffer);
+    if (memberDTO == null) {
+      throw new ObjectNotFoundException("Member not found with idOffer: " + idOffer);
+    }
+    return this.jsonUtil.filterPublicJsonViewAsList(memberDTO);
   }
 
   /////////////////////////////////////////////////////////
@@ -154,11 +140,11 @@ public class MemberResource {
   @Path("login")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public ObjectNode login(MemberDTO memberDTO) throws SQLException {
+  public ObjectNode login(MemberDTO memberDTO) {
     // Get and check credentials
     if (memberDTO == null
-        || memberDTO.getUsername() == null
-        || memberDTO.getPassword() == null
+        || memberDTO.getUsername().isBlank()
+        || memberDTO.getPassword().isBlank()
     ) {
       String message = "Member has wrong attributes for login method";
       throw new WrongBodyDataException(message);
@@ -179,13 +165,13 @@ public class MemberResource {
   @POST
   @Path("register")
   @Consumes(MediaType.APPLICATION_JSON)
-  public void register(MemberDTO memberDTO) throws SQLException {
+  public void register(MemberDTO memberDTO) {
     // Verify memberDTO integrity
     if (memberDTO == null
-        || memberDTO.getUsername() == null || memberDTO.getUsername().equals("")
-        || memberDTO.getPassword() == null || memberDTO.getPassword().equals("")
-        || memberDTO.getFirstName() == null || memberDTO.getFirstName().equals("")
-        || memberDTO.getLastName() == null || memberDTO.getLastName().equals("")
+        || memberDTO.getUsername() == null || memberDTO.getUsername().isBlank()
+        || memberDTO.getPassword() == null || memberDTO.getPassword().isBlank()
+        || memberDTO.getFirstName() == null || memberDTO.getFirstName().isBlank()
+        || memberDTO.getLastName() == null || memberDTO.getLastName().isBlank()
     ) {
       String message = "Member miss some informations for registration";
       throw new WrongBodyDataException(message);
@@ -193,10 +179,10 @@ public class MemberResource {
     //Verify addressDTO integrity
     AddressDTO addressDTO = memberDTO.getAddress();
     if (addressDTO == null
-        || addressDTO.getStreet() == null || addressDTO.getStreet().equals("")
-        || addressDTO.getCommune() == null || addressDTO.getCommune().equals("")
-        || addressDTO.getPostcode() == null || addressDTO.getPostcode().equals("")
-        || addressDTO.getBuildingNumber() == null || addressDTO.getBuildingNumber().equals("")
+        || addressDTO.getStreet() == null || addressDTO.getStreet().isBlank()
+        || addressDTO.getCommune() == null || addressDTO.getCommune().isBlank()
+        || addressDTO.getPostcode() == null || addressDTO.getPostcode().isBlank()
+        || addressDTO.getBuildingNumber() == null || addressDTO.getBuildingNumber().isBlank()
     ) {
       String message = "Member has complete information but doesn't have "
           + "complete address information";
@@ -222,15 +208,20 @@ public class MemberResource {
   @Path("confirm")
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public void confirmMember(MemberDTO memberDTO) throws SQLException, UnexpectedException {
+  public void confirmMember(MemberDTO memberDTO) {
     if (memberDTO == null || memberDTO.getId() < 1) {
       throw new WrongBodyDataException("Confirmation of a incomplete member's information.");
     }
     if (memberUCC.getOneMember(memberDTO.getId()) == null) {
       throw new ObjectNotFoundException("No member with the id: " + memberDTO.getId());
     }
+
+    if (memberDTO.getVersion() != memberUCC.getOneMember(memberDTO.getId()).getVersion()) {
+      throw new FatalException("Error with version");
+    }
+
     if (!memberUCC.confirmMember(memberDTO)) {
-      throw new UnexpectedException("An unexpected error happened while confirming member.");
+      throw new FatalException("An unexpected error happened while confirming member.");
     }
   }
 
@@ -244,12 +235,13 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public void denyMember(RefusalDTO refusalDTO) throws SQLException, UnexpectedException {
+  public void denyMember(RefusalDTO refusalDTO) {
     if (!memberUCC.memberExist(refusalDTO.getMember(), -1)) {
       throw new ObjectNotFoundException("No member with the id: " + refusalDTO.getMember().getId());
     }
+
     if (!memberUCC.denyMember(refusalDTO)) {
-      throw new UnexpectedException("An unexpected error happened while denying member.");
+      throw new FatalException("An unexpected error happened while denying member.");
     }
   }
 
@@ -258,20 +250,24 @@ public class MemberResource {
    *
    * @param memberDTO the new member
    * @return the member or null if there's no member with the id
-   * @throws SQLException if an error occurs while using ucc methods
    */
   @PUT
   @Path("modify")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public MemberDTO modifyMember(MemberDTO memberDTO) throws SQLException {
+  public MemberDTO modifyMember(MemberDTO memberDTO) {
     if (memberDTO == null
         || memberDTO.getUsername() == null || memberDTO.getUsername().isBlank()
         || memberDTO.getFirstName() == null || memberDTO.getFirstName().isBlank()
     ) {
       throw new WrongBodyDataException("Member incomplete");
     }
+
+    if (memberDTO.getVersion() != memberUCC.getOneMember(memberDTO.getId()).getVersion()) {
+      throw new FatalException("Error with version");
+    }
+
     MemberDTO modifyMember = memberUCC.modifyMember(memberDTO);
     if (modifyMember == null) {
       throw new ObjectNotFoundException("Member not found");

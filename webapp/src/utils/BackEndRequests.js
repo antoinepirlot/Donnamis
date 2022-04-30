@@ -77,17 +77,6 @@ async function register(member) {
       "success", registerMessage)
 }
 
-async function isAdmin() {
-  const request = {
-    method: "HEAD",
-    headers: {
-      "Authorization": getObject("token")
-    }
-  }
-  const response = await fetch("/api/members/is_admin", request);
-  return response.ok;
-}
-
 /**
  * Get all members from the database
  * @returns all members
@@ -155,40 +144,16 @@ async function confirmInscription(member) {
   }
 }
 
-async function confirmAdmin(id) {
+async function denyMember(refusal) {
   const request = {
-    method: "PUT",
-    headers: {
-      "Authorization": getObject("token")
-    }
+    method: "PUT", headers: {
+      "Content-Type": "application/json", "Authorization": getObject("token")
+    }, body: JSON.stringify(refusal)
   };
-  const url = `/api/members/confirmAdmin/${id}`;
-  const response = await fetch(url, request);
+  const response = await fetch("/api/members/deny", request);
   if (!response.ok) {
     throw new Error(
-        "fetch error : " + response.status + " : " + response.statusText
-    );
-  }
-}
-
-async function denyMember(refusal) {
-  try {
-    const request = {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": getObject("token")
-      },
-      body: JSON.stringify(refusal)
-    };
-    const reponse = await fetch("/api/members/deny", request);
-    if (!reponse.ok) {
-      throw new Error(
-          "fetch error : " + reponse.status + " : " + reponse.statusText
-      );
-    }
-  } catch (error) {
-    console.error("ListMemberPage::error::deny registration:", error);
+        "fetch error : " + response.status + " : " + response.statusText);
   }
 }
 
@@ -203,7 +168,6 @@ async function getAllItemsByOfferStatus(offerStatus) {
   if (offerStatus) {
     url += "/" + offerStatus;
   }
-  console.log(url)
   const response = await fetch(url, request);
   if (!response.ok) {
     if (response.status === 401) {
@@ -226,43 +190,6 @@ async function getAssignedItems() {
       request);
   if (!response.ok) {
     throw new Error("Erreur lors du fetch");
-  }
-  return await response.json();
-}
-
-async function getAllOffers() {
-  const request = {
-    method: "GET",
-    headers: {
-      "Authorization": getObject("token")
-    }
-  };
-  const response = await fetch("/api/offers/all_offers", request);
-  if (!response.ok) {
-    if (response.status === 401) {
-      Redirect("/logout");
-    }
-    // status code was not 200, error status code
-    throw new Error(
-        "fetch error : " + response.status + " : " + response.statusText
-    );
-  }
-  return await response.json();
-}
-
-async function getLatestOffers() {
-  const request = {
-    method: "GET",
-    headers: {
-      "Authorization": getObject("token")
-    }
-  };
-  const response = await fetch("/api/offers/latest_offers", request);
-  if (!response.ok) {
-    // status code was not 200, error status code
-    throw new Error(
-        "fetch error : " + response.status + " : " + response.statusText
-    );
   }
   return await response.json();
 }
@@ -309,7 +236,8 @@ async function getAllItemsByMemberIdAndOfferStatus(idMember, offerStatus) {
       "Authorization": getObject("token")
     }
   };
-  const response = await fetch(`/api/items/${idMember}/${offerStatus}`, request);
+  const response = await fetch(`/api/items/${idMember}/${offerStatus}`,
+      request);
   if (!response.ok) {
     throw new Error("Error while fetching member's items");
   }
@@ -323,7 +251,8 @@ async function getNumberOfItems(idMember, offerStatus) {
       "Authorization": getObject("token")
     }
   };
-  const response = await fetch(`/api/items/count/${idMember}/${offerStatus}`, request);
+  const response = await fetch(`/api/items/count/${idMember}/${offerStatus}`,
+      request);
   if (!response.ok) {
     throw new Error("Error while fetching the number of items.");
   }
@@ -337,9 +266,12 @@ async function getNumberOfReceivedOrNotReceivedItems(idMember, received) {
       "Authorization": getObject("token")
     }
   };
-  const response = await fetch(`/api/items/count_assigned_items/${idMember}/${received}`, request);
+  const response = await fetch(
+      `/api/items/count_assigned_items/${idMember}/${received}`, request);
   if (!response.ok) {
-    throw new Error("Error while fetching count of received or not received items of member: " + idMember);
+    throw new Error(
+        "Error while fetching count of received or not received items of member: "
+        + idMember);
   }
   return await response.json();
 }
@@ -355,6 +287,9 @@ async function addNewItemsType(itemsType) {
   };
   const response = await fetch("/api/items_types", request);
   if (!response.ok) {
+    if (response.status === 409) {//Conflict
+      return;
+    }
     throw new Error("Error while adding a new items type.");
   }
 }
@@ -370,12 +305,25 @@ async function offerAnItem(item) {
   };
   const response = await fetch("/api/items", request);
   if (!response.ok) {
-    showError("Can't offer the item");
     throw new Error(
         "fetch error : " + response.status + " : " + response.statusText
     );
   }
-  return response.ok;
+  return await response.json();
+}
+
+async function sendPicture(idItem, formData) {
+  const request = {
+    method: 'POST',
+    headers: {
+      "Authorization": getObject("token")
+    },
+    body: formData
+  };
+  const response = await fetch(`/api/images/upload/${idItem}`, request);
+  if (!response.ok) {
+    throw new Error("Error while uploading an image.");
+  }
 }
 
 async function modifyMember(member) {
@@ -395,6 +343,25 @@ async function modifyMember(member) {
     );
   }
   return await response.json();
+}
+
+async function modifyTheItem(item) {
+  const request = {
+    method: "PUT",
+    headers: {
+      "Authorization": getObject("token"),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(item)
+  };
+  const response = await fetch("/api/items/modify", request);
+  if (!response.ok) {
+    showError("Impossible de modifier l'objet");
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText
+    );
+  }
+  return response.ok;
 }
 
 async function offerAgain(offer) {
@@ -473,9 +440,9 @@ async function cancelOffer(id) {
 
 /**
  * Ask backend to mark an interest for an item.
- * @returns {Promise<boolean>} true if the request has been done otherwise false
+ * @returns {Promise<number>} true if the request has been done otherwise false
  */
-async function postInterest(interest, interestMessage) {
+async function postInterest(interest) {
   const request = {
     method: "POST",
     headers: {
@@ -485,18 +452,46 @@ async function postInterest(interest, interestMessage) {
     body: JSON.stringify(interest)
   };
   const response = await fetch("api/interests", request);
-  console.table(response);
+
+  if (!response.ok) {
+    return response.status;
+  }
+}
+
+async function getAllRatings() {
+  const request = {
+    method: "GET", headers: {
+      "Authorization": getObject("token"), "Content-Type": "application/json"
+    }
+  };
+  const response = await fetch(`/api/ratings/all/${getPayload().id}`, request);
+  if (!response.ok) {
+    if (response.status === 404) {
+      return;
+    }
+    throw new Error("Error while getting all ratings of a member");
+  }
+  return await response.json();
+}
+
+async function evaluateItemBackEnd(rating, ratingMessage) {
+  const request = {
+    method: "POST", headers: {
+      "Authorization": getObject("token"), "Content-Type": "application/json"
+    }, body: JSON.stringify(rating)
+  };
+  const response = await fetch("api/ratings", request);
+
   if (response.ok) {
     showError(
-        "Votre intérêt pour cet article à été bien été enregistré.",
-        "success", interestMessage);
+        "Evaluation enregistrée",
+        "success", ratingMessage
+    );
   } else if (response.status === 409) {
-    showError("Vous avez déjà mis une marque d'intérêt pour cette offre",
-        "danger", interestMessage);
-  } else if (response.status === 403) {
-    showError(
-        "Votre numero de téléphone n'est pas renseigné, veuillez l'ajouter si vous désirez être appelé.",
-        "danger", interestMessage);
+    showError("Vous ne pouvez évaluer une offre qu'une seule fois", "danger",
+        ratingMessage);
+  } else if (response.status === 400) {
+    showError("Information manquante", "danger", ratingMessage);
   }
   return response.ok;
 }
@@ -521,17 +516,13 @@ export {
   getRefusal,
   me,
   register,
-  isAdmin,
   getAllMembers,
   getInterestedMembers,
   getOneMember,
   confirmInscription,
-  confirmAdmin,
   denyMember,
   getAllItemsByOfferStatus,
   getAssignedItems,
-  getAllOffers,
-  getLatestOffers,
   getMyItems,
   markItemAs,
   cancelOffer,
@@ -542,8 +533,12 @@ export {
   getNumberOfItems,
   getNumberOfReceivedOrNotReceivedItems,
   offerAnItem,
+  sendPicture,
   offerAgain,
   postInterest,
   modifyMember,
-  chooseRecipient
+  chooseRecipient,
+  modifyTheItem,
+  getAllRatings,
+  evaluateItemBackEnd
 };

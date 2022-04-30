@@ -5,9 +5,10 @@ import {
   confirmInscription,
   denyMember,
   getAllMembers,
-  isAdmin
+  getOneMember
 } from "../../../utils/BackEndRequests";
 import {Redirect} from "../../Router/Router";
+import {isAdmin} from "../../../utils/session";
 
 const tableHtmlConfirmedMembers = `
   <div>
@@ -51,8 +52,11 @@ const tableHtmlDeniedMembers = `
   </div>
 `;
 
+let tbodyRegisteredMembers;
+let tbodyDeniedMembers;
+
 const ListMemberPage = async () => {
-  if (!await isAdmin()) {
+  if (!isAdmin()) {
     Redirect("/");
     return;
   }
@@ -60,6 +64,12 @@ const ListMemberPage = async () => {
   pageDiv.innerHTML = tableHtmlConfirmedMembers;
   pageDiv.innerHTML += tableHtmlDeniedMembers;
   const members = await getAllMembers();
+  tbodyRegisteredMembers = document.querySelector("#tbody_registered_members");
+  tbodyRegisteredMembers.innerHTML = "";
+
+  tbodyDeniedMembers = document.querySelector("#tbody_denied_members");
+  tbodyDeniedMembers.innerHTML = "";
+
   for (const member of members) {
     if (member.actualState === "registered") {
       await showRegisteredMember(member);
@@ -70,10 +80,8 @@ const ListMemberPage = async () => {
 };
 
 async function showRegisteredMember(member) {
-  const tbody = document.querySelector("#tbody_registered_members");
-  tbody.innerHTML = "";
   //For Each Member
-  tbody.innerHTML += `
+  tbodyRegisteredMembers.innerHTML += `
       <tr id="RegisteredLine">
         <td>${member.firstName}</td>
         <td>${member.lastName}</td>
@@ -100,15 +108,16 @@ async function showRegisteredMember(member) {
       let isAdminButtonChecked;
       isAdminButtons.forEach(button => {
         if (button.value === confirmButton.value) {
-          console.log(button.checked)
           isAdminButtonChecked = button.checked;
         }
       });
-      const member = {
-        id: confirmButton.value,
-        isAdmin: isAdminButtonChecked
+      const member = await getOneMember(confirmButton.value);
+      const confirmMember = {
+        id: member.id,
+        isAdmin: isAdminButtonChecked,
+        version: member.version
       };
-      await confirmInscription(member);
+      await confirmInscription(confirmMember);
       Redirect("/list_member");
     });
   });
@@ -119,9 +128,12 @@ async function showRegisteredMember(member) {
     denyButton.addEventListener("click", async function () {
       const refusalText = document.querySelector("#refusalText").value;
       //Confirm the registration (Click on the button)
+
       const refusal = {
-        member: member,
-        text: refusalText
+        member: {
+          id: denyButton.value
+        },
+        text: refusalText,
       };
       await denyMember(refusal);
       Redirect("/list_member");
@@ -133,7 +145,6 @@ async function showRegisteredMember(member) {
 
 async function showDeniedMember(member) {
   const tbody = document.querySelector("#tbody_denied_members");
-  tbody.innerHTML = "";
   tbody.innerHTML += `
       <tr id="DeniedLine">
         <td>${member.firstName}</td>
@@ -156,11 +167,14 @@ async function showDeniedMember(member) {
           isAdminButtonChecked = button.checked;
         }
       });
-      const member = {
+
+      const member = await getOneMember(confirmButton.value);
+      const confirmMember = {
         id: confirmButton.value,
-        isAdmin: isAdminButtonChecked
+        isAdmin: isAdminButtonChecked,
+        version: member.version
       };
-      await confirmInscription(member);
+      await confirmInscription(confirmMember);
       Redirect("/list_member");
     });
   }

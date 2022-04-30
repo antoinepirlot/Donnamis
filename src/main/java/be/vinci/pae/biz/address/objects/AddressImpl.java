@@ -21,6 +21,8 @@ public class AddressImpl implements Address {
   private String postcode;
   @JsonView(Views.Public.class)
   private String commune;
+  @JsonView(Views.Public.class)
+  private int version;
 
   @Override
   public int getId() {
@@ -80,6 +82,16 @@ public class AddressImpl implements Address {
   @Override
   public void setCommune(String commune) {
     this.commune = commune;
+  }
+
+  @Override
+  public int getVersion() {
+    return version;
+  }
+
+  @Override
+  public void setVersion(int version) {
+    this.version = version;
   }
 
   @Override

@@ -2,42 +2,56 @@ import {checkToken, getObject, getPayload,} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
 import {showError} from "../../../utils/ShowError";
 import {
-  getItem, me,
+  getItem,
+  modifyTheItem,
   postInterest as postInterestBackEnd
 } from "../../../utils/BackEndRequests";
+import {closeModal, openModal} from "../../../utils/Modals";
 
 const viewOfferHtml = `
-<div id="offerCard" class="card mb-3">
+<div id="offerCard" class="card mb-3" xmlns="http://www.w3.org/1999/html">
   <div class="row no-gutters">
-  <div class="col-md">
+    <div class="col-md" >
       <div class="card-body">
-        <h2 id="title" class="card-title"></h2>
-        <p id="offerer" class="text-muted"> </p>
-        <h5 id="type" class="card-text"></h5>
-        <h5 id="description" class="card-text"></h5>
-        <h5 id="availabilities" class="card-text"></h5>
-        <h5 id="pubDate" class="card-text"></h5>
-
-        <form id="interestForm">
-          <div id="interestsInputs" class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="callWanted">
-            <label class="form-check-label" for="callWanted">J'accepte d'être appelé</label>
-            <div id="phoneNumberInputDiv"></div>
-          </div>
-          <input id="interestButton" type="submit" class="btn btn-primary" value="Je suis interessé(e) !">
-       </form>
-
-       <div class="message" id="interestMessage"></div>
+        <h2 id="titleViewItemPage" class="card-title"></h2>
+        <p id="memberViewItemPage" class="text-muted"> </p>
+        <h5 id="itemTypeViewItemPage" class="card-text"></h5>
+        <h5 id="descriptionViewItemPage" class="card-text"></h5>
+        <h5 id="availabilitiesViewItemPage" class="card-text"></h5>
+        <h5 id="pubDateViewItemPage" class="card-text"></h5>
+        <h5 id="oldPubDateViewItemPage" class="card-text"></h5>
+        <button id="interestButton" class="btn btn-primary">
       </div>
     </div>
-    <div class="col-md-4">
-      <img src="" class="card-img" alt="JS">
+    <div class="col-md-4" id="imageItem">
     </div>
+  </div>
+  <div id="viewItemPageError"></div>
+</div>
+<!-- Modal Modify Item is in createModifyItemModal function-->
+
+<!-- Modal Post Interest -->
+<div id="interestModal" class="modal">
+  <div class="modal-content">
+    <span id="interestCloseModal" class="close">&times;</span>
+    <form id="interestForm">
+      <h5>Marquer votre intéret pour cette offre</h5><br>
+      <p>Date de récupération</p>
+      <input id="dateForm" type="date">
+      <input class="form-check-input" type="checkbox" id="callWanted">
+      <label class="form-check-label" for="callWanted">J'accepte d'être appelé</label>
+      <div id="phoneNumberInputDiv"></div>
+      <br>
+      <input type="submit" class="btn btn-primary" value="Confirmer">
+    </form>
+    <div id="postInterestMessage"></div>
   </div>
 </div>
 `;
 
 let lastOffer;
+let item;
+let errorMessageDiv;
 
 /**
  * Render the OfferPage :
@@ -50,32 +64,119 @@ async function ViewItemPage() {
   //get param from url
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const page = document.querySelector("#page");
   const idItem = urlParams.get("id");
+  const page = document.querySelector("#page");
   page.innerHTML = viewOfferHtml;
+  errorMessageDiv = document.querySelector("#viewItemPageError");
+  try {
+    item = await getItem(idItem);
+    page.innerHTML += createModifyItemModal();
+    showItemInfo();
+    const modifyMember = getObject("memberDTO");
+    const postInterestButton = document.querySelector("#interestButton");
+    if (item.member.id === modifyMember.id) {
+      postInterestButton.innerText = "Modifier";
+      //modify item
+      postInterestButton.addEventListener("click", showModifyForm);
+    } else {
+      postInterestButton.innerText = "Je suis interessé(e) !";
+      //post an interest
+      postInterestButton.addEventListener("click", showInterestForm);
+    }
+  } catch (e) {
+    console.error(e);
+    showError("Une erreur est survenue.", "danger", errorMessageDiv);
+  }
+}
 
-  const callWanted = document.querySelector("#callWanted");
-  callWanted.addEventListener("click", showPhoneNumberInput)
+function createModifyItemModal() {
+  let itemDescription = item.itemDescription ? item.itemDescription : "";
+  let timeSlot = item.offerList[0].timeSlot ? item.offerList[0].timeSlot : "";
+  return `
+    <!-- Modal Modify Item -->
+    <div id="modifyItemModal" class="modal">
+      <div class="modal-content">
+        <span id="modifyItemCloseModal" class="close">&times;</span>
+        <form id="modifyItemForm">
+          <h5>Modifier votre objet<span id="asterisk">*</span>:</h5><br>
+          <p>Description de l'objet<span id="asterisk">*</span>:</p>
+          <input id="itemDescriptionForm" type="text" value="${itemDescription}">
+          <p>Photo</p>
+          <input id="photoForm" type="file"><br>
+          <br>
+          <p>Disponibilités horaire<span id="asterisk">*</span>:</p>
+          <textarea id="timeSlotModifyForm" cols="30" rows="3">${timeSlot}</textarea>
+          <br>
+          <input type="submit" value="Modifier">
+        </form>
+        <div id="modifyItemMessage"></div>
+      </div>
+    </div>
+  `;
+}
 
-  const button = document.querySelector("#offerCard");
-  //get offer's infos with the id in param
-  await getItemInfo(idItem);
-  //post an interest
-  button.addEventListener("submit", postInterest);
+function showItemInfo() {
+  lastOffer = item.offerList[0];
+  let date = new Date(lastOffer.date);
+  date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
+      + date.getFullYear();
+  if (item.offerList.length === 2) {
+    const oldOffer = item.offerList[1];
+    let oldPubDate = new Date(oldOffer.date);
+    oldPubDate = oldPubDate.getDate() + "/" + (oldPubDate.getMonth() + 1) + "/"
+        + oldPubDate.getFullYear();
+    const oldPubDateDiv = document.querySelector("#oldPubDateViewItemPage");
+    oldPubDateDiv.innerHTML = `Date de publication précédente : ${oldPubDate}`;
+  }
+
+  const titleDiv = document.querySelector("#titleViewItemPage");
+  titleDiv.innerHTML = item.title;
+
+  const memberDiv = document.querySelector("#memberViewItemPage");
+  memberDiv.innerHTML = `Offre proposée par : ${item.member.firstName} ${item.member.lastName} `;
+
+  const itemType = document.querySelector("#itemTypeViewItemPage");
+  itemType.innerHTML = `Type : ${item.itemType.itemType}`;
+
+  const descriptionDiv = document.querySelector("#descriptionViewItemPage");
+  descriptionDiv.innerHTML = `Description : ${item.itemDescription}`;
+
+  const availabilitiesDiv = document.querySelector(
+      "#availabilitiesViewItemPage");
+  availabilitiesDiv.innerHTML = `Disponibilités : ${lastOffer.timeSlot}`;
+
+  const pubDateDiv = document.querySelector("#pubDateViewItemPage");
+  pubDateDiv.innerHTML = `Date de publication : ${date}`;
+
+  const image = document.querySelector("#imageItem");
+  image.innerHTML = `
+      <img src="data:image/png;base64,${item.photo}" id="bigImageItem" alt="Card image cap" >
+  `;
+}
+
+async function showInterestForm(e) {
+  e.preventDefault();
+  openModal("#interestModal", "#interestCloseModal");
+
+  const callWantedCheckbox = document.querySelector("#callWanted");
+  callWantedCheckbox.addEventListener("click", showPhoneNumberInput);
+
+  const interestForm = document.querySelector("#interestForm");
+  interestForm.addEventListener("submit", postInterest);
 }
 
 function showPhoneNumberInput() {
   const phoneNumberInputDiv = document.querySelector("#phoneNumberInputDiv");
   let phoneNumberInputHtml;
   const memberDTO = getObject("memberDTO");
-  console.log(memberDTO)
+
   if (memberDTO.phoneNumber) {
     phoneNumberInputHtml = `
-      <input id="phoneNumberInput" type="tel" value="${memberDTO.phoneNumber}" pattern="(+?[0-9]{3})[0-9]{13}">
+      <input id="phoneNumberInput" type="tel" value="${memberDTO.phoneNumber}">
     `;
   } else {
     phoneNumberInputHtml = `
-      <input id="phoneNumberInput" type="tel" placeholder="Téléphone" pattern="(+?[0-9]{3})[0-9]{13}">
+      <input id="phoneNumberInput" type="tel" placeholder="Téléphone">
     `;
   }
   if (!phoneNumberInputDiv.querySelector("#phoneNumberInput")) {
@@ -85,58 +186,77 @@ function showPhoneNumberInput() {
   }
 }
 
-async function getItemInfo(idItem) {
-  try {
-    const item = await getItem(idItem);
-    lastOffer = item.offerList[0];
-    var date = new Date(lastOffer.date);
-    date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
-        + date.getFullYear();
-
-    document.querySelector("#title").innerHTML = item.title
-    document.querySelector(
-        "#offerer").innerHTML = `Offre proposée par : ${item.member.firstName} ${item.member.lastName} `
-    document.querySelector(
-        "#type").innerHTML = `Type : ${item.itemType.itemType}`
-    document.querySelector(
-        "#description").innerHTML = `Description : ${item.itemDescription}`
-    document.querySelector(
-        "#availabilities").innerHTML = `Disponibilités : ${lastOffer.timeSlot}`
-    document.querySelector(
-        "#pubDate").innerHTML = `Date de publication : ${date}`
-  } catch (err) {
-    console.error(err);
-  }
-}
-
 async function postInterest(e) {
-  console.log("postInterest");
   e.preventDefault();
-  const interestMessage = document.querySelector("#interestMessage");
-  //const urlParams = new URLSearchParams(queryString);
+  const interestMessage = document.querySelector("#postInterestMessage");
   const callWanted = document.querySelector("#callWanted").checked;
-  const member = {
+  const date = document.querySelector("#dateForm").value;
+  if (!date) {
+    showError("La date n'a pas été choisie.", "danger", interestMessage);
+    return;
+  }
+  const memberInterested = {
     id: getPayload().id
   };
   if (callWanted) {
-    member.phoneNumber = document.querySelector("#phoneNumberInput").value;
+    memberInterested.phoneNumber = document.querySelector(
+        "#phoneNumberInput").value;
   }
   const interest = {
     callWanted: callWanted,
     offer: lastOffer,
-    member: member
+    member: memberInterested,
+    date: date
   };
+  const pageErrorDiv = document.querySelector("#viewItemPageError");
   try {
-    await postInterestBackEnd(interest, interestMessage);
+    const status = await postInterestBackEnd(interest, errorMessageDiv);
+    if (status === 409) {
+      showError("Vous avez déjà marqué un intéret pour cette offre.", "danger",
+          pageErrorDiv);
+      return;
+    }
     if (callWanted) {
       await checkToken();
     }
+    showError("L'intérêt a bien été prit en compte.", "success", pageErrorDiv);
   } catch (err) {
-    showError("Votre marque d'intérêt n'a pas pu être ajoutée", "danger",
-        interestMessage);
     console.error(err);
+  } finally {
+    closeModal("#interestModal");
   }
+}
 
+async function showModifyForm(e) {
+  e.preventDefault();
+  openModal("#modifyItemModal", "#modifyItemCloseModal");
+  const modifyForm = document.querySelector("#modifyItemForm");
+  modifyForm.addEventListener("submit", modifyItem);
+}
+
+async function modifyItem(e) {
+  e.preventDefault();
+  const itemDescription = document.querySelector("#itemDescriptionForm").value;
+  const photo = document.querySelector("#photoForm").value;
+  const timeSlot = document.querySelector("#timeSlotModifyForm").value;
+  const newItem = {
+    id: item.id,
+    itemDescription: itemDescription,
+    photo: photo,
+    lastOffer: {
+      timeSlot: timeSlot
+    },
+    version: item.version
+  }
+  try {
+    await modifyTheItem(newItem);
+    const errorMessage = document.querySelector("#modifyItemMessage");
+    showError("Modification validé", "success", errorMessage);
+    await ViewItemPage();
+  } catch (error) {
+    console.error(error);
+    closeModal("#modifyItemModal");
+  }
 }
 
 export default ViewItemPage;

@@ -40,6 +40,10 @@
   </build>
   <dependencies>
     <dependency>
+      <artifactId>jersey-media-multipart</artifactId>
+      <groupId>org.glassfish.jersey.media</groupId>
+    </dependency>
+    <dependency>
       <artifactId>commons-dbcp2</artifactId>
       <groupId>org.apache.commons</groupId>
       <version>2.9.0</version>
@@ -57,7 +61,6 @@
       <groupId>org.apache.commons</groupId>
       <version>1.9</version>
     </dependency>
-
     <dependency>
       <artifactId>jersey-media-json-jackson</artifactId>
       <groupId>org.glassfish.jersey.media</groupId>

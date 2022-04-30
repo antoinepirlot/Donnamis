@@ -1,4 +1,4 @@
-package be.vinci.pae.exceptions.biz;
+package be.vinci.pae.exceptions;
 
 public class TransactionException extends Exception {
 

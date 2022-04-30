@@ -11,6 +11,8 @@ import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.objects.MemberImpl;
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.objects.OfferImpl;
+import be.vinci.pae.biz.rating.interfaces.RatingDTO;
+import be.vinci.pae.biz.rating.objects.RatingImpl;
 import be.vinci.pae.biz.recipient.interfaces.RecipientDTO;
 import be.vinci.pae.biz.recipient.objects.RecipientImpl;
 import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
@@ -44,13 +46,18 @@ public class FactoryImpl implements Factory {
   }
 
   @Override
-  public RecipientDTO getRecipientDTO() {
+  public RecipientDTO getRecipient() {
     return new RecipientImpl();
   }
 
   @Override
-  public RefusalDTO getRefusalDTO() {
+  public RefusalDTO getRefusal() {
     return new RefusalImpl();
+  }
+
+  @Override
+  public RatingDTO getRating() {
+    return new RatingImpl();
   }
 }
 
