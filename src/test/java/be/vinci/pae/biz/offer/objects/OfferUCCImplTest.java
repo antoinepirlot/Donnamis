@@ -77,6 +77,10 @@ class OfferUCCImplTest {
     Mockito.when(this.offerDAO.getOne(this.notExistingIdOffer)).thenReturn(null);
   }
 
+  private void setOfferExistsReturnedValue(boolean exists) {
+    Mockito.when(this.offerDAO.offerExist(this.emptyOffer)).thenReturn(exists);
+  }
+
   private void setErrorDALServiceStart() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).start();
@@ -222,5 +226,33 @@ class OfferUCCImplTest {
   void testGetLastTwoOffersOfWithCommitThrowingSQLException() {
     this.setErrorDALServiceCommit();
     assertThrows(FatalException.class, () -> this.offerUCC.getLastTwoOffersOf(this.existingItem));
+  }
+
+  @DisplayName("Test offer exists with existing offer")
+  @Test
+  void testOfferExistsWithExistingOffer() {
+    this.setOfferExistsReturnedValue(true);
+    assertTrue(this.offerUCC.offerExist(this.emptyOffer));
+  }
+
+  @DisplayName("Test offer exists with not existing offer")
+  @Test
+  void testOfferExistsWithNotExistingOffer() {
+    this.setOfferExistsReturnedValue(false);
+    assertFalse(this.offerUCC.offerExist(this.emptyOffer));
+  }
+
+  @DisplayName("Test offer exists with start throwing sql exception")
+  @Test
+  void testOfferExistsWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.offerUCC.offerExist(this.emptyOffer));
+  }
+
+  @DisplayName("Test offer exists with commit throwing sql exception")
+  @Test
+  void testOfferExistsWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.offerUCC.offerExist(this.emptyOffer));
   }
 }
