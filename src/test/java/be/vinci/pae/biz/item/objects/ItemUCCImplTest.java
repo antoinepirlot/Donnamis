@@ -60,6 +60,10 @@ class ItemUCCImplTest {
     }
   }
 
+  private void setAddItemReturnedValue(int newIdItem) {
+    Mockito.when(this.itemDAO.addItem(this.itemDTO)).thenReturn(newIdItem);
+  }
+
   private void setErrrorDALServiceStart() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).start();
@@ -160,8 +164,26 @@ class ItemUCCImplTest {
     assertThrows(FatalException.class, () -> this.itemUCC.getOneItem(4));
   }
 
+  @DisplayName("Test add item with good item DTO")
   @Test
-  void addItem() {
+  void testAddItemWithGoodItemDTO() {
+    int newIdItem = 5;
+    this.setAddItemReturnedValue(newIdItem);
+    assertEquals(newIdItem, this.itemUCC.addItem(this.itemDTO));
+  }
+
+  @DisplayName("Test add item with start throwing sql exception")
+  @Test
+  void testAddItemWithStartThrowingSQLException() {
+    this.setErrrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.addItem(this.itemDTO));
+  }
+
+  @DisplayName("Test add item with start throwing sql exception")
+  @Test
+  void testAddItemWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.itemUCC.addItem(this.itemDTO));
   }
 
   @Test
