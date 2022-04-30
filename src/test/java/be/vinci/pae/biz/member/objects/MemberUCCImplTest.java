@@ -2,6 +2,7 @@ package be.vinci.pae.biz.member.objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
@@ -9,8 +10,12 @@ import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import be.vinci.pae.biz.refusal.objects.RefusalImpl;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
+import be.vinci.pae.dal.services.interfaces.DALServices;
+import be.vinci.pae.exceptions.FatalException;
 import be.vinci.pae.utils.ApplicationBinder;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,22 +27,30 @@ class MemberUCCImplTest {
 
   private final ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
   private final MemberDAO memberDAO = locator.getService(MemberDAO.class);
+  private final DALServices dalServices = locator.getService(DALServices.class);
   private final MemberUCC memberUCC = locator.getService(MemberUCC.class);
   private final MemberDTO memberDTO = new MemberImpl();
   private final MemberDTO memberToLogIn = new MemberImpl();
   private final RefusalDTO refusalDTO = new RefusalImpl();
+  private final List<MemberDTO> memberDTOList = new ArrayList<>();
   private String hashedPassword;
   private String password;
   private String wrongPassword;
 
   @BeforeEach
   void setUp() {
+    try {
+      Mockito.doNothing().when(this.dalServices).start();
+      Mockito.doNothing().when(this.dalServices).commit();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
     hashedPassword = "$2a$10$vD5FXSmaNv4DkfpFfKfDsOjaJ192x2RdWyjIWr28lj5r1X9uvB9yC";
     password = "password";
     wrongPassword = "wrongpassword";
   }
 
-  private void configureMemberDTO(String actualState, String password) throws SQLException {
+  private void configureMemberDTO(String actualState, String password) {
     this.memberDTO.setId(99);
     this.memberDTO.setActualState(actualState);
     this.memberDTO.setPassword(this.hashedPassword);
@@ -51,7 +64,7 @@ class MemberUCCImplTest {
         .thenReturn(this.memberDTO);
   }
 
-  private void configureMemberDTOState(String state) throws SQLException {
+  private void configureMemberDTOState(String state) {
     memberDTO.setActualState(state);
     memberDTO.setId(99);
     Mockito.when(memberDAO.confirmMember(this.memberDTO)).thenReturn(true);
@@ -59,25 +72,66 @@ class MemberUCCImplTest {
     Mockito.when(memberDAO.getOne(99)).thenReturn(memberDTO);
   }
 
+  private void setGetAllMembersReturnedValue() {
+    Mockito.when(this.memberDAO.getAllMembers()).thenReturn(this.memberDTOList);
+  }
+
+  private void setErrorDALServiceStart() {
+    try {
+      Mockito.doThrow(new SQLException()).when(dalServices).start();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private void setErrorDALServiceCommit() {
+    try {
+      Mockito.doThrow(new SQLException()).when(dalServices).commit();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @DisplayName("Test get all members working as expected")
+  @Test
+  void testGetAllMembersAsExpected() {
+    this.setGetAllMembersReturnedValue();
+    assertEquals(this.memberDTOList, this.memberUCC.getAllMembers());
+  }
+
+  @DisplayName("Test get all members working as expected")
+  @Test
+  void testGetAllMembersWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, this.memberUCC::getAllMembers);
+  }
+
+  @DisplayName("Test get all members working as expected")
+  @Test
+  void testGetAllMembersWithCommitThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, this.memberUCC::getAllMembers);
+  }
+
   //Test Confirm Member
 
   @DisplayName("Test Confirm Member with the state registered")
   @Test
-  void testConfirmMemberWithStateRegistered() throws SQLException {
+  void testConfirmMemberWithStateRegistered() {
     configureMemberDTOState("registered");
     assertTrue(memberUCC.confirmMember(this.memberDTO));
   }
 
   @DisplayName("Test Confirm Member with the state denied")
   @Test
-  void testConfirmMemberWithStateDenied() throws SQLException {
+  void testConfirmMemberWithStateDenied() {
     configureMemberDTOState("denied");
     assertTrue(memberUCC.confirmMember(this.memberDTO));
   }
 
   @DisplayName("Test Confirm Member with the state confirmed")
   @Test
-  void testConfirmMemberWithStateConfirmed() throws SQLException {
+  void testConfirmMemberWithStateConfirmed() {
     configureMemberDTOState("confirmed");
     assertTrue(memberUCC.confirmMember(this.memberDTO));
   }
@@ -86,21 +140,21 @@ class MemberUCCImplTest {
 
   @DisplayName("Test Deny Member With the state confirmedd")
   @Test
-  void testDenyMemberWithStateConfirmed() throws SQLException {
+  void testDenyMemberWithStateConfirmed() {
     configureMemberDTOState("confirmed");
     assertTrue(memberUCC.denyMember(this.refusalDTO));
   }
 
   @DisplayName("Test Deny Member With the state registered")
   @Test
-  void testDenyMemberWithStateRegistered() throws SQLException {
+  void testDenyMemberWithStateRegistered() {
     configureMemberDTOState("registered");
     assertTrue(this.memberUCC.denyMember(this.refusalDTO));
   }
 
   @DisplayName("Test Deny Member With the state denied")
   @Test
-  void testDenyMemberWithStateDenied() throws SQLException {
+  void testDenyMemberWithStateDenied() {
     configureMemberDTOState("denied");
     assertTrue(memberUCC.denyMember(this.refusalDTO));
   }
@@ -109,21 +163,21 @@ class MemberUCCImplTest {
 
   @DisplayName("Test Confirm Admin With the state denied")
   @Test
-  void testConfirmAdminWithStateRefused() throws SQLException {
+  void testConfirmAdminWithStateRefused() {
     configureMemberDTOState("denied");
     assertTrue(this.memberUCC.confirmMember(this.memberDTO));
   }
 
   @DisplayName("Test Confirm Admin With the state registered")
   @Test
-  void testConfirmAdminWithStateRegistered() throws SQLException {
+  void testConfirmAdminWithStateRegistered() {
     configureMemberDTOState("registered");
     assertTrue(memberUCC.confirmMember(this.memberDTO));
   }
 
   @DisplayName("Test Confirm Admin With the state confirmed")
   @Test
-  void testConfirmAdminWithStateConfirmed() throws SQLException {
+  void testConfirmAdminWithStateConfirmed() {
     configureMemberDTOState("confirmed");
     assertTrue(this.memberUCC.confirmMember(this.memberDTO));
   }
@@ -132,7 +186,7 @@ class MemberUCCImplTest {
 
   @DisplayName("Test login with confirmed member and good password")
   @Test
-  void testLoginConfirmedMemberWithGoodPassword() throws SQLException {
+  void testLoginConfirmedMemberWithGoodPassword() {
     configureMemberDTO("confirmed", password);
     assertEquals(memberDTO,
         memberUCC.login(memberToLogIn)
@@ -141,35 +195,35 @@ class MemberUCCImplTest {
 
   @DisplayName("Test login with denied member and good password")
   @Test
-  void testLoginDeniedMemberWithGoodPassword() throws SQLException {
+  void testLoginDeniedMemberWithGoodPassword() {
     configureMemberDTO("denied", password);
     assertNull(memberUCC.login(memberToLogIn));
   }
 
   @DisplayName("Test login with registered member and good password")
   @Test
-  void testLoginRegisteredMemberWithGoodPassword() throws SQLException {
+  void testLoginRegisteredMemberWithGoodPassword() {
     configureMemberDTO("registered", password);
     assertNull(memberUCC.login(memberToLogIn));
   }
 
   @DisplayName("Test login with confirmed member and wrong password")
   @Test
-  void testLoginConfirmedMemberWithWrongPassword() throws SQLException {
+  void testLoginConfirmedMemberWithWrongPassword() {
     configureMemberDTO("confirmed", wrongPassword);
     assertNull(memberUCC.login(memberToLogIn));
   }
 
   @DisplayName("Test login with registered member and wrong password")
   @Test
-  void testLoginRegisteredMemberWithWrongPassword() throws SQLException {
+  void testLoginRegisteredMemberWithWrongPassword() {
     configureMemberDTO("registered", wrongPassword);
     assertNull(memberUCC.login(memberToLogIn));
   }
 
   @DisplayName("Test login with denied member and wrong password")
   @Test
-  void testLoginDeniedMemberWithWrongPassword() throws SQLException {
+  void testLoginDeniedMemberWithWrongPassword() {
     configureMemberDTO("denied", wrongPassword);
     assertNull(memberUCC.login(memberToLogIn));
   }
