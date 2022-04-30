@@ -8,29 +8,20 @@ import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.filter.utils.Json;
 import be.vinci.pae.ihm.logs.LoggerHandler;
 import be.vinci.pae.utils.Config;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.SQLOutput;
-import java.util.Base64;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.maven.surefire.shared.io.FileUtils;
 import org.apache.maven.surefire.shared.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -71,29 +62,29 @@ public class ImageResource {
     this.logger.log(Level.INFO, "An image has been copied.");
   }
 
- // @GET
- // @Path("{idItem}")
- // @Produces(MediaType.APPLICATION_JSON)
- // //@AuthorizeMember
- // public String getImage(@PathParam("idItem") int idItem) throws IOException {
- //   System.out.println("****************");
- //   if (idItem < 1) {
- //     throw new WrongBodyDataException("idItem is lower than 1");
- //   }
- //   ItemDTO itemDTO = itemUCC.getOneItem(idItem);
- //   if(itemDTO.getPhoto() == null){
- //     return null;
- //   }
- //   String photoSignature = itemDTO.getPhoto();
- //   String path = Config.getPhotoPath();
- //   String photoPath = path + "\\" + photoSignature;
- //   System.out.println("Photo path :  " + photoPath);
- //   byte[] fileContent = FileUtils.readFileToByteArray(new File(photoPath));
- //   Base64.getEncoder().encodeToString(fileContent);
- //   System.out.println("**********************************");
- //   System.out.println("**********************************");
- //   return Base64.getEncoder().encodeToString(fileContent);
- // }
+  // @GET
+  // @Path("{idItem}")
+  // @Produces(MediaType.APPLICATION_JSON)
+  // //@AuthorizeMember
+  // public String getImage(@PathParam("idItem") int idItem) throws IOException {
+  //   System.out.println("****************");
+  //   if (idItem < 1) {
+  //     throw new WrongBodyDataException("idItem is lower than 1");
+  //   }
+  //   ItemDTO itemDTO = itemUCC.getOneItem(idItem);
+  //   if(itemDTO.getPhoto() == null){
+  //     return null;
+  //   }
+  //   String photoSignature = itemDTO.getPhoto();
+  //   String path = Config.getPhotoPath();
+  //   String photoPath = path + "\\" + photoSignature;
+  //   System.out.println("Photo path :  " + photoPath);
+  //   byte[] fileContent = FileUtils.readFileToByteArray(new File(photoPath));
+  //   Base64.getEncoder().encodeToString(fileContent);
+  //   System.out.println("**********************************");
+  //   System.out.println("**********************************");
+  //   return Base64.getEncoder().encodeToString(fileContent);
+  // }
 
   private boolean checkExtension(String fileExtension) {
     for (String ext : ALLOWED_EXTENSIONS) {
