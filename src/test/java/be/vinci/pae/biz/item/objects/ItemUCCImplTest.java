@@ -98,6 +98,14 @@ class ItemUCCImplTest {
     }
   }
 
+  private void setMarkItemAsrReturnedValue(boolean given) {
+    if (given) {
+      Mockito.when(this.itemDAO.markItemAsGiven(this.itemDTO)).thenReturn(true);
+    } else {
+      Mockito.when(this.itemDAO.markItemAsNotGiven(this.itemDTO)).thenReturn(true);
+    }
+  }
+
   private void setErrrorDALServiceStart() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).start();
@@ -332,9 +340,32 @@ class ItemUCCImplTest {
     assertThrows(FatalException.class, () -> this.itemUCC.getAssignedItems(5));
   }
 
+  @DisplayName("Test mark item as given with good item")
   @Test
-  void markItemAsGiven() {
+  void testMarkItemAsGivenWithGoodItem() {
+    this.setMarkItemAsrReturnedValue(true);
+    assertTrue(this.itemUCC.markItemAsGiven(this.itemDTO));
+  }
 
+  @DisplayName("Test mark item as given with wrong item")
+  @Test
+  void testMarkItemAsGivenWithWrongItem() {
+    this.setMarkItemAsrReturnedValue(true);
+    assertFalse(this.itemUCC.markItemAsGiven(null));
+  }
+
+  @DisplayName("Test mark item as given with start throwing sql exception")
+  @Test
+  void testMarkItemAsGivenWithStartThrowingSQLException() {
+    this.setErrrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.markItemAsGiven(this.itemDTO));
+  }
+
+  @DisplayName("Test mark item as given with commit throwing sql exception")
+  @Test
+  void testMarkItemAsGivenWithCommitThrowingSQLException() {
+    this.setMarkItemAsrReturnedValue(true);
+    assertFalse(this.itemUCC.markItemAsGiven(null));
   }
 
   @Test
