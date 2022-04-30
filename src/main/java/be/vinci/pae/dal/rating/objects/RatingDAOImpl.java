@@ -7,6 +7,7 @@ import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
 import be.vinci.pae.exceptions.FatalException;
 import jakarta.inject.Inject;
+import java.nio.file.FileAlreadyExistsException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +23,7 @@ public class RatingDAOImpl implements RatingDAO {
   private Factory factory;
 
   @Override
-  public boolean ratingExist(RatingDTO ratingDTO) throws SQLException {
+  public boolean ratingExist(RatingDTO ratingDTO) {
     String query = "SELECT id_rating FROM project_pae.ratings WHERE id_item = ? AND id_member = ?;";
 
     try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
@@ -31,11 +32,13 @@ public class RatingDAOImpl implements RatingDAO {
       try (ResultSet rs = ps.executeQuery()) {
         return rs.next();
       }
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 
   @Override
-  public boolean evaluate(RatingDTO ratingDTO) throws SQLException {
+  public boolean evaluate(RatingDTO ratingDTO) {
     String query = "INSERT INTO project_pae.ratings (id_item, rating, text, id_member, "
         + "version_rating) "
         + "VALUES (?, ?, ?, ?, 1);";
@@ -46,6 +49,8 @@ public class RatingDAOImpl implements RatingDAO {
       ps.setString(3, ratingDTO.getText());
       ps.setInt(4, ratingDTO.getMember().getId());
       return ps.executeUpdate() != 0;
+    } catch (SQLException e) {
+      throw new FatalException(e);
     }
   }
 
