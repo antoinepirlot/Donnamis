@@ -150,19 +150,29 @@ public class ItemDAOImpl implements ItemDAO {
         + "WHERE id_item = ? "
         + "ORDER BY date DESC "
         + "LIMIT 1)";
-    String query = "UPDATE project_pae.items SET item_description = ?, photo = ?, "
-        + "version_item = version_item + 1 "
+    String query = "UPDATE project_pae.items SET item_description = ?, ";
+    if (itemDTO.getPhoto() != null && !itemDTO.getPhoto().isBlank()) {
+      query += "photo = ?, ";
+    }
+    query += "version_item = version_item + 1 "
         + "WHERE id_item = ?; "
         + "UPDATE project_pae.offers "
         + "SET time_slot = ?, version_offer = version_offer + 1 "
         + "WHERE id_item = " + selectLastIdOffer + ";";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setString(1, itemDTO.getItemDescription());
-      preparedStatement.setString(2, itemDTO.getPhoto());
-      preparedStatement.setInt(3, itemDTO.getId());
-      preparedStatement.setString(4, StringEscapeUtils
-          .escapeHtml4(itemDTO.getLastOffer().getTimeSlot()));
-      preparedStatement.setInt(5, itemDTO.getId());
+      if (itemDTO.getPhoto() == null || itemDTO.getPhoto().isBlank()) {
+        preparedStatement.setInt(2, itemDTO.getId());
+        preparedStatement.setString(3, StringEscapeUtils
+            .escapeHtml4(itemDTO.getLastOffer().getTimeSlot()));
+        preparedStatement.setInt(4, itemDTO.getId());
+      } else {
+        preparedStatement.setString(2, itemDTO.getPhoto());
+        preparedStatement.setInt(3, itemDTO.getId());
+        preparedStatement.setString(4, StringEscapeUtils
+            .escapeHtml4(itemDTO.getLastOffer().getTimeSlot()));
+        preparedStatement.setInt(5, itemDTO.getId());
+      }
       return preparedStatement.executeUpdate() != 0;
     } catch (SQLException e) {
       throw new FatalException(e);
