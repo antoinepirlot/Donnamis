@@ -11,10 +11,13 @@ import {getObject, getPayload} from "../../../utils/session";
 import {showError} from "../../../utils/ShowError";
 import {openModal} from "../../../utils/Modals";
 import {Redirect} from "../../Router/Router";
+import {createItemsSearchBar} from "../../../utils/Search";
 
 const myItemsPageHtml = `
   <div>
     <h1 class="display-3" id="all_items_title">Mes objets</h1>
+    <div id="searchBarMyItemsPage">
+    </div>
     <div class="row" id="myItems">
     </div>
   </div>
@@ -62,6 +65,7 @@ const MyItemsPage = async () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = myItemsPageHtml;
   const items = await getMyItems();
+  createItemsSearchBar(items, "#searchBarMyItemsPage", "#myItems");
   if (items.length === 0) {
     const message = "Vous n'avez aucune offre.";
     const errorMessageMyItemsPage = document.querySelector(
