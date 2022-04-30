@@ -198,6 +198,21 @@ class MemberUCCImplTest {
     assertTrue(memberUCC.confirmMember(this.memberDTO));
   }
 
+
+  @DisplayName("Test Confirm Member With commit throwing sql exception")
+  @Test
+  void testConfirmMemberWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> memberUCC.confirmMember(this.memberDTO));
+  }
+
+  @DisplayName("Test Confirm Member With commit throwing sql exception")
+  @Test
+  void testConfirmMemberWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> memberUCC.confirmMember(this.memberDTO));
+  }
+
   //Test Deny Member
 
   @DisplayName("Test Deny Member With the state confirmedd")
@@ -219,6 +234,21 @@ class MemberUCCImplTest {
   void testDenyMemberWithStateDenied() {
     configureMemberDTOState("denied");
     assertTrue(memberUCC.denyMember(this.refusalDTO));
+  }
+
+
+  @DisplayName("Test Deny Member With start throwing sql exception")
+  @Test
+  void testDenyMemberWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> memberUCC.denyMember(this.refusalDTO));
+  }
+
+  @DisplayName("Test Deny Member With commit throwing sql exception")
+  @Test
+  void testDenyMemberWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> memberUCC.denyMember(this.refusalDTO));
   }
 
   //Test Confirm Admin
