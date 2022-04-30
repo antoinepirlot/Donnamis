@@ -82,7 +82,5 @@ public class ApplicationBinder extends AbstractBinder {
     bind(RatingDAOImpl.class).to(RatingDAO.class).in(Singleton.class);
     bind(RatingUCCImpl.class).to(RatingUCC.class).in(Singleton.class);
 
-    //AbstractDAO
-    bind(AbstractDAOImpl.class).to(AbstractDAO.class).in(Singleton.class);
   }
 }
