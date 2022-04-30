@@ -200,6 +200,13 @@ class ItemUCCImplTest {
     assertEquals(this.itemDTO, this.itemUCC.cancelItem(5));
   }
 
+  @DisplayName("Test cancel item with wrong id")
+  @Test
+  void testCancelItemWithWrongId() {
+    this.setCancelItemReturnedValue(-1);
+    assertNull(this.itemUCC.cancelItem(-1));
+  }
+
   @DisplayName("Test cancel item with start throwing sql exception")
   @Test
   void testCancelItemWithStartThrowingSQLException() {
