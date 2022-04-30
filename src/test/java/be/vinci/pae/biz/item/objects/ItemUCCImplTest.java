@@ -64,6 +64,13 @@ class ItemUCCImplTest {
     Mockito.when(this.itemDAO.addItem(this.itemDTO)).thenReturn(newIdItem);
   }
 
+  private void setCancelItemReturnedValue(int idItem) {
+    if (idItem >= 1) {
+      Mockito.when(this.itemDAO.cancelItem(idItem)).thenReturn(this.itemDTO);
+    }
+    Mockito.when(this.itemDAO.cancelItem(idItem)).thenReturn(null);
+  }
+
   private void setErrrorDALServiceStart() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).start();
@@ -179,15 +186,32 @@ class ItemUCCImplTest {
     assertThrows(FatalException.class, () -> this.itemUCC.addItem(this.itemDTO));
   }
 
-  @DisplayName("Test add item with start throwing sql exception")
+  @DisplayName("Test add item with commit throwing sql exception")
   @Test
   void testAddItemWithCommitThrowingSQLException() {
     this.setErrorDALServiceCommit();
     assertThrows(FatalException.class, () -> this.itemUCC.addItem(this.itemDTO));
   }
 
+  @DisplayName("Test cancel item with good id")
   @Test
-  void cancelItem() {
+  void testCancelItemWithGoodId() {
+    this.setCancelItemReturnedValue(5);
+    assertEquals(this.itemDTO, this.itemUCC.cancelItem(5));
+  }
+
+  @DisplayName("Test cancel item with start throwing sql exception")
+  @Test
+  void testCancelItemWithStartThrowingSQLException() {
+    this.setErrrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.cancelItem(5));
+  }
+
+  @DisplayName("Test cancel item with commit throwing sql exception")
+  @Test
+  void testCancelItemWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.itemUCC.cancelItem(5));
   }
 
   @Test
