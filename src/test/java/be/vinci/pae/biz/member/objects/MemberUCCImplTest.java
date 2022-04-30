@@ -107,6 +107,14 @@ class MemberUCCImplTest {
     }
   }
 
+  private void setGetInterestedMembersReturnedValue(int idOffer) {
+    if (idOffer >= 1) {
+      Mockito.when(this.memberDAO.getInterestedMembers(idOffer)).thenReturn(this.memberDTOList);
+    } else {
+      Mockito.when(this.memberDAO.getInterestedMembers(idOffer)).thenReturn(null);
+    }
+  }
+
   private void setErrorDALServiceCommit() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).commit();
@@ -405,5 +413,33 @@ class MemberUCCImplTest {
   void testRegisterWithCommitThrowingSQLException() {
     this.setErrorDALServiceCommit();
     assertThrows(FatalException.class, () -> this.memberUCC.register(this.memberDTO));
+  }
+
+  @DisplayName("Test get interested members working as expected")
+  @Test
+  void testGetInterestedMemersWorkingAsExpected() {
+    this.setGetInterestedMembersReturnedValue(5);
+    assertEquals(this.memberDTOList, this.memberUCC.getInterestedMembers(5));
+  }
+
+  @DisplayName("Test get interested members working as expected")
+  @Test
+  void testGetInterestedMemersWithWrongId() {
+    this.setGetInterestedMembersReturnedValue(-1);
+    assertNull(this.memberUCC.getInterestedMembers(-1));
+  }
+
+  @DisplayName("Test get interested members with start throwing sql exception")
+  @Test
+  void testGetInterestedMemersWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.memberUCC.getInterestedMembers(5));
+  }
+
+  @DisplayName("Test get interested members working as expected")
+  @Test
+  void testGetInterestedMemersWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.memberUCC.getInterestedMembers(5));
   }
 }
