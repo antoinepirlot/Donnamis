@@ -69,10 +69,24 @@ public class MemberDAOImpl implements MemberDAO {
    */
   @Override
   public MemberDTO getOne(MemberDTO memberDTO) {
-    String query = "SELECT m.id_member, m.username, m.password, m.last_name, m.first_name, "
-        + "m.is_admin, m.state, m.phone, m.version_member, a.id_address, a.street, a.building_number, a.unit_number,"
-        + "a.postcode, a.commune, a.version_address "
-        + "FROM project_pae.members m, project_pae.addresses a "
+    String query = "SELECT m.id_member, "
+        + "                m.username, "
+        + "                m.password, "
+        + "                m.last_name, "
+        + "                m.first_name, "
+        + "                m.is_admin, "
+        + "                m.state, "
+        + "                m.phone, "
+        + "                m.version_member, "
+        + "                a.id_address, "
+        + "                a.street, "
+        + "                a.building_number, "
+        + "                a.unit_number,"
+        + "                a.postcode, "
+        + "                a.commune, "
+        + "                a.version_address "
+        + "FROM project_pae.members m, "
+        + "     project_pae.addresses a "
         + "WHERE a.id_member = m.id_member ";
     if (memberDTO.getUsername() != null) {
       query += " AND m.username = ?;";
@@ -149,11 +163,12 @@ public class MemberDAOImpl implements MemberDAO {
 
   @Override
   public boolean denyMember(RefusalDTO refusalDTO) {
-    String query =
-        "UPDATE project_pae.members SET state = '" + DENIED_STATE
-            + "', version_member = version_member + 1"
-            + " WHERE id_member = ?; "
-            + "INSERT INTO project_pae.refusals (text, id_member, version_refusal) VALUES (?, ?, 1);";
+    String query = "UPDATE project_pae.members "
+            + "SET state = '" +DENIED_STATE+"', "
+        + "        version_member = version_member + 1 "
+            + "WHERE id_member = ?; "
+            + "INSERT INTO project_pae.refusals (text, id_member, version_refusal) "
+            + "VALUES (?, ?, 1);";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, refusalDTO.getMember().getId());
       preparedStatement.setString(2,
