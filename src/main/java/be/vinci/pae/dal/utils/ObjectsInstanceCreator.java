@@ -24,14 +24,15 @@ public class ObjectsInstanceCreator {
    * @throws SQLException if there's an issue while getting data from the result set
    */
   public static OfferDTO createOfferInstance(Factory factory, ResultSet rs) throws SQLException {
-    System.out.println("Offer instance creation");
+    //Create Offer Instance
     OfferDTO offerDTO = factory.getOffer();
+
+    //Set Attributes
     offerDTO.setId(rs.getInt("id_offer"));
     offerDTO.setDate(rs.getTimestamp("date"));
     offerDTO.setTimeSlot(rs.getString("time_slot"));
-    System.out.println("date set");
     offerDTO.setIdItem(rs.getInt("id_item"));
-    System.out.println("tile_slot set");
+    offerDTO.setVersion(rs.getInt("version_offer"));
     return offerDTO;
   }
 
@@ -44,7 +45,10 @@ public class ObjectsInstanceCreator {
    * @return a new item instance with initialized attributes
    */
   public static ItemDTO createItemInstance(Factory factory, ResultSet rs) throws SQLException {
+    //Create Item Instance
     ItemDTO itemDTO = factory.getItem();
+
+    //Set Attributes
     itemDTO.setId(rs.getInt("id_item"));
     try {
       itemDTO.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("title")));
@@ -55,7 +59,9 @@ public class ObjectsInstanceCreator {
     } catch (SQLException ignored) {
     }
     try {
-      itemDTO.setLastOfferDate(rs.getTimestamp("last_offer_date"));
+      OfferDTO offerDTO = factory.getOffer();
+      offerDTO.setDate(rs.getTimestamp("last_offer_date"));
+      itemDTO.setLastOffer(offerDTO);
     } catch (SQLException ignored) {
     }
     try {
@@ -80,6 +86,7 @@ public class ObjectsInstanceCreator {
     } catch (SQLException e) {
       System.out.println("No member for the item.");
     }
+    itemDTO.setVersion(rs.getInt("version_item"));
     return itemDTO;
   }
 
@@ -94,10 +101,14 @@ public class ObjectsInstanceCreator {
    */
   public static ItemsTypeDTO createItemsTypeInstance(Factory factory, ResultSet rs)
       throws SQLException {
-    System.out.println("Setting all item type attributes");
+
+    //Create ItemType Instance
     ItemsTypeDTO itemsTypeDTO = factory.getItemType();
+
+    //Set Attributes
     itemsTypeDTO.setId(rs.getInt("id_type"));
     itemsTypeDTO.setItemType(StringEscapeUtils.escapeHtml4(rs.getString("item_type")));
+    itemsTypeDTO.setVersion(rs.getInt("version_items_type"));
     return itemsTypeDTO;
   }
 
@@ -110,8 +121,11 @@ public class ObjectsInstanceCreator {
    * @return a new member instance with initialized attributes
    */
   public static MemberDTO createMemberInstance(Factory factory, ResultSet rs) throws SQLException {
-    System.out.println("Setting all member attributes");
+
+    //Create Member Instance
     MemberDTO memberDTO = factory.getMember();
+
+    //Set Attributes
     try {
       memberDTO.setId(rs.getInt("id_member"));
     } catch (SQLException e) {
@@ -158,6 +172,7 @@ public class ObjectsInstanceCreator {
     } catch (SQLException e) {
       System.out.println("No address selected for this member");
     }
+    memberDTO.setVersion(rs.getInt("version_member"));
     return memberDTO;
   }
 
@@ -172,8 +187,11 @@ public class ObjectsInstanceCreator {
    */
   public static AddressDTO createAddressInstance(Factory factory, ResultSet rs)
       throws SQLException {
-    System.out.println("setting all address attributes");
+
+    //Create Address Instance
     AddressDTO addressDTO = factory.getAddress();
+
+    //Set Attributes
     addressDTO.setId(rs.getInt("id_address"));
     addressDTO.setStreet(StringEscapeUtils.escapeHtml4(rs.getString("street")));
     addressDTO.setBuildingNumber(
@@ -184,6 +202,7 @@ public class ObjectsInstanceCreator {
     );
     addressDTO.setPostcode(StringEscapeUtils.escapeHtml4(rs.getString("postcode")));
     addressDTO.setCommune(StringEscapeUtils.escapeHtml4(rs.getString("commune")));
+    addressDTO.setVersion(rs.getInt("version_address"));
     return addressDTO;
   }
 
@@ -198,9 +217,14 @@ public class ObjectsInstanceCreator {
    */
   public static RefusalDTO createRefusalInstance(Factory factory, ResultSet rs)
       throws SQLException {
+
+    //Create Refusal Instance
     RefusalDTO refusalDTO = factory.getRefusal();
+
+    //Set Attributes
     refusalDTO.setIdRefusal(rs.getInt("id_refusal"));
     refusalDTO.setText(rs.getString("text"));
+    refusalDTO.setVersion(rs.getInt("version_refusal"));
     return refusalDTO;
   }
 
@@ -218,12 +242,17 @@ public class ObjectsInstanceCreator {
     ratingDTO.setId(rs.getInt("id_rating"));
     ratingDTO.setRating(rs.getInt("rating"));
     ratingDTO.setText(rs.getString("text"));
+    ratingDTO.setVersion(rs.getInt("version_rating"));
     try {
       ratingDTO.setMember(createMemberInstance(factory, rs));
     } catch (SQLException e) {
       ratingDTO.setMember(null);
     }
-    ratingDTO.setItem(createItemInstance(factory, rs));
+    try {
+      ratingDTO.setItem(createItemInstance(factory, rs));
+    } catch (SQLException e) {
+      ratingDTO.setItem(null);
+    }
     return ratingDTO;
   }
 }

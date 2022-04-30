@@ -22,11 +22,11 @@ public interface OfferDAO {
   boolean offerExist(OfferDTO offerDTO);
 
   /**
-   * Get the last offer of the itemDTO.
+   * Get the 2 last offer of the itemDTO.
    *
    * @param itemDTO the item that need offers to be added
    * @return the more recent offer of itemDTO
    */
   @JsonIgnore
-  OfferDTO getLastOfferOf(ItemDTO itemDTO);
+  List<OfferDTO> getLastTwoOffersOf(ItemDTO itemDTO);
 }

@@ -24,11 +24,11 @@ public interface ItemDAO {
    * This method get assigned items of a member from the database.
    *
    * @param idMember the member's id
-   * @return the list of assigned items of the member
+   * @return true if the modification was done otherwise false
    */
   List<ItemDTO> getAssignedItems(int idMember);
 
-  ItemDTO modifyItem(ItemDTO itemDTO);
+  boolean modifyItem(ItemDTO itemDTO);
 
   /**
    * Mark the item identified by its id as given.

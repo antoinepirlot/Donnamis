@@ -3,15 +3,13 @@ import {Redirect} from "../../Router/Router";
 import {showError} from "../../../utils/ShowError";
 import {
   getItem,
-  getItemsTypes,
   modifyTheItem,
   postInterest as postInterestBackEnd
 } from "../../../utils/BackEndRequests";
 import {closeModal, openModal} from "../../../utils/Modals";
-import {showItemsTypes} from "../../../utils/HtmlCode";
 
 const viewOfferHtml = `
-<div id="offerCard" class="card mb-3">
+<div id="offerCard" class="card mb-3" xmlns="http://www.w3.org/1999/html">
   <div class="row no-gutters">
     <div class="col-md" >
       <div class="card-body">
@@ -21,6 +19,7 @@ const viewOfferHtml = `
         <h5 id="descriptionViewItemPage" class="card-text"></h5>
         <h5 id="availabilitiesViewItemPage" class="card-text"></h5>
         <h5 id="pubDateViewItemPage" class="card-text"></h5>
+        <h5 id="oldPubDateViewItemPage" class="card-text"></h5>
         <button id="interestButton" class="btn btn-primary">
       </div>
     </div>
@@ -86,29 +85,27 @@ async function ViewItemPage() {
     }
   } catch (e) {
     console.error(e);
+    showError("Une erreur est survenue.", "danger", errorMessageDiv);
   }
 }
 
 function createModifyItemModal() {
-  let title = item.title ? item.title : "";
   let itemDescription = item.itemDescription ? item.itemDescription : "";
-  let itemType = item.itemType.itemType ? item.itemType.itemType : "";
+  let timeSlot = item.offerList[0].timeSlot ? item.offerList[0].timeSlot : "";
   return `
     <!-- Modal Modify Item -->
     <div id="modifyItemModal" class="modal">
       <div class="modal-content">
         <span id="modifyItemCloseModal" class="close">&times;</span>
         <form id="modifyItemForm">
-          <h5>Modifier votre objet</h5><br>
-          <p>Nom de l'objet</p>
-          <input id="titleForm" type="text" value="${title}">
-          <p>Description de l'objet</p>
+          <h5>Modifier votre objet<span id="asterisk">*</span>:</h5><br>
+          <p>Description de l'objet<span id="asterisk">*</span>:</p>
           <input id="itemDescriptionForm" type="text" value="${itemDescription}">
           <p>Photo</p>
-          <input id="photoForm" type="file">
-          <p>Type de l'objet</p>
-          <input id="itemTypeFormList" list="itemsTypesViewItemPage" placeholder="${itemType}"><br>
-          <datalist id="itemsTypesViewItemPage"></datalist>
+          <input id="photoForm" type="file"><br>
+          <br>
+          <p>Disponibilités horaire<span id="asterisk">*</span>:</p>
+          <textarea id="timeSlotModifyForm" cols="30" rows="3">${timeSlot}</textarea>
           <br>
           <input type="submit" value="Modifier">
         </form>
@@ -123,6 +120,14 @@ function showItemInfo() {
   let date = new Date(lastOffer.date);
   date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
       + date.getFullYear();
+  if (item.offerList.length === 2) {
+    const oldOffer = item.offerList[1];
+    let oldPubDate = new Date(oldOffer.date);
+    oldPubDate = oldPubDate.getDate() + "/" + (oldPubDate.getMonth() + 1) + "/"
+        + oldPubDate.getFullYear();
+    const oldPubDateDiv = document.querySelector("#oldPubDateViewItemPage");
+    oldPubDateDiv.innerHTML = `Date de publication précédente : ${oldPubDate}`;
+  }
 
   const titleDiv = document.querySelector("#titleViewItemPage");
   titleDiv.innerHTML = item.title;
@@ -146,7 +151,7 @@ function showItemInfo() {
   const image = document.querySelector("#imageItem");
   image.innerHTML = `
       <img src="data:image/png;base64,${item.photo}" id="bigImageItem" alt="Card image cap" >
-  `
+  `;
 }
 
 async function showInterestForm(e) {
@@ -194,7 +199,8 @@ async function postInterest(e) {
     id: getPayload().id
   };
   if (callWanted) {
-    memberInterested.phoneNumber = document.querySelector("#phoneNumberInput").value;
+    memberInterested.phoneNumber = document.querySelector(
+        "#phoneNumberInput").value;
   }
   const interest = {
     callWanted: callWanted,
@@ -202,12 +208,17 @@ async function postInterest(e) {
     member: memberInterested,
     date: date
   };
+  const pageErrorDiv = document.querySelector("#viewItemPageError");
   try {
-    await postInterestBackEnd(interest, errorMessageDiv);
+    const status = await postInterestBackEnd(interest, errorMessageDiv);
+    if (status === 409) {
+      showError("Vous avez déjà marqué un intéret pour cette offre.", "danger",
+          pageErrorDiv);
+      return;
+    }
     if (callWanted) {
       await checkToken();
     }
-    const pageErrorDiv = document.querySelector("#viewItemPageError");
     showError("L'intérêt a bien été prit en compte.", "success", pageErrorDiv);
   } catch (err) {
     console.error(err);
@@ -219,27 +230,23 @@ async function postInterest(e) {
 async function showModifyForm(e) {
   e.preventDefault();
   openModal("#modifyItemModal", "#modifyItemCloseModal");
-  showItemsTypes("#itemsTypesViewItemPage", await getItemsTypes());
   const modifyForm = document.querySelector("#modifyItemForm");
   modifyForm.addEventListener("submit", modifyItem);
 }
 
 async function modifyItem(e) {
   e.preventDefault();
-  const title = document.querySelector("#titleForm").value;
   const itemDescription = document.querySelector("#itemDescriptionForm").value;
   const photo = document.querySelector("#photoForm").value;
-  const itemTypeValue = document.querySelector("#itemTypeFormList").value;
-
-  const itemType = {
-    itemType: itemTypeValue
-  }
+  const timeSlot = document.querySelector("#timeSlotModifyForm").value;
   const newItem = {
     id: item.id,
     itemDescription: itemDescription,
-    itemType: itemType,
     photo: photo,
-    title: title,
+    lastOffer: {
+      timeSlot: timeSlot
+    },
+    version: item.version
   }
   try {
     await modifyTheItem(newItem);

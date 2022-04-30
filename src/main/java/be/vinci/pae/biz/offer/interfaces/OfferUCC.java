@@ -28,7 +28,7 @@ public interface OfferUCC {
    */
   OfferDTO getOneOffer(int id);
 
-  void getAllOffersOf(ItemDTO itemDTO);
+  void getLastTwoOffersOf(ItemDTO itemDTO);
 
   /**
    * Verify if the offer exist in the DB.

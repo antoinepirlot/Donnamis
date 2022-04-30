@@ -58,30 +58,6 @@ const logoutLinkHtml = `
           </li>
 `;
 
-const listMemberLinkHtml = `
-          <li class="nav-item">
-            <a class="nav-link" href="#" data-uri="/list_member">Liste des membres</a>
-          </li>
-`;
-
-const searchMembersLinkHtml = `
-          <li class="nav-item">
-            <a class="nav-link" href="#" data-uri="/search_members">Rechercher des membres</a>
-          </li>
-`;
-
-const allItemsLinkHtml = `
-          <li class="nav-item">
-            <a class="nav-link" href="#" data-uri="/all_items">Tous les objets</a>
-          </li>
-`;
-
-const allOfferedItemsLinkHtml = `
-          <li class="nav-item">
-            <a class="nav-link" href="#" data-uri="/all_offered_items">Tous les objets offerts</a>
-          </li>
-`;
-
 const offerAnItemLinkHtml = `
           <li class="nav-item">
             <a class="nav-link" href="#" data-uri="/offer_item">Offrir un objet</a>
@@ -90,7 +66,7 @@ const offerAnItemLinkHtml = `
 
 const myItemsLinkHtml = `
           <li class="nav-item">
-            <a class="nav-link" href="#" data-uri="/my_items">Mes offres</a>
+            <a class="nav-link" href="#" data-uri="/my_items">Mes objets</a>
           </li>
 `;
 
@@ -103,6 +79,29 @@ const myAssignedItemsLinkHtml = `
   </li>
 `
 
+////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////---ADMIN PAGES---////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+const listMemberLinkHtml = `
+          <li class="nav-item" id="admin-page" >
+            <a  class="nav-link" href="#" data-uri="/list_member">Liste des membres</a>
+          </li>
+`;
+
+const searchMembersLinkHtml = `
+          <li class="nav-item" id="admin-page">
+            <a class="nav-link" href="#" data-uri="/search_members">Rechercher des membres</a>
+          </li>
+`;
+
+const allItemsLinkHtml = `
+          <li class="nav-item" id="admin-page">
+            <a class="nav-link" href="#" data-uri="/all_items">Tous les objets</a>
+          </li>
+`;
+
+
 const Navbar = async () => {
   const navbarWrapper = document.querySelector("#navbarWrapper");
   navbarWrapper.innerHTML = navBarHtml;
@@ -113,17 +112,16 @@ const Navbar = async () => {
     naveBarMemberPlace.innerHTML = profilLinkHtml;
     const memberUsername = document.querySelector("#memberUsername");
     memberUsername.innerHTML += memberDTO.username;
+
+    links.innerHTML += offerAnItemLinkHtml;
+    links.innerHTML += myItemsLinkHtml;
+    links.innerHTML += myAssignedItemsLinkHtml
     if (isAdmin()) {
       links.innerHTML += listMemberLinkHtml;
       links.innerHTML += searchMembersLinkHtml;
       links.innerHTML += allItemsLinkHtml;
       memberUsername.innerHTML = memberDTO.username + " (admin)";
     }
-    links.innerHTML += allOfferedItemsLinkHtml;
-    links.innerHTML += offerAnItemLinkHtml;
-    links.innerHTML += myItemsLinkHtml;
-    links.innerHTML += myAssignedItemsLinkHtml
-
     links.innerHTML += logoutLinkHtml;
   } else {
     links.innerHTML += loginLinkHtml;

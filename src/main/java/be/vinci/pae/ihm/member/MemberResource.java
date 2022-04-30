@@ -231,6 +231,11 @@ public class MemberResource {
     if (memberUCC.getOneMember(memberDTO.getId()) == null) {
       throw new ObjectNotFoundException("No member with the id: " + memberDTO.getId());
     }
+
+    if (memberDTO.getVersion() != memberUCC.getOneMember(memberDTO.getId()).getVersion()) {
+      throw new FatalException("Error with version");
+    }
+
     if (!memberUCC.confirmMember(memberDTO)) {
       throw new FatalException("An unexpected error happened while confirming member.");
     }
@@ -250,6 +255,7 @@ public class MemberResource {
     if (!memberUCC.memberExist(refusalDTO.getMember(), -1)) {
       throw new ObjectNotFoundException("No member with the id: " + refusalDTO.getMember().getId());
     }
+
     if (!memberUCC.denyMember(refusalDTO)) {
       throw new FatalException("An unexpected error happened while denying member.");
     }
@@ -273,6 +279,11 @@ public class MemberResource {
     ) {
       throw new WrongBodyDataException("Member incomplete");
     }
+
+    if (memberDTO.getVersion() != memberUCC.getOneMember(memberDTO.getId()).getVersion()) {
+      throw new FatalException("Error with version");
+    }
+
     MemberDTO modifyMember = memberUCC.modifyMember(memberDTO);
     if (modifyMember == null) {
       throw new ObjectNotFoundException("Member not found");

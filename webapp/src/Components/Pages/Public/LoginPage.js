@@ -1,15 +1,11 @@
-import {
-  getPayload,
-  setLocalObject,
-  setSessionObject
-} from "../../utils/session";
+import {setLocalObject, setSessionObject} from "../../../utils/session";
 import {
   getRefusal,
   login as loginBackEndRequest
-} from "../../utils/BackEndRequests";
-import {Redirect} from "../Router/Router";
-import Navbar from "../Navbar/Navbar";
-import {showError} from "../../utils/ShowError";
+} from "../../../utils/BackEndRequests";
+import {Redirect} from "../../Router/Router";
+import Navbar from "../../Navbar/Navbar";
+import {showError} from "../../../utils/ShowError";
 
 const loginFormHtml = `
 <h1 class="display-3" id="login_title">Se connecter</h1>
@@ -40,10 +36,6 @@ const loginFormHtml = `
  * to "redirect" to a new page
  */
 function LoginPage() {
-  if (getPayload()) {
-    Redirect("/");
-    return;
-  }
   const page = document.querySelector("#page");
   page.innerHTML = loginFormHtml;
   page.addEventListener("submit", login);
@@ -89,7 +81,8 @@ async function login(e) {
     await Navbar();
   } catch (error) {
     console.error("LoginPage::error: ", error);
-    showError("Une erreur est survenue.", "danger", loginMessage);
+    showError("Une erreur est survenue. Vérifiez votre connexion internet.",
+        "danger", loginMessage);
   }
 }
 

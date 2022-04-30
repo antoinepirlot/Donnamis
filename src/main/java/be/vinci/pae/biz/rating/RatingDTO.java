@@ -1,20 +1,17 @@
-package be.vinci.pae.biz.rating.interfaces;
 
-import be.vinci.pae.biz.item.interfaces.ItemDTO;
-import be.vinci.pae.biz.member.interfaces.MemberDTO;
+package be.vinci.pae.biz.rating;
+
+import be.vinci.pae.biz.item.interfaces.Item;
+import be.vinci.pae.biz.member.interfaces.Member;
 import be.vinci.pae.biz.rating.objects.RatingImpl;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = RatingImpl.class)
 public interface RatingDTO {
 
-  int getId();
+  Item getItem();
 
-  void setId(int id);
-
-  ItemDTO getItem();
-
-  void setItem(ItemDTO itemDTO);
+  void setItem(Item item);
 
   int getRating();
 
@@ -24,9 +21,9 @@ public interface RatingDTO {
 
   void setText(String text);
 
-  MemberDTO getMember();
+  Member getMember();
 
-  void setMember(MemberDTO memberDTO);
+  void setMember(Member member);
 
   int getVersion();
 

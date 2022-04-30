@@ -11,7 +11,6 @@ import be.vinci.pae.views.Views;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +35,9 @@ public class ItemImpl implements Item {
   @JsonView(Views.Public.class)
   private List<Offer> offerList = new ArrayList<>();
   @JsonView(Views.Public.class)
-  private Timestamp lastOfferDate;
+  private Offer lastOffer;
+  @JsonView(Views.Public.class)
+  private int version;
 
   public ItemImpl() {
   }
@@ -124,13 +125,13 @@ public class ItemImpl implements Item {
   }
 
   @Override
-  public Timestamp getLastOfferDate() {
-    return lastOfferDate;
+  public OfferDTO getLastOffer() {
+    return lastOffer;
   }
 
   @Override
-  public void setLastOfferDate(Timestamp lastOfferDate) {
-    this.lastOfferDate = lastOfferDate;
+  public void setLastOffer(OfferDTO lastOffer) {
+    this.lastOffer = (Offer) lastOffer;
   }
 
   @Override
@@ -139,11 +140,13 @@ public class ItemImpl implements Item {
   }
 
   @Override
-  public Offer getLastOffer() {
-    return this.offerList.stream()
-        .filter(offer -> offer.getDate().equals(this.lastOfferDate))
-        .findFirst()
-        .orElse(null);
+  public int getVersion() {
+    return version;
+  }
+
+  @Override
+  public void setVersion(int version) {
+    this.version = version;
   }
 
   @Override
@@ -168,13 +171,13 @@ public class ItemImpl implements Item {
     return "Item{"
         + "id=" + id
         + ", itemDescription='" + itemDescription + '\''
-        + ", idItemType='" + itemType + '\''
+        + ", itemType='" + itemType + '\''
         + ", member='" + member + '\''
         + ", photo='" + photo + '\''
         + ", title=" + title
         + ", offerStatus='" + offerStatus + '\''
         + ", offerList" + offerList
-        + ", lastOfferDate='" + lastOfferDate + '\''
+        + ", lastOffer='" + lastOffer + '\''
         + '}';
   }
 }

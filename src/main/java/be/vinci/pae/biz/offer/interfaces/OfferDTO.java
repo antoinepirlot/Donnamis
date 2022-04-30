@@ -29,5 +29,9 @@ public interface OfferDTO {
 
   void setMember(MemberDTO memberDTO);
 
+  int getVersion();
+
+  void setVersion(int version);
+
   String toString();
 }

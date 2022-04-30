@@ -24,11 +24,13 @@ public class RecipientDAOImpl implements RecipientDAO {
     String selectMemberId = "SELECT m.id_member "
         + "FROM project_pae.members m "
         + "WHERE m.username = ?";
-    String query = "INSERT INTO project_pae.recipients (id_item, id_member, received) "
-        + "VALUES (?, (" + selectMemberId + "), '" + RECEIVED_DEFAULT + "'); "
-        + "UPDATE project_pae.items "
-        + "SET offer_status = '" + ASSIGNED_ITEM_STATUS + "' "
-        + "WHERE id_item = ?;";
+    String query =
+        "INSERT INTO project_pae.recipients (id_item, id_member, received, version_recipient) "
+            + "VALUES (?, (" + selectMemberId + "), '" + RECEIVED_DEFAULT + "', 1); "
+            + "UPDATE project_pae.items "
+            + "SET offer_status = '" + ASSIGNED_ITEM_STATUS
+            + "', version_item = version_item + 1"
+            + "WHERE id_item = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setInt(1, recipientDTO.getItem().getId());
       ps.setString(2, StringEscapeUtils.escapeHtml4(

@@ -43,7 +43,8 @@ public class OfferDAOImpl implements OfferDAO {
     String query = "SELECT o.id_offer, "
         + "                o.date, "
         + "                o.time_slot, "
-        + "                o.id_item "
+        + "                o.id_item,"
+        + "                o.version_offer "
         + "FROM project_pae.offers o ";
     if (offerStatus != null) {
       query += ", project_pae.items i "
@@ -69,19 +70,32 @@ public class OfferDAOImpl implements OfferDAO {
 
   @Override
   public OfferDTO getOne(int id) {
-    String query =
-
-        "SELECT item.id_item, item.photo, item.offer_status, item.title, "
-            + "item.id_member, item.item_description, "
-            + "item_type.item_type, item_type.id_type, "
-            + "offer.id_offer,offer.date, offer.time_slot,"
-            + "member.first_name, member.last_name, member.username "
-            + "FROM project_pae.items item, project_pae.items_types item_type, "
-            + "     project_pae.offers offer, project_pae.members member "
-            + "WHERE item.id_type = item_type.id_type "
-            + "  AND item.id_item = offer.id_item "
-            + "  AND item.id_member = member.id_member "
-            + "  AND offer.id_offer = ?;";
+    String query = "SELECT i.id_item, "
+        + "                i.photo, "
+        + "                i.offer_status, "
+        + "                i.title, "
+        + "                i.id_member, "
+        + "                i.item_description,  "
+        + "                i.version_item, "
+        + "                it.item_type,"
+        + "                it.id_type, "
+        + "                it.version_items_type, "
+        + "                o.id_offer, "
+        + "                o.date, "
+        + "                o.time_slot, "
+        + "                o.version_offer, "
+        + "                m.first_name, "
+        + "                m.last_name, "
+        + "                m.username,"
+        + "                m.version_member "
+        + "FROM project_pae.items i, "
+        + "     project_pae.items_types it, "
+        + "     project_pae.offers o, "
+        + "     project_pae.members m "
+        + "WHERE item.id_type = item_type.id_type "
+        + "  AND item.id_item = offer.id_item "
+        + "  AND item.id_member = member.id_member "
+        + "  AND offer.id_offer = ?;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, id);
       try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -109,19 +123,20 @@ public class OfferDAOImpl implements OfferDAO {
   }
 
   @Override
-  public OfferDTO getLastOfferOf(ItemDTO itemDTO) {
-    String query = "SELECT id_offer, date, time_slot, id_item "
-        + "FROM project_pae.offers o "
+  public List<OfferDTO> getLastTwoOffersOf(ItemDTO itemDTO) {
+    String query = "SELECT id_offer, date, time_slot, id_item, version_offer "
+        + "FROM project_pae.offers "
         + "WHERE id_item = ? "
         + "ORDER BY date DESC "
-        + "LIMIT 1;";
+        + "LIMIT 2;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, itemDTO.getId());
       try (ResultSet rs = preparedStatement.executeQuery()) {
-        if (rs.next()) { //We know only one is returned by the db
-          return ObjectsInstanceCreator.createOfferInstance(this.factory, rs);
+        List<OfferDTO> offerDTOList = new ArrayList<>();
+        while (rs.next()) { //We know only one is returned by the db
+          offerDTOList.add(ObjectsInstanceCreator.createOfferInstance(this.factory, rs));
         }
-        return null;
+        return offerDTOList.isEmpty() ? null : offerDTOList;
       }
     } catch (SQLException e) {
       throw new FatalException(e);
@@ -137,10 +152,10 @@ public class OfferDAOImpl implements OfferDAO {
    * @return true if the offer has been added to the DB
    */
   private boolean addOne(OfferDTO offerDTO) throws SQLException {
-    String query = "INSERT INTO project_pae.offers (date, time_slot, id_item) "
-        + "VALUES (?, ?, ?); "
+    String query = "INSERT INTO project_pae.offers (date, time_slot, id_item, version_offer) "
+        + "VALUES (?, ?, ?, 1); "
         + "UPDATE project_pae.items SET offer_status = '" + DEFAULT_OFFER_STATUS + "', "
-        + "last_offer_date  = ? "
+        + "last_offer_date  = ?, version_item = version_item + 1 "
         + "WHERE id_item = ?";
     System.out.println(query);
     try (
@@ -154,36 +169,5 @@ public class OfferDAOImpl implements OfferDAO {
       return ps.executeUpdate() != 0;
     }
   }
-
-  //  /**
-  //   * Add the item associated with the offer'id to the DB.
-  //   *
-  //   * @param itemDTO the item to add into the db
-  //   * @return true if the item has been added, otherwise false
-  //   */
-  //  private boolean addItem(ItemDTO itemDTO) {
-  //    String query = "INSERT INTO project_pae.items (item_description, id_type, id_member, "
-  //        + "photo, title, offer_status) "
-  //        + "VALUES (?, ?, ?, ?, ?, ?);";
-  //    try (
-  //        PreparedStatement ps = dalBackendService.getPreparedStatement(query)
-  //    ) {
-  //      ps.setString(1, StringEscapeUtils.escapeHtml4(itemDTO.getItemDescription()));
-  //      ps.setInt(2, itemDTO.getItemType().getId());
-  //      ps.setInt(3, itemDTO.getMember().getId());
-  //      ps.setString(4, StringEscapeUtils.escapeHtml4(itemDTO.getPhoto()));
-  //      ps.setString(5, StringEscapeUtils.escapeHtml4(itemDTO.getTitle()));
-  //      ps.setString(6, StringEscapeUtils.escapeHtml4(itemDTO.getOfferStatus()));
-  //      int result = ps.executeUpdate();
-  //      if (result != 0) {
-  //        System.out.println("Ajout de l'item réussi");
-  //        return true;
-  //      }
-  //    } catch (SQLException e) {
-  //      e.printStackTrace();
-  //    }
-  //    return false;
-  //  }
-
 
 }

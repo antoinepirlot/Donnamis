@@ -1,14 +1,13 @@
-import LoginPage from "../Pages/LoginPage";
+import LoginPage from "../Pages/Public/LoginPage";
 import Logout from "../Logout/Logout";
 import ListMemberPage from "../Pages/Admins/ListMemberPage";
 import AllItemsPage from "../Pages/Admins/AllItemsPage"
-import RegisterPage from "../Pages/RegisterPage";
-import AllOfferedItemsPage from "../Pages/Members/AllDonatedItemPage";
+import RegisterPage from "../Pages/Public/RegisterPage";
 import ViewItemPage from "../Pages/Members/ViewItemPage";
 import DonateAnItemPage from "../Pages/Members/DonateAnItemPage";
 import MyItemsPage from "../Pages/Members/MyItemsPage";
 import ProfilePage from "../Pages/Members/ProfilePage";
-import HomePage from "../Pages/HomePage";
+import HomePage from "../Pages/Public/HomePage";
 import MyAssignedItems from "../Pages/Members/MyAssignedItems";
 import MemberPage from "../Pages/Admins/MemberPage";
 import SearchMembersPage from "../Pages/Admins/SearchMembersPage";
@@ -22,7 +21,6 @@ const routes = {
   "/list_member": ListMemberPage,
   //"/latest_items": LatestItemsOffersPage,
   "/all_items": AllItemsPage,
-  "/all_offered_items": AllOfferedItemsPage,
   "/item": ViewItemPage,
   "/offer_item": DonateAnItemPage,
   "/my_items": MyItemsPage,

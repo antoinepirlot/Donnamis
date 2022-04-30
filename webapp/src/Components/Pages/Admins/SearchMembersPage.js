@@ -9,8 +9,8 @@ const viewSearchbarHtml = `
     <table class="table">
       <thead>
         <tr>
-          <th scope="col">Nom</th>
           <th scope="col">Prénom</th>
+          <th scope="col">Nom</th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -40,11 +40,12 @@ async function SearchMembersPage() {
         tbody.innerHTML = "";
 
         const input = searchInput.value.toLowerCase().trim();
-
         const result = members.filter(
             member => he.decode(member.lastName).toLowerCase().includes(input)
                 || he.decode(member.firstName).toLowerCase().includes(
-                    input))
+                    input)
+                || he.decode(member.address.postcode).includes(input)
+                || he.decode(member.address.commune).toLowerCase().includes(input));
 
         if (result.length < 1) {
           tbody.innerHTML = `<h1 class="display-6" id="SearchErrorMessageMember">Il n'y a aucun résultat pour cette recherche</h1>`;

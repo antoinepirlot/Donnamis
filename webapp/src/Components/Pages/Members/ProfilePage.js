@@ -1,7 +1,10 @@
 import {getObject, getPayload,} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
 import {showError} from "../../../utils/ShowError";
-import {modifyMember as modifyMemberBackEnd} from "../../../utils/BackEndRequests";
+import {
+  getOneMember,
+  modifyMember as modifyMemberBackEnd
+} from "../../../utils/BackEndRequests";
 
 const viewProfileHtml = `
   <div class="bg-info d-inline-flex d-flex flex-column rounded w-50 p-3">
@@ -19,7 +22,7 @@ const viewProfileHtml = `
       <p>Prénom :</p>
       <input id="firstnameForm" type = "text">
       <p>Pseudo :</p>
-      <input id="usernameForm" type = "text">
+      <input id="usernameForm" type = "password">
       <p>Mot de passe :</p>
       <input id="passwordForm" type = "password">
       <p>Confirmez le mot de passe :</p>
@@ -72,29 +75,43 @@ function showProfile() {
 
 async function modifyProfile(e) {
   e.preventDefault();
+  const member = getObject("memberDTO");
   const errorMessage = document.querySelector("#errorMessage");
   const password = document.querySelector("#passwordForm").value;
-  const passwordConfirmation = document.querySelector("#passwordConfirmationForm").value;
+  const passwordConfirmation = document.querySelector(
+      "#passwordConfirmationForm").value;
   if (password !== passwordConfirmation) {
     const message = "Les mots de passes ne sont pas identiques. Les modification n'ont pas été acceptées?";
     showError(message, "danger", errorMessage);
   }
-  const lastName = document.querySelector("#nameForm").value;
-  const firstName = document.querySelector("#firstnameForm").value;
-  const username = document.querySelector("#usernameForm").value;
-  const phoneNumber = document.querySelector("#phoneForm").value;
+  let lastName = document.querySelector("#nameForm").value;
+  if (!lastName) {
+    lastName = member.lastName;
+  }
+  let firstName = document.querySelector("#firstnameForm").value;
+  if (!firstName) {
+    firstName = member.firstName;
+  }
+  let username = document.querySelector("#usernameForm").value;
+  if (!username) {
+    username = member.username;
+  }
+  let phoneNumber = document.querySelector("#phoneForm").value;
+  if (!phoneNumber) {
+    phoneNumber = member.phoneNumber;
+  }
 
-
-  const member = {
+  const memberModify = {
     id: getPayload().id,
     username: username,
     password: password,
     lastName: lastName,
     firstName: firstName,
-    phoneNumber: phoneNumber
+    phoneNumber: phoneNumber,
+    version: member.version
   };
   try {
-    await modifyMemberBackEnd(member);
+    await modifyMemberBackEnd(memberModify);
     showError("Modification validé", "success", errorMessage);
   } catch (error) {
     console.error(error);

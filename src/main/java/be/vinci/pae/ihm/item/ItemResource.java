@@ -133,7 +133,7 @@ public class ItemResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<ItemDTO> getAllItemsByMemberId(@PathParam("idMember") int idMember,
-      @PathParam("offerStatus") String offerStatus){
+      @PathParam("offerStatus") String offerStatus) {
     if (idMember < 1
         || offerStatus == null || offerStatus.isBlank()
         || !offerStatus.equals("donated")
@@ -181,7 +181,7 @@ public class ItemResource {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    this.offerUCC.getAllOffersOf(itemDTO);
+    this.offerUCC.getLastTwoOffersOf(itemDTO);
     return this.jsonUtil.filterPublicJsonView(itemDTO);
   }
 
@@ -200,9 +200,11 @@ public class ItemResource {
       throw new WrongBodyDataException("idMember < 0 for get assigned items");
     }
     List<ItemDTO> itemDTOList = this.itemUCC.getAssignedItems(idMember);
-    if (itemDTOList == null) {
-      throw new ObjectNotFoundException("No assigned items");
-    }
+
+    //Si aucun objet assigné ==> INUTILE
+    //if (itemDTOList == null) {
+    //  throw new ObjectNotFoundException("No assigned items");
+    //}
     for (ItemDTO itemDTO : itemDTOList) {
       try {
         itemDTO.setPhoto(transformImageToBase64(itemDTO));
@@ -289,11 +291,12 @@ public class ItemResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public int addItem(ItemDTO itemDTO) {
-    if (itemDTO.getItemDescription() == null || itemDTO.getItemDescription().isBlank()
+    if (itemDTO == null
+        || itemDTO.getItemDescription() == null || itemDTO.getItemDescription().isBlank()
         || itemDTO.getItemType() == null || itemDTO.getItemType().getItemType() == null
         || itemDTO.getItemType().getItemType().isBlank() || itemDTO.getMember() == null
         || itemDTO.getMember().getId() < 1 || itemDTO.getTitle() == null || itemDTO.getTitle()
-        .isBlank() || itemDTO.getLastOfferDate() == null
+        .isBlank() || itemDTO.getLastOffer() == null
         || itemDTO.getOfferList().get(0) == null) {
       throw new WebApplicationException("Wrong item body", Status.BAD_REQUEST);
     }
@@ -325,6 +328,7 @@ public class ItemResource {
   @Consumes(MediaType.APPLICATION_JSON)
   public void markItemAsGiven(ItemDTO itemDTO) {
     this.checkMarkItem(itemDTO);
+
     if (!this.itemUCC.markItemAsGiven(itemDTO)) {
       throw new FatalException("marking item " + itemDTO.getId() + " as given failed.");
     }
@@ -378,19 +382,28 @@ public class ItemResource {
    * Modify the item.
    *
    * @param itemDTO the new item
-   * @return the modify item
    */
   @PUT
   @Path("modify")
   @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public ItemDTO modifyItem(ItemDTO itemDTO) {
-    ItemDTO modifyItem = itemUCC.modifyItem(itemDTO);
-    if (modifyItem == null) {
-      throw new ObjectNotFoundException("Item not found");
+  public void modifyItem(ItemDTO itemDTO) {
+    if (itemDTO == null
+        || itemDTO.getId() < 1
+        || itemDTO.getItemDescription() == null || itemDTO.getItemDescription().isBlank()
+        || itemDTO.getLastOffer() == null || itemDTO.getLastOffer().getTimeSlot() == null
+        || itemDTO.getLastOffer().getTimeSlot().isBlank()) {
+      throw new WrongBodyDataException("itemDTO not complete.");
     }
-    return modifyItem;
+    if (itemDTO.getVersion() != itemUCC.getOneItem(itemDTO.getId()).getVersion()) {
+      throw new FatalException("Error with version");
+    }
+    if (this.itemUCC.getOneItem(itemDTO.getId()) == null) {
+      throw new ObjectNotFoundException("No item with the id : " + itemDTO.getId());
+    }
+    if (!itemUCC.modifyItem(itemDTO)) {
+      throw new FatalException("Unexpected error");
+    }
   }
 
   /////////////////////////////////////////////////////////
@@ -409,22 +422,24 @@ public class ItemResource {
       throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
     }
     for (ItemDTO itemDTO : listItemDTO) {
-      this.offerUCC.getAllOffersOf(itemDTO);
+      this.offerUCC.getLastTwoOffersOf(itemDTO);
     }
     return listItemDTO;
   }
 
   private String transformImageToBase64(ItemDTO itemDTO) throws IOException {
+    if (itemDTO == null
+    || itemDTO.getPhoto() == null || itemDTO.getPhoto().isBlank()) {
+      return null;
+    }
     String photoSignature = itemDTO.getPhoto();
     String path = Config.getPhotoPath();
     String photoPath = path + "\\" + photoSignature;
-    System.out.println("Photo path :  " + photoPath);
     byte[] fileContent;
     try {
       fileContent = FileUtils.readFileToByteArray(new File(photoPath));
     } catch (IOException e) {
-      e.printStackTrace();
-      return null;
+      throw new FatalException(e);
     }
     return Base64.getEncoder().encodeToString(fileContent);
   }
@@ -451,6 +466,10 @@ public class ItemResource {
     }
     if (existingItem.getOfferStatus().equals("given")) {
       throw new ForbiddenException("The item " + itemDTO.getId() + " is already given.");
+    }
+
+    if (itemDTO.getVersion() != itemUCC.getOneItem(itemDTO.getId()).getVersion()) {
+      throw new FatalException("Error with version");
     }
   }
 }

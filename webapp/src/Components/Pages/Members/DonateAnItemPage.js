@@ -68,7 +68,7 @@ async function offerItem(e) {
   const itemTypeValue = document.querySelector("#itemTypeFormList").value;
   const payload = getPayload();
   const offer = {
-    timeSlot: timeSlot
+    timeSlot: timeSlot,
   };
   const offersList = [offer];
   const member = {
@@ -84,15 +84,20 @@ async function offerItem(e) {
     itemType: itemsType,
     member: member,
     offerList: offersList,
-    lastOfferDate: date
+    lastOffer: offer
   }
   try {
-    if (!itemsTypes.find((type) => type.itemType === itemTypeValue)) {
-      await addNewItemsType(itemsType);
+    try {
+      if (!itemsTypes.find((type) => type.itemType === itemTypeValue)) {
+        await addNewItemsType(itemsType);
+      }
+    } catch (e) {
+
     }
     const idItem = await offerAnItem(item);
     await sendFile(idItem);
     const message = "Ajout réussi!";
+    await DonateAnItemPage();
     showError(message, "success", errorMessageOfferAnItemPage);
   } catch (error) {
     console.error(error);

@@ -16,6 +16,8 @@ public class RecipientImpl implements Recipient {
   private Member member;
   @JsonView(Views.Public.class)
   private String received;
+  @JsonView(Views.Public.class)
+  private int version;
 
   public RecipientImpl() {
 
@@ -59,6 +61,16 @@ public class RecipientImpl implements Recipient {
   @Override
   public void setReceived(String received) {
     this.received = received;
+  }
+
+  @Override
+  public int getVersion() {
+    return version;
+  }
+
+  @Override
+  public void setVersion(int version) {
+    this.version = version;
   }
 
   @Override
