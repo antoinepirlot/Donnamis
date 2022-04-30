@@ -182,4 +182,18 @@ class OfferUCCImplTest {
   void testGetOneOfferWithNotExistingIdOffer() {
     assertNull(this.offerUCC.getOneOffer(this.notExistingIdOffer));
   }
+
+  @DisplayName("Test get one offer with start throwing sql exception")
+  @Test
+  void testGetOneOfferWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.offerUCC.getOneOffer(this.notExistingIdOffer));
+  }
+
+  @DisplayName("Test get one offer with commit throwing sql exception")
+  @Test
+  void testGetOneOfferWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.offerUCC.getOneOffer(this.notExistingIdOffer));
+  }
 }
