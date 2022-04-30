@@ -121,6 +121,16 @@ class ItemUCCImplTest {
     return result;
   }
 
+  private int setCountNumberOfReceivedOrNotReceivedItemsReturnedValue(int idMember,
+      boolean received) {
+    int result = 5;
+    if (idMember >= 1) {
+      Mockito.when(this.itemDAO.countNumberOfReceivedOrNotReceivedItems(idMember, received))
+          .thenReturn(result);
+    }
+    return result;
+  }
+
   private void setErrrorDALServiceStart() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).start();
@@ -469,10 +479,44 @@ class ItemUCCImplTest {
   void testCountNumberOfItemsByOfferStatusWithCommitThrowingSQLException() {
     this.setErrorDALServiceCommit();
     assertThrows(FatalException.class,
-        () -> this.itemUCC.countNumberOfItemsByOfferStatus(5, "donated"));  }
+        () -> this.itemUCC.countNumberOfItemsByOfferStatus(5, "donated"));
+  }
 
+  @DisplayName("Test count number of received or not received items with received items")
   @Test
-  void countNumberOfReceivedOrNotReceivedItems() {
+  void testCountNumberOfReceivedOrNotReceivedItemsWithReceivedItems() {
+    int result = this.setCountNumberOfReceivedOrNotReceivedItemsReturnedValue(5, true);
+    assertEquals(result, this.itemUCC.countNumberOfReceivedOrNotReceivedItems(5, true));
+  }
+
+  @DisplayName("Test count number of received or not received items with not received items")
+  @Test
+  void testCountNumberOfReceivedOrNotReceivedItemsWithNotReceivedItems() {
+    int result = this.setCountNumberOfReceivedOrNotReceivedItemsReturnedValue(5, false);
+    assertEquals(result, this.itemUCC.countNumberOfReceivedOrNotReceivedItems(5, false));
+  }
+
+  @DisplayName("Test count number of received or not received items with wrong id member")
+  @Test
+  void testCountNumberOfReceivedOrNotReceivedItemsWithWrongIdMember() {
+    this.setCountNumberOfReceivedOrNotReceivedItemsReturnedValue(-1, true);
+    assertEquals(0, this.itemUCC.countNumberOfReceivedOrNotReceivedItems(-1, true));
+  }
+
+  @DisplayName("Test count number of received or not received items with start throwing sql exception")
+  @Test
+  void testCountNumberOfReceivedOrNotReceivedItemsWithStartThrowingSQLExcepttion() {
+    this.setErrrorDALServiceStart();
+    assertThrows(FatalException.class,
+        () -> this.itemUCC.countNumberOfReceivedOrNotReceivedItems(5, true));
+  }
+
+  @DisplayName("Test count number of received or not received items with commit throwing sql exception")
+  @Test
+  void testCountNumberOfReceivedOrNotReceivedItemsWithCommitThrowingSQLExcepttion() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class,
+        () ->this.itemUCC.countNumberOfReceivedOrNotReceivedItems(5, true));
   }
 
   @Test
