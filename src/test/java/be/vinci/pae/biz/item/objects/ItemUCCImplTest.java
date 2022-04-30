@@ -154,6 +154,14 @@ class ItemUCCImplTest {
     }
   }
 
+  private void setAddPhotoReturnedValue(int idItem, String photoName) {
+    if (idItem >= 1 && photoName != null && !photoName.isBlank()) {
+      Mockito.when(this.itemDAO.addPhoto(idItem, photoName)).thenReturn(true);
+    } else {
+      Mockito.when(this.itemDAO.addPhoto(idItem, photoName)).thenReturn(false);
+    }
+  }
+
   private void setErrrorDALServiceStart() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).start();
@@ -494,7 +502,7 @@ class ItemUCCImplTest {
   void testCountNumberOfItemsByOfferStatusWithStartThrowingSQLException() {
     this.setErrrorDALServiceStart();
     assertThrows(FatalException.class,
-       () -> this.itemUCC.countNumberOfItemsByOfferStatus(5, "donated"));
+        () -> this.itemUCC.countNumberOfItemsByOfferStatus(5, "donated"));
   }
 
   @DisplayName("Test count number of items by offer status with commit throwing sql exception")
@@ -539,7 +547,7 @@ class ItemUCCImplTest {
   void testCountNumberOfReceivedOrNotReceivedItemsWithCommitThrowingSQLExcepttion() {
     this.setErrorDALServiceCommit();
     assertThrows(FatalException.class,
-        () ->this.itemUCC.countNumberOfReceivedOrNotReceivedItems(5, true));
+        () -> this.itemUCC.countNumberOfReceivedOrNotReceivedItems(5, true));
   }
 
   @DisplayName("Test get member items by offer status with donated offer status")
@@ -625,7 +633,24 @@ class ItemUCCImplTest {
     assertThrows(FatalException.class, () -> this.itemUCC.getMemberReceivedItems(5));
   }
 
+  @DisplayName("Test add photo with all working good")
   @Test
-  void addPhoto() {
+  void testAddPhotoWithAllWorkingGood() {
+    this.setAddPhotoReturnedValue(5, "photo.png");
+    assertTrue(this.itemUCC.addPhoto(5, "photo.png"));
+  }
+
+  @DisplayName("Test add photo with start throwing sql exception")
+  @Test
+  void testAddPhotoWithStartThrowingSQLException() {
+    this.setErrrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.addPhoto(5, "photo.png"));
+  }
+
+  @DisplayName("Test add photo with commit throwing sql exception")
+  @Test
+  void testAddPhotoWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.itemUCC.addPhoto(5, "photo.png"));
   }
 }
