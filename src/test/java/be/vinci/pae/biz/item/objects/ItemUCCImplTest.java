@@ -368,8 +368,32 @@ class ItemUCCImplTest {
     assertFalse(this.itemUCC.markItemAsGiven(null));
   }
 
+  @DisplayName("Test mark item as not given with good item")
   @Test
-  void markItemAsNotGiven() {
+  void testMarkItemAsNotGivenWithGoodItem() {
+    this.setMarkItemAsrReturnedValue(false);
+    assertTrue(this.itemUCC.markItemAsNotGiven(this.itemDTO));
+  }
+
+  @DisplayName("Test mark item as not given with wrong item")
+  @Test
+  void testMarkItemAsNotGivenWithWrongItem() {
+    this.setMarkItemAsrReturnedValue(false);
+    assertFalse(this.itemUCC.markItemAsNotGiven(null));
+  }
+
+  @DisplayName("Test mark item as not given with start throwing sql exception")
+  @Test
+  void testMarkItemAsNotGivenWithStartThrowingSQLException() {
+    this.setErrrorDALServiceStart();
+    assertThrows(FatalException.class, () ->this.itemUCC.markItemAsNotGiven(this.itemDTO));
+  }
+
+  @DisplayName("Test mark item as not given with commit throwing sql exception")
+  @Test
+  void testMarkItemAsNotGivenWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () ->this.itemUCC.markItemAsNotGiven(this.itemDTO));
   }
 
   @Test
