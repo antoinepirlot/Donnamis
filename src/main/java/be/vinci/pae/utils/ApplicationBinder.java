@@ -37,8 +37,6 @@ import be.vinci.pae.dal.refusal.objects.RefusalDAOImpl;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.dal.services.objects.DALServicesImpl;
-import be.vinci.pae.dal.utils.AbstractDAO;
-import be.vinci.pae.dal.utils.AbstractDAOImpl;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.ext.Provider;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
