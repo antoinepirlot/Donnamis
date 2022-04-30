@@ -162,7 +162,7 @@ class ItemUCCImplTest {
     }
   }
 
-  private void setErrrorDALServiceStart() {
+  private void setErrorDALServiceStart() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).start();
     } catch (SQLException e) {
@@ -223,7 +223,7 @@ class ItemUCCImplTest {
   @DisplayName("Test get all items with start throwing sql exception")
   @Test
   void testGetAllItemsWithStartThrowingSQLException() {
-    this.setErrrorDALServiceStart();
+    this.setErrorDALServiceStart();
     assertThrows(FatalException.class, () -> this.itemUCC.getAllItems(null));
   }
 
@@ -251,7 +251,7 @@ class ItemUCCImplTest {
   @DisplayName("Test get one item with start throwing sql exception")
   @Test
   void testGetOneItemWithStartThrowingSQLException() {
-    this.setErrrorDALServiceStart();
+    this.setErrorDALServiceStart();
     assertThrows(FatalException.class, () -> this.itemUCC.getOneItem(4));
   }
 
@@ -273,7 +273,7 @@ class ItemUCCImplTest {
   @DisplayName("Test add item with start throwing sql exception")
   @Test
   void testAddItemWithStartThrowingSQLException() {
-    this.setErrrorDALServiceStart();
+    this.setErrorDALServiceStart();
     assertThrows(FatalException.class, () -> this.itemUCC.addItem(this.itemDTO));
   }
 
@@ -301,7 +301,7 @@ class ItemUCCImplTest {
   @DisplayName("Test cancel item with start throwing sql exception")
   @Test
   void testCancelItemWithStartThrowingSQLException() {
-    this.setErrrorDALServiceStart();
+    this.setErrorDALServiceStart();
     assertThrows(FatalException.class, () -> this.itemUCC.cancelItem(5));
   }
 
@@ -329,7 +329,7 @@ class ItemUCCImplTest {
   @DisplayName("Test modify item with start throwing sql exception")
   @Test
   void testModifyItemWithStartThrowingSQLException() {
-    this.setErrrorDALServiceStart();
+    this.setErrorDALServiceStart();
     assertThrows(FatalException.class, () -> this.itemUCC.modifyItem(this.itemDTO));
   }
 
@@ -357,14 +357,14 @@ class ItemUCCImplTest {
   @DisplayName("Test get all items of a member with start throwing sql exception")
   @Test
   void testGetAllItemsOfAMemberWithStartThrowingSQLException() {
-    this.setErrrorDALServiceStart();
+    this.setErrorDALServiceStart();
     assertThrows(FatalException.class, () -> this.itemUCC.getAllItemsOfAMember(5));
   }
 
   @DisplayName("Test get all items of a member with commit throwing sql exception")
   @Test
   void testGetAllItemsOfAMemberWithCommitId() {
-    this.setErrrorDALServiceStart();
+    this.setErrorDALServiceStart();
     assertThrows(FatalException.class, () -> this.itemUCC.getAllItemsOfAMember(5));
   }
 
@@ -385,7 +385,7 @@ class ItemUCCImplTest {
   @DisplayName("Test get assigned items of a member with start throwing sql exception")
   @Test
   void testGetAssignedItemsWithStartThrowingSQLException() {
-    this.setErrrorDALServiceStart();
+    this.setErrorDALServiceStart();
     assertThrows(FatalException.class, () -> this.itemUCC.getAssignedItems(5));
   }
 
@@ -413,7 +413,7 @@ class ItemUCCImplTest {
   @DisplayName("Test mark item as given with start throwing sql exception")
   @Test
   void testMarkItemAsGivenWithStartThrowingSQLException() {
-    this.setErrrorDALServiceStart();
+    this.setErrorDALServiceStart();
     assertThrows(FatalException.class, () -> this.itemUCC.markItemAsGiven(this.itemDTO));
   }
 
@@ -441,7 +441,7 @@ class ItemUCCImplTest {
   @DisplayName("Test mark item as not given with start throwing sql exception")
   @Test
   void testMarkItemAsNotGivenWithStartThrowingSQLException() {
-    this.setErrrorDALServiceStart();
+    this.setErrorDALServiceStart();
     assertThrows(FatalException.class, () -> this.itemUCC.markItemAsNotGiven(this.itemDTO));
   }
 
@@ -500,7 +500,7 @@ class ItemUCCImplTest {
   @DisplayName("Test count number of items by offer status with start throwing sql exception")
   @Test
   void testCountNumberOfItemsByOfferStatusWithStartThrowingSQLException() {
-    this.setErrrorDALServiceStart();
+    this.setErrorDALServiceStart();
     assertThrows(FatalException.class,
         () -> this.itemUCC.countNumberOfItemsByOfferStatus(5, "donated"));
   }
@@ -537,7 +537,7 @@ class ItemUCCImplTest {
   @DisplayName("Test count number of received or not received items with start throwing sql exception")
   @Test
   void testCountNumberOfReceivedOrNotReceivedItemsWithStartThrowingSQLExcepttion() {
-    this.setErrrorDALServiceStart();
+    this.setErrorDALServiceStart();
     assertThrows(FatalException.class,
         () -> this.itemUCC.countNumberOfReceivedOrNotReceivedItems(5, true));
   }
@@ -592,7 +592,7 @@ class ItemUCCImplTest {
   @DisplayName("Test get member items by offer status with start throwing sql exception")
   @Test
   void getMemberItemsByOfferStatusWithStartThrowingSQLException() {
-    this.setErrrorDALServiceStart();
+    this.setErrorDALServiceStart();
     assertThrows(FatalException.class,
         () -> this.itemUCC.getMemberItemsByOfferStatus(5, "donated"));
   }
@@ -622,7 +622,7 @@ class ItemUCCImplTest {
   @DisplayName("Test get member's received items with start throwing sql exception")
   @Test
   void testGetMemberReceivedItemsWithStartThrowingSQLException() {
-    this.setErrrorDALServiceStart();
+    this.setErrorDALServiceStart();
     assertThrows(FatalException.class, () -> this.itemUCC.getMemberReceivedItems(5));
   }
 
@@ -643,7 +643,7 @@ class ItemUCCImplTest {
   @DisplayName("Test add photo with start throwing sql exception")
   @Test
   void testAddPhotoWithStartThrowingSQLException() {
-    this.setErrrorDALServiceStart();
+    this.setErrorDALServiceStart();
     assertThrows(FatalException.class, () -> this.itemUCC.addPhoto(5, "photo.png"));
   }
 

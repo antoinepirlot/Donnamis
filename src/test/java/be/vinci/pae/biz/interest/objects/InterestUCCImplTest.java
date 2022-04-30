@@ -49,7 +49,7 @@ class InterestUCCImplTest {
     Mockito.when(interestDAO.interestExist(interestDTO)).thenReturn(interestMarked);
   }
 
-  private void setErrrorDALServiceStart() {
+  private void setErrorDALServiceStart() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).start();
     } catch (SQLException e) {
@@ -82,7 +82,7 @@ class InterestUCCImplTest {
   @DisplayName("Test mark interest with start throwing sql exception ")
   @Test
   void testMarkInterestWithStartThrowingSQLException() {
-    this.setErrrorDALServiceStart();
+    this.setErrorDALServiceStart();
     assertThrows(FatalException.class, () -> interestUCC.markInterest(interestDTO));
   }
 
@@ -110,7 +110,7 @@ class InterestUCCImplTest {
   @DisplayName("Test interest exists with start throwing sql exception")
   @Test
   void testInterestExistsWithStartThrowingSQLException() {
-    this.setErrrorDALServiceStart();
+    this.setErrorDALServiceStart();
     assertThrows(FatalException.class, () -> this.interestUCC.interestExist(interestDTO));
   }
 
