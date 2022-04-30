@@ -33,7 +33,12 @@ class InterestUCCImplTest {
 
   @BeforeEach
   void setUp() {
-
+    try {
+      Mockito.doNothing().when(this.dalServices).start();
+      Mockito.doNothing().when(this.dalServices).commit();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private void setInterestDAOMarkInterestReturnValue(boolean interestMarked) {

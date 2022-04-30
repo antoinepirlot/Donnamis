@@ -1,8 +1,10 @@
 package be.vinci.pae.biz.item.objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
@@ -38,7 +40,12 @@ class ItemUCCImplTest {
 
   @BeforeEach
   void setUp() {
-
+    try {
+      Mockito.doNothing().when(this.dalServices).start();
+      Mockito.doNothing().when(this.dalServices).commit();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private void setGetAllItemsReturnedValue(String offerStatus) {
@@ -67,8 +74,13 @@ class ItemUCCImplTest {
   private void setCancelItemReturnedValue(int idItem) {
     if (idItem >= 1) {
       Mockito.when(this.itemDAO.cancelItem(idItem)).thenReturn(this.itemDTO);
+    } else {
+      Mockito.when(this.itemDAO.cancelItem(idItem)).thenReturn(null);
     }
-    Mockito.when(this.itemDAO.cancelItem(idItem)).thenReturn(null);
+  }
+
+  private void setModifyItemReturnedValue(boolean modifyReturnedValue) {
+    Mockito.when(this.itemDAO.modifyItem(this.itemDTO)).thenReturn(modifyReturnedValue);
   }
 
   private void setErrrorDALServiceStart() {
@@ -221,8 +233,32 @@ class ItemUCCImplTest {
     assertThrows(FatalException.class, () -> this.itemUCC.cancelItem(5));
   }
 
+  @DisplayName("Test modify item with good item")
   @Test
-  void modifyItem() {
+  void testModifyItemWithGoodItem() {
+    this.setModifyItemReturnedValue(true);
+    assertTrue(this.itemUCC.modifyItem(this.itemDTO));
+  }
+
+  @DisplayName("Test modify item with wrong item")
+  @Test
+  void testModifyItemWithWrongItem() {
+    this.setModifyItemReturnedValue(false);
+    assertFalse(this.itemUCC.modifyItem(this.itemDTO));
+  }
+
+  @DisplayName("Test modify item with start throwing sql exception")
+  @Test
+  void testModifyItemWithStartThrowingSQLException() {
+    this.setErrrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.modifyItem(this.itemDTO));
+  }
+
+  @DisplayName("Test modify item with commit throwing sql exception")
+  @Test
+  void testModifyItemWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.itemUCC.modifyItem(this.itemDTO));
   }
 
   @Test
