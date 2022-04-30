@@ -48,10 +48,10 @@ public class ItemsTypeImpl implements ItemsType {
 
   @Override
   public String toString() {
-    return "ItemsTypeImpl{" +
-        "id=" + id +
-        ", itemType='" + itemType + '\'' +
-        ", version=" + version +
-        '}';
+    return "ItemsTypeImpl{"
+        + "id=" + id
+        + ", itemType='" + itemType + '\''
+        + ", version=" + version
+        + '}';
   }
 }
