@@ -70,14 +70,14 @@ class ItemsTypeUCCImplTest {
 
   @DisplayName("Test get all items types with start throwing sql exception")
   @Test
-  void testGetAll() {
+  void testGetAllWithStartThrowingSQLException() {
     this.setErrorDALServiceStart();
     assertThrows(FatalException.class, this.itemsTypeUCC::getAll);
   }
 
   @DisplayName("Test get all items types with commit throwing sql exception")
   @Test
-  void getAll() {
+  void testGetAllWithCommitThrowingSQLException() {
     this.setErrorDALServiceCommit();
     assertThrows(FatalException.class, this.itemsTypeUCC::getAll);
   }
