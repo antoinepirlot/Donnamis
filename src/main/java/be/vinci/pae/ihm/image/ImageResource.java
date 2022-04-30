@@ -31,7 +31,6 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 @AuthorizeMember
 public class ImageResource {
 
-  private final Json<ItemDTO> jsonUtil = new Json<>(ItemDTO.class);
   private final Logger logger = LoggerHandler.getLogger();
   private static final String[] ALLOWED_EXTENSIONS = {"jpg", "png", "jpeg", "JPG", "PNG", "JPEG"};
 
