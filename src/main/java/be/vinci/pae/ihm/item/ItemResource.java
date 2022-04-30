@@ -429,7 +429,7 @@ public class ItemResource {
 
   private String transformImageToBase64(ItemDTO itemDTO) throws IOException {
     if (itemDTO == null
-    || itemDTO.getPhoto() == null || itemDTO.getPhoto().isBlank()) {
+        || itemDTO.getPhoto() == null || itemDTO.getPhoto().isBlank()) {
       return null;
     }
     String photoSignature = itemDTO.getPhoto();
