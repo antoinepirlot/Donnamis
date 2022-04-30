@@ -154,6 +154,20 @@ class OfferUCCImplTest {
     assertEquals(this.offerDTOList, this.offerUCC.getAllOffers(null));
   }
 
+  @DisplayName("Test get all offers with start throwing sql exception")
+  @Test
+  void testGetAllOffersWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.offerUCC.getAllOffers(null));
+  }
+
+  @DisplayName("Test get all offers with commit throwing sql exception")
+  @Test
+  void testGetAllOffersWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.offerUCC.getAllOffers(null));
+  }
+
   @DisplayName("Test get one offer with existing id offer")
   @Test
   void testGetOneOfferWithExistingIdOffer() {
