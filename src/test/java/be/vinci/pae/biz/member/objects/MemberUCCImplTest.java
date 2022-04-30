@@ -1,6 +1,7 @@
 package be.vinci.pae.biz.member.objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -87,6 +88,11 @@ class MemberUCCImplTest {
 
   private void setModifyMemberReturnedValue() {
     Mockito.when(this.memberDAO.modifyMember(this.memberDTO)).thenReturn(this.memberDTO);
+  }
+
+  private void setMemberExistsReturnedValue(boolean exists, int idMember) {
+    Mockito.when(this.memberDAO.memberExist(this.memberDTO, -1)).thenReturn(exists);
+    Mockito.when(this.memberDAO.memberExist(null, idMember)).thenReturn(exists);
   }
 
   private void setErrorDALServiceStart() {
@@ -198,7 +204,6 @@ class MemberUCCImplTest {
     assertTrue(memberUCC.confirmMember(this.memberDTO));
   }
 
-
   @DisplayName("Test Confirm Member With commit throwing sql exception")
   @Test
   void testConfirmMemberWithStartThrowingSQLException() {
@@ -272,6 +277,40 @@ class MemberUCCImplTest {
   void testConfirmAdminWithStateConfirmed() {
     configureMemberDTOState("confirmed");
     assertTrue(this.memberUCC.confirmMember(this.memberDTO));
+  }
+
+  //Test member exists
+
+  @DisplayName("Test member exists with existing member")
+  @Test
+  void testMemberExistsWithExistingMember() {
+    this.setMemberExistsReturnedValue(true, 5);
+    assertTrue(this.memberUCC.memberExist(null, 5));
+    assertTrue(this.memberUCC.memberExist(this.memberDTO, -1));
+  }
+
+  @DisplayName("Test member exists with not existing member")
+  @Test
+  void testMemberExistsWithNotExistingMember() {
+    this.setMemberExistsReturnedValue(false, 5);
+    assertFalse(this.memberUCC.memberExist(null, 5));
+    assertFalse(this.memberUCC.memberExist(this.memberDTO, -1));
+  }
+
+  @DisplayName("Test member exists with start throwing sql exception")
+  @Test
+  void testMemberExistsWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.memberUCC.memberExist(null, 5));
+    assertThrows(FatalException.class, () -> this.memberUCC.memberExist(this.memberDTO, -1));
+  }
+
+  @DisplayName("Test member exists with commit throwing sql exception")
+  @Test
+  void testMemberExistsWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.memberUCC.memberExist(null, 5));
+    assertThrows(FatalException.class, () -> this.memberUCC.memberExist(this.memberDTO, -1));
   }
 
   //Test Login
