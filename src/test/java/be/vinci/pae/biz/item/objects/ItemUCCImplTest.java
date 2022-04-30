@@ -90,6 +90,7 @@ class ItemUCCImplTest {
       Mockito.when(this.itemDAO.getAllItemsOfAMember(idMember)).thenReturn(null);
     }
   }
+
   private void setGetAssignedItems(int idMember) {
     if (idMember >= 1) {
       Mockito.when(this.itemDAO.getAssignedItems(idMember)).thenReturn(this.itemDTOList);
@@ -104,6 +105,20 @@ class ItemUCCImplTest {
     } else {
       Mockito.when(this.itemDAO.markItemAsNotGiven(this.itemDTO)).thenReturn(true);
     }
+  }
+
+  private int setCountNumberOfItemsByOfferStatusReturnedValue(int idMember, String offerStatus) {
+    int result = 7;
+    if (idMember >= 1
+        && (offerStatus.equals("donated")
+        || offerStatus.equals("assigned")
+        || offerStatus.equals("cancelled")
+        || offerStatus.equals("given"))
+    ) {
+      Mockito.when(this.itemDAO.countNumberOfItemsByOfferStatus(idMember, offerStatus))
+          .thenReturn(result);
+    }
+    return result;
   }
 
   private void setErrrorDALServiceStart() {
@@ -386,19 +401,75 @@ class ItemUCCImplTest {
   @Test
   void testMarkItemAsNotGivenWithStartThrowingSQLException() {
     this.setErrrorDALServiceStart();
-    assertThrows(FatalException.class, () ->this.itemUCC.markItemAsNotGiven(this.itemDTO));
+    assertThrows(FatalException.class, () -> this.itemUCC.markItemAsNotGiven(this.itemDTO));
   }
 
   @DisplayName("Test mark item as not given with commit throwing sql exception")
   @Test
   void testMarkItemAsNotGivenWithCommitThrowingSQLException() {
     this.setErrorDALServiceCommit();
-    assertThrows(FatalException.class, () ->this.itemUCC.markItemAsNotGiven(this.itemDTO));
+    assertThrows(FatalException.class, () -> this.itemUCC.markItemAsNotGiven(this.itemDTO));
   }
 
+  @DisplayName("Test count number of items by offer status with donated offer status")
   @Test
-  void countNumberOfItemsByOfferStatus() {
+  void testCountNumberOfItemsByOfferStatusWithDonatedOfferStatus() {
+    int result =
+        this.setCountNumberOfItemsByOfferStatusReturnedValue(5, "donated");
+    assertEquals(result,
+        this.itemUCC.countNumberOfItemsByOfferStatus(5, "donated"));
   }
+
+  @DisplayName("Test count number of items by offer status with wrong id member")
+  @Test
+  void testCountNumberOfItemsByOfferStatusWithWrongIdMember() {
+    int result =
+        this.setCountNumberOfItemsByOfferStatusReturnedValue(-1, "donated");
+    assertEquals(0,
+        this.itemUCC.countNumberOfItemsByOfferStatus(-1, "donated"));
+  }
+
+  @DisplayName("Test count number of items by offer status with assigned offer status")
+  @Test
+  void testCountNumberOfItemsByOfferStatusWithAssignedOfferStatus() {
+    int result =
+        this.setCountNumberOfItemsByOfferStatusReturnedValue(5, "assigned");
+    assertEquals(result,
+        this.itemUCC.countNumberOfItemsByOfferStatus(5, "assigned"));
+  }
+
+  @DisplayName("Test count number of items by offer status with cancelled offer status")
+  @Test
+  void testCountNumberOfItemsByOfferStatusWithCancelledOfferStatus() {
+    int result =
+        this.setCountNumberOfItemsByOfferStatusReturnedValue(5, "cancelled");
+    assertEquals(result,
+        this.itemUCC.countNumberOfItemsByOfferStatus(5, "cancelled"));
+  }
+
+  @DisplayName("Test count number of items by offer status with given offer status")
+  @Test
+  void testCountNumberOfItemsByOfferStatusWithGivenOfferStatus() {
+    int result =
+        this.setCountNumberOfItemsByOfferStatusReturnedValue(5, "given");
+    assertEquals(result,
+        this.itemUCC.countNumberOfItemsByOfferStatus(5, "given"));
+  }
+
+  @DisplayName("Test count number of items by offer status with start throwing sql exception")
+  @Test
+  void testCountNumberOfItemsByOfferStatusWithStartThrowingSQLException() {
+    this.setErrrorDALServiceStart();
+    assertThrows(FatalException.class,
+       () -> this.itemUCC.countNumberOfItemsByOfferStatus(5, "donated"));
+  }
+
+  @DisplayName("Test count number of items by offer status with commit throwing sql exception")
+  @Test
+  void testCountNumberOfItemsByOfferStatusWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class,
+        () -> this.itemUCC.countNumberOfItemsByOfferStatus(5, "donated"));  }
 
   @Test
   void countNumberOfReceivedOrNotReceivedItems() {
