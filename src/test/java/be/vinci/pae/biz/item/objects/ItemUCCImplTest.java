@@ -139,6 +139,21 @@ class ItemUCCImplTest {
     }
   }
 
+  private void setGetMemberItemsByOfferStatusReturnedValue(int idMember, String offerStatus) {
+    if (idMember >= 1
+        && (offerStatus.equals("donated")
+        || offerStatus.equals("assigned")
+        || offerStatus.equals("cancelled")
+        || offerStatus.equals("given"))
+    ) {
+      Mockito.when(this.itemDAO.getMemberItemsByOfferStatus(idMember, offerStatus))
+          .thenReturn(this.itemDTOList);
+    } else {
+      Mockito.when(this.itemDAO.getMemberItemsByOfferStatus(idMember, offerStatus))
+          .thenReturn(null);
+    }
+  }
+
   private void setErrrorDALServiceStart() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).start();
@@ -527,8 +542,59 @@ class ItemUCCImplTest {
         () ->this.itemUCC.countNumberOfReceivedOrNotReceivedItems(5, true));
   }
 
+  @DisplayName("Test get member items by offer status with donated offer status")
   @Test
-  void getMemberItemsByOfferStatus() {
+  void getMemberItemsByOfferStatusWithDonatedOfferStatus() {
+    this.setGetMemberItemsByOfferStatusReturnedValue(5, "donated");
+    assertEquals(this.itemDTOList,
+        this.itemUCC.getMemberItemsByOfferStatus(5, "donated"));
+  }
+
+  @DisplayName("Test get member items by offer status with assigned offer status")
+  @Test
+  void getMemberItemsByOfferStatusWithAssignedOfferStatus() {
+    this.setGetMemberItemsByOfferStatusReturnedValue(5, "assigned");
+    assertEquals(this.itemDTOList,
+        this.itemUCC.getMemberItemsByOfferStatus(5, "assigned"));
+  }
+
+  @DisplayName("Test get member items by offer status with cancelled offer status")
+  @Test
+  void getMemberItemsByOfferStatusWithCancelledOfferStatus() {
+    this.setGetMemberItemsByOfferStatusReturnedValue(5, "cancelled");
+    assertEquals(this.itemDTOList,
+        this.itemUCC.getMemberItemsByOfferStatus(5, "cancelled"));
+  }
+
+  @DisplayName("Test get member items by offer status with given offer status")
+  @Test
+  void getMemberItemsByOfferStatusWithGivenOfferStatus() {
+    this.setGetMemberItemsByOfferStatusReturnedValue(5, "given");
+    assertEquals(this.itemDTOList,
+        this.itemUCC.getMemberItemsByOfferStatus(5, "given"));
+  }
+
+  @DisplayName("Test get member items by offer status with wrong id member")
+  @Test
+  void getMemberItemsByOfferStatusWithWrongIdMember() {
+    this.setGetMemberItemsByOfferStatusReturnedValue(-1, "donated");
+    assertNull(this.itemUCC.getMemberItemsByOfferStatus(-1, "donated"));
+  }
+
+  @DisplayName("Test get member items by offer status with start throwing sql exception")
+  @Test
+  void getMemberItemsByOfferStatusWithStartThrowingSQLException() {
+    this.setErrrorDALServiceStart();
+    assertThrows(FatalException.class,
+        () -> this.itemUCC.getMemberItemsByOfferStatus(5, "donated"));
+  }
+
+  @DisplayName("Test get member items by offer status with commit throwing sql exception")
+  @Test
+  void getMemberItemsByOfferStatusWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class,
+        () -> this.itemUCC.getMemberItemsByOfferStatus(5, "donated"));
   }
 
   @DisplayName("Test get member's received items with good member's id")
