@@ -7,7 +7,6 @@ import be.vinci.pae.dal.services.interfaces.DALBackendService;
 import be.vinci.pae.dal.utils.ObjectsInstanceCreator;
 import be.vinci.pae.exceptions.FatalException;
 import jakarta.inject.Inject;
-import java.nio.file.FileAlreadyExistsException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

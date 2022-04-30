@@ -534,7 +534,8 @@ class ItemUCCImplTest {
     assertEquals(0, this.itemUCC.countNumberOfReceivedOrNotReceivedItems(-1, true));
   }
 
-  @DisplayName("Test count number of received or not received items with start throwing sql exception")
+  @DisplayName("Test count number of received or not received items "
+      + "with start throwing sql exception")
   @Test
   void testCountNumberOfReceivedOrNotReceivedItemsWithStartThrowingSQLExcepttion() {
     this.setErrorDALServiceStart();
@@ -542,7 +543,8 @@ class ItemUCCImplTest {
         () -> this.itemUCC.countNumberOfReceivedOrNotReceivedItems(5, true));
   }
 
-  @DisplayName("Test count number of received or not received items with commit throwing sql exception")
+  @DisplayName("Test count number of received or not received items with commit "
+      + "throwing sql exception")
   @Test
   void testCountNumberOfReceivedOrNotReceivedItemsWithCommitThrowingSQLExcepttion() {
     this.setErrorDALServiceCommit();

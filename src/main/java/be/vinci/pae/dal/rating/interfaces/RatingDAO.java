@@ -1,7 +1,6 @@
 package be.vinci.pae.dal.rating.interfaces;
 
 import be.vinci.pae.biz.rating.interfaces.RatingDTO;
-import java.sql.SQLException;
 import java.util.List;
 
 public interface RatingDAO {
