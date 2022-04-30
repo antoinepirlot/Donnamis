@@ -52,29 +52,34 @@ public class ObjectsInstanceCreator {
     itemDTO.setId(rs.getInt("id_item"));
     try {
       itemDTO.setTitle(StringEscapeUtils.escapeHtml4(rs.getString("title")));
-    } catch (SQLException ignored) {
+    } catch (SQLException e) {
+      itemDTO.setTitle(null);
     }
     try {
       itemDTO.setPhoto(StringEscapeUtils.escapeHtml4(rs.getString("photo")));
-    } catch (SQLException ignored) {
+    } catch (SQLException e) {
+      itemDTO.setPhoto(null);
     }
     try {
       OfferDTO offerDTO = factory.getOffer();
       offerDTO.setDate(rs.getTimestamp("last_offer_date"));
       itemDTO.setLastOffer(offerDTO);
-    } catch (SQLException ignored) {
+    } catch (SQLException e) {
+      itemDTO.setLastOffer(null);
     }
     try {
       itemDTO.setItemDescription(
           StringEscapeUtils.escapeHtml4(rs.getString("item_description"))
       );
-    } catch (SQLException ignored) {
+    } catch (SQLException e) {
+      itemDTO.setItemDescription(null);
     }
     try {
       itemDTO.setOfferStatus(
           StringEscapeUtils.escapeHtml4(rs.getString("offer_status"))
       );
-    } catch (SQLException ignored) {
+    } catch (SQLException e) {
+      itemDTO.setOfferStatus(null);
     }
     try {
       itemDTO.setItemType(createItemsTypeInstance(factory, rs));
@@ -84,7 +89,7 @@ public class ObjectsInstanceCreator {
     try {
       itemDTO.setMember(createMemberInstance(factory, rs));
     } catch (SQLException e) {
-      System.out.println("No member for the item.");
+      itemDTO.setMember(null);
     }
     itemDTO.setVersion(rs.getInt("version_item"));
     return itemDTO;
@@ -129,48 +134,48 @@ public class ObjectsInstanceCreator {
     try {
       memberDTO.setId(rs.getInt("id_member"));
     } catch (SQLException e) {
-      System.out.println("No id_member selected");
+      memberDTO.setId(0);
     }
     try {
       String username = rs.getString("username");
       memberDTO.setUsername(StringEscapeUtils.escapeHtml4(username));
     } catch (SQLException e) {
-      System.out.println("No username selected");
+      memberDTO.setUsername(null);
     }
     try {
       memberDTO.setLastName(StringEscapeUtils.escapeHtml4(rs.getString("last_name")));
     } catch (SQLException e) {
-      System.out.println("No id_member selected");
+      memberDTO.setLastName(null);
     }
     try {
       memberDTO.setFirstName(StringEscapeUtils.escapeHtml4(rs.getString("first_name")));
     } catch (SQLException e) {
-      System.out.println("No id_member selected");
+      memberDTO.setFirstName(null);
     }
     try {
       memberDTO.setActualState(StringEscapeUtils.escapeHtml4(rs.getString("state")));
     } catch (SQLException e) {
-      System.out.println("No actual state selected for this member");
+      memberDTO.setActualState(null);
     }
     try {
       memberDTO.setPhoneNumber(StringEscapeUtils.escapeHtml4(rs.getString("phone")));
     } catch (SQLException e) {
-      System.out.println("No phone selected for this member");
+      memberDTO.setPhoneNumber(null);
     }
     try {
       memberDTO.setPassword(StringEscapeUtils.escapeHtml4(rs.getString("password")));
     } catch (SQLException e) {
-      System.out.println("No password selected for this member");
+      memberDTO.setPassword(null);
     }
     try {
       memberDTO.setAdmin(rs.getBoolean("is_admin"));
     } catch (SQLException e) {
-      System.out.println("No is_admin selected for this member");
+      memberDTO.setAdmin(false);
     }
     try {
       memberDTO.setAddress(createAddressInstance(factory, rs));
     } catch (SQLException e) {
-      System.out.println("No address selected for this member");
+      memberDTO.setAddress(null);
     }
     memberDTO.setVersion(rs.getInt("version_member"));
     return memberDTO;
