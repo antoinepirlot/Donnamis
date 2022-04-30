@@ -1,7 +1,9 @@
 package be.vinci.pae.biz.itemstype.objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeUCC;
@@ -29,6 +31,7 @@ class ItemsTypeUCCImplTest {
 
   private final ItemsTypeUCC itemsTypeUCC = locator.getService(ItemsTypeUCC.class);
 
+  private final ItemsTypeDTO itemsTypeDTO = new ItemsTypeImpl();
   private final List<ItemsTypeDTO> itemsTypeDTOLists = new ArrayList<>();
 
   @BeforeEach
@@ -43,6 +46,10 @@ class ItemsTypeUCCImplTest {
 
   private void setGetAllReturnedValue() {
     Mockito.when(this.itemsTypeDAO.getAll()).thenReturn(this.itemsTypeDTOLists);
+  }
+
+  private void setExistsReturnedValue(boolean exists) {
+    Mockito.when(this.itemsTypeDAO.exists(this.itemsTypeDTO)).thenReturn(exists);
   }
 
   private void setErrorDALServiceStart() {
@@ -82,8 +89,32 @@ class ItemsTypeUCCImplTest {
     assertThrows(FatalException.class, this.itemsTypeUCC::getAll);
   }
 
+  @DisplayName("Test exists with existing items type")
   @Test
-  void exists() {
+  void testExistsWithExistingItemsType() {
+    this.setExistsReturnedValue(true);
+    assertTrue(this.itemsTypeUCC.exists(this.itemsTypeDTO));
+  }
+
+  @DisplayName("Test exists with not existing items type")
+  @Test
+  void testExistsWithNotExistingItemsType() {
+    this.setExistsReturnedValue(false);
+    assertFalse(this.itemsTypeUCC.exists(this.itemsTypeDTO));
+  }
+
+  @DisplayName("Test exists with start throwing sql exception")
+  @Test
+  void testExistsWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemsTypeUCC.exists(this.itemsTypeDTO));
+  }
+
+  @DisplayName("Test exists with commit throwing sql exception")
+  @Test
+  void testExistsWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.itemsTypeUCC.exists(this.itemsTypeDTO));
   }
 
   @Test
