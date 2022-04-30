@@ -4,6 +4,8 @@ import be.vinci.pae.biz.interest.interfaces.InterestUCC;
 import be.vinci.pae.biz.interest.objects.InterestUCCImpl;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
 import be.vinci.pae.biz.item.objects.ItemUCCImpl;
+import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeUCC;
+import be.vinci.pae.biz.itemstype.objects.ItemsTypeUCCImpl;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.biz.member.objects.MemberUCCImpl;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
@@ -12,6 +14,8 @@ import be.vinci.pae.dal.interest.interfaces.InterestDAO;
 import be.vinci.pae.dal.interest.objects.InterestDAOImpl;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
 import be.vinci.pae.dal.item.objects.ItemDAOImpl;
+import be.vinci.pae.dal.itemstype.interfaces.ItemsTypeDAO;
+import be.vinci.pae.dal.itemstype.objects.ItemsTypeDAOImpl;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.member.objects.MemberDAOImpl;
 import be.vinci.pae.dal.offer.interfaces.OfferDAO;
@@ -38,11 +42,14 @@ public class ApplicationBinder extends AbstractBinder {
     //InterestUCC tests
     bind(InterestUCCImpl.class).to(InterestUCC.class).in(Singleton.class);
     bind(Mockito.mock(InterestDAOImpl.class)).to(InterestDAO.class);
-    bind(Mockito.mock(MemberUCCImpl.class)).to(MemberUCC.class);
 
     //ItemUCC tests
     bind(ItemUCCImpl.class).to(ItemUCC.class).in(Singleton.class);
     bind(Mockito.mock(ItemDAOImpl.class)).to(ItemDAO.class);
+
+    //ItemsTypes tests
+    bind(ItemsTypeUCCImpl.class).to(ItemsTypeUCC.class).in(Singleton.class);
+    bind(Mockito.mock(ItemsTypeDAOImpl.class)).to(ItemsTypeDAO.class);
 
     //OfferUCC tests
     bind(OfferUCCImpl.class).to(OfferUCC.class).in(Singleton.class);
