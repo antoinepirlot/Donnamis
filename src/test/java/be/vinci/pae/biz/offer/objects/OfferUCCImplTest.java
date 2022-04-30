@@ -1,5 +1,6 @@
 package be.vinci.pae.biz.offer.objects;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -195,5 +196,31 @@ class OfferUCCImplTest {
   void testGetOneOfferWithCommitThrowingSQLException() {
     this.setErrorDALServiceCommit();
     assertThrows(FatalException.class, () -> this.offerUCC.getOneOffer(this.notExistingIdOffer));
+  }
+
+  @DisplayName("Test get last two offers of with good item")
+  @Test
+  void testGetLastTwoOffersOfWithGoodItem() {
+    assertDoesNotThrow(() -> this.offerDAO.getLastTwoOffersOf(this.existingItem));
+  }
+
+  @DisplayName("Test get last two offers of with null item")
+  @Test
+  void testGetLastTwoOffersOfWithNullItem() {
+    assertDoesNotThrow(() -> this.offerDAO.getLastTwoOffersOf(null));
+  }
+
+  @DisplayName("Test get last two offers of with start throwing sql exception")
+  @Test
+  void testGetLastTwoOffersOfWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.offerUCC.getLastTwoOffersOf(this.existingItem));
+  }
+
+  @DisplayName("Test get last two offers of with commit throwing sql exception")
+  @Test
+  void testGetLastTwoOffersOfWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.offerUCC.getLastTwoOffersOf(this.existingItem));
   }
 }
