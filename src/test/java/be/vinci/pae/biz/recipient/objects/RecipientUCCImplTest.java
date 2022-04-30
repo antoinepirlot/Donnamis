@@ -49,6 +49,10 @@ class RecipientUCCImplTest {
     Mockito.when(this.recipientDAO.chooseRecipient(this.recipientDTO)).thenReturn(chosen);
   }
 
+  private void setExistsReturnedValue(boolean exists) {
+    Mockito.when(this.recipientDAO.exists(this.recipientDTO)).thenReturn(exists);
+  }
+
   private void setErrorDALServiceStart() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).start();
@@ -93,7 +97,31 @@ class RecipientUCCImplTest {
     assertThrows(FatalException.class, () -> this.recipientUCC.chooseRecipient(this.recipientDTO));
   }
 
+  @DisplayName("Test exists with existing recipient")
   @Test
-  void exists() {
+  void testExistsWithExistingRecipient() {
+    this.setExistsReturnedValue(true);
+    assertTrue(this.recipientUCC.exists(this.recipientDTO));
+  }
+
+  @DisplayName("Test exists with not existing recipient")
+  @Test
+  void testExistsWithNotExistingRecipient() {
+    this.setExistsReturnedValue(false);
+    assertFalse(this.recipientUCC.exists(this.recipientDTO));
+  }
+
+  @DisplayName("Test exists with start throwing sql exception")
+  @Test
+  void testExistsWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.recipientUCC.exists(this.recipientDTO));
+  }
+
+  @DisplayName("Test exists with commit throwing sql exception")
+  @Test
+  void testExistsWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.recipientUCC.exists(this.recipientDTO));
   }
 }
