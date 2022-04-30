@@ -1,11 +1,10 @@
 package be.vinci.pae.ihm.image;
 
-import be.vinci.pae.biz.item.interfaces.ItemDTO;
+
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
 import be.vinci.pae.exceptions.FatalException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
-import be.vinci.pae.ihm.filter.utils.Json;
 import be.vinci.pae.ihm.logs.LoggerHandler;
 import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
