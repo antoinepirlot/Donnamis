@@ -85,6 +85,10 @@ class MemberUCCImplTest {
     Mockito.when(this.memberDAO.getOne(memberDTO)).thenReturn(memberDTO);
   }
 
+  private void setModifyMemberReturnedValue() {
+    Mockito.when(this.memberDAO.modifyMember(this.memberDTO)).thenReturn(this.memberDTO);
+  }
+
   private void setErrorDALServiceStart() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).start();
@@ -148,6 +152,27 @@ class MemberUCCImplTest {
   void testGetOneMemberWithCommitThrowingSQLException() {
     this.setErrorDALServiceCommit();
     assertThrows(FatalException.class, () -> this.memberUCC.getOneMember(5));
+  }
+
+  @DisplayName("Test modify member as expected")
+  @Test
+  void testModifyMemberAsExpected() {
+    this.setModifyMemberReturnedValue();
+    assertEquals(this.memberDTO, this.memberUCC.modifyMember(this.memberDTO));
+  }
+
+  @DisplayName("Test modify member with start throwing sql exception")
+  @Test
+  void testModifyMemberWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.memberUCC.modifyMember(this.memberDTO));
+  }
+
+  @DisplayName("Test modify member with commit throwing sql exception")
+  @Test
+  void testModifyMemberWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.memberUCC.modifyMember(this.memberDTO));
   }
 
   //Test Confirm Member
