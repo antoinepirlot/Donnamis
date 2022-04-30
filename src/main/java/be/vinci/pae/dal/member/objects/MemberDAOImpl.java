@@ -164,11 +164,11 @@ public class MemberDAOImpl implements MemberDAO {
   @Override
   public boolean denyMember(RefusalDTO refusalDTO) {
     String query = "UPDATE project_pae.members "
-            + "SET state = '" +DENIED_STATE+"', "
+        + "SET state = '" + DENIED_STATE + "', "
         + "        version_member = version_member + 1 "
-            + "WHERE id_member = ?; "
-            + "INSERT INTO project_pae.refusals (text, id_member, version_refusal) "
-            + "VALUES (?, ?, 1);";
+        + "WHERE id_member = ?; "
+        + "INSERT INTO project_pae.refusals (text, id_member, version_refusal) "
+        + "VALUES (?, ?, 1);";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, refusalDTO.getMember().getId());
       preparedStatement.setString(2,
