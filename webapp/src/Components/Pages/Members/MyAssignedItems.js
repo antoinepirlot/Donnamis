@@ -83,26 +83,26 @@ const MyAssignedItems = async () => {
       <h1 class="display-3">Aucun objets assignés</h1>
       <h5 class="text-secondary">Vous n'avez aucun objets assignés pour le moment</h5>
     `;
-  } else {
-    items.forEach((item) => {
-      if (item.offerStatus === "assigned") {
-        myAssignedItems.innerHTML += getAssignedItemHtml(item);
-      } else if (item.offerStatus === "given") {
-        myReceivedItems.innerHTML += getGivenItemHtml(item, ratings);
-      }
-    });
-    const ratingButtons = document.querySelectorAll("#ratingButton");
-    const ratingButtonModal = document.querySelector("#ratingButtonModal");
-    ratingButtons.forEach((ratingButton) => {
-      idIdem = ratingButton.value;
-      ratingButton.addEventListener("click", () => {
-        openModal("#ratingModal", "#ratingCloseModal");
-        ratingButtonModal.value = idIdem;
-        ratingButton.addEventListener("click", showRatingForm);
-      });
-    });
-    pageDiv.addEventListener("submit", await evaluateItem);
+    return;
   }
+  items.forEach((item) => {
+    if (item.offerStatus === "assigned") {
+      myAssignedItems.innerHTML += getAssignedItemHtml(item);
+    } else if (item.offerStatus === "given") {
+      myReceivedItems.innerHTML += getGivenItemHtml(item, ratings);
+    }
+  });
+  const ratingButtons = document.querySelectorAll("#ratingButton");
+  const ratingButtonModal = document.querySelector("#ratingButtonModal");
+  ratingButtons.forEach((ratingButton) => {
+    idIdem = ratingButton.value;
+    ratingButton.addEventListener("click", () => {
+      openModal("#ratingModal", "#ratingCloseModal");
+      ratingButtonModal.value = idIdem;
+      ratingButton.addEventListener("click", showRatingForm);
+    });
+  });
+  pageDiv.addEventListener("submit", await evaluateItem);
 }
 
 function showRatingForm(e) {
