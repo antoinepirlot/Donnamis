@@ -18,4 +18,8 @@ public interface RefusalDTO {
   String getText();
 
   void setText(String text);
+
+  int getVersion();
+
+  void setVersion(int version);
 }

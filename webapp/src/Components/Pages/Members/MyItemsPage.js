@@ -1,12 +1,13 @@
 import {
   cancelOffer as cancelOfferBackEnd,
-  chooseRecipient as chooseRecpientBackEnd, getImageByItemId,
+  chooseRecipient as chooseRecpientBackEnd,
   getInterestedMembers,
+  getItem,
   getMyItems,
   markItemAs as markItemAsaBackEnd,
   offerAgain as offerAgainBackEnd
 } from "../../../utils/BackEndRequests";
-import {getPayload} from "../../../utils/session";
+import {getObject, getPayload} from "../../../utils/session";
 import {showError} from "../../../utils/ShowError";
 import {openModal} from "../../../utils/Modals";
 import {Redirect} from "../../Router/Router";
@@ -68,7 +69,7 @@ const MyItemsPage = async () => {
     showError(message, "info", errorMessageMyItemsPage);
     return;
   }
-  showButtons(items);
+  await showButtons(items);
 };
 
 async function showButtons(items) {
@@ -125,6 +126,9 @@ async function showButtons(items) {
     offerAgainButton.addEventListener("click", async () => {
       idItem = offerAgainButton.value;
       openModal("#myItemsPageModal", "#myItemsPageModalCloseButton");
+      const item = await getItem(idItem);
+      const timeSlotTextArea = document.querySelector("#timeSlotFormOfferAgain");
+      timeSlotTextArea.innerHTML = item.offerList[0].timeSlot;
       const offerAgainForm = document.querySelector("#offerAgainForm");
       offerAgainForm.addEventListener("submit", await offerAgain);
     })
@@ -198,12 +202,12 @@ async function showButtons(items) {
 async function offerAgain(e) {
   e.preventDefault();
   const timeSlot = document.querySelector("#timeSlotFormOfferAgain").value;
-  const offer = {
+  const newOffer = {
     idItem: idItem,
-    timeSlot: timeSlot
+    timeSlot: timeSlot,
   }
   try {
-    await offerAgainBackEnd(offer);
+    await offerAgainBackEnd(newOffer);
     await MyItemsPage();
   } catch (e) {
     console.error(e);
@@ -237,14 +241,18 @@ async function chooseRecipient(e) {
 async function markItemAs(given) {
   const errorDiv = document.querySelector("#errorMessageMyItemsPage");
   showError("Le changement est en cours...", "info", errorDiv);
-  const item = {
+
+  const item = await getItem(idItem);
+  const itemMark = {
     id: idItem,
     member: {
-      id: getPayload().id
-    }
+      id: getPayload().id,
+      version: getObject("memberDTO").version
+    },
+    version: item.version
   }
   try {
-    await markItemAsaBackEnd(given, item);
+    await markItemAsaBackEnd(given, itemMark);
     showError("L'objet à bien été marqué comme donné.", "success", errorDiv);
     await MyItemsPage();
   } catch (e) {

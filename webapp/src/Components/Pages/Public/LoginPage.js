@@ -1,8 +1,4 @@
-import {
-  getPayload,
-  setLocalObject,
-  setSessionObject
-} from "../../../utils/session";
+import {setLocalObject, setSessionObject} from "../../../utils/session";
 import {
   getRefusal,
   login as loginBackEndRequest
@@ -40,10 +36,6 @@ const loginFormHtml = `
  * to "redirect" to a new page
  */
 function LoginPage() {
-  if (getPayload()) {
-    Redirect("/");
-    return;
-  }
   const page = document.querySelector("#page");
   page.innerHTML = loginFormHtml;
   page.addEventListener("submit", login);

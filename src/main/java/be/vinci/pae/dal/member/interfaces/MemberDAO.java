@@ -41,14 +41,6 @@ public interface MemberDAO {
   boolean confirmMember(MemberDTO memberDTO);
 
   /**
-   * Checks if the member is admin.
-   *
-   * @param id the member's id
-   * @return the member if the member is admin otherwise null
-   */
-  MemberDTO isAdmin(int id);
-
-  /**
    * Modify the member's information.
    *
    * @param memberDTO the member to modify

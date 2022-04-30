@@ -91,19 +91,20 @@ async function ViewItemPage() {
 
 function createModifyItemModal() {
   let itemDescription = item.itemDescription ? item.itemDescription : "";
-  let timeSlot = item.timeSlot ? item.timeSlot : "";
+  let timeSlot = item.offerList[0].timeSlot ? item.offerList[0].timeSlot : "";
   return `
     <!-- Modal Modify Item -->
     <div id="modifyItemModal" class="modal">
       <div class="modal-content">
         <span id="modifyItemCloseModal" class="close">&times;</span>
         <form id="modifyItemForm">
-          <h5>Modifier votre objet</h5><br>
-          <p>Description de l'objet</p>
+          <h5>Modifier votre objet<span id="asterisk">*</span>:</h5><br>
+          <p>Description de l'objet<span id="asterisk">*</span>:</p>
           <input id="itemDescriptionForm" type="text" value="${itemDescription}">
           <p>Photo</p>
           <input id="photoForm" type="file"><br>
           <br>
+          <p>Disponibilités horaire<span id="asterisk">*</span>:</p>
           <textarea id="timeSlotModifyForm" cols="30" rows="3">${timeSlot}</textarea>
           <br>
           <input type="submit" value="Modifier">
@@ -115,12 +116,10 @@ function createModifyItemModal() {
 }
 
 function showItemInfo() {
-  console.table(item)
   lastOffer = item.offerList[0];
   let date = new Date(lastOffer.date);
   date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
       + date.getFullYear();
-  console.table(item.offerList)
   if (item.offerList.length === 2) {
     const oldOffer = item.offerList[1];
     let oldPubDate = new Date(oldOffer.date);
@@ -200,7 +199,8 @@ async function postInterest(e) {
     id: getPayload().id
   };
   if (callWanted) {
-    memberInterested.phoneNumber = document.querySelector("#phoneNumberInput").value;
+    memberInterested.phoneNumber = document.querySelector(
+        "#phoneNumberInput").value;
   }
   const interest = {
     callWanted: callWanted,
@@ -208,12 +208,17 @@ async function postInterest(e) {
     member: memberInterested,
     date: date
   };
+  const pageErrorDiv = document.querySelector("#viewItemPageError");
   try {
-    await postInterestBackEnd(interest, errorMessageDiv);
+    const status = await postInterestBackEnd(interest, errorMessageDiv);
+    if (status === 409) {
+      showError("Vous avez déjà marqué un intéret pour cette offre.", "danger",
+          pageErrorDiv);
+      return;
+    }
     if (callWanted) {
       await checkToken();
     }
-    const pageErrorDiv = document.querySelector("#viewItemPageError");
     showError("L'intérêt a bien été prit en compte.", "success", pageErrorDiv);
   } catch (err) {
     console.error(err);
@@ -234,14 +239,14 @@ async function modifyItem(e) {
   const itemDescription = document.querySelector("#itemDescriptionForm").value;
   const photo = document.querySelector("#photoForm").value;
   const timeSlot = document.querySelector("#timeSlotModifyForm").value;
-  console.log(timeSlot)
   const newItem = {
     id: item.id,
     itemDescription: itemDescription,
     photo: photo,
     lastOffer: {
       timeSlot: timeSlot
-    }
+    },
+    version: item.version
   }
   try {
     await modifyTheItem(newItem);

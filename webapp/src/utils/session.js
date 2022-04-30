@@ -88,6 +88,9 @@ function disconnect() {
 }
 
 async function checkToken() {
+  if (!getPayload()) {
+    return;
+  }
   try {
     const response = await me();
     if (localStorage.getItem("token")) {
@@ -104,7 +107,8 @@ async function checkToken() {
 }
 
 function isAdmin() {
-  return getObject("memberDTO").isAdmin;
+  const member = getObject("memberDTO");
+  return member ? member.isAdmin : undefined;
 }
 
 export {

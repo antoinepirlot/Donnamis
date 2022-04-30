@@ -22,7 +22,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HEAD;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -45,21 +44,6 @@ public class MemberResource {
   private final Json<MemberDTO> jsonUtil = new Json<>(MemberDTO.class);
   @Inject
   private MemberUCC memberUCC;
-
-  /////////////////////////////////////////////////////////
-  ///////////////////////HEAD//////////////////////////////
-  /////////////////////////////////////////////////////////
-
-  /**
-   * Asks UCC to check if the member is admin or not.
-   */
-  @HEAD
-  @Path("is_admin")
-  @Produces(MediaType.TEXT_PLAIN)
-  @AuthorizeAdmin
-  public void isAdmin() {
-    //@AuthorizeAdmin checks if the member is admin or not
-  }
 
   /////////////////////////////////////////////////////////
   ///////////////////////GET///////////////////////////////
@@ -231,6 +215,11 @@ public class MemberResource {
     if (memberUCC.getOneMember(memberDTO.getId()) == null) {
       throw new ObjectNotFoundException("No member with the id: " + memberDTO.getId());
     }
+
+    if (memberDTO.getVersion() != memberUCC.getOneMember(memberDTO.getId()).getVersion()) {
+      throw new FatalException("Error with version");
+    }
+
     if (!memberUCC.confirmMember(memberDTO)) {
       throw new FatalException("An unexpected error happened while confirming member.");
     }
@@ -250,6 +239,7 @@ public class MemberResource {
     if (!memberUCC.memberExist(refusalDTO.getMember(), -1)) {
       throw new ObjectNotFoundException("No member with the id: " + refusalDTO.getMember().getId());
     }
+
     if (!memberUCC.denyMember(refusalDTO)) {
       throw new FatalException("An unexpected error happened while denying member.");
     }
@@ -273,6 +263,11 @@ public class MemberResource {
     ) {
       throw new WrongBodyDataException("Member incomplete");
     }
+
+    if (memberDTO.getVersion() != memberUCC.getOneMember(memberDTO.getId()).getVersion()) {
+      throw new FatalException("Error with version");
+    }
+
     MemberDTO modifyMember = memberUCC.modifyMember(memberDTO);
     if (modifyMember == null) {
       throw new ObjectNotFoundException("Member not found");

@@ -27,4 +27,8 @@ public interface RatingDTO {
   MemberDTO getMember();
 
   void setMember(MemberDTO memberDTO);
+
+  int getVersion();
+
+  void setVersion(int version);
 }

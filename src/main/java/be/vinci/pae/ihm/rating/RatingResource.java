@@ -30,12 +30,17 @@ public class RatingResource {
   @Inject
   private MemberUCC memberUCC;
 
-  private Json<RatingDTO> json = new Json<>(RatingDTO.class);
+  private final Json<RatingDTO> json = new Json<>(RatingDTO.class);
 
   /////////////////////////////////////////////////////////
   ///////////////////////GET///////////////////////////////
   /////////////////////////////////////////////////////////
 
+  /**
+   * Get all ratings form a specific member identified by its id.
+   * @param idMember the member's id to get ratings
+   * @return the list of member's ratings
+   */
   @GET
   @Path("all/{idMember}")
   @Produces(MediaType.APPLICATION_JSON)
@@ -57,6 +62,11 @@ public class RatingResource {
   /////////////////////////////////////////////////////////
   ///////////////////////POST//////////////////////////////
   /////////////////////////////////////////////////////////
+
+  /**
+   * Add an evaluation to the item identified by its id.
+   * @param ratingDTO the rating to add
+   */
   @POST
   @Path("")
   @Consumes(MediaType.APPLICATION_JSON)

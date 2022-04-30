@@ -36,6 +36,8 @@ public class ItemImpl implements Item {
   private List<Offer> offerList = new ArrayList<>();
   @JsonView(Views.Public.class)
   private Offer lastOffer;
+  @JsonView(Views.Public.class)
+  private int version;
 
   public ItemImpl() {
   }
@@ -138,6 +140,16 @@ public class ItemImpl implements Item {
   }
 
   @Override
+  public int getVersion() {
+    return version;
+  }
+
+  @Override
+  public void setVersion(int version) {
+    this.version = version;
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -159,13 +171,13 @@ public class ItemImpl implements Item {
     return "Item{"
         + "id=" + id
         + ", itemDescription='" + itemDescription + '\''
-        + ", idItemType='" + itemType + '\''
+        + ", itemType='" + itemType + '\''
         + ", member='" + member + '\''
         + ", photo='" + photo + '\''
         + ", title=" + title
         + ", offerStatus='" + offerStatus + '\''
         + ", offerList" + offerList
-        + ", lastOfferDate='" + lastOffer + '\''
+        + ", lastOffer='" + lastOffer + '\''
         + '}';
   }
 }

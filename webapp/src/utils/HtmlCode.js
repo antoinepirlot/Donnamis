@@ -7,10 +7,10 @@ import {Redirect} from "../Components/Router/Router";
 import {openModal} from "./Modals";
 
 function getShowItemsHtml(items) {
-   let html = "";
-   html += `<div id="all-item-cards">`
-   for (const item of items) {
-     html += `
+  let html = "";
+  html += `<div id="all-item-cards">`
+  for (const item of items) {
+    html += `
       <div class="col-sm-3" id="item-card" >
         <div class="card">
         <img src="data:image/png;base64,${item.photo}" id="smallItemImage" class="card-img-top" alt="Card image cap">
@@ -24,16 +24,16 @@ function getShowItemsHtml(items) {
         </div>
       </div>
     `;
-   }
-   html += `</div>`
-   return html;
- }
+  }
+  html += `</div>`
+  return html;
+}
 
 function getAssignedItemHtml(item) {
   return `
     <div class="col-sm-3" id="item-card" >
       <div class="card">
-      <img class="card-img-top" alt="Card image cap">
+      <img src="data:image/png;base64,${item.photo}" class="card-img-top" alt="Card image cap">
         <div class="card-body">
           <h5 class="card-title">${item.title}</h5>
           <p class="card-text">${item.itemDescription}</p>
@@ -50,7 +50,7 @@ function getGivenItemHtml(item, ratings) {
   let html = `
     <div class="col-sm-3" id="item-card" >
       <div class="card">
-      <img class="card-img-top" alt="Card image cap">
+        <img src="data:image/png;base64,${item.photo}" class="card-img-top" alt="Card image cap">
         <div class="card-body">
           <h5 class="card-title">${item.title}</h5>
           <p class="card-text">${item.itemDescription}</p>

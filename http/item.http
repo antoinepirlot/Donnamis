@@ -11,7 +11,7 @@ GET {{baseUrl}}/items/1
 Authorization: {{token}}
 
 ### Offer an item for the first time
-POST {{baseUrl}}/items/offer
+POST {{baseUrl}}/items
 Authorization: {{token}}
 Content-Type: application/json
 

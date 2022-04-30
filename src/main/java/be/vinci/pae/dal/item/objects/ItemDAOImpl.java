@@ -34,14 +34,17 @@ public class ItemDAOImpl implements ItemDAO {
         + "                i.item_description, "
         + "                i.photo, "
         + "                i.title, "
+        + "                i.version_item, "
         + "                i.offer_status, "
         + "                i.last_offer_date, "
         + "                it.id_type, "
-        + "                it.item_type, "
+        + "                it.item_type,"
+        + "                it.version_items_type, "
         + "                m.id_member, "
         + "                m.username, "
         + "                m.last_name, "
-        + "                m.first_name "
+        + "                m.first_name, "
+        + "                m.version_member "
         + "FROM project_pae.items i, "
         + "     project_pae.items_types it, "
         + "     project_pae.members m "
@@ -70,8 +73,9 @@ public class ItemDAOImpl implements ItemDAO {
     String query = ""
         + "SELECT i.id_item, i.item_description, i.photo, i.title, i.offer_status, "
         + "       i.last_offer_date, "
-        + "       it.id_type, it.item_type, i.last_offer_date, "
-        + "       m.id_member, m.username, m.last_name, m.first_name "
+        + "       it.id_type, it.item_type, it.version_items_type, "
+        + "       i.last_offer_date, i.version_item, "
+        + "       m.id_member, m.username, m.last_name, m.first_name, m.version_member "
         + "FROM project_pae.items i, "
         + "     project_pae.items_types it, "
         + "     project_pae.members m "
@@ -98,8 +102,8 @@ public class ItemDAOImpl implements ItemDAO {
         + "WHERE item_type = ? ";
     String query =
         "INSERT INTO project_pae.items (item_description, id_type, id_member, photo, "
-            + "title, offer_status, last_offer_date) "
-            + "VALUES (?, (" + selectIdTypeQuery + "), ?, ?, ?, ?, ? ) "
+            + "title, offer_status, last_offer_date, version_item) "
+            + "VALUES (?, (" + selectIdTypeQuery + "), ?, ?, ?, ?, ?, 1) "
             + "RETURNING id_item;";
     try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
       //Select query
@@ -123,7 +127,7 @@ public class ItemDAOImpl implements ItemDAO {
   @Override
   public ItemDTO cancelItem(int id) {
     String query = "UPDATE project_pae.items "
-        + "SET offer_status = 'cancelled' "
+        + "SET offer_status = 'cancelled', version_item = version_item + 1 "
         + "WHERE id_item = ? "
         + "RETURNING *";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
@@ -146,18 +150,29 @@ public class ItemDAOImpl implements ItemDAO {
         + "WHERE id_item = ? "
         + "ORDER BY date DESC "
         + "LIMIT 1)";
-    String query = "UPDATE project_pae.items SET item_description = ?, photo = ? "
+    String query = "UPDATE project_pae.items SET item_description = ?, ";
+    if (itemDTO.getPhoto() != null && !itemDTO.getPhoto().isBlank()) {
+      query += "photo = ?, ";
+    }
+    query += "version_item = version_item + 1 "
         + "WHERE id_item = ?; "
         + "UPDATE project_pae.offers "
-        + "SET time_slot = ? "
-        + "WHERE id_item = "+selectLastIdOffer+";";
+        + "SET time_slot = ?, version_offer = version_offer + 1 "
+        + "WHERE id_item = " + selectLastIdOffer + ";";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setString(1, itemDTO.getItemDescription());
-      preparedStatement.setString(2, itemDTO.getPhoto());
-      preparedStatement.setInt(3, itemDTO.getId());
-      preparedStatement.setString(4, StringEscapeUtils
-          .escapeHtml4(itemDTO.getLastOffer().getTimeSlot()));
-      preparedStatement.setInt(5, itemDTO.getId());
+      if (itemDTO.getPhoto() == null || itemDTO.getPhoto().isBlank()) {
+        preparedStatement.setInt(2, itemDTO.getId());
+        preparedStatement.setString(3, StringEscapeUtils
+            .escapeHtml4(itemDTO.getLastOffer().getTimeSlot()));
+        preparedStatement.setInt(4, itemDTO.getId());
+      } else {
+        preparedStatement.setString(2, itemDTO.getPhoto());
+        preparedStatement.setInt(3, itemDTO.getId());
+        preparedStatement.setString(4, StringEscapeUtils
+            .escapeHtml4(itemDTO.getLastOffer().getTimeSlot()));
+        preparedStatement.setInt(5, itemDTO.getId());
+      }
       return preparedStatement.executeUpdate() != 0;
     } catch (SQLException e) {
       throw new FatalException(e);
@@ -172,13 +187,16 @@ public class ItemDAOImpl implements ItemDAO {
         + "                i.photo, "
         + "                i.title, "
         + "                i.offer_status, "
-        + "                i.last_offer_date, "
+        + "                i.last_offer_date,"
+        + "                i.version_item, "
         + "                it.id_type, "
-        + "                it.item_type, "
+        + "                it.item_type,"
+        + "                it.version_items_type, "
         + "                m.id_member, "
         + "                m.username, "
         + "                m.last_name, "
-        + "                m.first_name "
+        + "                m.first_name, "
+        + "                m.version_member "
         + "FROM project_pae.items i, "
         + "     project_pae.items_types it, "
         + "     project_pae.members m "
@@ -208,13 +226,16 @@ public class ItemDAOImpl implements ItemDAO {
         + "                i.photo, "
         + "                i.title, "
         + "                i.offer_status, "
-        + "                i.last_offer_date, "
+        + "                i.last_offer_date,"
+        + "                i.version_item, "
         + "                it.id_type, "
-        + "                it.item_type, "
+        + "                it.item_type,"
+        + "                it.version_items_type, "
         + "                m.id_member, "
         + "                m.username, "
         + "                m.last_name, "
-        + "                m.first_name "
+        + "                m.first_name,"
+        + "                m.version_member "
         + "FROM project_pae.items i, "
         + "     project_pae.members m, "
         + "     project_pae.items_types it, "
@@ -300,13 +321,16 @@ public class ItemDAOImpl implements ItemDAO {
         + "                i.photo, "
         + "                i.title, "
         + "                i.offer_status, "
-        + "                i.last_offer_date, "
+        + "                i.last_offer_date,"
+        + "                i.version_item, "
         + "                it.id_type, "
-        + "                it.item_type, "
+        + "                it.item_type,"
+        + "                it.version_items_type, "
         + "                m.id_member, "
         + "                m.username, "
         + "                m.last_name, "
-        + "                m.first_name "
+        + "                m.first_name, "
+        + "                m.version_member "
         + "FROM project_pae.items i, "
         + "     project_pae.items_types it, "
         + "     project_pae.members m "
@@ -341,8 +365,10 @@ public class ItemDAOImpl implements ItemDAO {
         + "       i.title, "
         + "       i.offer_status, "
         + "       i.last_offer_date, "
+        + "       i.version_item, "
         + "       it.id_type, "
-        + "       it.item_type "
+        + "       it.item_type,"
+        + "       it.version_items_type "
         + "FROM project_pae.items i, "
         + "     project_pae.items_types it, "
         + "     project_pae.recipients r "
@@ -382,12 +408,12 @@ public class ItemDAOImpl implements ItemDAO {
         + "     project_pae.recipients r "
         + "WHERE r.id_item = i.id_item "
         + "  AND r.received = ? "
-        + "  AND i.id_member = ?";
+        + "  AND i.id_item = ?";
     String query = "UPDATE project_pae.items "
-        + "SET offer_status = ? "
+        + "SET offer_status = ?, version_item = version_item + 1 "
         + "WHERE id_item = ?; "
         + "UPDATE project_pae.recipients "
-        + "SET received = ? "
+        + "SET received = ?, version_recipient = version_recipient + 1 "
         + "WHERE id_member = (" + selectIdMember + ") "
         + "  AND id_item = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
@@ -409,7 +435,7 @@ public class ItemDAOImpl implements ItemDAO {
   @Override
   public boolean addPhoto(int idItem, String photoName) {
     String query = "UPDATE project_pae.items "
-        + "SET photo = ? "
+        + "SET photo = ?, version_item = version_item + 1 "
         + "WHERE id_item = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setString(1, photoName);
