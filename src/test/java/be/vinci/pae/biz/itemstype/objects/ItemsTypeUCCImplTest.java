@@ -52,6 +52,10 @@ class ItemsTypeUCCImplTest {
     Mockito.when(this.itemsTypeDAO.exists(this.itemsTypeDTO)).thenReturn(exists);
   }
 
+  private void setAddItemsTypeReturnedValue(boolean work) {
+    Mockito.when(this.itemsTypeDAO.addItemsType(this.itemsTypeDTO)).thenReturn(work);
+  }
+
   private void setErrorDALServiceStart() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).start();
@@ -117,7 +121,31 @@ class ItemsTypeUCCImplTest {
     assertThrows(FatalException.class, () -> this.itemsTypeUCC.exists(this.itemsTypeDTO));
   }
 
+  @DisplayName("Test add items type working as expected")
   @Test
-  void addItemsType() {
+  void testAddItemsTypeWorkingAsExpected() {
+    this.setAddItemsTypeReturnedValue(true);
+    assertTrue(this.itemsTypeUCC.addItemsType(this.itemsTypeDTO));
+  }
+
+  @DisplayName("Test add items type don't add")
+  @Test
+  void testAddItemsTypeNotAdded() {
+    this.setAddItemsTypeReturnedValue(false);
+    assertFalse(this.itemsTypeUCC.addItemsType(this.itemsTypeDTO));
+  }
+
+  @DisplayName("Test add items type with start throwing sql exception")
+  @Test
+  void testAddItemsTypeWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemsTypeUCC.addItemsType(this.itemsTypeDTO));
+  }
+
+  @DisplayName("Test add items type with commit throwing sql exception")
+  @Test
+  void testAddItemsTypeWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.itemsTypeUCC.addItemsType(this.itemsTypeDTO));
   }
 }
