@@ -95,6 +95,10 @@ class MemberUCCImplTest {
     Mockito.when(this.memberDAO.memberExist(null, idMember)).thenReturn(exists);
   }
 
+  private void setRegisterReturnedValue(boolean registered) {
+    Mockito.when(this.memberDAO.register(this.memberDTO)).thenReturn(registered);
+  }
+
   private void setErrorDALServiceStart() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).start();
@@ -373,5 +377,33 @@ class MemberUCCImplTest {
     this.setErrorDALServiceCommit();
     configureMemberDTO("denied", wrongPassword);
     assertThrows(FatalException.class, () -> memberUCC.login(memberToLogIn));
+  }
+
+  @DisplayName("Test register working as expected")
+  @Test
+  void testRegisterWorkingAsExpected() {
+    this.setRegisterReturnedValue(true);
+    assertTrue(this.memberUCC.register(this.memberDTO));
+  }
+
+  @DisplayName("Test register failed")
+  @Test
+  void testRegisterFailed() {
+    this.setRegisterReturnedValue(false);
+    assertFalse(this.memberUCC.register(this.memberDTO));
+  }
+
+  @DisplayName("Test register with start throwing sql exception")
+  @Test
+  void testRegisterWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.memberUCC.register(this.memberDTO));
+  }
+
+  @DisplayName("Test register with commit throwing sql exception")
+  @Test
+  void testRegisterWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.memberUCC.register(this.memberDTO));
   }
 }
