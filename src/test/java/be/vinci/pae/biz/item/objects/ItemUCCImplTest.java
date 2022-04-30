@@ -83,6 +83,14 @@ class ItemUCCImplTest {
     Mockito.when(this.itemDAO.modifyItem(this.itemDTO)).thenReturn(modifyReturnedValue);
   }
 
+  private void setGetOneItemOfAMemberReturnedValue(int idMember) {
+    if (idMember >= 1) {
+      Mockito.when(this.itemDAO.getAllItemsOfAMember(idMember)).thenReturn(this.itemDTOList);
+    } else {
+      Mockito.when(this.itemDAO.getAllItemsOfAMember(idMember)).thenReturn(null);
+    }
+  }
+
   private void setErrrorDALServiceStart() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).start();
@@ -261,8 +269,32 @@ class ItemUCCImplTest {
     assertThrows(FatalException.class, () -> this.itemUCC.modifyItem(this.itemDTO));
   }
 
+  @DisplayName("Test get all items of a member with good id")
   @Test
-  void getAllItemsOfAMember() {
+  void testGetAllItemsOfAMemberWithGoodId() {
+    this.setGetOneItemOfAMemberReturnedValue(5);
+    assertEquals(this.itemDTOList, this.itemUCC.getAllItemsOfAMember(5));
+  }
+
+  @DisplayName("Test get all items of a member with wrong id")
+  @Test
+  void testGetAllItemsOfAMemberWithWrongId() {
+    this.setGetOneItemOfAMemberReturnedValue(-1);
+    assertNull(this.itemUCC.getAllItemsOfAMember(-1));
+  }
+
+  @DisplayName("Test get all items of a member with start throwing sql exception")
+  @Test
+  void testGetAllItemsOfAMemberWithStartThrowingSQLException() {
+    this.setErrrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.getAllItemsOfAMember(5));
+  }
+
+  @DisplayName("Test get all items of a member with commit throwing sql exception")
+  @Test
+  void testGetAllItemsOfAMemberWithCommitId() {
+    this.setErrrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.itemUCC.getAllItemsOfAMember(5));
   }
 
   @Test
