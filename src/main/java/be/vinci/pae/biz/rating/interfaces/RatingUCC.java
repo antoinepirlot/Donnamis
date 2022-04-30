@@ -21,7 +21,7 @@ public interface RatingUCC {
   boolean evaluate(RatingDTO ratingDTO);
 
   /**
-   * Get all ratings of a specified member
+   * Get all ratings of a specified member.
    *
    * @param idMember the member's id
    * @return the list of member's ratings

@@ -11,7 +11,7 @@ public interface RatingDAO {
   boolean evaluate(RatingDTO ratingDTO) throws SQLException;
 
   /**
-   * Get all ratings of a specified member
+   * Get all ratings of a specified member.
    *
    * @param idMember the member's id
    * @return the list of member's ratings

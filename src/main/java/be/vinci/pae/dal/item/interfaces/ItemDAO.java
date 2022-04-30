@@ -86,7 +86,7 @@ public interface ItemDAO {
   List<ItemDTO> getMemberReceivedItems(int idMember);
 
   /**
-   * Add photo name to the database for the idItem
+   * Add photo name to the database for the idItem.
    *
    * @param idItem    the item's id
    * @param photoName the photo's name
