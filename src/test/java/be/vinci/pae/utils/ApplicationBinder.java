@@ -10,6 +10,8 @@ import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.biz.member.objects.MemberUCCImpl;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.biz.offer.objects.OfferUCCImpl;
+import be.vinci.pae.biz.rating.interfaces.RatingUCC;
+import be.vinci.pae.biz.rating.objects.RatingUCCImpl;
 import be.vinci.pae.biz.recipient.interfaces.RecipientUCC;
 import be.vinci.pae.biz.recipient.objects.RecipientUCCImpl;
 import be.vinci.pae.dal.interest.interfaces.InterestDAO;
@@ -22,6 +24,8 @@ import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.member.objects.MemberDAOImpl;
 import be.vinci.pae.dal.offer.interfaces.OfferDAO;
 import be.vinci.pae.dal.offer.objects.OfferDAOImpl;
+import be.vinci.pae.dal.rating.interfaces.RatingDAO;
+import be.vinci.pae.dal.rating.objects.RatingDAOImpl;
 import be.vinci.pae.dal.recipient.interfaces.RecipientDAO;
 import be.vinci.pae.dal.recipient.objects.RecipientDAOImpl;
 import be.vinci.pae.dal.services.interfaces.DALBackendService;
@@ -62,5 +66,9 @@ public class ApplicationBinder extends AbstractBinder {
     //RecipientUCC tests
     bind(RecipientUCCImpl.class).to(RecipientUCC.class).in(Singleton.class);
     bind(Mockito.mock(RecipientDAOImpl.class)).to(RecipientDAO.class);
+
+    //RatingUCC tests
+    bind(RatingUCCImpl.class).to(RatingUCC.class).in(Singleton.class);
+    bind(Mockito.mock(RatingDAOImpl.class)).to(RatingDAO.class);
   }
 }

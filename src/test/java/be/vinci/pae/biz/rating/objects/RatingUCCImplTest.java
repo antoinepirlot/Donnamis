@@ -1,5 +1,6 @@
 package be.vinci.pae.biz.rating.objects;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -11,6 +12,8 @@ import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.exceptions.FatalException;
 import be.vinci.pae.utils.ApplicationBinder;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +33,8 @@ class RatingUCCImplTest {
 
   private final RatingDTO ratingDTO = new RatingImpl();
 
+  private final List<RatingDTO> ratingDTOList = new ArrayList<>();
+
 
   @BeforeEach
   void setUp() {
@@ -45,6 +50,10 @@ class RatingUCCImplTest {
     Mockito.when(this.ratingDAO.evaluate(this.ratingDTO)).thenReturn(evaluated);
   }
 
+  private void setRatingExistReturnedValue(boolean evaluated) {
+    Mockito.when(this.ratingDAO.ratingExist(this.ratingDTO)).thenReturn(evaluated);
+  }
+
   private void setErrorDALServiceStart() {
     try {
       Mockito.doThrow(new SQLException()).when(dalServices).start();
@@ -58,6 +67,14 @@ class RatingUCCImplTest {
       Mockito.doThrow(new SQLException()).when(dalServices).commit();
     } catch (SQLException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  private void setGetAllRatingsOfMembre(int idMember) {
+    if (idMember >= 1) {
+      Mockito.when(this.ratingDAO.getAllRatingsOfMember(idMember)).thenReturn(this.ratingDTOList);
+    } else {
+      Mockito.when(this.ratingDAO.getAllRatingsOfMember(idMember)).thenReturn(null);
     }
   }
 
@@ -90,13 +107,55 @@ class RatingUCCImplTest {
     assertThrows(FatalException.class, () -> this.ratingUCC.evaluate(this.ratingDTO));
   }
 
+  @DisplayName("Test get all rating as expected")
   @Test
-  void getAllRatingsOfMember() {
-
+  void testGetAllRatingsOfMemberAsExpected() {
+    this.setGetAllRatingsOfMembre(5);
+    assertEquals(this.ratingDTOList, this.ratingUCC.getAllRatingsOfMember(5));
   }
 
+  @DisplayName("Test get all rating with start throwing SQLException")
   @Test
-  void ratingExist() {
+  void testGetAllRatingsOfMemberWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () ->  this.ratingUCC.getAllRatingsOfMember(5));
+  }
+
+  @DisplayName("Test get all rating with commit throwing SQLException")
+  @Test
+  void testGetAllRatingsOfMemberWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.ratingUCC.getAllRatingsOfMember(5));
+  }
+
+
+  @DisplayName("Test rating exist")
+  @Test
+  void testRatingExist() {
+    this.setRatingExistReturnedValue(true);
+    assertTrue(this.ratingUCC.ratingExist(this.ratingDTO));
+  }
+
+
+  @DisplayName("Test rating not exist")
+  @Test
+  void testRatingNotExist() {
+    this.setRatingExistReturnedValue(false);
+    assertFalse(this.ratingUCC.ratingExist(this.ratingDTO));
+  }
+
+  @DisplayName("Test evaluate with start throwing SQL exception")
+  @Test
+  void testRatingExistWithStartThrowingSQLException() {
+    this.setErrorDALServiceStart();
+    assertThrows(FatalException.class, () -> this.ratingUCC.ratingExist(this.ratingDTO));
+  }
+
+  @DisplayName("Test evaluate with commit throwing SQL exception")
+  @Test
+  void testExistWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
+    assertThrows(FatalException.class, () -> this.ratingUCC.ratingExist(this.ratingDTO));
   }
 
 }
