@@ -252,7 +252,8 @@ VALUES ('Scie sur perche Gardena', 7, 5, NULL, 'Scie', 'donated', '28-03-2022', 
 
 INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title, offer_status,
                                last_offer_date, version_item)
-VALUES ('Table jardin et deux chaises en bois', 8, 5, 'Table-jardin.jpg', 'Scie', 'donated',
+VALUES ('Table jardin et deux chaises en bois', 8, 5, 'Table-jardin.jpg', 'Table de jardin',
+        'donated',
         '29-03-2022', 1);
 
 INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title, offer_status,
