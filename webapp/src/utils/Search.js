@@ -1,4 +1,4 @@
-import {getShowItemsHtml} from "./HtmlCode";
+import {getMyItemsHtml, getShowItemsHtml} from "./HtmlCode";
 
 const searchBarHtml = `
   <input class="form-control me-2 w-75 d-inline-block" id="searchInput" type="search" placeholder="Rechercher un objet" aria-label="Rechercher"> 
@@ -9,8 +9,9 @@ const searchBarHtml = `
  * @param items the list of items
  * @param searchBarId the search bar id start with "#"
  * @param contentId the emplacement where items are shown start with "#"
+ * @param pageName the page's name to show items
  */
-function createItemsSearchBar(items, searchBarId, contentId) {
+function createItemsSearchBar(items, searchBarId, contentId, pageName) {
   const searchBar = document.querySelector(searchBarId);
   searchBar.innerHTML = searchBarHtml;
   const searchInput = document.querySelector("#searchInput");
@@ -32,7 +33,11 @@ function createItemsSearchBar(items, searchBarId, contentId) {
     if (result.length < 1) {
       tbody.innerHTML = `<h1 class="display-6" id="SearchErrorMessage">Il n'y a aucun résultat pour cette recherche</h1>`;
     } else {
-      tbody.innerHTML = getShowItemsHtml(result);
+      if (pageName === "homePage") {
+        tbody.innerHTML = getShowItemsHtml(result);
+      } else if (pageName === "myItemsPage") {
+        tbody.innerHTML = getMyItemsHtml(result);
+      }
     }
   });
 }

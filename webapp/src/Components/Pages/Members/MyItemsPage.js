@@ -11,10 +11,14 @@ import {getObject, getPayload} from "../../../utils/session";
 import {showError} from "../../../utils/ShowError";
 import {openModal} from "../../../utils/Modals";
 import {Redirect} from "../../Router/Router";
+import {createItemsSearchBar} from "../../../utils/Search";
+import {getMyItemsHtml} from "../../../utils/HtmlCode";
 
 const myItemsPageHtml = `
   <div>
     <h1 class="display-3" id="all_items_title">Mes objets</h1>
+    <div id="searchBarMyItemsPage">
+    </div>
     <div class="row" id="myItems">
     </div>
   </div>
@@ -69,55 +73,14 @@ const MyItemsPage = async () => {
     showError(message, "info", errorMessageMyItemsPage);
     return;
   }
-  await showButtons(items);
-};
-
-async function showButtons(items) {
   const myItemsDiv = document.querySelector("#myItems");
-  myItemsDiv.innerHTML = "";
-  for (const item of items) {
-    let html = `
-      <div class="col-sm-3" id="item-card" >
-        <div class="card">
-        <img src="data:image/png;base64,${item.photo}" class="card-img-top" alt="Card image cap">
-          <div class="card-body">
-            <h5 class="card-title">${item.title}</h5>
-            <p class="card-text">${item.itemDescription}</p>
-            <div id="itemButtons">
-              <a href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir les détails</a>
+  myItemsDiv.innerHTML = getMyItemsHtml(items);
+  showButtons(items);
+  createItemsSearchBar(items, "#searchBarMyItemsPage", "#myItems",
+      "myItemsPage");
+}
 
-    `;
-    const cancelButtonHtml = `<td><button id="itemCancelled" class="btn btn-danger" value="${item.id}">Annuler l'offre</button></td>`;
-    const offerAgainButtonHtml = `<td><button id="offerAgainButton" class="btn btn-primary" value="${item.id}">Offrir à nouveau</button></td>`;
-    const markReceivedButtonHtml = `<td><button id="markReceivedButton" class="btn btn-primary" value="${item.id}">Objet donné</button></td>`;
-    const chooseRecipientButtonHtml = `<td><button id="chooseRecipientButton" class="btn btn-primary" value="${item.id}">Choisir un receveur</button></td>`;
-    const markNotGivenButtonHtml = `<td><button id="markNotGivenButton" class="btn btn-primary" value="${item.id}">Objet non récupéré</button></td>`;
-    if (item.offerStatus === "donated") {
-      html += `
-        ${offerAgainButtonHtml}
-        ${chooseRecipientButtonHtml}
-        ${cancelButtonHtml}
-      `;
-    } else if (item.offerStatus === "cancelled") {
-      html += `
-        ${offerAgainButtonHtml}  
-      `;
-    } else if (item.offerStatus === "assigned") {
-      html += `
-        ${markReceivedButtonHtml}
-        ${markNotGivenButtonHtml}
-        ${cancelButtonHtml}
-      `;
-    }
-    html += `
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-    myItemsDiv.innerHTML += html;
-  }
-
+function showButtons(items) {
   /*************/
   /*Offer again*/
   /*************/
@@ -127,7 +90,8 @@ async function showButtons(items) {
       idItem = offerAgainButton.value;
       openModal("#myItemsPageModal", "#myItemsPageModalCloseButton");
       const item = await getItem(idItem);
-      const timeSlotTextArea = document.querySelector("#timeSlotFormOfferAgain");
+      const timeSlotTextArea = document.querySelector(
+          "#timeSlotFormOfferAgain");
       timeSlotTextArea.innerHTML = item.offerList[0].timeSlot;
       const offerAgainForm = document.querySelector("#offerAgainForm");
       offerAgainForm.addEventListener("submit", await offerAgain);

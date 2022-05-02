@@ -70,6 +70,52 @@ function getGivenItemHtml(item, ratings) {
   return html;
 }
 
+function getMyItemsHtml(items) {
+  let html = "";
+  for (const item of items) {
+    html += `
+      <div class="col-sm-3" id="item-card" >
+        <div class="card">
+        <img src="data:image/png;base64,${item.photo}" class="card-img-top" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">${item.title}</h5>
+            <p class="card-text">${item.itemDescription}</p>
+            <div id="itemButtons">
+              <a href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir les détails</a>
+
+    `;
+    const cancelButtonHtml = `<td><button id="itemCancelled" class="btn btn-danger" value="${item.id}">Annuler l'offre</button></td>`;
+    const offerAgainButtonHtml = `<td><button id="offerAgainButton" class="btn btn-primary" value="${item.id}">Offrir à nouveau</button></td>`;
+    const markReceivedButtonHtml = `<td><button id="markReceivedButton" class="btn btn-primary" value="${item.id}">Objet donné</button></td>`;
+    const chooseRecipientButtonHtml = `<td><button id="chooseRecipientButton" class="btn btn-primary" value="${item.id}">Choisir un receveur</button></td>`;
+    const markNotGivenButtonHtml = `<td><button id="markNotGivenButton" class="btn btn-primary" value="${item.id}">Objet non récupéré</button></td>`;
+    if (item.offerStatus === "donated") {
+      html += `
+        ${offerAgainButtonHtml}
+        ${chooseRecipientButtonHtml}
+        ${cancelButtonHtml}
+      `;
+    } else if (item.offerStatus === "cancelled") {
+      html += `
+        ${offerAgainButtonHtml}  
+      `;
+    } else if (item.offerStatus === "assigned") {
+      html += `
+        ${markReceivedButtonHtml}
+        ${markNotGivenButtonHtml}
+        ${cancelButtonHtml}
+      `;
+    }
+    html += `
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  return html;
+}
+
 function checkIfMemberLoggedIn(modalId, closeModalId) {
   const itemButtons = document.querySelectorAll("#itemButtons");
   itemButtons.forEach(itemButton => {
@@ -141,5 +187,6 @@ export {
   checkIfMemberLoggedIn,
   showItemsTypes,
   getAssignedItemHtml,
-  getGivenItemHtml
+  getGivenItemHtml,
+  getMyItemsHtml
 }

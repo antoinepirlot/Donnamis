@@ -37,7 +37,8 @@ const HomePage = async () => {
   //Searching an item
   //Listener pour chaque frappe au clavier
   if (getPayload()) {
-    createItemsSearchBar(items, "#searchBarHomePage", "#all_offered_items");
+    createItemsSearchBar(items, "#searchBarHomePage", "#all_offered_items",
+        "homePage");
   }
 }
 
