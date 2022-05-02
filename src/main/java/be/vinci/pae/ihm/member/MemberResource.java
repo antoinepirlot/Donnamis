@@ -226,6 +226,32 @@ public class MemberResource {
   }
 
   /**
+   * Asks UCC to set the state of the member to unavailable.
+   *
+   * @param memberDTO the member to set unavailable
+   */
+  @PUT
+  @Path("unavailable")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public void setMemberUnavailable(MemberDTO memberDTO) {
+    if (memberDTO == null || memberDTO.getId() < 1) {
+      throw new WrongBodyDataException("Error Member Sent");
+    }
+    if (memberUCC.getOneMember(memberDTO.getId()) == null) {
+      throw new ObjectNotFoundException("Any member with the id: " + memberDTO.getId());
+    }
+
+    if (memberDTO.getVersion() != memberUCC.getOneMember(memberDTO.getId()).getVersion()) {
+      throw new FatalException("Error with version");
+    }
+
+    if (!memberUCC.setMemberUnavailable(memberDTO)) {
+      throw new FatalException("An unexpected error happened while set member unavaible.");
+    }
+  }
+
+  /**
    * Asks UCC to deny the member's inscription.
    *
    * @param refusalDTO the refusal information

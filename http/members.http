@@ -74,6 +74,15 @@ Content-Type: application/json
   client.global.set("token", response.body.token);
 %}
 
+### Set the state of the member to unavailable
+PUT {{baseUrl}}/members/unavailable
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "id": 3,
+  "version": 1
+}
 
 ### Modify Member
 PUT {{baseUrl}}/members/modify

@@ -4,22 +4,22 @@ CREATE SCHEMA project_pae;
 -------------------CREATE TABLES--------------------------
 CREATE TABLE project_pae.members
 (
-    id_member  SERIAL PRIMARY KEY,
-    username   VARCHAR(50)  NOT NULL,
-    password   CHAR(60)     NOT NULL,
-    last_name  VARCHAR(100) NOT NULL,
-    first_name VARCHAR(100) NOT NULL,
-    is_admin   BOOLEAN      NOT NULL,
-    state      VARCHAR(10)  NOT NULL,
-    phone      VARCHAR(15),
-    version_member INT NOT NULL
+    id_member      SERIAL PRIMARY KEY,
+    username       VARCHAR(50)  NOT NULL,
+    password       CHAR(60)     NOT NULL,
+    last_name      VARCHAR(100) NOT NULL,
+    first_name     VARCHAR(100) NOT NULL,
+    is_admin       BOOLEAN      NOT NULL,
+    state          VARCHAR(11)  NOT NULL,
+    phone          VARCHAR(15),
+    version_member INT          NOT NULL
 );
 
 CREATE TABLE project_pae.items_types
 (
-    id_type   SERIAL PRIMARY KEY,
-    item_type VARCHAR(50) NOT NULL,
-    version_items_type INT NOT NULL
+    id_type            SERIAL PRIMARY KEY,
+    item_type          VARCHAR(50) NOT NULL,
+    version_items_type INT         NOT NULL
 );
 
 CREATE TABLE project_pae.addresses
@@ -27,7 +27,7 @@ CREATE TABLE project_pae.addresses
     id_address      SERIAL PRIMARY KEY,
     street          VARCHAR(150) NOT NULL,
     building_number VARCHAR(20)  NOT NULL,
-    unit_number     VARCHAR(10)  NULL,
+    unit_number     VARCHAR(10) NULL,
     postcode        VARCHAR(10)  NOT NULL,
     commune         VARCHAR(100) NOT NULL,
     id_member       INTEGER      NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE project_pae.items
     photo            VARCHAR(500) NULL,
     title            VARCHAR(50)  NOT NULL,
     offer_status     VARCHAR(10)  NOT NULL,
-    last_offer_date  TIMESTAMP    NULL,
+    last_offer_date  TIMESTAMP NULL,
     version_item     INT          NOT NULL,
     FOREIGN KEY (id_type) REFERENCES project_pae.items_types (id_type),
     FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
