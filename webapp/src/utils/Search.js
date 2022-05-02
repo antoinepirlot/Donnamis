@@ -22,7 +22,8 @@ function createItemsSearchBar(items, searchBarId, contentId) {
     const input = searchInput.value.toLowerCase().trim();
     const he = require("he");
     const result = items.filter(
-        item => he.decode(item.member.firstName).toLowerCase().includes(input)
+        item => he.decode(item.title).toLowerCase().includes(input)
+            || he.decode(item.member.firstName).toLowerCase().includes(input)
             || he.decode(item.member.lastName).toLowerCase().includes(input)
             || he.decode(item.itemType.itemType).toLowerCase().includes(input)
             || he.decode(item.offerStatus).toLowerCase().includes(input)
