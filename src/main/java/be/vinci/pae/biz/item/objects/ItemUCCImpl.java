@@ -182,6 +182,19 @@ public class ItemUCCImpl implements ItemUCC {
     }
   }
 
+  @Override
+  public List<ItemDTO> getAllPublicItems() {
+    try {
+      this.dalServices.start();
+      List<ItemDTO> itemDTOList = this.itemDAO.getAllPublicItems();
+      this.dalServices.commit();
+      return itemDTOList;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw new FatalException(e);
+    }
+  }
+
   /////////////////////////////////////////////////////////
   ///////////////////////UTILS/////////////////////////////
   /////////////////////////////////////////////////////////

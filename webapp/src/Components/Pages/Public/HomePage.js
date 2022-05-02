@@ -1,4 +1,4 @@
-import {getAllItemsByOfferStatus} from "../../../utils/BackEndRequests";
+import {getAllPublicItems} from "../../../utils/BackEndRequests";
 import {checkIfMemberLoggedIn, getShowItemsHtml} from "../../../utils/HtmlCode";
 import {getPayload} from "../../../utils/session";
 import {createItemsSearchBar} from "../../../utils/Search";
@@ -29,7 +29,7 @@ const tableHtml = `
 const HomePage = async () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtml;
-  const items = await getAllItemsByOfferStatus("donated");
+  const items = await getAllPublicItems();
   const tbody = document.querySelector("#all_offered_items");
   tbody.innerHTML = getShowItemsHtml(items);
   checkIfMemberLoggedIn("#homePageModal", "#homePageModalCloseButton");

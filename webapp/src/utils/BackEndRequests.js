@@ -157,7 +157,7 @@ async function denyMember(refusal) {
   }
 }
 
-async function getAllItemsByOfferStatus(offerStatus) {
+async function getAllItems(offerStatus) {
   const request = {
     method: "GET",
     headers: {
@@ -173,6 +173,17 @@ async function getAllItemsByOfferStatus(offerStatus) {
     if (response.status === 401) {
       Redirect("/logout");
     }
+    throw new Error("Erreur lors du fetch");
+  }
+  return await response.json();
+}
+
+async function getAllPublicItems() {
+  const request = {
+    method: "GET"
+  };
+  const response = await fetch("/api/items/all_items/public", request);
+  if (!response.ok) {
     throw new Error("Erreur lors du fetch");
   }
   return await response.json();
@@ -521,7 +532,8 @@ export {
   getOneMember,
   confirmInscription,
   denyMember,
-  getAllItemsByOfferStatus,
+  getAllItems,
+  getAllPublicItems,
   getAssignedItems,
   getMyItems,
   markItemAs,

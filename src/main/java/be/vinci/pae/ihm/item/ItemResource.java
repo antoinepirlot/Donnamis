@@ -97,6 +97,21 @@ public class ItemResource {
     }
   }
 
+  @GET
+  @Path("all_items/public")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<ItemDTO> getAllPublicItems() {
+    try {
+      List<ItemDTO> itemDTOList = this.itemUCC.getAllPublicItems();
+      for (ItemDTO itemDTO : itemDTOList) {
+        itemDTO.setPhoto(transformImageToBase64(itemDTO));
+      }
+      return itemDTOList;
+    } catch (IOException e) {
+      throw new FatalException("Can't get all public items");
+    }
+  }
+
   /**
    * Method that get all items by the member id.
    *

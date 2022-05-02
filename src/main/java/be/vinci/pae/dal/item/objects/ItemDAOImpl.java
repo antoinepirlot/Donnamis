@@ -18,6 +18,7 @@ public class ItemDAOImpl implements ItemDAO {
 
 
   private static final String DEFAULT_OFFER_STATUS = "donated";
+  private static final String ASSIGNED_OFFER_STATUS = "assigned";
   private static final String GIVEN_OFFER_STATUS = "given";
   private static final String WAITING_RECIPIENT_STATUS = "waiting";
   private static final String RECEIVED_RECIPIENT_STATUS = "received";
@@ -390,6 +391,58 @@ public class ItemDAOImpl implements ItemDAO {
     }
   }
 
+  @Override
+  public boolean addPhoto(int idItem, String photoName) {
+    String query = "UPDATE project_pae.items "
+        + "SET photo = ?, version_item = version_item + 1 "
+        + "WHERE id_item = ?;";
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setString(1, photoName);
+      ps.setInt(2, idItem);
+      return ps.executeUpdate() != 0;
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
+  }
+
+  @Override
+  public List<ItemDTO> getAllPublicItems() {
+    String query = "SELECT i.id_item, "
+        + "                i.item_description, "
+        + "                i.photo, "
+        + "                i.title, "
+        + "                i.version_item, "
+        + "                i.offer_status, "
+        + "                i.last_offer_date, "
+        + "                it.id_type, "
+        + "                it.item_type,"
+        + "                it.version_items_type, "
+        + "                m.id_member, "
+        + "                m.username, "
+        + "                m.last_name, "
+        + "                m.first_name, "
+        + "                m.version_member "
+        + "FROM project_pae.items i, "
+        + "     project_pae.items_types it, "
+        + "     project_pae.members m "
+        + "WHERE i.id_type = it.id_type "
+        + "  AND i.id_member = m.id_member "
+        + "  AND (i.offer_status = '" + DEFAULT_OFFER_STATUS + "' "
+        + "       OR i.offer_status = '" + ASSIGNED_OFFER_STATUS + "'"
+        + "  );";
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      try (ResultSet rs = ps.executeQuery()) {
+        List<ItemDTO> itemsDTOList = new ArrayList<>();
+        while (rs.next()) {
+          itemsDTOList.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
+        }
+        return itemsDTOList.isEmpty() ? null : itemsDTOList;
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
+  }
+
   /////////////////////////////////////////////////////////
   ///////////////////////UTILS/////////////////////////////
   /////////////////////////////////////////////////////////
@@ -429,20 +482,6 @@ public class ItemDAOImpl implements ItemDAO {
       ps.setInt(5, itemDTO.getMember().getId());
       ps.setInt(6, itemDTO.getId());
       return ps.executeUpdate() != 0;
-    }
-  }
-
-  @Override
-  public boolean addPhoto(int idItem, String photoName) {
-    String query = "UPDATE project_pae.items "
-        + "SET photo = ?, version_item = version_item + 1 "
-        + "WHERE id_item = ?;";
-    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
-      ps.setString(1, photoName);
-      ps.setInt(2, idItem);
-      return ps.executeUpdate() != 0;
-    } catch (SQLException e) {
-      throw new FatalException(e);
     }
   }
 }
