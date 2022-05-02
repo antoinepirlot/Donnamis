@@ -75,13 +75,14 @@ Content-Type: application/json
 %}
 
 ### Set the state of the member to unavailable
-PUT {{baseUrl}}/members/unavailable
+PUT {{baseUrl}}/members/availability
 Authorization: {{token}}
 Content-Type: application/json
 
 {
   "id": 3,
-  "version": 1
+  "actualState": "unavailable",
+  "version": 3
 }
 
 ### Modify Member

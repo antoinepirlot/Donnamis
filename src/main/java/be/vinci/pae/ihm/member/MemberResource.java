@@ -226,15 +226,15 @@ public class MemberResource {
   }
 
   /**
-   * Asks UCC to set the state of the member to unavailable.
+   * Asks UCC to set the state of the member to unavailable or confirmed.
    *
    * @param memberDTO the member to set unavailable
    */
   @PUT
-  @Path("unavailable")
+  @Path("availability")
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
-  public void setMemberUnavailable(MemberDTO memberDTO) {
+  public void setMemberAvailability(MemberDTO memberDTO) {
     if (memberDTO == null || memberDTO.getId() < 1) {
       throw new WrongBodyDataException("Error Member Sent");
     }
@@ -246,8 +246,8 @@ public class MemberResource {
       throw new FatalException("Error with version");
     }
 
-    if (!memberUCC.setMemberUnavailable(memberDTO)) {
-      throw new FatalException("An unexpected error happened while set member unavaible.");
+    if (!memberUCC.setMemberAvailability(memberDTO)) {
+      throw new FatalException("An unexpected error happened while set member availability.");
     }
   }
 

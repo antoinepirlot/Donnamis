@@ -37,12 +37,12 @@ public interface MemberUCC {
   boolean confirmMember(MemberDTO memberDTO);
 
   /**
-   * Set the state of the member to unavaible.
+   * Switch the state of the member between confirmed and unavailable.
    *
-   * @param memberDTO the member to modify the state
+   * @param memberDTO the member to modify state
    * @return True if success
    */
-  boolean setMemberUnavailable(MemberDTO memberDTO);
+  boolean setMemberAvailability(MemberDTO memberDTO);
 
   /**
    * Verify the state of the member and then change the state of the member to denied.

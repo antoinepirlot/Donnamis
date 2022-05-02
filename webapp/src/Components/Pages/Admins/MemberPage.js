@@ -2,7 +2,8 @@ import {
   getAllItemsByMemberIdAndOfferStatus,
   getNumberOfItems,
   getNumberOfReceivedOrNotReceivedItems,
-  getOneMember
+  getOneMember,
+  setMemberUnavailabel
 } from "../../../utils/BackEndRequests";
 import {showError} from "../../../utils/ShowError";
 import {getShowItemsHtml} from "../../../utils/HtmlCode";
@@ -46,6 +47,7 @@ const MemberPage = async () => {
 async function showDonatedItems(member) {
   const donatedItems = await getAllItemsByMemberIdAndOfferStatus(member.id,
       "donated");
+  console.log(donatedItems)
   if (!donatedItems) {
     const messageDiv = document.querySelector("#donatedItemsMemberPageMessage");
     showError("Ce membre n'a pas d'objet offerts", "info", messageDiv);
@@ -59,7 +61,8 @@ async function showReceivedItems(member) {
   const receivedItems = await getAllItemsByMemberIdAndOfferStatus(member.id,
       "given");
   if (!receivedItems) {
-    const messageDiv = document.querySelector("#receivedItemsMemberPageMessage");
+    const messageDiv = document.querySelector(
+        "#receivedItemsMemberPageMessage");
     showError("Ce membre n'a pas d'objet offerts", "info", messageDiv);
     return;
   }
@@ -83,8 +86,34 @@ async function showMemberInformation(member) {
       member.id, false)}<br>
       Nombre d'objets reçus: ${await getNumberOfReceivedOrNotReceivedItems(
       member.id, true)}<br>
+      <button id="markUnavailableButton"></button>
   `;
   content.innerHTML += contentHtml;
+
+  const button = document.querySelector("#markUnavailableButton");
+  const pageErrorDiv = document.querySelector("#errorMessage");
+
+  if (member.actualState !== 'unavailable') {
+
+    button.innerHTML = "Marquer Indisponible";
+    button.addEventListener("click", async function () {
+
+      const memberUnavailable = {
+        id: member.id,
+        version: member.version
+      };
+
+      try {
+        await setMemberUnavailabel(memberUnavailable, pageErrorDiv);
+        await MemberPage();
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  } else {
+    button.innerHTML = "Marquer Disponible";
+  }
+
 }
 
 function getActualState(member) {
