@@ -3,7 +3,7 @@ import {
   getNumberOfItems,
   getNumberOfReceivedOrNotReceivedItems,
   getOneMember,
-  setMemberUnavailabel
+  setMemberAvailability
 } from "../../../utils/BackEndRequests";
 import {showError} from "../../../utils/ShowError";
 import {getShowItemsHtml} from "../../../utils/HtmlCode";
@@ -94,25 +94,25 @@ async function showMemberInformation(member) {
   const pageErrorDiv = document.querySelector("#errorMessage");
 
   if (member.actualState !== 'unavailable') {
-
     button.innerHTML = "Marquer Indisponible";
-    button.addEventListener("click", async function () {
-
-      const memberUnavailable = {
-        id: member.id,
-        version: member.version
-      };
-
-      try {
-        await setMemberUnavailabel(memberUnavailable, pageErrorDiv);
-        await MemberPage();
-      } catch (err) {
-        console.error(err);
-      }
-    });
   } else {
     button.innerHTML = "Marquer Disponible";
   }
+  button.addEventListener("click", async function () {
+
+    const memberUnavailable = {
+      id: member.id,
+      actualState: member.actualState,
+      version: member.version
+    };
+
+    try {
+      await setMemberAvailability(memberUnavailable, pageErrorDiv);
+      await MemberPage();
+    } catch (err) {
+      console.error(err);
+    }
+  });
 
 }
 

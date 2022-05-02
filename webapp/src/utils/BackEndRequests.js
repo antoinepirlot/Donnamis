@@ -458,7 +458,7 @@ async function postInterest(interest) {
   }
 }
 
-async function setMemberUnavailabel(member) {
+async function setMemberAvailability(member) {
   const request = {
     method: "PUT",
     headers: {
@@ -467,7 +467,7 @@ async function setMemberUnavailabel(member) {
     },
     body: JSON.stringify(member)
   };
-  const response = await fetch("api/members/unavailable", request);
+  const response = await fetch("api/members/availability", request);
 
   if (!response.ok) {
     showError("Erreur marquer indisponible");
@@ -560,5 +560,5 @@ export {
   modifyTheItem,
   getAllRatings,
   evaluateItemBackEnd,
-  setMemberUnavailabel
+  setMemberAvailability
 };
