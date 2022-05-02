@@ -22,6 +22,7 @@ import java.util.List;
 
 @Singleton
 @Path("ratings")
+@AuthorizeMember
 public class RatingResource {
 
   @Inject
@@ -44,7 +45,6 @@ public class RatingResource {
   @GET
   @Path("all/{idMember}")
   @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
   public List<RatingDTO> getAllRatingsOfMember(@PathParam("idMember") int idMember) {
     if (idMember < 1) {
       throw new WrongBodyDataException("idMember is lower than 1");
@@ -70,7 +70,6 @@ public class RatingResource {
   @POST
   @Path("")
   @Consumes(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
   public void evaluateItem(RatingDTO ratingDTO) {
     //Verify the content of the request
     if (ratingDTO == null

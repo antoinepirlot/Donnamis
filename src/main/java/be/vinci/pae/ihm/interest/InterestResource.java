@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 
 @Singleton
 @Path("interests")
+@AuthorizeMember
 public class InterestResource {
 
   @Inject
@@ -41,7 +42,6 @@ public class InterestResource {
   @POST
   @Path("")
   @Consumes(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
   public void markInterest(InterestDTO interestDTO) {
 
     //Verify the content of the request

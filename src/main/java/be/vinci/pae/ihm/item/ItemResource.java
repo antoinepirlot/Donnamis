@@ -331,6 +331,7 @@ public class ItemResource {
   @PUT
   @Path("given")
   @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
   public void markItemAsGiven(ItemDTO itemDTO) {
     this.checkMarkItem(itemDTO);
 
@@ -347,6 +348,7 @@ public class ItemResource {
   @PUT
   @Path("not_given")
   @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
   public void markItemAsNotGiven(ItemDTO itemDTO) {
     this.checkMarkItem(itemDTO);
     if (!this.itemUCC.markItemAsNotGiven(itemDTO)) {

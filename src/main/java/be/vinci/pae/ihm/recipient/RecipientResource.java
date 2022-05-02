@@ -15,6 +15,7 @@ import jakarta.ws.rs.core.MediaType;
 
 @Singleton
 @Path("recipients")
+@AuthorizeMember
 public class RecipientResource {
 
   @Inject
@@ -28,7 +29,6 @@ public class RecipientResource {
   @POST
   @Path("")
   @Consumes(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
   public void chooseRecipient(RecipientDTO recipientDTO) {
     if (recipientDTO == null
         || recipientDTO.getItem() == null || recipientDTO.getItem().getId() < 1

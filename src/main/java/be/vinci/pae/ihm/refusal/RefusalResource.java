@@ -4,6 +4,7 @@ import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import be.vinci.pae.biz.refusal.interfaces.RefusalUCC;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
+import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.filter.utils.Json;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -16,6 +17,7 @@ import jakarta.ws.rs.core.MediaType;
 
 @Singleton
 @Path("refusals")
+@AuthorizeMember
 public class RefusalResource {
 
   private final Json<RefusalDTO> json = new Json<>(RefusalDTO.class);
