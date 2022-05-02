@@ -41,6 +41,14 @@ public interface MemberDAO {
   boolean confirmMember(MemberDTO memberDTO);
 
   /**
+   * Switch the state of the member between confirmed and unavailable.
+   *
+   * @param memberDTO the member to modify state
+   * @return true if the member's state is change, otherwise false
+   */
+  boolean setMemberAvailability(MemberDTO memberDTO);
+
+  /**
    * Modify the member's information.
    *
    * @param memberDTO the member to modify

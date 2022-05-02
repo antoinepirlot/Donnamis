@@ -469,6 +469,25 @@ async function postInterest(interest) {
   }
 }
 
+async function setMemberAvailability(member) {
+  const request = {
+    method: "PUT",
+    headers: {
+      "Authorization": getObject("token"),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(member)
+  };
+  const response = await fetch("api/members/availability", request);
+
+  if (!response.ok) {
+    showError("Erreur marquer indisponible");
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText
+    );
+  }
+}
+
 async function getAllRatings() {
   const request = {
     method: "GET", headers: {
@@ -552,5 +571,6 @@ export {
   chooseRecipient,
   modifyTheItem,
   getAllRatings,
-  evaluateItemBackEnd
+  evaluateItemBackEnd,
+  setMemberAvailability
 };

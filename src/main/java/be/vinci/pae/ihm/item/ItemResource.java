@@ -51,6 +51,7 @@ public class ItemResource {
 
   /**
    * Get all items from the database.
+   *
    * @return a list of all items
    */
   @GET
@@ -168,8 +169,9 @@ public class ItemResource {
     }
     List<ItemDTO> itemDTOList = this.itemUCC.getMemberReceivedItems(idMember);
     if (itemDTOList == null) {
-      throw new ObjectNotFoundException("No items for the member");
+      return null;
     }
+
     for (ItemDTO itemDTO : itemDTOList) {
       try {
         itemDTO.setPhoto(transformImageToBase64(itemDTO));

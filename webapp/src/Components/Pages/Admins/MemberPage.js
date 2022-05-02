@@ -2,7 +2,8 @@ import {
   getAllItemsByMemberIdAndOfferStatus,
   getNumberOfItems,
   getNumberOfReceivedOrNotReceivedItems,
-  getOneMember
+  getOneMember,
+  setMemberAvailability
 } from "../../../utils/BackEndRequests";
 import {showError} from "../../../utils/ShowError";
 import {getShowItemsHtml} from "../../../utils/HtmlCode";
@@ -46,6 +47,7 @@ const MemberPage = async () => {
 async function showDonatedItems(member) {
   const donatedItems = await getAllItemsByMemberIdAndOfferStatus(member.id,
       "donated");
+  console.log(donatedItems)
   if (!donatedItems) {
     const messageDiv = document.querySelector("#donatedItemsMemberPageMessage");
     showError("Ce membre n'a pas d'objet offerts", "info", messageDiv);
@@ -59,7 +61,8 @@ async function showReceivedItems(member) {
   const receivedItems = await getAllItemsByMemberIdAndOfferStatus(member.id,
       "given");
   if (!receivedItems) {
-    const messageDiv = document.querySelector("#receivedItemsMemberPageMessage");
+    const messageDiv = document.querySelector(
+        "#receivedItemsMemberPageMessage");
     showError("Ce membre n'a pas d'objet offerts", "info", messageDiv);
     return;
   }
@@ -85,6 +88,39 @@ async function showMemberInformation(member) {
       member.id, true)}<br>
   `;
   content.innerHTML += contentHtml;
+
+  const pageErrorDiv = document.querySelector("#errorMessage");
+  let button;
+
+  //Create button if member confirmed or unavailable
+  if (member.actualState === 'confirmed' || member.actualState
+      === 'unavailable') {
+    content.innerHTML += `<button id="markUnavailableButton"></button>`;
+    button = document.querySelector("#markUnavailableButton");
+
+    //Change the value of the button
+    if (member.actualState === 'confirmed') {
+      button.innerHTML = "Marquer Indisponible";
+    } else if (member.actualState === 'unavailable') {
+      button.innerHTML = "Marquer Disponible";
+    }
+
+    button.addEventListener("click", async function () {
+
+      const memberUnavailable = {
+        id: member.id,
+        actualState: member.actualState,
+        version: member.version
+      };
+
+      try {
+        await setMemberAvailability(memberUnavailable, pageErrorDiv);
+        await MemberPage();
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  }
 }
 
 function getActualState(member) {

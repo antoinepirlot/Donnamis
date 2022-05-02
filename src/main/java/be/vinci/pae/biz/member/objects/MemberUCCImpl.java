@@ -74,6 +74,19 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
+  public boolean setMemberAvailability(MemberDTO memberDTO) {
+    try {
+      dalServices.start();
+      boolean isChange = memberDAO.setMemberAvailability(memberDTO);
+      dalServices.commit();
+      return isChange;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw new FatalException(e);
+    }
+  }
+
+  @Override
   public boolean denyMember(RefusalDTO refusalDTO) {
     try {
       dalServices.start();

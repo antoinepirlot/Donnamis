@@ -21,6 +21,7 @@ public class MemberDAOImpl implements MemberDAO {
   private static final String DEFAULT_STATE = "registered";
   private static final String CONFIRMED_STATE = "confirmed";
   private static final String DENIED_STATE = "denied";
+  private static final String UNAVAILABLE_STATE = "unavailable";
   private static final boolean DEFAULT_IS_ADMIN = false;
   @Inject
   private DALBackendService dalBackendService;
@@ -141,12 +142,6 @@ public class MemberDAOImpl implements MemberDAO {
     }
   }
 
-  /**
-   * Change the state of the member to confirmed.
-   *
-   * @param memberDTO the member to confirm
-   * @return boolean
-   */
   public boolean confirmMember(MemberDTO memberDTO) {
     String query = "UPDATE project_pae.members "
         + "SET state = '" + CONFIRMED_STATE
@@ -155,6 +150,23 @@ public class MemberDAOImpl implements MemberDAO {
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setBoolean(1, memberDTO.isAdmin());
       preparedStatement.setInt(2, memberDTO.getId());
+      return preparedStatement.executeUpdate() != 0;
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
+  }
+
+  public boolean setMemberAvailability(MemberDTO memberDTO) {
+    String query;
+    if (memberDTO.getActualState().equals("unavailable")) {
+      query = "UPDATE project_pae.members SET state = '" + CONFIRMED_STATE + "', "
+          + "version_member = version_member + 1 WHERE id_member = ?;";
+    } else {
+      query = "UPDATE project_pae.members SET state = '" + UNAVAILABLE_STATE + "', "
+          + "version_member = version_member + 1 WHERE id_member = ?;";
+    }
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
+      preparedStatement.setInt(1, memberDTO.getId());
       return preparedStatement.executeUpdate() != 0;
     } catch (SQLException e) {
       throw new FatalException(e);
