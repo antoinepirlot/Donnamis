@@ -19,6 +19,13 @@ const myItemsPageHtml = `
     <h1 class="display-3" id="all_items_title">Mes objets</h1>
     <div id="searchBarMyItemsPage">
     </div>
+    <div id="searchDateMyItemsPage">
+      <form>
+      Entre le <input id="formStartDateMyItemsPage" type="date">
+      et le <input id="formEndDateMyItemsPage" type="date">
+      <input type="submit" class="btn btn-primary" value="Rechercher">
+      </form>
+    </div>
     <div class="row" id="myItems">
     </div>
   </div>
@@ -57,6 +64,7 @@ const myItemsPageHtml = `
 `;
 
 let idItem;
+let items;
 
 const MyItemsPage = async () => {
   if (!getPayload()) {
@@ -65,7 +73,7 @@ const MyItemsPage = async () => {
   }
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = myItemsPageHtml;
-  const items = await getMyItems();
+  items = await getMyItems();
   if (items.length === 0) {
     const message = "Vous n'avez aucune offre.";
     const errorMessageMyItemsPage = document.querySelector(
@@ -75,12 +83,14 @@ const MyItemsPage = async () => {
   }
   const myItemsDiv = document.querySelector("#myItems");
   myItemsDiv.innerHTML = getMyItemsHtml(items);
-  showButtons(items);
+  showButtons();
   createItemsSearchBar(items, "#searchBarMyItemsPage", "#myItems",
       "myItemsPage");
+  const dateForm = document.querySelector("#searchDateMyItemsPage");
+  dateForm.addEventListener("submit", filterItemsByDate);
 }
 
-function showButtons(items) {
+function showButtons() {
   /*************/
   /*Offer again*/
   /*************/
@@ -222,6 +232,33 @@ async function markItemAs(given) {
   } catch (e) {
     showError("L'objet n'a pas été marqué comme donné.", "danger", errorDiv);
   }
+}
+
+function filterItemsByDate(e) {
+  e.preventDefault();
+  let startDate = document.querySelector("#formStartDateMyItemsPage").value;
+  let endDate = document.querySelector("#formEndDateMyItemsPage").value;
+  if (startDate === "" || endDate === "") {
+    const myItemsDiv = document.querySelector("#myItems");
+    myItemsDiv.innerHTML = getMyItemsHtml(items);
+    return;
+  }
+  startDate = new Date(startDate);
+  endDate = new Date(endDate);
+  const myItemsDiv = document.querySelector("#myItems");
+  const filteredItems = items.filter(item =>
+      new Date(item.lastOffer.date).getDate() >= startDate.getDate()
+      && new Date(item.lastOffer.date).getDate() <= endDate.getDate()
+      && new Date(item.lastOffer.date).getMonth() >= startDate.getMonth()
+      && new Date(item.lastOffer.date).getMonth() <= endDate.getMonth()
+      && new Date(item.lastOffer.date).getFullYear() >= startDate.getFullYear()
+      && new Date(item.lastOffer.date).getFullYear() <= endDate.getFullYear()
+  );
+  if (!filteredItems) {
+    const errorDiv = document.querySelector("#errorMessageMyItemsPage");
+    showError("Aucun objet pour ces dates.", "info", errorDiv);
+  }
+  myItemsDiv.innerHTML = getMyItemsHtml(filteredItems);
 }
 
 export default MyItemsPage;
