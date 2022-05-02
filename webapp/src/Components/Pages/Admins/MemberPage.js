@@ -86,34 +86,41 @@ async function showMemberInformation(member) {
       member.id, false)}<br>
       Nombre d'objets reçus: ${await getNumberOfReceivedOrNotReceivedItems(
       member.id, true)}<br>
-      <button id="markUnavailableButton"></button>
   `;
   content.innerHTML += contentHtml;
 
-  const button = document.querySelector("#markUnavailableButton");
   const pageErrorDiv = document.querySelector("#errorMessage");
+  let button;
 
-  if (member.actualState !== 'unavailable') {
-    button.innerHTML = "Marquer Indisponible";
-  } else {
-    button.innerHTML = "Marquer Disponible";
-  }
-  button.addEventListener("click", async function () {
+  //Create button if member confirmed or unavailable
+  if (member.actualState === 'confirmed' || member.actualState
+      === 'unavailable') {
+    content.innerHTML += `<button id="markUnavailableButton"></button>`;
+    button = document.querySelector("#markUnavailableButton");
 
-    const memberUnavailable = {
-      id: member.id,
-      actualState: member.actualState,
-      version: member.version
-    };
-
-    try {
-      await setMemberAvailability(memberUnavailable, pageErrorDiv);
-      await MemberPage();
-    } catch (err) {
-      console.error(err);
+    //Change the value of the button
+    if (member.actualState === 'confirmed') {
+      button.innerHTML = "Marquer Indisponible";
+    } else if (member.actualState === 'unavailable') {
+      button.innerHTML = "Marquer Disponible";
     }
-  });
 
+    button.addEventListener("click", async function () {
+
+      const memberUnavailable = {
+        id: member.id,
+        actualState: member.actualState,
+        version: member.version
+      };
+
+      try {
+        await setMemberAvailability(memberUnavailable, pageErrorDiv);
+        await MemberPage();
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  }
 }
 
 function getActualState(member) {
