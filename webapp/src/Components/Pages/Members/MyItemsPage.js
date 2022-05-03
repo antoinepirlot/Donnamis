@@ -20,16 +20,17 @@ const myItemsPageHtml = `
     <div id="searchBarMyItemsPage">
     </div>
     <div id="searchDateMyItemsPage">
+    <div id="MyItemsPageItemsFilter">
+       <button id="MyItemsPageItemsInterestedButton" type="button" class="btn btn-outline-primary">Afficher objets intéressé</button>
+       <button id="MyItemsPageItemsAllButton" type="button" class="btn btn-outline-primary">Afficher tous les objets</button>
+    </div>
       <form>
       Entre le <input id="formStartDateMyItemsPage" type="date">
       et le <input id="formEndDateMyItemsPage" type="date">
       <input type="submit" class="btn btn-primary" value="Rechercher">
       </form>
     </div>
-    <div id="MyItemsPageItemsFilter">
-       <button id="MyItemsPageItemsInterestedButton" type="button" class="btn btn-outline-primary">Afficher objets intéressé</button>
-       <button id="MyItemsPageItemsAllButton" type="button" class="btn btn-outline-primary">Afficher tous les objets</button>
-    </div>
+    
     <div class="row" id="myItems">
     </div>
   </div>
@@ -281,13 +282,13 @@ async function markItemAs(given) {
   }
 }
 
-function filterItemsByDate(e) {
+async function filterItemsByDate(e) {
   e.preventDefault();
   let startDate = document.querySelector("#formStartDateMyItemsPage").value;
   let endDate = document.querySelector("#formEndDateMyItemsPage").value;
   if (startDate === "" || endDate === "") {
     const myItemsDiv = document.querySelector("#myItems");
-    myItemsDiv.innerHTML = getMyItemsHtml(items);
+    myItemsDiv.innerHTML = await getMyItemsHtml(items);
     return;
   }
   startDate = new Date(startDate);
@@ -305,7 +306,7 @@ function filterItemsByDate(e) {
     const errorDiv = document.querySelector("#errorMessageMyItemsPage");
     showError("Aucun objet pour ces dates.", "info", errorDiv);
   }
-  myItemsDiv.innerHTML = getMyItemsHtml(filteredItems);
+  myItemsDiv.innerHTML = await getMyItemsHtml(filteredItems);
 }
 
 export default MyItemsPage;

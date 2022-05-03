@@ -118,6 +118,16 @@ body {
   /*background-repeat: repeat-y;*/
 }
 
+#MyItemsPageItemsFilter {
+  float: left;
+  margin-left: 2%;
+  padding-right: 20px;
+}
+
+#searchDateMyItemsPage {
+  display: flex;
+}
+
 #nav {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
