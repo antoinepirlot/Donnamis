@@ -80,4 +80,5 @@ public interface MemberDAO {
    * @return the list of interested members
    */
   List<MemberDTO> getInterestedMembers(int idOffer);
+
 }

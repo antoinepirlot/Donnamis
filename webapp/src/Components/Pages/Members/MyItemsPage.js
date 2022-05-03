@@ -122,15 +122,18 @@ async function showButtons() {
     const members = await getInterestedMembers(item.offerList[0].id);
     chooseRecipientButton.addEventListener("click", async () => {
 
-      console.log(members);
       openModal("#chooseRecipientModal", "#chooseRecipientModalCloseButton");
       const memberList = document.querySelector(
           "#chooseRecipientMembersList");
       memberList.innerHTML = ""; //empties the datalist of old members
       members.forEach((member) => {
-        memberList.innerHTML += `
+
+        //unavailable can't be assigned
+        if (member.actualState === "confirmed") {
+          memberList.innerHTML += `
           <option value="${member.username}">
         `;
+        }
       });
       const chooseRecipientModal = document.querySelector(
           "#chooseRecipientModal");
@@ -202,12 +205,12 @@ async function chooseRecipient(e) {
     }
   }
   try {
-    await chooseRecpientBackEnd(recipient)
+    await chooseRecpientBackEnd(recipient, errorDiv);
     showError("Vous avez choisi l'utilisateur " + recipientUsername
         + " comme receveur.", "success", errorDiv);
     await MyItemsPage();
   } catch (e) {
-    showError("Impossible de choisir le receveur.", "danger", errorDiv);
+    showError("Impossible de choisir ce receveur.", "danger", errorDiv);
   }
 }
 

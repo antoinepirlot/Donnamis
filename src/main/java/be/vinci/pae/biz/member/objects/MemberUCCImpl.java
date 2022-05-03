@@ -46,6 +46,19 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
+  public MemberDTO getOneMember(MemberDTO memberDTO) {
+    try {
+      dalServices.start();
+      MemberDTO memberDTOFound = memberDAO.getOne(memberDTO);
+      dalServices.commit();
+      return memberDTOFound;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw new FatalException(e);
+    }
+  }
+
+  @Override
   public MemberDTO modifyMember(MemberDTO memberDTO) {
     Member member = (Member) memberDTO;
     member.hashPassword();
@@ -161,4 +174,5 @@ public class MemberUCCImpl implements MemberUCC {
       throw new FatalException(e);
     }
   }
+
 }
