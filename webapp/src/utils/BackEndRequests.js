@@ -526,7 +526,7 @@ async function evaluateItemBackEnd(rating, ratingMessage) {
   return response.ok;
 }
 
-async function chooseRecipient(recipient) {
+async function chooseRecipient(recipient, recipientMessage) {
   const request = {
     method: "POST",
     headers: {
@@ -538,6 +538,10 @@ async function chooseRecipient(recipient) {
   const response = await fetch("/api/recipients", request);
   if (!response.ok) {
     throw new Error("Error while fetching");
+  } else if (response.status === 409) {
+    showError("Ce membre ne peut pas recevoir d'objet pour le moment",
+        recipientMessage);
+    console.log("ERREUR MEMBRE");
   }
 }
 

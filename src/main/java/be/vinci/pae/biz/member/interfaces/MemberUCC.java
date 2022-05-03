@@ -82,4 +82,12 @@ public interface MemberUCC {
    * @return the list of interested members
    */
   List<MemberDTO> getInterestedMembers(int idOffer);
+
+  /**
+   * Get one member by his username
+   *
+   * @param memberDTO the member with the username
+   * @return the member found or null
+   */
+  MemberDTO getOneMember(MemberDTO memberDTO);
 }
