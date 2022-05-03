@@ -283,6 +283,14 @@ async function markItemAs(given) {
 }
 
 async function filterItemsByDate(e) {
+  const filterInterestedItemsButton = document.querySelector(
+      "#MyItemsPageItemsInterestedButton");
+  filterInterestedItemsButton.className = "btn btn-outline-primary";
+
+  const filterAllItemsButton = document.querySelector(
+      "#MyItemsPageItemsAllButton")
+  filterAllItemsButton.className = "btn btn-outline-primary";
+
   e.preventDefault();
   let startDate = document.querySelector("#formStartDateMyItemsPage").value;
   let endDate = document.querySelector("#formEndDateMyItemsPage").value;
