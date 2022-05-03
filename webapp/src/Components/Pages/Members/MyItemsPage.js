@@ -82,7 +82,7 @@ const MyItemsPage = async () => {
     return;
   }
   const myItemsDiv = document.querySelector("#myItems");
-  myItemsDiv.innerHTML = getMyItemsHtml(items);
+  myItemsDiv.innerHTML = await getMyItemsHtml(items);
   await showButtons();
   createItemsSearchBar(items, "#searchBarMyItemsPage", "#myItems",
       "myItemsPage");
@@ -111,22 +111,15 @@ async function showButtons() {
   /*********************************/
   /*Choose a recipient for the item*/
   /*********************************/
+  // Mettre cette fonction dans HtmlCode.js
   const chooseRecipientButtons = document.querySelectorAll(
       "#chooseRecipientButton");
 
   for (const chooseRecipientButton of chooseRecipientButtons) {
+
     idItem = chooseRecipientButton.value;
     const item = items.find((item) => item.id == idItem);
     const members = await getInterestedMembers(item.offerList[0].id);
-
-    if (members == null) {
-      chooseRecipientButton.remove()
-      // const errorDiv = document.querySelector("#errorMessageMyItemsPage");
-      // showError("Aucun membre n'est intéressé par votre offre pour l'instant",
-      //     "danger", errorDiv);
-      // continue;
-    }
-
     chooseRecipientButton.addEventListener("click", async () => {
 
       console.log(members);
