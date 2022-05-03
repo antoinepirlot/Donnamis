@@ -20,12 +20,17 @@ const myItemsPageHtml = `
     <div id="searchBarMyItemsPage">
     </div>
     <div id="searchDateMyItemsPage">
+    <div id="MyItemsPageItemsFilter">
+       <button id="MyItemsPageItemsInterestedButton" type="button" class="btn btn-outline-primary">Afficher objets intéressé</button>
+       <button id="MyItemsPageItemsAllButton" type="button" class="btn btn-outline-primary">Afficher tous les objets</button>
+    </div>
       <form>
       Entre le <input id="formStartDateMyItemsPage" type="date">
       et le <input id="formEndDateMyItemsPage" type="date">
       <input type="submit" class="btn btn-primary" value="Rechercher">
       </form>
     </div>
+    
     <div class="row" id="myItems">
     </div>
   </div>
@@ -88,6 +93,50 @@ const MyItemsPage = async () => {
       "myItemsPage");
   const dateForm = document.querySelector("#searchDateMyItemsPage");
   dateForm.addEventListener("submit", filterItemsByDate);
+
+  const filterInterestedItemsButton = document.querySelector(
+      "#MyItemsPageItemsInterestedButton");
+  filterInterestedItemsButton.addEventListener("click",
+      filterItemsByInterested);
+
+  const filterAllItems = document.querySelector("#MyItemsPageItemsAllButton");
+  filterAllItems.addEventListener("click", filterItemsByAll)
+}
+
+async function filterItemsByAll() {
+  const filterInterestedItemsButton = document.querySelector(
+      "#MyItemsPageItemsInterestedButton");
+  filterInterestedItemsButton.className = "btn btn-outline-primary";
+
+  const filterAllItemsButton = document.querySelector(
+      "#MyItemsPageItemsAllButton")
+  filterAllItemsButton.className = "btn btn-primary";
+
+  const myItemsDiv = document.querySelector("#myItems");
+  myItemsDiv.innerHTML = await getMyItemsHtml(items);
+  await showButtons();
+}
+
+//Rajouter systeme de filter on/off
+async function filterItemsByInterested() {
+  const filterItems = [];
+  for (const item of items) {
+    const members = await getInterestedMembers(item.offerList[0].id);
+    if (members !== null) {
+      filterItems.push(item);
+    }
+  }
+  const filterInterestedItemsButton = document.querySelector(
+      "#MyItemsPageItemsInterestedButton");
+  filterInterestedItemsButton.className = "btn btn-primary";
+
+  const filterAllItemsButton = document.querySelector(
+      "#MyItemsPageItemsAllButton")
+  filterAllItemsButton.className = "btn btn-outline-primary";
+
+  const myItemsDiv = document.querySelector("#myItems");
+  myItemsDiv.innerHTML = await getMyItemsHtml(filterItems);
+  await showButtons();
 }
 
 async function showButtons() {
@@ -233,13 +282,21 @@ async function markItemAs(given) {
   }
 }
 
-function filterItemsByDate(e) {
+async function filterItemsByDate(e) {
+  const filterInterestedItemsButton = document.querySelector(
+      "#MyItemsPageItemsInterestedButton");
+  filterInterestedItemsButton.className = "btn btn-outline-primary";
+
+  const filterAllItemsButton = document.querySelector(
+      "#MyItemsPageItemsAllButton")
+  filterAllItemsButton.className = "btn btn-outline-primary";
+
   e.preventDefault();
   let startDate = document.querySelector("#formStartDateMyItemsPage").value;
   let endDate = document.querySelector("#formEndDateMyItemsPage").value;
   if (startDate === "" || endDate === "") {
     const myItemsDiv = document.querySelector("#myItems");
-    myItemsDiv.innerHTML = getMyItemsHtml(items);
+    myItemsDiv.innerHTML = await getMyItemsHtml(items);
     return;
   }
   startDate = new Date(startDate);
@@ -257,7 +314,7 @@ function filterItemsByDate(e) {
     const errorDiv = document.querySelector("#errorMessageMyItemsPage");
     showError("Aucun objet pour ces dates.", "info", errorDiv);
   }
-  myItemsDiv.innerHTML = getMyItemsHtml(filteredItems);
+  myItemsDiv.innerHTML = await getMyItemsHtml(filteredItems);
 }
 
 export default MyItemsPage;
