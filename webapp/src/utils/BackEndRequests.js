@@ -111,7 +111,6 @@ async function getInterestedMembers(idOffer) {
     throw new Error("Error while fetching interested members.");
   }
   return response.status === 200 ? await response.json() : null;
-  // return await response.json();
 }
 
 async function getOneMember(idMember) {
