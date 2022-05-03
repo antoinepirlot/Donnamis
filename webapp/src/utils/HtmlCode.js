@@ -5,6 +5,7 @@
 import {getPayload} from "./session";
 import {Redirect} from "../Components/Router/Router";
 import {openModal} from "./Modals";
+import {getInterestedMembers} from "./BackEndRequests";
 
 function getShowItemsHtml(items) {
   let html = "";
@@ -70,7 +71,7 @@ function getGivenItemHtml(item, ratings) {
   return html;
 }
 
-function getMyItemsHtml(items) {
+async function getMyItemsHtml(items) {
   let html = "";
   for (const item of items) {
     html += `
@@ -89,12 +90,23 @@ function getMyItemsHtml(items) {
     const markReceivedButtonHtml = `<td><button id="markReceivedButton" class="btn btn-primary" value="${item.id}">Objet donné</button></td>`;
     const chooseRecipientButtonHtml = `<td><button id="chooseRecipientButton" class="btn btn-primary" value="${item.id}">Choisir un receveur</button></td>`;
     const markNotGivenButtonHtml = `<td><button id="markNotGivenButton" class="btn btn-primary" value="${item.id}">Objet non récupéré</button></td>`;
+
+    const members = await getInterestedMembers(item.offerList[0].id);
     if (item.offerStatus === "donated") {
-      html += `
+      // If no one is interested
+      if (members == null) {
+        html += `
+        ${offerAgainButtonHtml}
+        ${cancelButtonHtml}
+      `;
+      } else {
+        html += `
         ${offerAgainButtonHtml}
         ${chooseRecipientButtonHtml}
         ${cancelButtonHtml}
       `;
+      }
+
     } else if (item.offerStatus === "cancelled") {
       html += `
         ${offerAgainButtonHtml}  

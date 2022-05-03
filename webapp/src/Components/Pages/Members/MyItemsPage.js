@@ -82,15 +82,15 @@ const MyItemsPage = async () => {
     return;
   }
   const myItemsDiv = document.querySelector("#myItems");
-  myItemsDiv.innerHTML = getMyItemsHtml(items);
-  showButtons();
+  myItemsDiv.innerHTML = await getMyItemsHtml(items);
+  await showButtons();
   createItemsSearchBar(items, "#searchBarMyItemsPage", "#myItems",
       "myItemsPage");
   const dateForm = document.querySelector("#searchDateMyItemsPage");
   dateForm.addEventListener("submit", filterItemsByDate);
 }
 
-function showButtons() {
+async function showButtons() {
   /*************/
   /*Offer again*/
   /*************/
@@ -111,19 +111,18 @@ function showButtons() {
   /*********************************/
   /*Choose a recipient for the item*/
   /*********************************/
+  // Mettre cette fonction dans HtmlCode.js
   const chooseRecipientButtons = document.querySelectorAll(
       "#chooseRecipientButton");
-  chooseRecipientButtons.forEach((chooseRecipientButton) => {
+
+  for (const chooseRecipientButton of chooseRecipientButtons) {
+
+    idItem = chooseRecipientButton.value;
+    const item = items.find((item) => item.id == idItem);
+    const members = await getInterestedMembers(item.offerList[0].id);
     chooseRecipientButton.addEventListener("click", async () => {
-      idItem = chooseRecipientButton.value;
-      const item = items.find((item) => item.id == idItem);
-      const members = await getInterestedMembers(item.offerList[0].id);
-      if (!members) {
-        const errorDiv = document.querySelector("#errorMessageMyItemsPage");
-        showError("Aucun membre n'est intéressé par votre offre pour l'instant",
-            "danger", errorDiv);
-        return;
-      }
+
+      console.log(members);
       openModal("#chooseRecipientModal", "#chooseRecipientModalCloseButton");
       const memberList = document.querySelector(
           "#chooseRecipientMembersList");
@@ -137,7 +136,7 @@ function showButtons() {
           "#chooseRecipientModal");
       chooseRecipientModal.addEventListener("submit", await chooseRecipient);
     });
-  });
+  }
 
   /********************/
   /*Mark item as given*/
