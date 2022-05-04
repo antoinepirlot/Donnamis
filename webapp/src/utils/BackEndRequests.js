@@ -473,7 +473,6 @@ async function setMemberAvailability(member) {
   const request = {
     method: "PUT",
     headers: {
-      "Authorization": getObject("token"),
       "Content-Type": "application/json"
     },
     body: JSON.stringify(member)
