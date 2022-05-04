@@ -10,7 +10,7 @@ import {Redirect} from "../../Router/Router";
 import {showItemsTypes} from "../../../utils/HtmlCode";
 
 const htmlForm = `
-  <div>
+  <div class="form">
     <h1 class="display-3">Offrir un objet</h1>
     <div id="errorMessageOfferAnItemPage"></div>
     <form id="offerItemForm">
@@ -32,6 +32,7 @@ const htmlForm = `
       <label>Select File</label>
       <input id="photoName" name="file" type= "file" /> <br/><br/>
       <input type="submit" value="Offrir">
+      <div>* Champs obligatoires</div>
     </form>
     
   </div>
