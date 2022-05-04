@@ -233,7 +233,6 @@ public class MemberResource {
   @PUT
   @Path("availability")
   @Consumes(MediaType.APPLICATION_JSON)
-  @AuthorizeAdmin
   public void setMemberAvailability(MemberDTO memberDTO) {
     if (memberDTO == null || memberDTO.getId() < 1) {
       throw new WrongBodyDataException("Error Member Sent");

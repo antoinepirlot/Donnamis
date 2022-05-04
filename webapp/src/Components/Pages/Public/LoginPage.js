@@ -1,11 +1,13 @@
 import {setLocalObject, setSessionObject} from "../../../utils/session";
 import {
   getRefusal,
-  login as loginBackEndRequest
+  login as loginBackEndRequest,
+  setMemberAvailability
 } from "../../../utils/BackEndRequests";
 import {Redirect} from "../../Router/Router";
 import Navbar from "../../Navbar/Navbar";
 import {showError} from "../../../utils/ShowError";
+import {openModal} from "../../../utils/Modals";
 
 const loginFormHtml = `
 <h1 class="display-3" id="login_title">Se connecter</h1>
@@ -28,7 +30,22 @@ const loginFormHtml = `
     <div class="message" id="loginMessage"></div>
   </form>
 </div>
+<!-- Modal Unavailable -->
+<div id="unavailableModal" class="modal">
+  <div class="modal-content">
+    <span id="unavailableCloseModal" class="close">&times;</span>
+    <form id="unavailableForm">
+      <h5>Etes vous de nouveau disponible ?</h5><br>
+      <input type="submit" class="btn btn-primary" value="Oui">
+    </form>
+  </div>
+  <div id="unavailableError"></div>
+</div>
+\`;
 `;
+
+let content;
+let rememberMe;
 
 /**
  * Render the LoginPage :
@@ -49,14 +66,14 @@ async function login(e) {
   showError("Connexion en cours...", "info", loginMessage);
   const username = document.querySelector("#usernameInput").value;
   const password = document.querySelector("#passwordInput").value;
-  const rememberMe = document.querySelector("#rememberMeInput").checked;
+  rememberMe = document.querySelector("#rememberMeInput").checked;
   if (username === "" ||
       password === "") {
     showError("Tous les champs doivent être complet", "danger", loginMessage)
     return;
   }
   try {
-    const content = await loginBackEndRequest(username, password);
+    content = await loginBackEndRequest(username, password);
     if (!content) {
 
       const refusal = await getRefusal(username);
@@ -69,16 +86,20 @@ async function login(e) {
       }
       return;
     } else {
-      if (rememberMe) {
+      if (content.memberDTO.actualState === "unavailable") {
+        await showUnavailableModal();
+      } else if (rememberMe) {
         setLocalObject("token", content.token);
         setLocalObject("memberDTO", content.memberDTO);
+        Redirect("/");
+        await Navbar();
       } else {
         setSessionObject("token", content.token);
         setSessionObject("memberDTO", content.memberDTO);
+        Redirect("/");
+        await Navbar();
       }
     }
-    Redirect("/");
-    await Navbar();
   } catch (error) {
     console.error("LoginPage::error: ", error);
     showError("Une erreur est survenue. Vérifiez votre connexion internet.",
@@ -94,6 +115,41 @@ function seePassword() {
   } else {
     x.type = "password";
   }
+}
+
+async function showUnavailableModal() {
+  openModal("#unavailableModal", "#unavailableCloseModal");
+
+  const unavailableForm = document.querySelector("#unavailableForm");
+  unavailableForm.addEventListener("submit", loginUnavailable);
+}
+
+async function loginUnavailable(e) {
+  e.preventDefault();
+
+  const pageErrorDiv = document.querySelector("#unavailableError");
+
+  const memberUnavailable = {
+    id: content.memberDTO.id,
+    actualState: content.memberDTO.actualState,
+    version: content.memberDTO.version
+  };
+
+  try {
+    await setMemberAvailability(memberUnavailable, pageErrorDiv);
+  } catch (err) {
+    console.error(err);
+  }
+
+  if (rememberMe) {
+    setLocalObject("token", content.token);
+    setLocalObject("memberDTO", content.memberDTO);
+  } else {
+    setSessionObject("token", content.token);
+    setSessionObject("memberDTO", content.memberDTO);
+  }
+  Redirect("/");
+  await Navbar();
 }
 
 export default LoginPage;
