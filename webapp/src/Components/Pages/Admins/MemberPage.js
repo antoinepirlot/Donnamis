@@ -26,19 +26,22 @@ const memberPageHtml = `
 `;
 
 let idMember;
+let he = require('he');
 
 const MemberPage = async () => {
   if (!isAdmin()) {
     Redirect("/");
     return;
   }
+
   const page = document.querySelector("#page");
   page.innerHTML = memberPageHtml;
   idMember = new URLSearchParams(window.location.search).get("id");
   const member = await getOneMember(idMember);
   const profilUsernameDiv = document.querySelector(
       "#profilUsernameMemberPage");
-  profilUsernameDiv.innerText = `Profile de: ${member.username}`;
+  const username = he.decode(member.username);
+  profilUsernameDiv.innerText = `Profile de: ${he.decode(username)}`;
   await showMemberInformation(member);
   await showDonatedItems(member);
   await showReceivedItems(member);
@@ -74,8 +77,8 @@ async function showMemberInformation(member) {
   const content = document.querySelector("#memberPageContent");
   let contentHtml = `
     <p>
-      Prénom:${member.firstName}<br>
-      Nom: ${member.lastName}<br>
+      Prénom:${he.decode(member.firstName)}<br>
+      Nom: ${he.decode(member.lastName)}<br>
       ${getAddressHtml(member.address)}<br>
       Statut: ${getActualState(member)}<br>
       Administrateur: ${member.isAdmin ? "Oui" : "Non"}<br>
@@ -149,7 +152,7 @@ function getAddressHtml(address) {
     ${address.postcode} ${address.commune}
     
   `;
-  return addressHtml;
+  return he.decode(addressHtml);
 }
 
 export default MemberPage

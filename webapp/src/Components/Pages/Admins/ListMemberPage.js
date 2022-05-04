@@ -54,12 +54,13 @@ const tableHtmlDeniedMembers = `
 
 let tbodyRegisteredMembers;
 let tbodyDeniedMembers;
-
+let he = require('he');
 const ListMemberPage = async () => {
   if (!isAdmin()) {
     Redirect("/");
     return;
   }
+
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtmlConfirmedMembers;
   pageDiv.innerHTML += tableHtmlDeniedMembers;
@@ -83,8 +84,8 @@ async function showRegisteredMember(member) {
   //For Each Member
   tbodyRegisteredMembers.innerHTML += `
       <tr id="RegisteredLine">
-        <td>${member.firstName}</td>
-        <td>${member.lastName}</td>
+        <td>${he.decode(member.firstName)}</td>
+        <td>${he.decode(member.lastName)}</td>
         <td><input class="form-check-input" type="checkbox" id="RegisteredIsAdmin" value="${member.id}"></td>
         <td><button type="submit" class="btn btn-primary" id="RegisteredConfirmButton" value=${member.id}>Confirmer</button></td>
         <td><button type="submit" class="btn btn-danger" id="RegisteredRefuseButton" value=${member.id}>Refuser</button></td>
