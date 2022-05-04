@@ -77,21 +77,20 @@ async function showMemberInformation(member) {
   const content = document.querySelector("#memberPageContent");
   let contentHtml = `
     <p>
-      Prénom:${he.decode(member.firstName)}<br>
-      Nom: ${he.decode(member.lastName)}<br>
+      Prénom : ${he.decode(member.firstName)}<br>
+      Nom : ${he.decode(member.lastName)}<br>
       ${getAddressHtml(member.address)}<br>
-      Statut: ${getActualState(member)}<br>
-      Administrateur: ${member.isAdmin ? "Oui" : "Non"}<br>
-      Numéro de téléphone: ${member.phoneNumber ? member.phoneNumber : "Aucun"}<br>
-      Nombre d'objets offerts: ${await getNumberOfItems(member.id, "donated")}<br>
-      Nombre d'objets donnés: ${await getNumberOfItems(member.id, "given")}<br>
-      Nombre d'objets intéréssé mais non reçu: ${await getNumberOfReceivedOrNotReceivedItems(
+      Statut : ${getActualState(member)}<br>
+      Administrateur : ${member.isAdmin ? "Oui" : "Non"}<br>
+      Numéro de téléphone : ${member.phoneNumber ? member.phoneNumber : "Aucun"}<br>
+      Nombre d'objets offerts : ${await getNumberOfItems(member.id, "donated")}<br>
+      Nombre d'objets donnés : ${await getNumberOfItems(member.id, "given")}<br>
+      Nombre d'objets intéréssé mais non reçu : ${await getNumberOfReceivedOrNotReceivedItems(
       member.id, false)}<br>
-      Nombre d'objets reçus: ${await getNumberOfReceivedOrNotReceivedItems(
+      Nombre d'objets reçus : ${await getNumberOfReceivedOrNotReceivedItems(
       member.id, true)}<br>
   `;
   content.innerHTML += contentHtml;
-
   const pageErrorDiv = document.querySelector("#errorMessage");
   let button;
 
@@ -141,7 +140,7 @@ function getActualState(member) {
 
 function getAddressHtml(address) {
   let addressHtml = `
-    Adresse: ${address.street} n°${address.buildingNumber}
+    Adresse : ${address.street} n°${address.buildingNumber}
   `;
   if (address.unitNumber) {
     addressHtml += `
