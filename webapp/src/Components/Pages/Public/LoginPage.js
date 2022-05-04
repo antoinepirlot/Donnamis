@@ -18,7 +18,7 @@ const loginFormHtml = `
     <div class="mb-3">
       <label class="form-label">Mot de passe</label>
       <input type="password" class="form-control" id="passwordInput">
-      <input type="checkbox" id="checkPassword">Show Password
+      <input type="checkbox" id="checkPassword"> Voir mot de passe
     </div>
     <div class="mb-3 form-check">
       <input type="checkbox" class="form-check-input" id="rememberMeInput">
