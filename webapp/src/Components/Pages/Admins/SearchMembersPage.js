@@ -4,7 +4,7 @@ import {getAllMembers} from "../../../utils/BackEndRequests";
 
 const viewSearchbarHtml = `
   <h1 class="display-3" id="search_member_title">Rechercher des membres</h1>
-  <input class="form-control me-2 w-75 d-inline-block" id="searchInput" type="search" placeholder="Rechercher un membre" aria-label="Rechercher">
+  <input class="form-control me-2 w-75 d-inline-block" id="searchInput" type="search" placeholder="Rechercher un membre avec nom, prénom ou adresse" aria-label="Rechercher">
   <div class="w-75 d-inline-block">
     <table class="table">
       <thead>

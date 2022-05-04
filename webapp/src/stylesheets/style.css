@@ -98,6 +98,9 @@
   position: absolute;
 }
 
+#left, #right {
+  margin-left: fill;
+}
 
 body {
   color: #1a202c;
@@ -139,6 +142,15 @@ body {
   border-radius: 5px;
   padding: 10% 10% 10% 10%;
 }
+
+#registerForm {
+  min-height: 570px;
+  max-height: 570px;
+  height: 570px;
+  width: max-content;
+  margin-left: -47%;
+}
+
 
 .table {
   border-radius: 10px;

@@ -1,14 +1,14 @@
-import {
-  register as registerBackEndRequest
-} from "../../../utils/BackEndRequests";
+import {register as registerBackEndRequest} from "../../../utils/BackEndRequests";
 import {showError} from "../../../utils/ShowError";
 
 const registerFormHtml = `
 <h1 class="display-3" id="login_title">S'inscrire</h1>
 <div class="form">
   
-  <form  id="registerForm">
-    <h3>Mes infos</h3>
+  <form  id="registerForm" class="d-flex bd-highlight mb-3 shadow-lg p-3 mb-5 bg-white rounded">
+  
+    <div id="left" class="mr-auto p-2 bd-highlight">
+        <h3>Mes infos</h3>
     <div class="mb-3">
       <label class="form-label">Prénom</label>
       <input type="text" class="form-control" id="firstNameInput">
@@ -28,7 +28,9 @@ const registerFormHtml = `
       <label class="form-label">Mot de passe</label>
       <input type="password" class="form-control" id="passwordInput">
     </div>
+    </div>
     
+    <div id="right" class="p-2 bd-highlight">
     <h3>Adresse</h3>
     
     <div class="mb-3">
@@ -55,10 +57,10 @@ const registerFormHtml = `
       <label class="form-label">Code postal</label>
       <input type="text" class="form-control" id="postcodeInput">
     </div>
-    
-    <div class="message" id="registerMessage"></div>
     <button type="submit" class="btn btn-primary">S'inscrire</button>
+    </div>
   </form>
+  <div class="message" id="registerMessage"></div>
 </div>
 <br>
 `;

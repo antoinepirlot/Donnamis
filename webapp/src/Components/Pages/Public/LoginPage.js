@@ -10,7 +10,7 @@ import {showError} from "../../../utils/ShowError";
 const loginFormHtml = `
 <h1 class="display-3" id="login_title">Se connecter</h1>
 <div class="form">
-  <form  id="loginForm">
+  <form  id="loginForm" class="shadow-lg p-3 mb-5 bg-white rounded">
     <div class="mb-3">
       <label class="form-label">Pseudo</label>
       <input type="text" class="form-control" id="usernameInput">
