@@ -66,4 +66,19 @@ public class RecipientDAOImpl implements RecipientDAO {
       throw new FatalException(e);
     }
   }
+
+  @Override
+  public boolean setRecipientUnavailable(RecipientDTO recipientDTO) {
+    String query = "UPDATE project_pae.recipients SET received = 'not received', "
+        + "version_recipient = version_recipient + 1 WHERE id_member = ?, received = 'waiting';";
+    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
+      preparedStatement.setInt(1, recipientDTO.getMember().getId());
+
+      preparedStatement.executeQuery();
+      return true;
+
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
+  }
 }
