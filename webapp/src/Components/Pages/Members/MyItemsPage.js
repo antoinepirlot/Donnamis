@@ -21,8 +21,8 @@ const myItemsPageHtml = `
     </div>
     <div id="searchDateMyItemsPage">
     <div id="MyItemsPageItemsFilter">
+       <button id="MyItemsPageItemsAllButton" type="button" class="btn btn-primary">Afficher tous les objets</button>
        <button id="MyItemsPageItemsInterestedButton" type="button" class="btn btn-outline-primary">Afficher objets intéressé</button>
-       <button id="MyItemsPageItemsAllButton" type="button" class="btn btn-outline-primary">Afficher tous les objets</button>
     </div>
       <form>
       Entre le <input id="formStartDateMyItemsPage" type="date">
