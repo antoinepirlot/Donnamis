@@ -75,7 +75,7 @@ async function getMyItemsHtml(items) {
   let html = "";
   for (const item of items) {
     html += `
-      <div class="col-sm-3" id="item-card" >
+      <div class="col-sm-3 mb-3 d-flex align-items-stretch" id="item-card" >
         <div class="card">
         <img src="data:image/png;base64,${item.photo}" class="card-img-top" alt="Card image cap">
           <div class="card-body">

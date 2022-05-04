@@ -14,15 +14,15 @@ const htmlForm = `
     <h1 class="display-3">Offrir un objet</h1>
     <div id="errorMessageOfferAnItemPage"></div>
     <form id="offerItemForm">
-      Nom de l'objet<span id="asterisk">*</span>: <br>
+      Nom de l'objet<span id="asterisk">*</span> : <br>
       <textarea id="titleForm" cols="30" rows="3"></textarea><br>
       <br>
-      Description de l'objet<span id="asterisk">*</span>:<br>
+      Description de l'objet<span id="asterisk">*</span> :<br>
       <textarea id="itemDescriptionForm" cols="30" rows="3"></textarea><br>
       <br>
       
       <br>
-      Disponibilités horaire<span id="asterisk">*</span>:<br>
+      Disponibilités horaire<span id="asterisk">*</span> :<br>
       <textarea id="timeSlotForm" cols="30" rows="3"></textarea><br>
       <br>
       Type de l'objet<span id="asterisk">*</span>:<br>
