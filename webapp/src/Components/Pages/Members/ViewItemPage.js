@@ -2,11 +2,13 @@ import {checkToken, getObject, getPayload,} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
 import {showError} from "../../../utils/ShowError";
 import {
+  getAllPublicItems,
   getItem,
   modifyTheItem,
   postInterest as postInterestBackEnd
 } from "../../../utils/BackEndRequests";
 import {closeModal, openModal} from "../../../utils/Modals";
+import {getShowItemsHtml} from "../../../utils/HtmlCode";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3" xmlns="http://www.w3.org/1999/html">
@@ -29,6 +31,14 @@ const viewOfferHtml = `
   <div id="viewItemPageError"></div>
 </div>
 <!-- Modal Modify Item is in createModifyItemModal function-->
+
+<div id="suggestedItemsTitle">
+  <p class="display-4"> Voici des objets de la même catégorie : </p> 
+  <div id="suggestedItems">
+    
+  </div>
+</div>
+
 
 <!-- Modal Post Interest -->
 <div id="interestModal" class="modal">
@@ -83,6 +93,12 @@ async function ViewItemPage() {
       //post an interest
       postInterestButton.addEventListener("click", showInterestForm);
     }
+    const suggestedItems = document.querySelector("#suggestedItems");
+    const items = await getAllPublicItems();
+    suggestedItems.innerHTML = getShowItemsHtml(
+        items.filter(
+            items => items.itemType.itemType == item.itemType.itemType
+                && items.id !== item.id));
   } catch (e) {
     console.error(e);
     showError("Une erreur est survenue.", "danger", errorMessageDiv);
