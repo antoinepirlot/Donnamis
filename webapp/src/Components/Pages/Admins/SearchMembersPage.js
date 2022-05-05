@@ -11,6 +11,8 @@ const viewSearchbarHtml = `
         <tr>
           <th scope="col">Prénom</th>
           <th scope="col">Nom</th>
+          <th scope="col">Code Postal</th>
+          <th scope="col">Commune</th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -65,6 +67,8 @@ function showFilterMembers(members) {
       <tr id="MemberLine">
         <td>${he.decode(member.firstName)}</td>
         <td>${he.decode(member.lastName)}</td>
+        <td>${he.decode(member.address.postcode)}</td>
+        <td>${he.decode(member.address.commune)}</td>
         <td><a href="/member?id=${member.id}" type="button" class="btn btn-primary">Voir détails</a></td>
       </tr>    
     `;
