@@ -41,7 +41,6 @@ const loginFormHtml = `
   </div>
   <div id="unavailableError"></div>
 </div>
-\`;
 `;
 
 let content;
@@ -84,7 +83,7 @@ async function login(e) {
         showError("Aucun utilisateur pour ce username et ce mot de passe",
             "danger", loginMessage);
       }
-      return;
+
     } else {
       if (content.memberDTO.actualState === "unavailable") {
         await showUnavailableModal();
