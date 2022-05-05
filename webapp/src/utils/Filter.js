@@ -2,8 +2,15 @@ import {getMyItemsHtml, getShowItemsHtml} from "./HtmlCode";
 import {showError} from "./ShowError";
 
 function filterItemsByDate(itemsId, errorId, items) {
-  let startDate = document.querySelector("#formStartDateMyItemsPage").value;
-  let endDate = document.querySelector("#formEndDateMyItemsPage").value;
+  let startDate;
+  let endDate;
+  if (itemsId === "#myItems") {
+    startDate = document.querySelector("#formStartDateMyItemsPage").value;
+    endDate = document.querySelector("#formEndDateMyItemsPage").value;
+  } else {
+    startDate = document.querySelector("#formStartDateHomePage").value;
+    endDate = document.querySelector("#formEndDateHomePage").value;
+  }
   if (startDate === "" || endDate === "") {
     return;
   }
