@@ -7,6 +7,9 @@ import {
   markItemAs as markItemAsaBackEnd,
   offerAgain as offerAgainBackEnd
 } from "../../../utils/BackEndRequests";
+import {
+  filterItemsByDate as filterItemsByDateUtil
+} from "../../../utils/Filter";
 import {getObject, getPayload} from "../../../utils/session";
 import {showError} from "../../../utils/ShowError";
 import {openModal} from "../../../utils/Modals";
@@ -27,7 +30,7 @@ const myItemsPageHtml = `
       <form>
       Entre le <input id="formStartDateMyItemsPage" type="date">
       et le <input id="formEndDateMyItemsPage" type="date">
-      <input type="submit" class="btn btn-primary" value="Rechercher">
+      <button id="dateFormButtonMyItemsPage" class="btn btn-primary">Rechercher</button>
       </form>
     </div>
     
@@ -91,8 +94,8 @@ const MyItemsPage = async () => {
   await showMyItemsButtons();
   createItemsSearchBar(items, "#searchBarMyItemsPage", "#myItems",
       "myItemsPage");
-  const dateForm = document.querySelector("#searchDateMyItemsPage");
-  dateForm.addEventListener("submit", filterItemsByDate);
+  const dateForm = document.querySelector("#dateFormButtonMyItemsPage");
+  dateForm.addEventListener("click", filterItemsByDate);
 
   const filterInterestedItemsButton = document.querySelector(
       "#MyItemsPageItemsInterestedButton");
@@ -286,6 +289,7 @@ async function markItemAs(given) {
 }
 
 async function filterItemsByDate(e) {
+  e.preventDefault();
   const filterInterestedItemsButton = document.querySelector(
       "#MyItemsPageItemsInterestedButton");
   filterInterestedItemsButton.className = "btn btn-outline-primary";
@@ -293,31 +297,7 @@ async function filterItemsByDate(e) {
   const filterAllItemsButton = document.querySelector(
       "#MyItemsPageItemsAllButton")
   filterAllItemsButton.className = "btn btn-outline-primary";
-
-  e.preventDefault();
-  let startDate = document.querySelector("#formStartDateMyItemsPage").value;
-  let endDate = document.querySelector("#formEndDateMyItemsPage").value;
-  if (startDate === "" || endDate === "") {
-    const myItemsDiv = document.querySelector("#myItems");
-    myItemsDiv.innerHTML = await getMyItemsHtml(items);
-    return;
-  }
-  startDate = new Date(startDate);
-  endDate = new Date(endDate);
-  const myItemsDiv = document.querySelector("#myItems");
-  const filteredItems = items.filter(item =>
-      new Date(item.lastOffer.date).getDate() >= startDate.getDate()
-      && new Date(item.lastOffer.date).getDate() <= endDate.getDate()
-      && new Date(item.lastOffer.date).getMonth() >= startDate.getMonth()
-      && new Date(item.lastOffer.date).getMonth() <= endDate.getMonth()
-      && new Date(item.lastOffer.date).getFullYear() >= startDate.getFullYear()
-      && new Date(item.lastOffer.date).getFullYear() <= endDate.getFullYear()
-  );
-  if (!filteredItems) {
-    const errorDiv = document.querySelector("#errorMessageMyItemsPage");
-    showError("Aucun objet pour ces dates.", "info", errorDiv);
-  }
-  myItemsDiv.innerHTML = getMyItemsHtml(filteredItems);
+  filterItemsByDateUtil("#myItems", "#errorMessageMyItemsPage", items);
 }
 
 export {MyItemsPage, showMyItemsButtons};
