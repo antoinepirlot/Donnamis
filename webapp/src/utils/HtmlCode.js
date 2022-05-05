@@ -191,7 +191,7 @@ function showItemsTypes(datalistId, itemsTypes) {
   itemsTypeList.innerHTML = "";
   itemsTypes.forEach(itemsType => {
     itemsTypeList.innerHTML += `
-      <option value="${itemsType.itemType}">
+      <option value="${he.decode(itemsType.itemType)}">
     `;
   });
 }

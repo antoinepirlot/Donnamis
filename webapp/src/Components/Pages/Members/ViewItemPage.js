@@ -62,6 +62,7 @@ const viewOfferHtml = `
 let lastOffer;
 let item;
 let errorMessageDiv;
+let he = require('he');
 
 /**
  * Render the OfferPage :
@@ -106,7 +107,8 @@ async function ViewItemPage() {
 }
 
 function createModifyItemModal() {
-  let itemDescription = item.itemDescription ? item.itemDescription : "";
+  let itemDescription = item.itemDescription ? item.itemDescription
+      : "";
   let timeSlot = item.offerList[0].timeSlot ? item.offerList[0].timeSlot : "";
   return `
     <!-- Modal Modify Item -->
@@ -146,16 +148,17 @@ function showItemInfo() {
   }
 
   const titleDiv = document.querySelector("#titleViewItemPage");
-  titleDiv.innerHTML = item.title;
+  titleDiv.innerHTML = he.decode(item.title);
 
   const memberDiv = document.querySelector("#memberViewItemPage");
-  memberDiv.innerHTML = `Offre proposée par : ${item.member.firstName} ${item.member.lastName} `;
+  memberDiv.innerHTML = `Offre proposée par : ${he.decode(
+      item.member.firstName)} ${he.decode(item.member.lastName)} `;
 
   const itemType = document.querySelector("#itemTypeViewItemPage");
-  itemType.innerHTML = `Type : ${item.itemType.itemType}`;
+  itemType.innerHTML = `Type : ${he.decode(item.itemType.itemType)}`;
 
   const descriptionDiv = document.querySelector("#descriptionViewItemPage");
-  descriptionDiv.innerHTML = `Description : ${item.itemDescription}`;
+  descriptionDiv.innerHTML = `Description : ${he.decode(item.itemDescription)}`;
 
   const availabilitiesDiv = document.querySelector(
       "#availabilitiesViewItemPage");
