@@ -20,6 +20,9 @@ const viewSearchbarHtml = `
 </div>
 `;
 
+//'he' is a library to decode HTML element from a string
+let he = require('he');
+
 async function SearchMembersPage() {
   if (!isAdmin()) {
     Redirect("/");
@@ -33,8 +36,6 @@ async function SearchMembersPage() {
   //Listener pour chaque frappe au clavier
   const searchInput = document.getElementById('searchInput');
   searchInput.addEventListener('keyup', function () {
-        //'he' is a library to decode HTML element from a string
-        let he = require('he');
 
         //Empty the table
         tbody.innerHTML = "";
@@ -62,8 +63,8 @@ function showFilterMembers(members) {
   members.forEach((member) => {
     tbody.innerHTML += `
       <tr id="MemberLine">
-        <td>${member.firstName}</td>
-        <td>${member.lastName}</td>
+        <td>${he.decode(member.firstName)}</td>
+        <td>${he.decode(member.lastName)}</td>
         <td><a href="/member?id=${member.id}" type="button" class="btn btn-primary">Voir détails</a></td>
       </tr>    
     `;
