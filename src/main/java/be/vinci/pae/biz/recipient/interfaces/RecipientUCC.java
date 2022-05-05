@@ -17,4 +17,13 @@ public interface RecipientUCC {
    * @return true if it exists otherwise false
    */
   boolean exists(RecipientDTO recipientDTO);
+
+  /**
+   * Set the field received "not received" for the recipient if the field received is actually
+   * "waiting".
+   *
+   * @param recipientDTO the recipient to change
+   * @return true if success otherwise false
+   */
+  boolean setRecipientUnavailable(RecipientDTO recipientDTO);
 }

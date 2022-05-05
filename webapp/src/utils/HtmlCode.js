@@ -7,6 +7,8 @@ import {Redirect} from "../Components/Router/Router";
 import {openModal} from "./Modals";
 import {getInterestedMembers} from "./BackEndRequests";
 
+let he = require('he');
+
 function getShowItemsHtml(items) {
   let html = "";
   html += `<div id="all-item-cards">`
@@ -16,8 +18,8 @@ function getShowItemsHtml(items) {
         <div class="card">
         <img src="data:image/png;base64,${item.photo}" id="smallItemImage" class="card-img-top" alt="Card image cap">
           <div class="card-body">
-            <h5 class="card-title">${item.title}</h5>
-            <p class="card-text">${item.itemDescription}</p>
+            <h5 class="card-title">${he.decode(item.title)}</h5>
+            <p class="card-text">${he.decode(item.itemDescription)}</p>
             <div id="itemButtons">
               <a href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir les détails</a>
             </div>
@@ -36,8 +38,8 @@ function getAssignedItemHtml(item) {
       <div class="card">
       <img src="data:image/png;base64,${item.photo}" class="card-img-top" alt="Card image cap">
         <div class="card-body">
-          <h5 class="card-title">${item.title}</h5>
-          <p class="card-text">${item.itemDescription}</p>
+          <h5 class="card-title">${he.decode(item.title)}</h5>
+          <p class="card-text">${he.decode(item.itemDescription)}</p>
           <div id="itemButtons">
             <a href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir les détails</a>
           </div>
@@ -53,8 +55,8 @@ function getGivenItemHtml(item, ratings) {
       <div class="card">
         <img src="data:image/png;base64,${item.photo}" class="card-img-top" alt="Card image cap">
         <div class="card-body">
-          <h5 class="card-title">${item.title}</h5>
-          <p class="card-text">${item.itemDescription}</p>
+          <h5 class="card-title">${he.decode(item.title)}</h5>
+          <p class="card-text">${he.decode(item.itemDescription)}</p>
           <div id="itemButtons">
             <a href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir les détails</a>
           </div>
@@ -79,8 +81,8 @@ async function getMyItemsHtml(items) {
         <div class="card">
         <img src="data:image/png;base64,${item.photo}" class="card-img-top" alt="Card image cap">
           <div class="card-body">
-            <h5 class="card-title">${item.title}</h5>
-            <p class="card-text">${item.itemDescription}</p>
+            <h5 class="card-title">${he.decode(item.title)}</h5>
+            <p class="card-text">${he.decode(item.itemDescription)}</p>
             <div id="itemButtons">
               <a href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir les détails</a>
 
@@ -189,7 +191,7 @@ function showItemsTypes(datalistId, itemsTypes) {
   itemsTypeList.innerHTML = "";
   itemsTypes.forEach(itemsType => {
     itemsTypeList.innerHTML += `
-      <option value="${itemsType.itemType}">
+      <option value="${he.decode(itemsType.itemType)}">
     `;
   });
 }

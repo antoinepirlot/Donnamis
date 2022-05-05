@@ -2,11 +2,13 @@ import {checkToken, getObject, getPayload,} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
 import {showError} from "../../../utils/ShowError";
 import {
+  getAllPublicItems,
   getItem,
   modifyTheItem,
   postInterest as postInterestBackEnd
 } from "../../../utils/BackEndRequests";
 import {closeModal, openModal} from "../../../utils/Modals";
+import {getShowItemsHtml} from "../../../utils/HtmlCode";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3" xmlns="http://www.w3.org/1999/html">
@@ -30,6 +32,14 @@ const viewOfferHtml = `
 </div>
 <!-- Modal Modify Item is in createModifyItemModal function-->
 
+<div id="suggestedItemsTitle">
+  <p class="display-4"> Voici des objets de la même catégorie : </p> 
+  <div id="suggestedItems">
+    
+  </div>
+</div>
+
+
 <!-- Modal Post Interest -->
 <div id="interestModal" class="modal">
   <div class="modal-content">
@@ -52,6 +62,7 @@ const viewOfferHtml = `
 let lastOffer;
 let item;
 let errorMessageDiv;
+let he = require('he');
 
 /**
  * Render the OfferPage :
@@ -83,6 +94,12 @@ async function ViewItemPage() {
       //post an interest
       postInterestButton.addEventListener("click", showInterestForm);
     }
+    const suggestedItems = document.querySelector("#suggestedItems");
+    const items = await getAllPublicItems();
+    suggestedItems.innerHTML = getShowItemsHtml(
+        items.filter(
+            items => items.itemType.itemType == item.itemType.itemType
+                && items.id !== item.id));
   } catch (e) {
     console.error(e);
     showError("Une erreur est survenue.", "danger", errorMessageDiv);
@@ -90,7 +107,8 @@ async function ViewItemPage() {
 }
 
 function createModifyItemModal() {
-  let itemDescription = item.itemDescription ? item.itemDescription : "";
+  let itemDescription = item.itemDescription ? item.itemDescription
+      : "";
   let timeSlot = item.offerList[0].timeSlot ? item.offerList[0].timeSlot : "";
   return `
     <!-- Modal Modify Item -->
@@ -130,16 +148,17 @@ function showItemInfo() {
   }
 
   const titleDiv = document.querySelector("#titleViewItemPage");
-  titleDiv.innerHTML = item.title;
+  titleDiv.innerHTML = he.decode(item.title);
 
   const memberDiv = document.querySelector("#memberViewItemPage");
-  memberDiv.innerHTML = `Offre proposée par : ${item.member.firstName} ${item.member.lastName} `;
+  memberDiv.innerHTML = `Offre proposée par : ${he.decode(
+      item.member.firstName)} ${he.decode(item.member.lastName)} `;
 
   const itemType = document.querySelector("#itemTypeViewItemPage");
-  itemType.innerHTML = `Type : ${item.itemType.itemType}`;
+  itemType.innerHTML = `Type : ${he.decode(item.itemType.itemType)}`;
 
   const descriptionDiv = document.querySelector("#descriptionViewItemPage");
-  descriptionDiv.innerHTML = `Description : ${item.itemDescription}`;
+  descriptionDiv.innerHTML = `Description : ${he.decode(item.itemDescription)}`;
 
   const availabilitiesDiv = document.querySelector(
       "#availabilitiesViewItemPage");

@@ -42,4 +42,17 @@ public class RecipientUCCImpl implements RecipientUCC {
       throw new FatalException(e);
     }
   }
+
+  @Override
+  public boolean setRecipientUnavailable(RecipientDTO recipientDTO) {
+    try {
+      this.dalServices.start();
+      boolean setCorrectly = this.recipientDAO.setRecipientUnavailable(recipientDTO);
+      this.dalServices.commit();
+      return setCorrectly;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw new FatalException(e);
+    }
+  }
 }

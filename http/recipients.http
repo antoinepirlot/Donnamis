@@ -10,3 +10,14 @@ Content-Type: application/json
     "username": "bri"
   }
 }
+
+### Set Recipient Unavailable
+PUT {{baseUrl}}/recipients/unavailable
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "member": {
+    "id": 2
+  }
+}
