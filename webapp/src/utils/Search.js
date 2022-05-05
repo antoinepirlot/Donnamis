@@ -1,4 +1,5 @@
 import {getMyItemsHtml, getShowItemsHtml} from "./HtmlCode";
+import {showMyItemsButtons} from "../Components/Pages/Members/MyItemsPage";
 
 const searchBarHtml = `
   <input class="form-control me-2 w-75 d-inline-block" id="searchInput" type="search" placeholder="Rechercher un objet" aria-label="Rechercher"> 
@@ -16,7 +17,7 @@ function createItemsSearchBar(items, searchBarId, contentId, pageName) {
   searchBar.innerHTML = searchBarHtml;
   const searchInput = document.querySelector("#searchInput");
   const tbody = document.querySelector(contentId);
-  searchInput.addEventListener("keyup", () => {
+  searchInput.addEventListener("keyup", async () => {
     //Empty the table
     tbody.innerHTML = "";
     //'he' is a library to decode HTML element from a string
@@ -37,6 +38,7 @@ function createItemsSearchBar(items, searchBarId, contentId, pageName) {
         tbody.innerHTML = getShowItemsHtml(result);
       } else if (pageName === "myItemsPage") {
         tbody.innerHTML = getMyItemsHtml(result);
+        await showMyItemsButtons();
       }
     }
   });

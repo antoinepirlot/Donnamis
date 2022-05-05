@@ -5,7 +5,6 @@
 import {getPayload} from "./session";
 import {Redirect} from "../Components/Router/Router";
 import {openModal} from "./Modals";
-import {getInterestedMembers} from "./BackEndRequests";
 
 let he = require('he');
 
@@ -73,7 +72,7 @@ function getGivenItemHtml(item, ratings) {
   return html;
 }
 
-async function getMyItemsHtml(items) {
+function getMyItemsHtml(items) {
   let html = "";
   for (const item of items) {
     html += `
@@ -92,11 +91,9 @@ async function getMyItemsHtml(items) {
     const markReceivedButtonHtml = `<td><button id="markReceivedButton" class="btn btn-primary" value="${item.id}">Objet donné</button></td>`;
     const chooseRecipientButtonHtml = `<td><button id="chooseRecipientButton" class="btn btn-primary" value="${item.id}">Choisir un receveur</button></td>`;
     const markNotGivenButtonHtml = `<td><button id="markNotGivenButton" class="btn btn-primary" value="${item.id}">Objet non récupéré</button></td>`;
-
-    const members = await getInterestedMembers(item.offerList[0].id);
     if (item.offerStatus === "donated") {
       // If no one is interested
-      if (members == null) {
+      if (item.offerList[0].numberOfInterests === 0) {
         html += `
         ${offerAgainButtonHtml}
         ${cancelButtonHtml}

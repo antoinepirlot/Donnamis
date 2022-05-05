@@ -5,7 +5,7 @@ import AllItemsPage from "../Pages/Admins/AllItemsPage"
 import RegisterPage from "../Pages/Public/RegisterPage";
 import ViewItemPage from "../Pages/Members/ViewItemPage";
 import DonateAnItemPage from "../Pages/Members/DonateAnItemPage";
-import MyItemsPage from "../Pages/Members/MyItemsPage";
+import {MyItemsPage} from "../Pages/Members/MyItemsPage";
 import ProfilePage from "../Pages/Members/ProfilePage";
 import HomePage from "../Pages/Public/HomePage";
 import MyAssignedItems from "../Pages/Members/MyAssignedItems";

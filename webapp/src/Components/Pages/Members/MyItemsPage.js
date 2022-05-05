@@ -87,8 +87,8 @@ const MyItemsPage = async () => {
     return;
   }
   const myItemsDiv = document.querySelector("#myItems");
-  myItemsDiv.innerHTML = await getMyItemsHtml(items);
-  await showButtons();
+  myItemsDiv.innerHTML = getMyItemsHtml(items);
+  await showMyItemsButtons();
   createItemsSearchBar(items, "#searchBarMyItemsPage", "#myItems",
       "myItemsPage");
   const dateForm = document.querySelector("#searchDateMyItemsPage");
@@ -114,7 +114,7 @@ async function filterItemsByAll() {
 
   const myItemsDiv = document.querySelector("#myItems");
   myItemsDiv.innerHTML = await getMyItemsHtml(items);
-  await showButtons();
+  await showMyItemsButtons();
 }
 
 //Rajouter systeme de filter on/off
@@ -136,10 +136,10 @@ async function filterItemsByInterested() {
 
   const myItemsDiv = document.querySelector("#myItems");
   myItemsDiv.innerHTML = await getMyItemsHtml(filterItems);
-  await showButtons();
+  await showMyItemsButtons();
 }
 
-async function showButtons() {
+async function showMyItemsButtons() {
   /*************/
   /*Offer again*/
   /*************/
@@ -317,7 +317,7 @@ async function filterItemsByDate(e) {
     const errorDiv = document.querySelector("#errorMessageMyItemsPage");
     showError("Aucun objet pour ces dates.", "info", errorDiv);
   }
-  myItemsDiv.innerHTML = await getMyItemsHtml(filteredItems);
+  myItemsDiv.innerHTML = getMyItemsHtml(filteredItems);
 }
 
-export default MyItemsPage;
+export {MyItemsPage, showMyItemsButtons};
