@@ -9,6 +9,7 @@ import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ForbiddenException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
+import be.vinci.pae.ihm.filter.AuthorizeAdmin;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -72,10 +73,11 @@ public class RecipientResource {
   @PUT
   @Path("unavailable")
   @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
   public void setRecipientUnavailable(RecipientDTO recipientDTO) {
 
     //Verify the content of the body of the request
-    if (recipientDTO == null || recipientDTO.getId() < 1) {
+    if (recipientDTO == null || recipientDTO.getMember().getId() < 1) {
       throw new WrongBodyDataException("Recipient is null or wrong id");
     }
 
@@ -85,7 +87,7 @@ public class RecipientResource {
     }
 
     //Change the state of the recipient
-    if (recipientUCC.setRecipientUnavailable(recipientDTO)) {
+    if (!recipientUCC.setRecipientUnavailable(recipientDTO)) {
       throw new FatalException("An unexpected error happened while set recipient unavailable");
     }
 
