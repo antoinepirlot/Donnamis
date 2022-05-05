@@ -17,10 +17,12 @@ public class InterestDAOImpl implements InterestDAO {
 
   @Override
   public boolean markInterest(InterestDTO interestDTO) {
-    String query =
-        "INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, "
-            + "version_interest) "
-            + "VALUES (?, ?, ?, ?, 1); ";
+    String query = "INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, "
+        + "version_interest) "
+        + "VALUES (?, ?, ?, ?, 1); "
+        + "UPDATE project_pae.offers "
+        + "SET number_of_interests = number_of_interests + 1"
+        + "WHERE id_offer = ?;";
     if (interestDTO.isCallWanted()) {
       query += "UPDATE project_pae.members "
           + "SET phone = ?, version_member = version_member + 1 "
@@ -31,10 +33,11 @@ public class InterestDAOImpl implements InterestDAO {
       ps.setInt(2, interestDTO.getOffer().getId());
       ps.setInt(3, interestDTO.getMember().getId());
       ps.setTimestamp(4, interestDTO.getDate());
+      ps.setInt(5, interestDTO.getOffer().getId());
       if (interestDTO.isCallWanted()) {
-        ps.setString(5, StringEscapeUtils
+        ps.setString(6, StringEscapeUtils
             .escapeHtml4(interestDTO.getMember().getPhoneNumber()));
-        ps.setInt(6, interestDTO.getMember().getId());
+        ps.setInt(7, interestDTO.getMember().getId());
       }
       return ps.executeUpdate() != 0;
     } catch (SQLException e) {
