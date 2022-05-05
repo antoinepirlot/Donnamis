@@ -487,6 +487,23 @@ async function setMemberAvailability(member) {
   }
 }
 
+async function setRecipientUnavailable(recipient) {
+  const request = {
+    method: "PUT",
+    headers: {
+      "Authorization": getObject("token"),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(recipient)
+  };
+  const response = await fetch("api/recipients/unavailable", request);
+
+  if (!response.ok) {
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText);
+  }
+}
+
 async function getAllRatings() {
   const request = {
     method: "GET", headers: {
@@ -575,5 +592,6 @@ export {
   modifyTheItem,
   getAllRatings,
   evaluateItemBackEnd,
-  setMemberAvailability
+  setMemberAvailability,
+  setRecipientUnavailable
 };
