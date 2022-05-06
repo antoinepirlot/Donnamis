@@ -21,7 +21,7 @@ public interface MemberUCC {
   MemberDTO getOneMember(int id);
 
   /**
-   * Get one member by his username
+   * Get one member by his username.
    *
    * @param memberDTO the member with the username
    * @return the member found or null
