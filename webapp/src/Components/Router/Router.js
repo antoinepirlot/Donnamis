@@ -8,6 +8,7 @@ import DonateAnItemPage from "../Pages/Members/DonateAnItemPage";
 import MyItemsPage from "../Pages/Members/MyItemsPage";
 import ProfilePage from "../Pages/Members/ProfilePage";
 import HomePage from "../Pages/Public/HomePage";
+import MyGivenItems from "../Pages/Members/MyGivenItems"
 import MyAssignedItems from "../Pages/Members/MyAssignedItems";
 import MemberPage from "../Pages/Admins/MemberPage";
 import SearchMembersPage from "../Pages/Admins/SearchMembersPage";
@@ -25,6 +26,7 @@ const routes = {
   "/offer_item": DonateAnItemPage,
   "/my_items": MyItemsPage,
   "/profil": ProfilePage,
+  "/given_items": MyGivenItems,
   "/assigned_items": MyAssignedItems,
   "/search_members": SearchMembersPage,
   "/member": MemberPage,
