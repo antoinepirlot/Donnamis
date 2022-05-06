@@ -120,9 +120,9 @@ public class MemberResource {
       throw new WrongBodyDataException("The idOffer is less than 1");
     }
     List<MemberDTO> memberDTO = this.memberUCC.getInterestedMembers(idOffer);
-//    if (memberDTO == null) {
-//      throw new ObjectNotFoundException("Member not found with idOffer: " + idOffer);
-//    }
+    if (memberDTO == null) {
+      throw new ObjectNotFoundException("Member not found with idOffer: " + idOffer);
+    }
     return this.jsonUtil.filterPublicJsonViewAsList(memberDTO);
   }
 
