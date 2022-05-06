@@ -223,10 +223,9 @@ public class ItemResource {
     }
     List<ItemDTO> itemDTOList = this.itemUCC.getAssignedItems(idMember);
 
-    //Si aucun objet assigné ==> INUTILE
-    //if (itemDTOList == null) {
-    //  throw new ObjectNotFoundException("No assigned items");
-    //}
+    if (itemDTOList == null) {
+      throw new ObjectNotFoundException("No assigned items");
+    }
     for (ItemDTO itemDTO : itemDTOList) {
       try {
         itemDTO.setPhoto(transformImageToBase64(itemDTO));
