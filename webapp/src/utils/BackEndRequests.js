@@ -205,6 +205,25 @@ async function getAssignedItems() {
   return await response.json();
 }
 
+async function getGivenItems() {
+  const idMember = getPayload().id;
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/items/given_items/${idMember}`,
+      request);
+  if (!response.ok) {
+    throw new Error("Erreur lors du fetch");
+  }
+  if (response.status == 204) {
+    return;
+  }
+  return await response.json();
+}
+
 async function getItem(idItem) {
   const request = {
     method: "GET",
@@ -593,5 +612,6 @@ export {
   getAllRatings,
   evaluateItemBackEnd,
   setMemberAvailability,
-  setRecipientUnavailable
+  setRecipientUnavailable,
+  getGivenItems
 };

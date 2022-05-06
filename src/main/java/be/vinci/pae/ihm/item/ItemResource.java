@@ -60,12 +60,8 @@ public class ItemResource {
   @AuthorizeAdmin
   public List<ItemDTO> getAllItems() {
     try {
-      List<ItemDTO> itemDTOList = this.getAllItemsByOfferStatusOrIdMember(null, -1);
-      for (ItemDTO itemDTO : itemDTOList) {
-        itemDTO.setPhoto(transformImageToBase64(itemDTO));
-      }
-      return itemDTOList;
-    } catch (SQLException | IOException e) {
+      return this.getAllItemsByOfferStatusOrIdMember(null, -1);
+    } catch (SQLException e) {
       throw new FatalException("Can't get all items");
     }
   }
@@ -88,12 +84,8 @@ public class ItemResource {
       throw new WrongBodyDataException("Offer status " + offerStatus + " is not valid.");
     }
     try {
-      List<ItemDTO> itemDTOList = this.getAllItemsByOfferStatusOrIdMember(offerStatus, -1);
-      for (ItemDTO itemDTO : itemDTOList) {
-        itemDTO.setPhoto(transformImageToBase64(itemDTO));
-      }
-      return itemDTOList;
-    } catch (SQLException | IOException e) {
+      return this.getAllItemsByOfferStatusOrIdMember(offerStatus, -1);
+    } catch (SQLException  e) {
       throw new FatalException("Can't get all items by offer status: " + offerStatus);
     }
   }
@@ -102,15 +94,7 @@ public class ItemResource {
   @Path("all_items/public")
   @Produces(MediaType.APPLICATION_JSON)
   public List<ItemDTO> getAllPublicItems() {
-    try {
-      List<ItemDTO> itemDTOList = this.itemUCC.getAllPublicItems();
-      for (ItemDTO itemDTO : itemDTOList) {
-        itemDTO.setPhoto(transformImageToBase64(itemDTO));
-      }
-      return itemDTOList;
-    } catch (IOException e) {
-      throw new FatalException("Can't get all public items");
-    }
+    return this.itemUCC.getAllPublicItems();
   }
 
   /**
@@ -131,12 +115,8 @@ public class ItemResource {
       throw new ObjectNotFoundException("This member doesn't exists.");
     }
     try {
-      List<ItemDTO> itemDTOList = this.getAllItemsByOfferStatusOrIdMember(null, idMember);
-      for (ItemDTO itemDTO : itemDTOList) {
-        itemDTO.setPhoto(transformImageToBase64(itemDTO));
-      }
-      return itemDTOList;
-    } catch (SQLException | IOException e) {
+      return this.getAllItemsByOfferStatusOrIdMember(null, idMember);
+    } catch (SQLException e) {
       throw new FatalException("Can't get all items by member id: " + idMember);
     }
   }
@@ -171,15 +151,6 @@ public class ItemResource {
     if (itemDTOList == null) {
       return null;
     }
-
-    for (ItemDTO itemDTO : itemDTOList) {
-      try {
-        itemDTO.setPhoto(transformImageToBase64(itemDTO));
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-
     return this.jsonUtil.filterPublicJsonViewAsList(itemDTOList);
   }
 
@@ -197,11 +168,6 @@ public class ItemResource {
     ItemDTO itemDTO = itemUCC.getOneItem(id);
     if (itemDTO == null) {
       throw new ObjectNotFoundException("No item matching id: " + id);
-    }
-    try {
-      itemDTO.setPhoto(transformImageToBase64(itemDTO));
-    } catch (IOException e) {
-      e.printStackTrace();
     }
     this.offerUCC.getLastTwoOffersOf(itemDTO);
     return this.jsonUtil.filterPublicJsonView(itemDTO);
@@ -222,17 +188,25 @@ public class ItemResource {
       throw new WrongBodyDataException("idMember < 0 for get assigned items");
     }
     List<ItemDTO> itemDTOList = this.itemUCC.getAssignedItems(idMember);
+    return this.jsonUtil.filterPublicJsonViewAsList(itemDTOList);
+  }
 
-    if (itemDTOList == null) {
-      throw new ObjectNotFoundException("No assigned items");
+  /**
+   * This method get items that have been given by this member identified by its id.
+   *
+   * @param idMember the member's id
+   * @return the list of given items of the member
+   */
+  @GET
+  @Path("given_items/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
+  public List<ItemDTO> getGivenItems(@PathParam("id") int idMember) {
+
+    if (idMember < 0) {
+      throw new WrongBodyDataException("id member can't be negative");
     }
-    for (ItemDTO itemDTO : itemDTOList) {
-      try {
-        itemDTO.setPhoto(transformImageToBase64(itemDTO));
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
+    List<ItemDTO> itemDTOList = this.itemUCC.getGivenItems(idMember);
     return this.jsonUtil.filterPublicJsonViewAsList(itemDTOList);
   }
 
@@ -448,23 +422,6 @@ public class ItemResource {
       this.offerUCC.getLastTwoOffersOf(itemDTO);
     }
     return listItemDTO;
-  }
-
-  private String transformImageToBase64(ItemDTO itemDTO) throws IOException {
-    if (itemDTO == null
-        || itemDTO.getPhoto() == null || itemDTO.getPhoto().isBlank()) {
-      return null;
-    }
-    String photoSignature = itemDTO.getPhoto();
-    String path = Config.getPhotoPath();
-    String photoPath = path + "\\" + photoSignature;
-    byte[] fileContent;
-    try {
-      fileContent = FileUtils.readFileToByteArray(new File(photoPath));
-    } catch (IOException e) {
-      throw new FatalException(e);
-    }
-    return Base64.getEncoder().encodeToString(fileContent);
   }
 
   /**
