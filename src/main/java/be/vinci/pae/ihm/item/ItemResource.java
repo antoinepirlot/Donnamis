@@ -424,23 +424,6 @@ public class ItemResource {
     return listItemDTO;
   }
 
-  private String transformImageToBase64(ItemDTO itemDTO) {
-    if (itemDTO == null
-        || itemDTO.getPhoto() == null || itemDTO.getPhoto().isBlank()) {
-      return null;
-    }
-    String photoSignature = itemDTO.getPhoto();
-    String path = Config.getPhotoPath();
-    String photoPath = path + "\\" + photoSignature;
-    byte[] fileContent;
-    try {
-      fileContent = FileUtils.readFileToByteArray(new File(photoPath));
-    } catch (IOException e) {
-      throw new FatalException(e);
-    }
-    return Base64.getEncoder().encodeToString(fileContent);
-  }
-
   /**
    * Check itemDTO for mark item as {offerStatus}.
    *
