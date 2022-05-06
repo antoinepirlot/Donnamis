@@ -2,7 +2,6 @@ import {getObject, getPayload,} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
 import {showError} from "../../../utils/ShowError";
 import {
-  getOneMember,
   modifyMember as modifyMemberBackEnd
 } from "../../../utils/BackEndRequests";
 
@@ -37,7 +36,7 @@ const viewProfileHtml = `
 `;
 
 async function ProfilePage() {
-  if (!await getPayload()) {
+  if (!getPayload()) {
     Redirect("/");
     return;
   }
