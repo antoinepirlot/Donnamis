@@ -260,6 +260,29 @@ public class ItemDAOImpl implements ItemDAO {
   }
 
   @Override
+  public List<ItemDTO> getGivenItems(int idMember) {
+    String query = "SELECT DISTINCT i.id_item, i.item_description, i.id_type, i.id_member, "
+        + "i.photo, i.title, i.offer_status, i.last_offer_date, i.version_item, it.id_type, "
+        + "it.item_type, it.version_items_type, m.id_member, m.username, m.last_name, "
+        + "m.first_name, m.version_member "
+        + "FROM project_pae.items i, project_pae.members m, project_pae.items_types it "
+        + "WHERE i.id_type = it.id_type AND i.id_member = m.id_member AND "
+        + "m.id_member = ? AND i.offer_status = 'given';";
+    List<ItemDTO> listItemDTO = new ArrayList<>();
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setInt(1, idMember);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          listItemDTO.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
+        }
+        return listItemDTO.isEmpty() ? null : listItemDTO;
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
+  }
+
+  @Override
   public boolean markItemAsGiven(ItemDTO itemDTO) {
     try {
       return this.markItemAs(true, itemDTO);

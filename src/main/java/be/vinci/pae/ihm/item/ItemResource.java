@@ -238,6 +238,33 @@ public class ItemResource {
   }
 
   /**
+   * This method get items that have been given by this member identified by its id.
+   *
+   * @param idMember the member's id
+   * @return the list of given items of the member
+   */
+  @GET
+  @Path("given_items/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AuthorizeMember
+  public List<ItemDTO> getGivenItems(@PathParam("id") int idMember) {
+
+    if (idMember < 0) {
+      throw new WrongBodyDataException("id member can't be negative");
+    }
+    List<ItemDTO> itemDTOList = this.itemUCC.getGivenItems(idMember);
+
+    for (ItemDTO itemDTO : itemDTOList) {
+      try {
+        itemDTO.setPhoto(transformImageToBase64(itemDTO));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    return this.jsonUtil.filterPublicJsonViewAsList(itemDTOList);
+  }
+
+  /**
    * Count the number of items with a specific offer status for the member with the idMember.
    *
    * @param idMember    the member's id

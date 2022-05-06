@@ -1,5 +1,5 @@
 ### See all items
-GET {{baseUrl}}/items/all_items
+GET {{baseUrl}}/items/all_items/public
 Authorization: {{token}}
 
 ### See all offered items
@@ -65,4 +65,8 @@ Authorization: {{token}}
 
 ### See item by its id
 GET {{baseUrl}}/items/1
+Authorization: {{token}}
+
+### Get Given Items
+GET {{baseUrl}}/items/given_items/5
 Authorization: {{token}}

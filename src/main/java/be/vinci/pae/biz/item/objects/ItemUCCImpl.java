@@ -108,6 +108,19 @@ public class ItemUCCImpl implements ItemUCC {
   }
 
   @Override
+  public List<ItemDTO> getGivenItems(int idMember) {
+    try {
+      this.dalServices.start();
+      List<ItemDTO> listItemDTO = this.itemDAO.getGivenItems(idMember);
+      this.dalServices.commit();
+      return listItemDTO;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw new FatalException(e);
+    }
+  }
+
+  @Override
   public boolean markItemAsGiven(ItemDTO itemDTO) {
     return this.markItemAs(true, itemDTO);
   }
