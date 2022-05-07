@@ -14,11 +14,11 @@ const loginFormHtml = `
 <div class="form">
   <form  id="loginForm" class="shadow-lg p-3 mb-5 bg-white rounded">
     <div class="mb-3">
-      <label class="form-label">Pseudo</label>
+      <label class="form-label">Pseudo<span id="asterisk">*</span></label>
       <input type="text" class="form-control" id="usernameInput">
     </div>
     <div class="mb-3">
-      <label class="form-label">Mot de passe</label>
+      <label class="form-label">Mot de passe<span id="asterisk">*</span></label>
       <input type="password" class="form-control" id="passwordInput">
       <input type="checkbox" id="checkPassword"> Voir mot de passe
     </div>
@@ -27,6 +27,8 @@ const loginFormHtml = `
       <label class="form-check-label" >Se souvenir de moi</label>
     </div>
     <button type="submit" class="btn btn-primary">Se connecter</button>
+    <br>
+    <span id="asterisk">* Champs obligatoires</span>
     <div class="message" id="loginMessage"></div>
   </form>
 </div>

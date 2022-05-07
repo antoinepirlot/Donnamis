@@ -5,6 +5,10 @@
   margin-top: auto;
 }
 
+#asterisk {
+  color: red;
+}
+
 #usernameNavbar {
   margin-right: 1rem;
 }
@@ -141,13 +145,13 @@ body {
   padding: 0.8rem;
 }
 
-#loginForm, #registerForm, #tbody_registered_members, #tbody_denied_members, #tbody_all_members {
+#loginForm, #registerForm, #modifyForm #tbody_registered_members, #tbody_denied_members, #tbody_all_members {
   background-color: white;
   border-radius: 5px;
   padding: 10% 10% 10% 10%;
 }
 
-#registerForm {
+#registerForm, #modifyForm {
   min-height: 570px;
   max-height: 570px;
   height: 570px;

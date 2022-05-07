@@ -8,10 +8,10 @@ import {getProfileFormHtml} from "../../../utils/HtmlCode";
 import Navbar from "../../Navbar/Navbar";
 
 const viewProfileHtml = `
-  <div class="bg-info d-inline-flex d-flex flex-column rounded w-50 p-3">
-    <h2 class="display-4">Modifier mon profile</h2>
-    <form id="modifyForm">
-    </form> 
+  <h1 class="display-3" id="login_title">Mon Profile</h1>
+  <div class="form">
+      <form id="modifyForm" class="d-flex bd-highlight mb-3 shadow-lg p-3 mb-5 bg-white rounded">
+      </form> 
   </div>
   <div id="errorMessage"></div>
 `;

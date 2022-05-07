@@ -33,33 +33,62 @@ function getProfileFormHtml() {
   const member = getObject("memberDTO");
   const address = member.address;
 
-  return `      
-      <p>Nom* :</p>
-      <input id="nameForm" type="text" value="${member.lastName}" required>
-      <p>Prénom :</p>
-      <input id="firstnameForm" type="text" value="${member.firstName}" required>
-      <p>Pseudo :</p>
-      <input id="usernameForm" type="text" value="${member.username}" required>
-      <p>Mot de passe :</p>
-      <input id="passwordForm" type="password" required>
-      <p>Confirmez le mot de passe :</p>
-      <input id="passwordConfirmationForm" type = "password" required>
-      <p>Téléphone :</p>
-      <input id="phoneForm" type="tel" value="${member.phoneNumber ? member.phoneNumber : "" }">
-      <br> <br> 
-      <h2 class="display-6">Adresse</h2>
-      <p>Rue :</p>
-      <input id="streetFormProfilePage" type="text" value="${address.street}" required>
-      <p>Numéro :</p>
-      <input id="buildingNumberFormProfilePage" type="text" value="${address.buildingNumber}" required>
-      <p>Numéro de boîte :</p>
-      <input id="unitNumberFormProfilePage" type="text" value="${address.unitNumber ? address.unitNumber : ""}">
-      <p>Code postal :</p>
-      <input id="postCodeFormProfilePage" type="text" value="${address.postcode}" required>
-      <p>Commune :</p>
-      <input id="communeFormProfilePage" type="text" value="${address.commune}" required><br> <br>
-      <input class="btn btn-primary" type="submit" value="Modifier" required>  <br>
-      `;
+  return `
+      <div id="left" class="mr-auto p-2 bd-highlight" xmlns="http://www.w3.org/1999/html">
+        <h3>Mes infos</h3>
+        <div class="mb-3">
+          <label class="form-label">Nom<span id="asterisk">*</span></label>
+          <input id="nameForm" class="form-control" type="text" value="${member.lastName}" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Prénom<span id="asterisk">*</span></label>
+          <input id="firstnameForm" class="form-control" type="text" value="${member.firstName}" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Pseudo<span id="asterisk">*</span></label>
+          <input id="usernameForm" class="form-control" type="text" value="${member.username}" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Mot de passe<span id="asterisk">*</span></label>
+          <input id="passwordForm" class="form-control" type="password" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Confirmez le mot de passe<span id="asterisk">*</span></label>
+          <input id="passwordConfirmationForm" class="form-control" type = "password" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Téléphone<span id="asterisk">*</span></label>
+          <input id="phoneForm" class="form-control" type="tel" value="${member.phoneNumber
+      ? member.phoneNumber : ""}">
+        </div>
+      </div>
+      <div id="right" class="p-2 bd-highlight">
+        <h3>Adresse</h3>
+        <div class="mb-3">
+          <label class="form-label">Rue<span id="asterisk">*</span></label>
+          <input id="streetFormProfilePage" class="form-control" type="text" value="${address.street}" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Numéro<span id="asterisk">*</span></label>
+          <input id="buildingNumberFormProfilePage" class="form-control" type="text" value="${address.buildingNumber}" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Numéro de boîte</label>
+          <input id="unitNumberFormProfilePage" class="form-control" type="text" value="${address.unitNumber
+      ? address.unitNumber : ""}">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Code postal<span id="asterisk">*</span></label>
+          <input id="postCodeFormProfilePage" class="form-control" type="text" value="${address.postcode}" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Commune<span id="asterisk">*</span></label>
+          <input id="communeFormProfilePage" class="form-control" type="text" value="${address.commune}" required>
+        </div>
+        <input class="btn btn-primary align-bottomg" type="submit" value="Modifier">
+        <p id="asterisk">* Champs obligatoires</p>
+      </div>
+  `;
 }
 
 function displayImage(item) {

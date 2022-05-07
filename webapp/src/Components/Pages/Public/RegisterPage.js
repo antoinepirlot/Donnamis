@@ -12,22 +12,22 @@ const registerFormHtml = `
     <div id="left" class="mr-auto p-2 bd-highlight">
       <h3>Mes infos</h3>
       <div class="mb-3">
-        <label class="form-label">Prénom</label>
+        <label class="form-label">Prénom<span id="asterisk">*</span></label>
         <input type="text" class="form-control" id="firstNameInput">
       </div>
       
       <div class="mb-3">
-        <label class="form-label">Nom</label>
+        <label class="form-label">Nom<span id="asterisk">*</span></label>
         <input type="text" class="form-control" id="lastNameInput">
       </div>
       
       <div class="mb-3">
-        <label class="form-label">Pseudo</label>
+        <label class="form-label">Pseudo<span id="asterisk">*</span></label>
         <input type="text" class="form-control" id="usernameInput">
       </div>
       
       <div class="mb-3">
-        <label class="form-label">Mot de passe</label>
+        <label class="form-label">Mot de passe<span id="asterisk">*</span></label>
         <input type="password" class="form-control" id="passwordInput">
       </div>
     </div>
@@ -36,30 +36,32 @@ const registerFormHtml = `
       <h3>Adresse</h3>
       
       <div class="mb-3">
-        <label class="form-label">Rue</label>
+        <label class="form-label">Rue<span id="asterisk">*</span></label>
         <input type="text" class="form-control" id="streetInput">
       </div>
       
       <div class="mb-3">
-        <label class="form-label">Numero</label>
+        <label class="form-label">Numero<span id="asterisk">*</span></label>
         <input type="text" class="form-control" id="buildingNumberInput">
       </div>
       
       <div class="mb-3">
-        <label class="form-label">Boîte (facultatif)</label>
+        <label class="form-label">Boîte</label>
         <input type="text" class="form-control" id="unitNumberInput">
       </div>
       
       <div class="mb-3">
-        <label class="form-label">Commune</label>
+        <label class="form-label">Commune<span id="asterisk">*</span></label>
         <input type="text" class="form-control" id="communeInput">
       </div>
       
       <div class="mb-3">
-        <label class="form-label">Code postal</label>
+        <label class="form-label">Code postal<span id="asterisk">*</span></label>
         <input type="text" class="form-control" id="postcodeInput">
       </div>
       <button type="submit" class="btn btn-primary">S'inscrire</button>
+      <br>
+      <span id="asterisk">* Champs obligatoires</span>
     </div>
   </form>
   <div class="message" id="registerMessage"></div>
