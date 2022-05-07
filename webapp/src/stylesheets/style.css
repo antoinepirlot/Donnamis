@@ -152,7 +152,15 @@ body {
   padding: 10% 10% 10% 10%;
 }
 
-#registerForm, #modifyForm, #offerItemForm {
+#registerForm, #modifyForm {
+  min-height: 570px;
+  max-height: 570px;
+  height: 570px;
+  width: max-content;
+  margin-left: -50%;
+}
+
+#offerItemForm {
   min-height: 570px;
   max-height: 570px;
   height: 570px;
