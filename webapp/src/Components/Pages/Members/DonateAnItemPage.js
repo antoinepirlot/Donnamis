@@ -10,31 +10,39 @@ import {Redirect} from "../../Router/Router";
 import {showItemsTypes} from "../../../utils/HtmlCode";
 
 const htmlForm = `
+  <h1 class="display-3">Offrir un objet</h1>
   <div class="form">
-    <h1 class="display-3">Offrir un objet</h1>
-    <div id="errorMessageOfferAnItemPage"></div>
-    <form id="offerItemForm">
-      Nom de l'objet<span id="asterisk">*</span> : <br>
-      <textarea id="titleForm" cols="30" rows="3"></textarea><br>
-      <br>
-      Description de l'objet<span id="asterisk">*</span> :<br>
-      <textarea id="itemDescriptionForm" cols="30" rows="3"></textarea><br>
-      <br>
-      
-      <br>
-      Disponibilités horaire<span id="asterisk">*</span> :<br>
-      <textarea id="timeSlotForm" cols="30" rows="3"></textarea><br>
-      <br>
-      Type de l'objet<span id="asterisk">*</span>:<br>
-      <input id="itemTypeFormList" list="itemsTypesDonateAnItemPage" placeholder="Séléctionne le type d'objet"><br>
-      <datalist id="itemsTypesDonateAnItemPage"></datalist>
-      <br>
-      <label>Ajouter une photo</label>
-      <input id="photoName" name="file" type= "file" /> <br><br>
-      <input class="btn btn-primary" type="submit" value="Offrir">
-      <div>* Champs obligatoires</div>
+    <form id="offerItemForm" class="d-flex bd-highlight mb-3 shadow-lg p-3 mb-5 bg-white rounded">
+      <div id="left" class="mr-auto p-2 bd-highlight" xmlns="http://www.w3.org/1999/html">
+          <div class="mb-3">
+            <label class="form-label">Nom de l'objet<span id="asterisk">*</span></label>
+            <textarea id="titleForm" class="form-control" cols="30" rows="3"></textarea><br>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description de l'objet<span id="asterisk">*</span></label>
+            <textarea id="itemDescriptionForm" class="form-control" cols="30" rows="3"></textarea><br>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Disponibilités horaire<span id="asterisk">*</span></label>
+            <textarea id="timeSlotForm" class="form-control" cols="30" rows="3"></textarea><br>
+          </div>
+        </div>
+        <div id="right" class="p-2 bd-highlight">
+          <div class="mb-3">
+            <label class="form-label">Type de l'objet<span id="asterisk">*</span></label>
+            <input id="itemTypeFormList" class="form-control" list="itemsTypesDonateAnItemPage" placeholder="Séléctionne le type d'objet"><br>
+            <datalist id="itemsTypesDonateAnItemPage"></datalist>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Ajouter une photo</label>
+            <input id="photoName" class="form-control" name="file" type= "file" /> <br><br>
+          </div>
+          <input class="btn btn-primary" type="submit" value="Offrir"><br>
+          <span id="asterisk">* Champs obligatoires</span>
+        </div>
+      </div>
     </form>
-    
+    <div id="errorMessageOfferAnItemPage"></div>
   </div>
 `;
 

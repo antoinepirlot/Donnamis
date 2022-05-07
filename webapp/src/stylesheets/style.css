@@ -145,13 +145,13 @@ body {
   padding: 0.8rem;
 }
 
-#loginForm, #registerForm, #modifyForm #tbody_registered_members, #tbody_denied_members, #tbody_all_members {
+#loginForm, #registerForm, #modifyForm, #offerItemForm, #tbody_registered_members, #tbody_denied_members, #tbody_all_members {
   background-color: white;
   border-radius: 5px;
   padding: 10% 10% 10% 10%;
 }
 
-#registerForm, #modifyForm {
+#registerForm, #modifyForm, #offerItemForm {
   min-height: 570px;
   max-height: 570px;
   height: 570px;
