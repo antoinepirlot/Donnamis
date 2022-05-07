@@ -9,13 +9,12 @@ import {openModal} from "./Modals";
 let he = require('he');
 
 function getShowItemsHtml(items) {
-  let html = "";
-  html += `<div id="all-item-cards">`
+  let html = `<div id="all-item-cards">`
   for (const item of items) {
     html += `
       <div class="col-sm-3" id="item-card" >
         <div class="card">
-        <img src="data:image/png;base64,${item.photo}" id="smallItemImage" class="card-img-top" alt="Card image cap">
+          ${displayImage(item)}
           <div class="card-body">
             <h5 class="card-title">${he.decode(item.title)}</h5>
             <p class="card-text">${he.decode(item.itemDescription)}</p>
@@ -27,15 +26,23 @@ function getShowItemsHtml(items) {
       </div>
     `;
   }
-  html += `</div>`
-  return html;
+  return html + "</div>";
+}
+
+function displayImage(item) {
+  if (item.photo) {
+    return `<img src="/api/images/${item.photo}" id="smallItemImage"
+                class="card-img-top" alt="Card image cap">`;
+  }
+  return `<img src="/api/images/no-images.png" id="smallItemImage"
+            class="card-img-top" alt="Card image cap">`;
 }
 
 function getAssignedItemHtml(item) {
   return `
     <div class="col-sm-3" id="item-card" >
       <div class="card">
-      <img src="data:image/png;base64,${item.photo}" class="card-img-top" alt="Card image cap">
+        ${displayImage(item)}
         <div class="card-body">
           <h5 class="card-title">${he.decode(item.title)}</h5>
           <p class="card-text">${he.decode(item.itemDescription)}</p>
@@ -52,7 +59,7 @@ function getGivenItemHtml(item, ratings) {
   let html = `
     <div class="col-sm-3" id="item-card" >
       <div class="card">
-        <img src="data:image/png;base64,${item.photo}" class="card-img-top" alt="Card image cap">
+        ${displayImage(item)}
         <div class="card-body">
           <h5 class="card-title">${he.decode(item.title)}</h5>
           <p class="card-text">${he.decode(item.itemDescription)}</p>
@@ -62,13 +69,13 @@ function getGivenItemHtml(item, ratings) {
           <br>
   `;
   if (!ratings || !ratings.find((rating) => rating.item.id === item.id)) {
-    html += `
-          <button id="ratingButton" type="submit" class="btn btn-primary" value="${item.id}">Evaluer</button>
-        </div>
-       </div>
-      </div>
-    `;
+    html += `<button id="ratingButton" type="submit" class="btn btn-primary" value="${item.id}">Evaluer</button>`;
   }
+  html += `
+        </div>
+      </div>
+    </div>
+  `;
   return html;
 }
 
@@ -78,7 +85,7 @@ function getMyItemsHtml(items) {
     html += `
       <div class="col-sm-3 mb-3 d-flex align-items-stretch" id="item-card" >
         <div class="card">
-        <img src="data:image/png;base64,${item.photo}" class="card-img-top" alt="Card image cap">
+          ${displayImage(item)}
           <div class="card-body">
             <h5 class="card-title">${he.decode(item.title)}</h5>
             <p class="card-text">${he.decode(item.itemDescription)}</p>
