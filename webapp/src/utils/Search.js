@@ -37,6 +37,12 @@ function createItemsSearchBar(items, searchBarId, contentId, pageName) {
       if (pageName === "homePage") {
         tbody.innerHTML = getShowItemsHtml(result);
       } else if (pageName === "myItemsPage") {
+        const filterAllItemsButton = document.querySelector(
+            "#MyItemsPageItemsAllButton")
+        filterAllItemsButton.className = "btn btn-primary";
+        const filterInterestedItemsButton = document.querySelector(
+            "#MyItemsPageItemsInterestedButton");
+        filterInterestedItemsButton.className = "btn btn-outline-primary";
         tbody.innerHTML = getMyItemsHtml(result);
         await showMyItemsButtons();
       }

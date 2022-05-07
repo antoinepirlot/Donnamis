@@ -105,7 +105,7 @@ const MyItemsPage = async () => {
       filterItemsByInterested);
 
   const filterAllItems = document.querySelector("#MyItemsPageItemsAllButton");
-  filterAllItems.addEventListener("click", filterItemsByAll)
+  filterAllItems.addEventListener("click", filterItemsByAll);
 }
 
 async function filterItemsByAll() {
