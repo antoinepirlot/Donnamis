@@ -375,7 +375,7 @@ VALUES (false, 12, 3, '16-05-2022', 1);
 
 -- RECIPIENTS TABLE
 INSERT INTO project_pae.recipients (id_item, id_member, received, version_recipient)
-VALUES (9, 1, false, 1);
+VALUES (9, 1, 'waiting', 1);
 
 -- SELECT
 SELECT m.id_member,
