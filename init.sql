@@ -414,3 +414,13 @@ GROUP BY m.last_name,
          i.item_description
 ORDER BY m.last_name,
          i.item_description;
+
+UPDATE project_pae.addresses
+SET street = 'Avenue de l''hélianthe',
+    building_number = 63,
+    unit_number = null,
+    postcode = 1180,
+    commune = 'Forest',
+    version_address = version_address+1
+WHERE id_member = 8;
+
