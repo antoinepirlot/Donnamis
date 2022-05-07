@@ -112,14 +112,14 @@ async function showMemberInformation(member) {
 
       const memberUnavailable = {
         id: member.id,
-        actualState: member.actualState,
+        actualState: member.actualState === "confirmed" ? "unavailable"
+            : "confirmed",
         version: member.version
       };
 
       const recipient = {
         member: memberUnavailable
       };
-
       try {
         await setMemberAvailability(memberUnavailable, pageErrorDiv);
         if (memberUnavailable.actualState === "confirmed") {
@@ -141,6 +141,8 @@ function getActualState(member) {
       return "Confirmé";
     case "denied":
       return "Refusé";
+    case "unavailable":
+      return "Malade";
     default:
       "Statut inconnu";
   }
