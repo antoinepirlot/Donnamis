@@ -8,7 +8,7 @@ import {
   postInterest as postInterestBackEnd
 } from "../../../utils/BackEndRequests";
 import {closeModal, openModal} from "../../../utils/Modals";
-import {getShowItemsHtml} from "../../../utils/HtmlCode";
+import {displayImage, getShowItemsHtml} from "../../../utils/HtmlCode";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3" xmlns="http://www.w3.org/1999/html">
@@ -168,9 +168,7 @@ function showItemInfo() {
   pubDateDiv.innerHTML = `Date de publication : ${date}`;
 
   const image = document.querySelector("#imageItem");
-  image.innerHTML = `
-      <img src="data:image/png;base64,${item.photo}" id="bigImageItem" alt="Card image cap" >
-  `;
+  image.innerHTML = displayImage(item);
 }
 
 async function showInterestForm(e) {

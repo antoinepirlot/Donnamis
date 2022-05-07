@@ -244,5 +244,6 @@ export {
   getAssignedItemHtml,
   getGivenItemHtml,
   getMyItemsHtml,
-  getProfileFormHtml
+  getProfileFormHtml,
+  displayImage
 }
