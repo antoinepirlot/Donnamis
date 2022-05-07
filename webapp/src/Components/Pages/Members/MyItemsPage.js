@@ -170,12 +170,10 @@ async function showMyItemsButtons() {
       "#chooseRecipientButton");
 
   for (const chooseRecipientButton of chooseRecipientButtons) {
-
-    idItem = chooseRecipientButton.value;
-    const item = items.find((item) => item.id == idItem); // == because idItem is a string and item.id an int === will return false even we expect true
-    const members = await getInterestedMembers(item.offerList[0].id);
     chooseRecipientButton.addEventListener("click", async () => {
-
+      idItem = chooseRecipientButton.value;
+      const item = items.find((item) => item.id == idItem); // == because idItem is a string and item.id an int === will return false even we expect true
+      const members = await getInterestedMembers(item.offerList[0].id);
       openModal("#chooseRecipientModal", "#chooseRecipientModalCloseButton");
       const memberList = document.querySelector(
           "#chooseRecipientMembersList");
@@ -271,7 +269,6 @@ async function chooseRecipient(e) {
 async function markItemAs(given) {
   const errorDiv = document.querySelector("#errorMessageMyItemsPage");
   showError("Le changement est en cours...", "info", errorDiv);
-
   const item = await getItem(idItem);
   const itemMark = {
     id: idItem,
