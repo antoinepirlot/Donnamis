@@ -3,8 +3,7 @@ import {
   getNumberOfItems,
   getNumberOfReceivedOrNotReceivedItems,
   getOneMember,
-  setMemberAvailability,
-  setRecipientUnavailable
+  setMemberAvailability
 } from "../../../utils/BackEndRequests";
 import {showError} from "../../../utils/ShowError";
 import {getShowItemsHtml} from "../../../utils/HtmlCode";
@@ -117,17 +116,18 @@ async function showMemberInformation(member) {
         version: member.version
       };
 
-      const recipient = {
-        member: memberUnavailable
-      };
+      // const recipient = {
+      //   member: memberUnavailable
+      // };
       try {
-        await setMemberAvailability(memberUnavailable, pageErrorDiv);
-        if (memberUnavailable.actualState === "confirmed") {
-          await setRecipientUnavailable(recipient);
-        }
+        await setMemberAvailability(memberUnavailable);
+        // if (memberUnavailable.actualState === "unavailable") {
+        //   await setRecipientUnavailable(recipient);
+        // }
         await MemberPage();
       } catch (err) {
         console.error(err);
+        showError("Une erreur est survenue.", "danger", pageErrorDiv);
       }
     });
   }
