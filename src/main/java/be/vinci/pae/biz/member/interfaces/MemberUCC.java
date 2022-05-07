@@ -32,9 +32,9 @@ public interface MemberUCC {
    * Modify the member identified by its id.
    *
    * @param memberDTO the new member
-   * @return the member or null if there's no member with the id
+   * @return true if the member has been modified, else false
    */
-  MemberDTO modifyMember(MemberDTO memberDTO);
+  boolean modifyMember(MemberDTO memberDTO);
 
   /**
    * Confirm the inscription of a member.

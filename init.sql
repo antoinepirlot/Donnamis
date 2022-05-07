@@ -422,5 +422,5 @@ SET street = 'Avenue de l''hélianthe',
     postcode = 1180,
     commune = 'Forest',
     version_address = version_address+1
-WHERE id_member = 8;
+WHERE id_member = 10;
 

@@ -120,23 +120,45 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   @Override
-  public MemberDTO modifyMember(MemberDTO memberDTO) {
-    String query = "UPDATE project_pae.members SET username = ?, password = ?, last_name = ?, "
-        + "first_name = ?, phone = ?, version_member = version_member + 1 WHERE id_member = ? "
-        + "RETURNING *;";
-    try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
-      preparedStatement.setString(1, memberDTO.getUsername());
-      preparedStatement.setString(2, memberDTO.getPassword());
-      preparedStatement.setString(3, memberDTO.getLastName());
-      preparedStatement.setString(4, memberDTO.getFirstName());
-      preparedStatement.setString(5, memberDTO.getPhoneNumber());
-      preparedStatement.setInt(6, memberDTO.getId());
-      try (ResultSet rs = preparedStatement.executeQuery()) {
-        if (rs.next()) {
-          return ObjectsInstanceCreator.createMemberInstance(this.factory, rs);
-        }
-        return null;
+  public boolean modifyMember(MemberDTO memberDTO) {
+    String query = "UPDATE project_pae.members "
+        + "SET username = ?, "
+        + "password = ?, "
+        + "last_name = ?, "
+        + "first_name = ?, "
+        + "phone = ?, "
+        + "version_member = version_member + 1 "
+        + "WHERE id_member = ? ; "
+        + "UPDATE project_pae.addresses "
+        + "SET street = ?, "
+        + "building_number = ?, ";
+    if (memberDTO.getAddress().getUnitNumber() != null) {
+      query += "unit_number = ?, ";
+    }
+    query += "postcode = ?, "
+        + "commune = ?, "
+        + "version_address = version_address+1 "
+        + "WHERE id_member = ?;";
+    try (PreparedStatement ps = dalBackendService.getPreparedStatement(query)) {
+      ps.setString(1, memberDTO.getUsername());
+      ps.setString(2, memberDTO.getPassword());
+      ps.setString(3, memberDTO.getLastName());
+      ps.setString(4, memberDTO.getFirstName());
+      ps.setString(5, memberDTO.getPhoneNumber());
+      ps.setInt(6, memberDTO.getId());
+      ps.setString(7, StringEscapeUtils.escapeHtml4(memberDTO.getAddress().getStreet()));
+      ps.setString(8, StringEscapeUtils.escapeHtml4(memberDTO.getAddress().getBuildingNumber()));
+      if (memberDTO.getAddress().getUnitNumber() != null) {
+        ps.setString(9, StringEscapeUtils.escapeHtml4(memberDTO.getAddress().getUnitNumber()));
+        ps.setString(10, StringEscapeUtils.escapeHtml4(memberDTO.getAddress().getPostcode()));
+        ps.setString(11, StringEscapeUtils.escapeHtml4(memberDTO.getAddress().getCommune()));
+        ps.setInt(12, memberDTO.getId());
+      }else{
+        ps.setString(9, StringEscapeUtils.escapeHtml4(memberDTO.getAddress().getPostcode()));
+        ps.setString(10, StringEscapeUtils.escapeHtml4(memberDTO.getAddress().getCommune()));
+        ps.setInt(11, memberDTO.getId());
       }
+      return ps.executeUpdate() != 0;
     } catch (SQLException e) {
       throw new FatalException(e);
     }

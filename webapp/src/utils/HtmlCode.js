@@ -2,7 +2,7 @@
  * Insert html code into the webpage.
  * @param items the list of item to show
  */
-import {getPayload} from "./session";
+import {getObject, getPayload} from "./session";
 import {Redirect} from "../Components/Router/Router";
 import {openModal} from "./Modals";
 
@@ -27,6 +27,39 @@ function getShowItemsHtml(items) {
     `;
   }
   return html + "</div>";
+}
+
+function getProfileFormHtml() {
+  const member = getObject("memberDTO");
+  const address = member.address;
+
+  return `      
+      <p>Nom* :</p>
+      <input id="nameForm" type="text" value="${member.lastName}" required>
+      <p>Prénom :</p>
+      <input id="firstnameForm" type="text" value="${member.firstName}" required>
+      <p>Pseudo :</p>
+      <input id="usernameForm" type="text" value="${member.username}" required>
+      <p>Mot de passe :</p>
+      <input id="passwordForm" type="password" required>
+      <p>Confirmez le mot de passe :</p>
+      <input id="passwordConfirmationForm" type = "password" required>
+      <p>Téléphone :</p>
+      <input id="phoneForm" type="tel" value="${member.phoneNumber ? member.phoneNumber : "" }">
+      <br> <br> 
+      <h2 class="display-6">Adresse</h2>
+      <p>Rue :</p>
+      <input id="streetFormProfilePage" type="text" value="${address.street}" required>
+      <p>Numéro :</p>
+      <input id="buildingNumberFormProfilePage" type="text" value="${address.buildingNumber}" required>
+      <p>Numéro de boîte :</p>
+      <input id="unitNumberFormProfilePage" type="text" value="${address.unitNumber ? address.unitNumber : ""}">
+      <p>Code postal :</p>
+      <input id="postCodeFormProfilePage" type="text" value="${address.postcode}" required>
+      <p>Commune :</p>
+      <input id="communeFormProfilePage" type="text" value="${address.commune}" required><br> <br>
+      <input class="btn btn-primary" type="submit" value="Modifier" required>  <br>
+      `;
 }
 
 function displayImage(item) {
@@ -210,5 +243,6 @@ export {
   showItemsTypes,
   getAssignedItemHtml,
   getGivenItemHtml,
-  getMyItemsHtml
+  getMyItemsHtml,
+  getProfileFormHtml
 }

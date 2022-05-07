@@ -274,17 +274,26 @@ public class MemberResource {
    * Modify the member identified by its id.
    *
    * @param memberDTO the new member
-   * @return the member or null if there's no member with the id
    */
   @PUT
   @Path("modify")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public MemberDTO modifyMember(MemberDTO memberDTO) {
+  public void modifyMember(MemberDTO memberDTO) {
+    System.out.println("**********************************************");
     if (memberDTO == null
         || memberDTO.getUsername() == null || memberDTO.getUsername().isBlank()
         || memberDTO.getFirstName() == null || memberDTO.getFirstName().isBlank()
+        || memberDTO.getAddress() == null
+        || memberDTO.getAddress().getStreet() == null
+        || memberDTO.getAddress().getStreet().isBlank()
+        || memberDTO.getAddress().getBuildingNumber() == null
+        || memberDTO.getAddress().getBuildingNumber().isBlank()
+        || memberDTO.getAddress().getCommune() == null
+        || memberDTO.getAddress().getCommune().isBlank()
+        || memberDTO.getAddress().getPostcode() == null
+        || memberDTO.getAddress().getPostcode().isBlank()
     ) {
       throw new WrongBodyDataException("Member incomplete");
     }
@@ -293,11 +302,9 @@ public class MemberResource {
       throw new FatalException("Error with version");
     }
 
-    MemberDTO modifyMember = memberUCC.modifyMember(memberDTO);
-    if (modifyMember == null) {
+    if (!memberUCC.modifyMember(memberDTO)) {
       throw new ObjectNotFoundException("Member not found");
     }
-    return modifyMember;
   }
 
   /////////////////////////////////////////////////////////

@@ -372,7 +372,6 @@ async function modifyMember(member) {
         "fetch error : " + response.status + " : " + response.statusText
     );
   }
-  return await response.json();
 }
 
 async function modifyTheItem(item) {

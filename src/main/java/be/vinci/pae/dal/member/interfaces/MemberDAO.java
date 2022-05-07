@@ -52,9 +52,9 @@ public interface MemberDAO {
    * Modify the member's information.
    *
    * @param memberDTO the member to modify
-   * @return the modified member
+   * @return true if the member has been modified, else false
    */
-  MemberDTO modifyMember(MemberDTO memberDTO);
+  boolean modifyMember(MemberDTO memberDTO);
 
   /**
    * Change the state of the member to denied.
