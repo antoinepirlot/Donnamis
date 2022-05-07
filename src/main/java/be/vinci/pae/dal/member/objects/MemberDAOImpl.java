@@ -152,7 +152,7 @@ public class MemberDAOImpl implements MemberDAO {
         ps.setString(10, StringEscapeUtils.escapeHtml4(memberDTO.getAddress().getPostcode()));
         ps.setString(11, StringEscapeUtils.escapeHtml4(memberDTO.getAddress().getCommune()));
         ps.setInt(12, memberDTO.getId());
-      }else{
+      } else {
         ps.setString(9, StringEscapeUtils.escapeHtml4(memberDTO.getAddress().getPostcode()));
         ps.setString(10, StringEscapeUtils.escapeHtml4(memberDTO.getAddress().getCommune()));
         ps.setInt(11, memberDTO.getId());
