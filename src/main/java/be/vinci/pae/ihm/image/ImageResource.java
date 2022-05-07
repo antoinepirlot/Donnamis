@@ -54,10 +54,10 @@ public class ImageResource {
     }
     String path = Config.getPhotoPath();
     UUID uuid = UUID.randomUUID();
-    String photoPath = path + "\\" + uuid + ".png";
+    String photoPath = path + "\\" + uuid + "." + extension;
     try {
       Files.copy(file, Paths.get(photoPath));
-      if (!this.itemUCC.addPhoto(idItem, uuid + ".png")) {
+      if (!this.itemUCC.addPhoto(idItem, uuid + "." + extension)) {
         throw new FatalException("The image hasn't been added into the database");
       }
     } catch (IOException e) {
