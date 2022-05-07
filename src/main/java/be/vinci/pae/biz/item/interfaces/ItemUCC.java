@@ -130,7 +130,7 @@ public interface ItemUCC {
   boolean addPhoto(int idItem, String photoName);
 
   /**
-   * Get all donated and assigned items
+   * Get all donated and assigned items.
    *
    * @return the list of assigned and donated items
    */

@@ -90,6 +90,11 @@ public class ItemResource {
     }
   }
 
+  /**
+   * Get all public items from the database.
+   *
+   * @return the list of items
+   */
   @GET
   @Path("all_items/public")
   @Produces(MediaType.APPLICATION_JSON)

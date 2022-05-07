@@ -21,6 +21,14 @@ public interface MemberUCC {
   MemberDTO getOneMember(int id);
 
   /**
+   * Get one member by his username.
+   *
+   * @param memberDTO the member with the username
+   * @return the member found or null
+   */
+  MemberDTO getOneMember(MemberDTO memberDTO);
+
+  /**
    * Modify the member identified by its id.
    *
    * @param memberDTO the new member
@@ -82,12 +90,4 @@ public interface MemberUCC {
    * @return the list of interested members
    */
   List<MemberDTO> getInterestedMembers(int idOffer);
-
-  /**
-   * Get one member by his username
-   *
-   * @param memberDTO the member with the username
-   * @return the member found or null
-   */
-  MemberDTO getOneMember(MemberDTO memberDTO);
 }
