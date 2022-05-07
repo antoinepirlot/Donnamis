@@ -69,16 +69,8 @@ const MyAssignedItems = async () => {
     Redirect("/login");
     return;
   }
-  const pageDiv = document.querySelector("#page");
-  pageDiv.innerHTML = html;
   const items = await getAssignedItems();
-
-  //Show items
-  const myAssignedItems = document.querySelector("#myAssignedItems");
-  myAssignedItems.innerHTML = "";
-  const myReceivedItems = document.querySelector("#myReceivedItems");
-  myReceivedItems.innerHTML = "";
-  const ratings = await getAllRatings();
+  const pageDiv = document.querySelector("#page");
   if (!items) {
     pageDiv.innerHTML = `
       <h1 class="display-3">Aucun objets assignés</h1>
@@ -86,6 +78,15 @@ const MyAssignedItems = async () => {
     `;
     return;
   }
+  pageDiv.innerHTML = html;
+
+  //Show items
+  const myAssignedItems = document.querySelector("#myAssignedItems");
+  myAssignedItems.innerHTML = "";
+  const myReceivedItems = document.querySelector("#myReceivedItems");
+  myReceivedItems.innerHTML = "";
+  const ratings = await getAllRatings();
+
   items.forEach((item) => {
     if (item.offerStatus === "assigned") {
       myAssignedItems.innerHTML += getAssignedItemHtml(item);

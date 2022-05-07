@@ -20,12 +20,7 @@ const MyGivenItems = async () => {
   }
 
   const pageDiv = document.querySelector("#page");
-  pageDiv.innerHTML = html;
-  const items = await getGivenItems(); //TODO
-
-  //Show items
-  const myGivenItems = document.querySelector("#myGivenItems");
-  myGivenItems.innerHTML = "";
+  const items = await getGivenItems();
   if (!items) {
     pageDiv.innerHTML = `
       <h1 class="display-3">Aucun objets donnés</h1>
@@ -33,10 +28,14 @@ const MyGivenItems = async () => {
     `;
     return;
   }
+  pageDiv.innerHTML = html;
+
+  //Show items
+  const myGivenItems = document.querySelector("#myGivenItems");
+  myGivenItems.innerHTML = "";
   items.forEach((item) => { //TODO
     myGivenItems.innerHTML += getGivenItemHtml(item);
   });
-
 }
 
 export default MyGivenItems;

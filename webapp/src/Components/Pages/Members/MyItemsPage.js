@@ -79,16 +79,18 @@ const MyItemsPage = async () => {
     Redirect("/");
     return;
   }
-  const pageDiv = document.querySelector("#page");
-  pageDiv.innerHTML = myItemsPageHtml;
   items = await getMyItems();
+
+  const pageDiv = document.querySelector("#page");
   if (items.length === 0) {
-    const message = "Vous n'avez aucune offre.";
-    const errorMessageMyItemsPage = document.querySelector(
-        "#errorMessageMyItemsPage");
-    showError(message, "info", errorMessageMyItemsPage);
+    pageDiv.innerHTML = `
+      <h1 class="display-3">Aucun objets</h1>
+      <h5 class="text-secondary">Vous n'avez offert encore aucun objet.</h5>
+    `;
     return;
   }
+
+  pageDiv.innerHTML = myItemsPageHtml;
   const myItemsDiv = document.querySelector("#myItems");
   myItemsDiv.innerHTML = getMyItemsHtml(items);
   await showMyItemsButtons();
