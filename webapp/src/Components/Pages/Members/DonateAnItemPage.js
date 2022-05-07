@@ -57,7 +57,6 @@ const DonateAnItemPage = async () => {
 };
 
 async function offerItem(e) {
-  const date = new Date();
   e.preventDefault();
   const title = document.querySelector("#titleForm").value;
   const itemDescription = document.querySelector("#itemDescriptionForm").value;
