@@ -1,4 +1,6 @@
-import {register as registerBackEndRequest} from "../../../utils/BackEndRequests";
+import {
+  register as registerBackEndRequest
+} from "../../../utils/BackEndRequests";
 import {showError} from "../../../utils/ShowError";
 
 const registerFormHtml = `
@@ -8,56 +10,56 @@ const registerFormHtml = `
   <form  id="registerForm" class="d-flex bd-highlight mb-3 shadow-lg p-3 mb-5 bg-white rounded">
   
     <div id="left" class="mr-auto p-2 bd-highlight">
-        <h3>Mes infos</h3>
-    <div class="mb-3">
-      <label class="form-label">Prénom</label>
-      <input type="text" class="form-control" id="firstNameInput">
-    </div>
-    
-    <div class="mb-3">
-      <label class="form-label">Nom</label>
-      <input type="text" class="form-control" id="lastNameInput">
-    </div>
-    
-    <div class="mb-3">
-      <label class="form-label">Pseudo</label>
-      <input type="text" class="form-control" id="usernameInput">
-    </div>
-    
-    <div class="mb-3">
-      <label class="form-label">Mot de passe</label>
-      <input type="password" class="form-control" id="passwordInput">
-    </div>
+      <h3>Mes infos</h3>
+      <div class="mb-3">
+        <label class="form-label">Prénom</label>
+        <input type="text" class="form-control" id="firstNameInput">
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">Nom</label>
+        <input type="text" class="form-control" id="lastNameInput">
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">Pseudo</label>
+        <input type="text" class="form-control" id="usernameInput">
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">Mot de passe</label>
+        <input type="password" class="form-control" id="passwordInput">
+      </div>
     </div>
     
     <div id="right" class="p-2 bd-highlight">
-    <h3>Adresse</h3>
-    
-    <div class="mb-3">
-      <label class="form-label">Rue</label>
-      <input type="text" class="form-control" id="streetInput">
-    </div>
-    
-    <div class="mb-3">
-      <label class="form-label">Numero</label>
-      <input type="text" class="form-control" id="buildingNumberInput">
-    </div>
-    
-    <div class="mb-3">
-      <label class="form-label">Boîte (facultatif)</label>
-      <input type="text" class="form-control" id="unitNumberInput">
-    </div>
-    
-    <div class="mb-3">
-      <label class="form-label">Commune</label>
-      <input type="text" class="form-control" id="communeInput">
-    </div>
-    
-    <div class="mb-3">
-      <label class="form-label">Code postal</label>
-      <input type="text" class="form-control" id="postcodeInput">
-    </div>
-    <button type="submit" class="btn btn-primary">S'inscrire</button>
+      <h3>Adresse</h3>
+      
+      <div class="mb-3">
+        <label class="form-label">Rue</label>
+        <input type="text" class="form-control" id="streetInput">
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">Numero</label>
+        <input type="text" class="form-control" id="buildingNumberInput">
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">Boîte (facultatif)</label>
+        <input type="text" class="form-control" id="unitNumberInput">
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">Commune</label>
+        <input type="text" class="form-control" id="communeInput">
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">Code postal</label>
+        <input type="text" class="form-control" id="postcodeInput">
+      </div>
+      <button type="submit" class="btn btn-primary">S'inscrire</button>
     </div>
   </form>
   <div class="message" id="registerMessage"></div>
