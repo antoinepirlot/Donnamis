@@ -553,9 +553,7 @@ async function setMemberAvailability(member) {
     body: JSON.stringify(member)
   };
   const response = await fetch("api/members/availability", request);
-
   if (!response.ok) {
-    showError("Erreur marquer indisponible");
     throw new Error(
         "fetch error : " + response.status + " : " + response.statusText
     );

@@ -179,16 +179,11 @@ public class MemberDAOImpl implements MemberDAO {
   }
 
   public boolean setMemberAvailability(MemberDTO memberDTO) {
-    String query;
-    if (memberDTO.getActualState().equals("unavailable")) {
-      query = "UPDATE project_pae.members SET state = '" + CONFIRMED_STATE + "', "
-          + "version_member = version_member + 1 WHERE id_member = ?;";
-    } else {
-      query = "UPDATE project_pae.members SET state = '" + UNAVAILABLE_STATE + "', "
-          + "version_member = version_member + 1 WHERE id_member = ?;";
-    }
+    String query = "UPDATE project_pae.members SET state = ?, "
+        + "version_member = version_member + 1 WHERE id_member = ?;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
-      preparedStatement.setInt(1, memberDTO.getId());
+      preparedStatement.setString(1, memberDTO.getActualState());
+      preparedStatement.setInt(2, memberDTO.getId());
       return preparedStatement.executeUpdate() != 0;
     } catch (SQLException e) {
       throw new FatalException(e);

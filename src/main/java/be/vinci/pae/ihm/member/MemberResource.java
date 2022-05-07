@@ -231,18 +231,18 @@ public class MemberResource {
   @Path("availability")
   @Consumes(MediaType.APPLICATION_JSON)
   public void setMemberAvailability(MemberDTO memberDTO) {
-    if (memberDTO == null || memberDTO.getId() < 1
-        || memberDTO.getActualState() == null || memberDTO.getActualState().isBlank()) {
+    if (memberDTO == null || memberDTO.getId() < 1 || memberDTO.getActualState() == null
+        || memberDTO.getActualState().isBlank() || (!memberDTO.getActualState().equals("confirmed")
+        && !memberDTO.getActualState().equals("unavailable"))) {
       throw new WrongBodyDataException("Error Member Sent");
     }
-    if (memberUCC.getOneMember(memberDTO.getId()) == null) {
-      throw new ObjectNotFoundException("Any member with the id: " + memberDTO.getId());
+    MemberDTO dbMemberDTO = this.memberUCC.getOneMember(memberDTO.getId());
+    if (dbMemberDTO == null) {
+      throw new ObjectNotFoundException("No member with the id: " + memberDTO.getId());
     }
-
-    if (memberDTO.getVersion() != memberUCC.getOneMember(memberDTO.getId()).getVersion()) {
-      throw new FatalException("Error with version");
+    if (memberDTO.getVersion() != dbMemberDTO.getVersion()) {
+      throw new WrongBodyDataException("Error with version");
     }
-
     if (!memberUCC.setMemberAvailability(memberDTO)) {
       throw new FatalException("An unexpected error happened while set member availability.");
     }
