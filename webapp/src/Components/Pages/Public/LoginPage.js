@@ -129,10 +129,9 @@ async function loginUnavailable(e) {
   e.preventDefault();
 
   const pageErrorDiv = document.querySelector("#unavailableError");
-
   const memberUnavailable = {
     id: content.memberDTO.id,
-    actualState: content.memberDTO.actualState,
+    actualState: "confirmed",
     version: content.memberDTO.version
   };
 
