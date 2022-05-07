@@ -5,6 +5,7 @@ import {
   modifyMember as modifyMemberBackEnd
 } from "../../../utils/BackEndRequests";
 import {getProfileFormHtml} from "../../../utils/HtmlCode";
+import Navbar from "../../Navbar/Navbar";
 
 const viewProfileHtml = `
   <div class="bg-info d-inline-flex d-flex flex-column rounded w-50 p-3">
@@ -58,6 +59,7 @@ async function modifyProfile(e) {
   try {
     await modifyMemberBackEnd(member);
     await checkToken();
+    await Navbar();
     await ProfilePage();
     errorMessage = document.querySelector("#errorMessage");
     showError("Modification validée", "success", errorMessage);
