@@ -14,13 +14,13 @@ let html = `
     <div>
       <h1 class="display-3">Mes objets attribués</h1>
       <h5 class="text-secondary">Voici vos objets attribués en attente de votre récupération</h5>
+      <div id="myAssignedItems"></div>
     </div>
-    <div id="myAssignedItems"></div>
-    <div id="">
+    <div>
       <h1 class="display-3">Mes objets reçus</h1>
       <h5 class="text-secondary">Voici vos objets reçus, vous pouvez les évaluers</h5>
+      <div id="myReceivedItems"></div>
     </div>
-    <div id="myReceivedItems"></div>
   </div>
   
   <!--Rating Modal-->
