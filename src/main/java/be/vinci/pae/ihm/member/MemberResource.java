@@ -232,8 +232,8 @@ public class MemberResource {
   @Consumes(MediaType.APPLICATION_JSON)
   public void setMemberAvailability(MemberDTO memberDTO) {
     if (memberDTO == null || memberDTO.getId() < 1 || memberDTO.getActualState() == null
-        || memberDTO.getActualState().isBlank() || (!memberDTO.getActualState().equals("confirmed")
-        && !memberDTO.getActualState().equals("unavailable"))) {
+        || memberDTO.getActualState().isBlank() || !memberDTO.getActualState().equals("confirmed")
+        && !memberDTO.getActualState().equals("unavailable")) {
       throw new WrongBodyDataException("Error Member Sent");
     }
     MemberDTO dbMemberDTO = this.memberUCC.getOneMember(memberDTO.getId());

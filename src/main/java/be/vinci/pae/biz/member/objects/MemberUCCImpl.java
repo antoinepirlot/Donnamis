@@ -136,8 +136,8 @@ public class MemberUCCImpl implements MemberUCC {
           loggedMember == null
               || !loggedMember.checkPassword(memberToLogin.getPassword(),
               loggedMember.getPassword())
-              || (!loggedMember.verifyState("confirmed") && !loggedMember.verifyState(
-              "unavailable"))
+              || !loggedMember.verifyState("confirmed") && !loggedMember.verifyState(
+              "unavailable")
       ) {
         return null;
       }
