@@ -296,7 +296,7 @@ async function filterItemsByDate(e) {
   const filterAllItemsButton = document.querySelector(
       "#MyItemsPageItemsAllButton")
   filterAllItemsButton.className = "btn btn-outline-primary";
-  filterItemsByDateUtil("#myItems", "#errorMessageMyItemsPage", items);
+  filterItemsByDateUtil("#myItems", items);
 }
 
 export {MyItemsPage, showMyItemsButtons};

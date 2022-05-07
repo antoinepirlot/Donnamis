@@ -64,7 +64,7 @@ const HomePage = async () => {
 
 function filterItemsByDate(e) {
   e.preventDefault();
-  filterItemsByDateUtil("#all_offered_items", "#errorHomePage", items);
+  filterItemsByDateUtil("#all_offered_items", items);
 }
 
 //function setSeeItemEvent(itemButtons) {
