@@ -245,18 +245,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "  AND r.id_member = m.id_member "
         + "  AND r.id_item = i.id_item "
         + "  AND m.id_member = ?;";
-    List<ItemDTO> listItemDTO = new ArrayList<>();
-    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
-      ps.setInt(1, idMember);
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          listItemDTO.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
-        }
-        return listItemDTO.isEmpty() ? null : listItemDTO;
-      }
-    } catch (SQLException e) {
-      throw new FatalException(e);
-    }
+    return getItemDTOList(idMember, query);
   }
 
   @Override
@@ -268,6 +257,10 @@ public class ItemDAOImpl implements ItemDAO {
         + "FROM project_pae.items i, project_pae.members m, project_pae.items_types it "
         + "WHERE i.id_type = it.id_type AND i.id_member = m.id_member AND "
         + "m.id_member = ? AND i.offer_status = 'given';";
+    return getItemDTOList(idMember, query);
+  }
+
+  private List<ItemDTO> getItemDTOList(int idMember, String query) {
     List<ItemDTO> listItemDTO = new ArrayList<>();
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       ps.setInt(1, idMember);
