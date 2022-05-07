@@ -21,7 +21,6 @@ public class MemberDAOImpl implements MemberDAO {
   private static final String DEFAULT_STATE = "registered";
   private static final String CONFIRMED_STATE = "confirmed";
   private static final String DENIED_STATE = "denied";
-  private static final String UNAVAILABLE_STATE = "unavailable";
   private static final boolean DEFAULT_IS_ADMIN = false;
   @Inject
   private DALBackendService dalBackendService;

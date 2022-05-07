@@ -3,8 +3,7 @@ import {
   getNumberOfItems,
   getNumberOfReceivedOrNotReceivedItems,
   getOneMember,
-  setMemberAvailability,
-  setRecipientUnavailable
+  setMemberAvailability
 } from "../../../utils/BackEndRequests";
 import {showError} from "../../../utils/ShowError";
 import {getShowItemsHtml} from "../../../utils/HtmlCode";
@@ -112,22 +111,23 @@ async function showMemberInformation(member) {
 
       const memberUnavailable = {
         id: member.id,
-        actualState: member.actualState,
+        actualState: member.actualState === "confirmed" ? "unavailable"
+            : "confirmed",
         version: member.version
       };
 
-      const recipient = {
-        member: memberUnavailable
-      };
-
+      // const recipient = {
+      //   member: memberUnavailable
+      // };
       try {
-        await setMemberAvailability(memberUnavailable, pageErrorDiv);
-        if (memberUnavailable.actualState === "confirmed") {
-          await setRecipientUnavailable(recipient);
-        }
+        await setMemberAvailability(memberUnavailable);
+        // if (memberUnavailable.actualState === "unavailable") {
+        //   await setRecipientUnavailable(recipient);
+        // }
         await MemberPage();
       } catch (err) {
         console.error(err);
+        showError("Une erreur est survenue.", "danger", pageErrorDiv);
       }
     });
   }
@@ -141,8 +141,10 @@ function getActualState(member) {
       return "Confirmé";
     case "denied":
       return "Refusé";
+    case "unavailable":
+      return "Malade";
     default:
-      "Statut inconnu";
+      return "Statut inconnu";
   }
 }
 
