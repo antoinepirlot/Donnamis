@@ -144,7 +144,7 @@ function getActualState(member) {
     case "unavailable":
       return "Malade";
     default:
-      "Statut inconnu";
+      return "Statut inconnu";
   }
 }
 
