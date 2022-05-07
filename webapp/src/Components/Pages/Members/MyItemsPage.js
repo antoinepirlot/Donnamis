@@ -172,7 +172,7 @@ async function showMyItemsButtons() {
   for (const chooseRecipientButton of chooseRecipientButtons) {
 
     idItem = chooseRecipientButton.value;
-    const item = items.find((item) => item.id == idItem);
+    const item = items.find((item) => item.id == idItem); // == because idItem is a string and item.id an int === will return false even we expect true
     const members = await getInterestedMembers(item.offerList[0].id);
     chooseRecipientButton.addEventListener("click", async () => {
 
