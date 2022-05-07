@@ -5,6 +5,7 @@ import be.vinci.pae.biz.rating.interfaces.RatingDTO;
 import be.vinci.pae.biz.rating.interfaces.RatingUCC;
 import be.vinci.pae.exceptions.FatalException;
 import be.vinci.pae.exceptions.webapplication.ConflictException;
+import be.vinci.pae.exceptions.webapplication.ForbiddenException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
@@ -76,10 +77,14 @@ public class RatingResource {
         || ratingDTO.getRating() < 1 || ratingDTO.getRating() > 5
         || ratingDTO.getItem() == null || ratingDTO.getItem().getId() < 1
         || ratingDTO.getMember() == null || ratingDTO.getMember().getId() < 1
+        || ratingDTO.getItem().getMember() == null
+        || ratingDTO.getItem().getMember().getId() < 1
         || ratingDTO.getText() == null || ratingDTO.getText().isBlank()) {
       throw new WrongBodyDataException("Wrong Body Request");
     }
-
+    if (ratingDTO.getItem().getMember().getId() == ratingDTO.getMember().getId()) {
+      throw new ForbiddenException("This user can't add a rating for his own item");
+    }
     if (this.ratingUCC.ratingExist(ratingDTO)) {
       throw new ConflictException("Rating already exist");
     }

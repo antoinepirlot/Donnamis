@@ -1,7 +1,8 @@
 import {
   evaluateItemBackEnd,
   getAllRatings,
-  getAssignedItems
+  getAssignedItems,
+  getItem
 } from "../../../utils/BackEndRequests";
 import {getAssignedItemHtml, getGivenItemHtml} from "../../../utils/HtmlCode";
 import {getPayload} from "../../../utils/session";
@@ -126,9 +127,7 @@ async function evaluateItem(e) {
   const member = {
     id: getPayload().id
   };
-  const item = {
-    id: idItem
-  };
+  const item = await getItem(idItem);
 
   const rating = {
     item: item,
