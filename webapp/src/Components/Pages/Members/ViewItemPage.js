@@ -168,7 +168,7 @@ function showItemInfo() {
   pubDateDiv.innerHTML = `Date de publication : ${date}`;
 
   const image = document.querySelector("#imageItem");
-  image.innerHTML = displayImage(item);
+  image.innerHTML = displayImage(item, true);
 }
 
 async function showInterestForm(e) {
