@@ -12,7 +12,6 @@ import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeAdmin;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.filter.utils.Json;
-import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -26,12 +25,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response.Status;
-import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Base64;
 import java.util.List;
-import org.apache.maven.surefire.shared.io.FileUtils;
 
 @Singleton
 @Path("items")
@@ -275,6 +270,27 @@ public class ItemResource {
       throw new FatalException("Count number returned -1");
     }
     return count;
+  }
+
+  /**
+   * Count the number of interested member for the last offer of the item identified by its id.
+   *
+   * @param idItem the item's id
+   * @return the number of the interested member of the last item's offer
+   * @throws WrongBodyDataException  if the idItem is lower than 1
+   * @throws ObjectNotFoundException if the item doesn't exist in the database
+   */
+  @GET
+  @Path("count_interested_members/{idItem}")
+  @AuthorizeMember
+  public int countNumberOfInterestedMember(@PathParam("idItem") int idItem) {
+    if (idItem < 1) {
+      throw new WrongBodyDataException("The idItem is lower than 1");
+    }
+    if (this.itemUCC.getOneItem(idItem) == null) {
+      throw new ObjectNotFoundException("The item with id " + idItem + " doesn't exists");
+    }
+    return this.offerUCC.getNumberOfInterestedMemberOf(idItem);
   }
 
   /////////////////////////////////////////////////////////

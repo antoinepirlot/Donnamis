@@ -309,6 +309,23 @@ async function getNumberOfReceivedOrNotReceivedItems(idMember, received) {
   return await response.json();
 }
 
+async function getNumberInterestedMembers(idItem) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(
+      `/api/items/count_interested_members/${idItem}/`, request);
+  if (!response.ok) {
+    throw new Error(
+        "Error while fetching count of received or not received items of member: "
+        + idItem);
+  }
+  return await response.json();
+}
+
 async function addNewItemsType(itemsType) {
   const request = {
     method: "POST",
@@ -604,6 +621,7 @@ export {
   addNewItemsType,
   getNumberOfItems,
   getNumberOfReceivedOrNotReceivedItems,
+  getNumberInterestedMembers,
   offerAnItem,
   sendPicture,
   offerAgain,

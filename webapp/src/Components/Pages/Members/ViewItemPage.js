@@ -4,6 +4,7 @@ import {showError} from "../../../utils/ShowError";
 import {
   getAllPublicItems,
   getItem,
+  getNumberInterestedMembers,
   modifyTheItem,
   postInterest as postInterestBackEnd
 } from "../../../utils/BackEndRequests";
@@ -20,6 +21,7 @@ const viewOfferHtml = `
         <h5 id="itemTypeViewItemPage" class="card-text"></h5>
         <h5 id="descriptionViewItemPage" class="card-text"></h5>
         <h5 id="availabilitiesViewItemPage" class="card-text"></h5>
+        <h5 id="numberOfInterestedMembersViewItemPage" class="card-text"></h5>
         <h5 id="pubDateViewItemPage" class="card-text"></h5>
         <h5 id="oldPubDateViewItemPage" class="card-text"></h5>
         <button id="interestButton" class="btn btn-primary">
@@ -133,7 +135,7 @@ function createModifyItemModal() {
   `;
 }
 
-function showItemInfo() {
+async function showItemInfo() {
   lastOffer = item.offerList[0];
   let date = new Date(lastOffer.date);
   date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
@@ -169,6 +171,11 @@ function showItemInfo() {
 
   const image = document.querySelector("#imageItem");
   image.innerHTML = displayImage(item, true);
+
+  const numberOfMemberInterested = document.querySelector(
+      "#numberOfInterestedMembersViewItemPage");
+  const count = await getNumberInterestedMembers(item.id);
+  numberOfMemberInterested.innerHTML = `Nombre de personnes intéressée ${count}`;
 }
 
 async function showInterestForm(e) {
