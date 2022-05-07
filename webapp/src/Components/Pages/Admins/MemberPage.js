@@ -12,8 +12,9 @@ import {Redirect} from "../../Router/Router";
 import {isAdmin} from "../../../utils/session";
 
 const memberPageHtml = `
-  <div id="memberPageContent" class="bg-info d-inline-flex d-flex flex-column rounded w-50 p-3">
-    <h2 id="profilUsernameMemberPage" class="display-3"></h2>
+  <div class="form">
+    <div id="memberPageContent" class="d-flex bd-highlight mb-3 shadow-lg p-3 mb-5 bg-white rounded">
+    </div>
   </div>
   <div id="errorMessage"></div>
   <div id="donatedItemsMemberPage">
@@ -22,8 +23,7 @@ const memberPageHtml = `
   </div>
   <div id="receivedItemsMemberPage">
     <h4>Objets reçus par ce membre</h4>
-    <div id="receivedItemsMemberPageMessage"></div>
-  </div>
+  <div id="receivedItemsMemberPageMessage"></div>
 `;
 
 let idMember;
@@ -34,15 +34,12 @@ const MemberPage = async () => {
     Redirect("/");
     return;
   }
-
-  const page = document.querySelector("#page");
-  page.innerHTML = memberPageHtml;
   idMember = new URLSearchParams(window.location.search).get("id");
   const member = await getOneMember(idMember);
-  const profilUsernameDiv = document.querySelector(
-      "#profilUsernameMemberPage");
-  const username = he.decode(member.username);
-  profilUsernameDiv.innerText = `Profile de: ${he.decode(username)}`;
+  const page = document.querySelector("#page");
+  page.innerHTML = `<h1 class="display-3" id="login_title">Profile de ${he.decode(
+      member.username)}</h1>`;
+  page.innerHTML += memberPageHtml;
   await showMemberInformation(member);
   await showDonatedItems(member);
   await showReceivedItems(member);
@@ -77,12 +74,18 @@ async function showReceivedItems(member) {
 async function showMemberInformation(member) {
   const content = document.querySelector("#memberPageContent");
   let contentHtml = `
-    <p>
-      Prénom : ${he.decode(member.firstName)}<br>
+    <div id="left" class="mr-auto p-2 bd-highlight" xmlns="http://www.w3.org/1999/html">
+      <h3>Infos de ${he.decode(member.username)}</h3>
+      <label>Prénom: </label>
+      <p class="flex-box">${he.decode(member.firstName)}</p>
       Nom : ${he.decode(member.lastName)}<br>
-      ${getAddressHtml(member.address)}<br>
       Statut : ${getActualState(member)}<br>
       Administrateur : ${member.isAdmin ? "Oui" : "Non"}<br>
+    </div>
+    <div id="right" class="p-2 bd-highlight">
+      <h3>Adresse de ${he.decode(member.username)}</h3>
+      ${getAddressHtml(member.address)}<br>
+    </div>
       Numéro de téléphone : ${member.phoneNumber ? member.phoneNumber : "Aucun"}<br>
       Nombre d'objets offerts : ${await getNumberOfItems(member.id, "donated")}<br>
       Nombre d'objets donnés : ${await getNumberOfItems(member.id, "given")}<br>
