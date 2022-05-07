@@ -120,7 +120,7 @@ function createModifyItemModal() {
         <form id="modifyItemForm">
           <h5>Modifier votre objet<span id="asterisk">*</span>:</h5><br>
           <p>Description de l'objet<span id="asterisk">*</span>:</p>
-          <input id="itemDescriptionForm" type="text" value="${itemDescription}">
+          <textarea id="itemDescriptionForm" cols="30" rows="3">${itemDescription}</textarea>
           <p>Photo</p>
           <input id="photoForm" type="file"><br>
           <br>
