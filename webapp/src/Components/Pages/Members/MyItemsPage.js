@@ -140,7 +140,7 @@ async function filterItemsByInterested() {
   filterAllItemsButton.className = "btn btn-outline-primary";
 
   const myItemsDiv = document.querySelector("#myItems");
-  myItemsDiv.innerHTML = await getMyItemsHtml(filterItems);
+  myItemsDiv.innerHTML = getMyItemsHtml(filterItems);
   await showMyItemsButtons();
 }
 
