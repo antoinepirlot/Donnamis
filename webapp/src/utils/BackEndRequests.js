@@ -2,129 +2,57 @@ import {getObject, getPayload} from "./session";
 import {showError} from "./ShowError";
 import {Redirect} from "../Components/Router/Router";
 
-async function login(username, password) {
+async function addNewItemsType(itemsType) {
   const request = {
     method: "POST",
     headers: {
-      "Content-Type":
-          "application/json"
+      "Authorization": getObject("token"),
+      "Content-Type": "application/json"
     },
-    body: JSON.stringify({
-      username: username,
-      password: password
-    })
+    body: JSON.stringify(itemsType)
   };
-  const response = await fetch("api/members/login", request);
+  const response = await fetch("/api/items_types", request);
   if (!response.ok) {
-    if (response.status === 404) {
-      return false;
+    if (response.status === 409) {//Conflict
+      return;
     }
-    throw new Error("Error while login member.");
+    throw new Error("Error while adding a new items type.");
   }
-  return await response.json();
 }
 
-async function getRefusal(username) {
+async function cancelOffer(id) {
   const request = {
-    method: "GET",
+    method: "DELETE",
     headers: {
       "Authorization": getObject("token")
     }
   };
-  const response = await fetch(`/api/refusals/${username}`, request);
+  const url = `/api/items/${id}`;
+  const response = await fetch(url, request);
   if (!response.ok) {
-    if (response.status === 404) {
-      return false;
-    }
-    throw new Error("Error while fetching refusal message.");
-  }
-  return await response.json();
-}
-
-async function me() {
-  const request = {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": getObject("token")
-    }
-  };
-  const response = await fetch("api/members/me", request);
-  if (!response.ok) {
-    Redirect("/logout");
-    throw new Error("Problème lors du rafraichissement du token");
-  }
-  return await response.json();
-}
-
-async function register(member) {
-  const request = {
-    method: "POST",
-    headers: {
-      "Content-Type":
-          "application/json"
-    },
-    body: JSON.stringify(member)
-  };
-  const response = await fetch("api/members/register", request);
-  const registerMessage = document.querySelector("#registerMessage");
-  if (!response.ok) {
-    showError("Echec de l'inscription", "danger", registerMessage);
-    return;
-  }
-  showError(
-      "Votre inscription à bien été prise en compte. Veuillez patienter la validation de votre compte.",
-      "success", registerMessage)
-}
-
-/**
- * Get all members from the database
- * @returns all members
- */
-async function getAllMembers() {
-  const options = {
-    method: "GET",
-    headers: {
-      "Authorization": getObject("token")
-    }
-  };
-
-  const response = await fetch("/api/members", options);
-  if (!response.ok) {
-    // status code was not 200, error status code
     throw new Error(
         "fetch error : " + response.status + " : " + response.statusText
     );
   }
-  return await response.json();
 }
 
-async function getInterestedMembers(idOffer) {
+async function chooseRecipient(recipient, recipientMessage) {
   const request = {
-    method: "GET",
+    method: "POST",
     headers: {
-      "Authorization": getObject("token")
-    }
+      "Authorization": getObject("token"),
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(recipient)
   };
-  const response = await fetch(`/api/members/interested/${idOffer}`, request);
+  const response = await fetch("/api/recipients", request);
   if (!response.ok) {
-    throw new Error("Error while fetching interested members.");
+    throw new Error("Error while fetching");
+  } else if (response.status === 409) {
+    showError("Ce membre ne peut pas recevoir d'objet pour le moment",
+        recipientMessage);
+    console.log("ERREUR MEMBRE");
   }
-  return response.status === 200 ? await response.json() : null;
-}
-
-async function getOneMember(idMember) {
-  const request = {
-    method: "GET",
-    headers: {
-      "Authorization": getObject("token")
-    }
-  };
-  const response = await fetch(`/api/members/${idMember}`, request);
-  if (!response.ok) {
-    throw new Error("Error while fetching one user.");
-  }
-  return await response.json();
 }
 
 async function confirmInscription(member) {
@@ -157,6 +85,28 @@ async function denyMember(refusal) {
   }
 }
 
+async function evaluateItemBackEnd(rating, ratingMessage) {
+  const request = {
+    method: "POST", headers: {
+      "Authorization": getObject("token"), "Content-Type": "application/json"
+    }, body: JSON.stringify(rating)
+  };
+  const response = await fetch("api/ratings", request);
+
+  if (response.ok) {
+    showError(
+        "Evaluation enregistrée",
+        "success", ratingMessage
+    );
+  } else if (response.status === 409) {
+    showError("Vous ne pouvez évaluer une offre qu'une seule fois", "danger",
+        ratingMessage);
+  } else if (response.status === 400) {
+    showError("Information manquante", "danger", ratingMessage);
+  }
+  return response.ok;
+}
+
 async function getAllItems(offerStatus) {
   const request = {
     method: "GET",
@@ -178,6 +128,43 @@ async function getAllItems(offerStatus) {
   return await response.json();
 }
 
+async function getAllItemsByMemberIdAndOfferStatus(idMember, offerStatus) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/items/${idMember}/${offerStatus}`,
+      request);
+  if (!response.ok) {
+    throw new Error("Error while fetching member's items");
+  }
+  return await response.json();
+}
+
+/**
+ * Get all members from the database
+ * @returns all members
+ */
+async function getAllMembers() {
+  const options = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+
+  const response = await fetch("/api/members", options);
+  if (!response.ok) {
+    // status code was not 200, error status code
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText
+    );
+  }
+  return await response.json();
+}
+
 async function getAllPublicItems() {
   const request = {
     method: "GET"
@@ -185,6 +172,22 @@ async function getAllPublicItems() {
   const response = await fetch("/api/items/all_items/public", request);
   if (!response.ok) {
     throw new Error("Erreur lors du fetch");
+  }
+  return await response.json();
+}
+
+async function getAllRatings() {
+  const request = {
+    method: "GET", headers: {
+      "Authorization": getObject("token"), "Content-Type": "application/json"
+    }
+  };
+  const response = await fetch(`/api/ratings/all/${getPayload().id}`, request);
+  if (!response.ok) {
+    if (response.status === 404) {
+      return;
+    }
+    throw new Error("Error while getting all ratings of a member");
   }
   return await response.json();
 }
@@ -227,6 +230,20 @@ async function getGivenItems() {
   return await response.json();
 }
 
+async function getInterestedMembers(idOffer) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/members/interested/${idOffer}`, request);
+  if (!response.ok) {
+    throw new Error("Error while fetching interested members.");
+  }
+  return response.status === 200 ? await response.json() : null;
+}
+
 async function getItem(idItem) {
   const request = {
     method: "GET",
@@ -262,17 +279,38 @@ async function getItemsTypes() {
   return await response.json();
 }
 
-async function getAllItemsByMemberIdAndOfferStatus(idMember, offerStatus) {
+async function getMyItems() {
   const request = {
     method: "GET",
     headers: {
       "Authorization": getObject("token")
     }
   };
-  const response = await fetch(`/api/items/${idMember}/${offerStatus}`,
-      request);
+  const idMember = getPayload().id;
+  const response = await fetch(`/api/items/member_items/${idMember}`, request);
   if (!response.ok) {
-    throw new Error("Error while fetching member's items");
+    // status code was not 200, error status code
+    showError("There's no offer with this id");
+    throw new Error(
+        "fetch error : " + response.status + " : " + response.statusText
+    );
+  }
+  return await response.json()
+}
+
+async function getNumberOfInterestedMembers(idItem) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(
+      `/api/items/count_interested_members/${idItem}/`, request);
+  if (!response.ok) {
+    throw new Error(
+        "Error while fetching count of received or not received items of member: "
+        + idItem);
   }
   return await response.json();
 }
@@ -309,71 +347,99 @@ async function getNumberOfReceivedOrNotReceivedItems(idMember, received) {
   return await response.json();
 }
 
-async function getNumberInterestedMembers(idItem) {
+async function getOneMember(idMember) {
   const request = {
     method: "GET",
     headers: {
       "Authorization": getObject("token")
     }
   };
-  const response = await fetch(
-      `/api/items/count_interested_members/${idItem}/`, request);
+  const response = await fetch(`/api/members/${idMember}`, request);
   if (!response.ok) {
-    throw new Error(
-        "Error while fetching count of received or not received items of member: "
-        + idItem);
+    throw new Error("Error while fetching one user.");
   }
   return await response.json();
 }
 
-async function addNewItemsType(itemsType) {
+async function getRefusal(username) {
+  const request = {
+    method: "GET",
+    headers: {
+      "Authorization": getObject("token")
+    }
+  };
+  const response = await fetch(`/api/refusals/${username}`, request);
+  if (!response.ok) {
+    if (response.status === 404) {
+      return false;
+    }
+    throw new Error("Error while fetching refusal message.");
+  }
+  return await response.json();
+}
+
+async function login(username, password) {
   const request = {
     method: "POST",
     headers: {
-      "Authorization": getObject("token"),
-      "Content-Type": "application/json"
+      "Content-Type":
+          "application/json"
     },
-    body: JSON.stringify(itemsType)
+    body: JSON.stringify({
+      username: username,
+      password: password
+    })
   };
-  const response = await fetch("/api/items_types", request);
+  const response = await fetch("api/members/login", request);
   if (!response.ok) {
-    if (response.status === 409) {//Conflict
-      return;
+    if (response.status === 404) {
+      return false;
     }
-    throw new Error("Error while adding a new items type.");
+    throw new Error("Error while login member.");
   }
+  return await response.json();
 }
 
-async function offerAnItem(item) {
+/**
+ * Fetch to "items" to mark item as given or not given
+ * @param given {boolean} true if it marks item as given or false to not given
+ * @param item the item to update
+ */
+async function markItemAs(given, item) {
   const request = {
-    method: "POST",
+    method: "PUT",
     headers: {
       "Authorization": getObject("token"),
       "Content-Type": "application/json"
     },
     body: JSON.stringify(item)
   };
-  const response = await fetch("/api/items", request);
-  if (!response.ok) {
-    throw new Error(
-        "fetch error : " + response.status + " : " + response.statusText
-    );
+  let url;
+  if (given) {
+    url = "/api/items/given";
+  } else {
+    url = "/api/items/not_given"
   }
-  return await response.json();
+  const response = await fetch(url, request);
+  if (!response.ok) {
+    throw new Error("Error while updating item's offer status");
+  }
 }
 
-async function sendPicture(idItem, formData) {
+async function me() {
   const request = {
-    method: 'POST',
+    method: "GET",
     headers: {
+      "Content-Type": "application/json",
       "Authorization": getObject("token")
-    },
-    body: formData
+    }
   };
-  const response = await fetch(`/api/images/upload/${idItem}`, request);
+  const response = await fetch("api/members/me", request);
   if (!response.ok) {
-    throw new Error("Error while uploading an image.");
+    Redirect("/logout");
+    throw new Error("Problème lors du rafraichissement du token");
   }
+  return await response.json();
 }
 
 async function modifyMember(member) {
@@ -426,65 +492,22 @@ async function offerAgain(offer) {
   return response.ok;
 }
 
-async function getMyItems() {
+async function offerAnItem(item) {
   const request = {
-    method: "GET",
-    headers: {
-      "Authorization": getObject("token")
-    }
-  };
-  const idMember = getPayload().id;
-  const response = await fetch(`/api/items/member_items/${idMember}`, request);
-  if (!response.ok) {
-    // status code was not 200, error status code
-    showError("There's no offer with this id");
-    throw new Error(
-        "fetch error : " + response.status + " : " + response.statusText
-    );
-  }
-  return await response.json()
-}
-
-/**
- * Fetch to "items" to mark item as given or not given
- * @param given {boolean} true if it marks item as given or false to not given
- * @param item the item to update
- */
-async function markItemAs(given, item) {
-  const request = {
-    method: "PUT",
+    method: "POST",
     headers: {
       "Authorization": getObject("token"),
       "Content-Type": "application/json"
     },
     body: JSON.stringify(item)
   };
-  let url;
-  if (given) {
-    url = "/api/items/given";
-  } else {
-    url = "/api/items/not_given"
-  }
-  const response = await fetch(url, request);
-  if (!response.ok) {
-    throw new Error("Error while updating item's offer status");
-  }
-}
-
-async function cancelOffer(id) {
-  const request = {
-    method: "DELETE",
-    headers: {
-      "Authorization": getObject("token")
-    }
-  };
-  const url = `/api/items/${id}`;
-  const response = await fetch(url, request);
+  const response = await fetch("/api/items", request);
   if (!response.ok) {
     throw new Error(
         "fetch error : " + response.status + " : " + response.statusText
     );
   }
+  return await response.json();
 }
 
 /**
@@ -504,6 +527,20 @@ async function postInterest(interest) {
 
   if (!response.ok) {
     return response.status;
+  }
+}
+
+async function sendPicture(idItem, formData) {
+  const request = {
+    method: 'POST',
+    headers: {
+      "Authorization": getObject("token")
+    },
+    body: formData
+  };
+  const response = await fetch(`/api/images/upload/${idItem}`, request);
+  if (!response.ok) {
+    throw new Error("Error while uploading an image.");
   }
 }
 
@@ -542,96 +579,59 @@ async function setRecipientUnavailable(recipient) {
   }
 }
 
-async function getAllRatings() {
-  const request = {
-    method: "GET", headers: {
-      "Authorization": getObject("token"), "Content-Type": "application/json"
-    }
-  };
-  const response = await fetch(`/api/ratings/all/${getPayload().id}`, request);
-  if (!response.ok) {
-    if (response.status === 404) {
-      return;
-    }
-    throw new Error("Error while getting all ratings of a member");
-  }
-  return await response.json();
-}
-
-async function evaluateItemBackEnd(rating, ratingMessage) {
-  const request = {
-    method: "POST", headers: {
-      "Authorization": getObject("token"), "Content-Type": "application/json"
-    }, body: JSON.stringify(rating)
-  };
-  const response = await fetch("api/ratings", request);
-
-  if (response.ok) {
-    showError(
-        "Evaluation enregistrée",
-        "success", ratingMessage
-    );
-  } else if (response.status === 409) {
-    showError("Vous ne pouvez évaluer une offre qu'une seule fois", "danger",
-        ratingMessage);
-  } else if (response.status === 400) {
-    showError("Information manquante", "danger", ratingMessage);
-  }
-  return response.ok;
-}
-
-async function chooseRecipient(recipient, recipientMessage) {
+async function register(member) {
   const request = {
     method: "POST",
     headers: {
-      "Authorization": getObject("token"),
-      "Content-Type": "application/json"
+      "Content-Type":
+          "application/json"
     },
-    body: JSON.stringify(recipient)
+    body: JSON.stringify(member)
   };
-  const response = await fetch("/api/recipients", request);
+  const response = await fetch("api/members/register", request);
+  const registerMessage = document.querySelector("#registerMessage");
   if (!response.ok) {
-    throw new Error("Error while fetching");
-  } else if (response.status === 409) {
-    showError("Ce membre ne peut pas recevoir d'objet pour le moment",
-        recipientMessage);
-    console.log("ERREUR MEMBRE");
+    showError("Echec de l'inscription", "danger", registerMessage);
+    return;
   }
+  showError(
+      "Votre inscription à bien été prise en compte. Veuillez patienter la validation de votre compte.",
+      "success", registerMessage)
 }
 
 export {
-  login,
-  getRefusal,
-  me,
-  register,
-  getAllMembers,
-  getInterestedMembers,
-  getOneMember,
+  addNewItemsType,
+  cancelOffer,
+  chooseRecipient,
   confirmInscription,
   denyMember,
+  evaluateItemBackEnd,
   getAllItems,
+  getAllItemsByMemberIdAndOfferStatus,
+  getAllMembers,
   getAllPublicItems,
+  getAllRatings,
   getAssignedItems,
-  getMyItems,
-  markItemAs,
-  cancelOffer,
+  getGivenItems,
+  getInterestedMembers,
   getItem,
   getItemsTypes,
-  getAllItemsByMemberIdAndOfferStatus,
-  addNewItemsType,
+  getMyItems,
+  getNumberOfInterestedMembers,
   getNumberOfItems,
   getNumberOfReceivedOrNotReceivedItems,
-  getNumberInterestedMembers,
-  offerAnItem,
-  sendPicture,
-  offerAgain,
-  postInterest,
+  getOneMember,
+  getRefusal,
+  login,
+  markItemAs,
+  me,
   modifyMember,
-  chooseRecipient,
   modifyTheItem,
-  getAllRatings,
-  evaluateItemBackEnd,
+  offerAgain,
+  offerAnItem,
+  postInterest,
+  sendPicture,
   setMemberAvailability,
   setRecipientUnavailable,
-  getGivenItems
+  register,
 };

@@ -4,7 +4,7 @@ import {showError} from "../../../utils/ShowError";
 import {
   getAllPublicItems,
   getItem,
-  getNumberInterestedMembers,
+  getNumberOfInterestedMembers,
   modifyTheItem,
   postInterest as postInterestBackEnd
 } from "../../../utils/BackEndRequests";
@@ -174,7 +174,7 @@ async function showItemInfo() {
 
   const numberOfMemberInterested = document.querySelector(
       "#numberOfInterestedMembersViewItemPage");
-  const count = await getNumberInterestedMembers(item.id);
+  const count = await getNumberOfInterestedMembers(item.id);
   numberOfMemberInterested.innerHTML = `Nombre de personnes intéressée ${count}`;
 }
 
