@@ -29,9 +29,9 @@ const htmlForm = `
       <input id="itemTypeFormList" list="itemsTypesDonateAnItemPage" placeholder="Séléctionne le type d'objet"><br>
       <datalist id="itemsTypesDonateAnItemPage"></datalist>
       <br>
-      <label>Select File</label>
-      <input id="photoName" name="file" type= "file" /> <br/><br/>
-      <input type="submit" value="Offrir">
+      <label>Ajouter une photo</label>
+      <input id="photoName" name="file" type= "file" /> <br><br>
+      <input class="btn btn-primary" type="submit" value="Offrir">
       <div>* Champs obligatoires</div>
     </form>
     
