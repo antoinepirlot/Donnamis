@@ -19,7 +19,7 @@ import {getMyItemsHtml} from "../../../utils/HtmlCode";
 
 const myItemsPageHtml = `
   <div>
-    <h1 class="display-3" id="all_items_title">Mes objets</h1>
+    <h1 class="display-3" id="all_items_title">Mes objets offerts</h1>
     <div id="searchBarMyItemsPage">
     </div>
     <div id="searchDateMyItemsPage">
