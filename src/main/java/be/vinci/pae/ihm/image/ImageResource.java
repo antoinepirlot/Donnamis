@@ -67,6 +67,12 @@ public class ImageResource {
     this.logger.log(Level.INFO, "An image has been copied.");
   }
 
+  /**
+   * Get the image matching with the photoPath.
+   *
+   * @param photoPath the image's path
+   * @return the photo
+   */
   @GET
   @Path("{photoPath}")
   public File getImage(@PathParam("photoPath") String photoPath) {
