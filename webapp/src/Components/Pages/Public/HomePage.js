@@ -15,11 +15,8 @@ const tableHtml = `
     </div>
      <div id="searchBarHomePage">
      </div> 
-     <form>
-      Entre le <input id="formStartDateHomePage" type="date">
-      et le <input id="formEndDateHomePage" type="date">
-      <button id="dateFormButtonHomePage" class="btn btn-primary">Rechercher</button>
-      </form>
+     <div id="dateFormHomePage">
+     </div>
     <div class="row" id="all_offered_items">
     </div>
   </div>
@@ -35,6 +32,14 @@ const tableHtml = `
   </div>
 `;
 
+const formHtml = `
+  <form>
+    Entre le <input id="formStartDateHomePage" type="date">
+    et le <input id="formEndDateHomePage" type="date">
+    <button id="dateFormButtonHomePage" class="btn btn-primary">Rechercher</button>
+  </form>
+`;
+
 let items;
 
 const HomePage = async () => {
@@ -48,6 +53,8 @@ const HomePage = async () => {
   //Searching an item
   //Listener pour chaque frappe au clavier
   if (getPayload()) {
+    const formDiv = document.querySelector("#dateFormHomePage");
+    formDiv.innerHTML = formHtml;
     createItemsSearchBar(items, "#searchBarHomePage", "#all_offered_items",
         "homePage");
     const dateForm = document.querySelector("#dateFormButtonHomePage");
