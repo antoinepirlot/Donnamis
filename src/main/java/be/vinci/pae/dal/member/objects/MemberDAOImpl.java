@@ -163,6 +163,12 @@ public class MemberDAOImpl implements MemberDAO {
     }
   }
 
+  /**
+   * Confirm the member.
+   *
+   * @param memberDTO the member to confirm
+   * @return true if the member has been confirmed, otherwise false
+   */
   public boolean confirmMember(MemberDTO memberDTO) {
     String query = "UPDATE project_pae.members "
         + "SET state = '" + CONFIRMED_STATE
@@ -177,6 +183,12 @@ public class MemberDAOImpl implements MemberDAO {
     }
   }
 
+  /**
+   * Switch the state of the member between confirmed and unavailable.
+   *
+   * @param memberDTO the member to modify state
+   * @return true if the member's state is change, otherwise false
+   */
   public boolean setMemberAvailability(MemberDTO memberDTO) {
     String query = "UPDATE project_pae.members SET state = ?, "
         + "version_member = version_member + 1 WHERE id_member = ?;";
