@@ -84,7 +84,7 @@ async function ViewItemPage() {
   try {
     item = await getItem(idItem);
     page.innerHTML += createModifyItemModal();
-    showItemInfo();
+    await showItemInfo();
     const modifyMember = getObject("memberDTO");
     const postInterestButton = document.querySelector("#interestButton");
     if (item.member.id === modifyMember.id) {
@@ -232,9 +232,9 @@ async function postInterest(e) {
     member: memberInterested,
     date: date
   };
-  const pageErrorDiv = document.querySelector("#viewItemPageError");
+  let pageErrorDiv = document.querySelector("#viewItemPageError");
   try {
-    const status = await postInterestBackEnd(interest, errorMessageDiv);
+    const status = await postInterestBackEnd(interest);
     if (status === 409) {
       showError("Vous avez déjà marqué un intéret pour cette offre.", "danger",
           pageErrorDiv);
@@ -243,6 +243,8 @@ async function postInterest(e) {
     if (callWanted) {
       await checkToken();
     }
+    await ViewItemPage();
+    pageErrorDiv = document.querySelector("#viewItemPageError");
     showError("L'intérêt a bien été prit en compte.", "success", pageErrorDiv);
   } catch (err) {
     console.error(err);
