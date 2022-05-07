@@ -55,7 +55,7 @@ public class ImageResource {
     }
     String path = Config.getPhotoPath();
     UUID uuid = UUID.randomUUID();
-    String photoPath = path + "\\" + uuid + "." + extension;
+    String photoPath = path + uuid + "." + extension;
     try {
       Files.copy(file, Paths.get(photoPath));
       if (!this.itemUCC.addPhoto(idItem, uuid + "." + extension)) {
@@ -71,7 +71,7 @@ public class ImageResource {
   @Path("{photoPath}")
   public File getImage(@PathParam("photoPath") String photoPath) {
     System.out.println("****************");
-    String path = Config.getPhotoPath() + "\\";
+    String path = Config.getPhotoPath();
     File file = new File(path + photoPath);
     System.out.println("FILE : " + file);
     return file;
