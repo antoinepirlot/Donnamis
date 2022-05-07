@@ -68,7 +68,11 @@ function getGivenItemHtml(item, ratings) {
           </div>
           <br>
   `;
-  if (!ratings || !ratings.find((rating) => rating.item.id === item.id)) {
+  const loggedMemberId = getPayload().id;
+  if (loggedMemberId !== item.member.id
+      && (!ratings
+          || !ratings.find((rating) => rating.item.id === item.id))
+  ) {
     html += `<button id="ratingButton" type="submit" class="btn btn-primary" value="${item.id}">Evaluer</button>`;
   }
   html += `
