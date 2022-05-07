@@ -14,7 +14,7 @@ function getShowItemsHtml(items) {
     html += `
       <div class="col-sm-3" id="item-card" >
         <div class="card">
-          ${displayImage(item)}
+          ${displayImage(item, false)}
           <div class="card-body">
             <h5 class="card-title">${he.decode(item.title)}</h5>
             <p class="card-text">${he.decode(item.itemDescription)}</p>
@@ -91,12 +91,20 @@ function getProfileFormHtml() {
   `;
 }
 
-function displayImage(item) {
+/*
+* Displays the image of the item in param.
+*
+* @param item of the image
+* @param zoomed true if we want to see the image details
+*/
+function displayImage(item, zoomed) {
   if (item.photo) {
-    return `<img src="/api/images/${item.photo}" id="smallItemImage"
+    return `<img src="/api/images/${item.photo}" id=${zoomed ? "bigItemImage"
+        : "smallItemImage"}
                 class="card-img-top" alt="Card image cap">`;
   }
-  return `<img src="/api/images/no-images.png" id="smallItemImage"
+  return `<img src="/api/images/no-images.png" id=${zoomed ? "bigItemImage"
+      : "smallItemImage"}
             class="card-img-top" alt="Card image cap">`;
 }
 
@@ -104,7 +112,7 @@ function getAssignedItemHtml(item) {
   return `
     <div class="col-sm-3" id="item-card" >
       <div class="card">
-        ${displayImage(item)}
+        ${displayImage(item, false)}
         <div class="card-body">
           <h5 class="card-title">${he.decode(item.title)}</h5>
           <p class="card-text">${he.decode(item.itemDescription)}</p>
@@ -121,7 +129,7 @@ function getGivenItemHtml(item, ratings) {
   let html = `
     <div class="col-sm-3" id="item-card" >
       <div class="card">
-        ${displayImage(item)}
+        ${displayImage(item, false)}
         <div class="card-body">
           <h5 class="card-title">${he.decode(item.title)}</h5>
           <p class="card-text">${he.decode(item.itemDescription)}</p>
@@ -151,7 +159,7 @@ function getMyItemsHtml(items) {
     html += `
       <div class="col-sm-3 mb-3 d-flex align-items-stretch" id="item-card" >
         <div class="card">
-          ${displayImage(item)}
+          ${displayImage(item, false)}
           <div class="card-body">
             <h5 class="card-title">${he.decode(item.title)}</h5>
             <p class="card-text">${he.decode(item.itemDescription)}</p>
@@ -221,35 +229,6 @@ function checkIfMemberLoggedIn(modalId, closeModalId) {
     });
   })
 }
-
-/*
-function searchItem(items) {
-  //Searching an item
-  //Listener pour chaque frappe au clavier
-  const searchInput = document.getElementById('searchInput');
-  searchInput.addEventListener('keyup', function () {
-    //Empty the table
-    //tbody.innerHTML = "";
-
-    const input = searchInput.value.toLowerCase();
-
-    const result = items.filter(
-        item => item.title.toLowerCase().includes(input)
-            || item.itemDescription.toLowerCase().includes(input)
-    )
-
-    if (result.length < 1) {
-      //tbody.innerHTML = `<h1 class="display-6" id="SearchErrorMessage">Il n'y a aucun résultat pour cette recherche</h1>`;
-      const html = `<h1 class="display-6" id="SearchErrorMessage">Il n'y a aucun résultat pour cette recherche</h1>`;
-      return html
-    } else {
-      //showFilterMembers(result)
-      //tbody.innerHTML = getShowItemsHtml(result);
-      const html = getShowItemsHtml(result);
-      return html;
-    }
-  })
-}*/
 
 /**
  * Insert items types into the datalist.

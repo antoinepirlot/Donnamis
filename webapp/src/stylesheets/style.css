@@ -64,6 +64,7 @@
 }
 
 #offerCard {
+  padding: 1rem;
   margin: 1rem;
 }
 
@@ -156,7 +157,7 @@ body {
   max-height: 570px;
   height: 570px;
   width: max-content;
-  margin-left: -47%;
+  margin-left: -88%;
 }
 
 
