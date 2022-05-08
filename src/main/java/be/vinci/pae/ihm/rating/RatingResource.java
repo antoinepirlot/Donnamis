@@ -1,6 +1,5 @@
 package be.vinci.pae.ihm.rating;
 
-import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.biz.rating.interfaces.RatingDTO;
 import be.vinci.pae.biz.rating.interfaces.RatingUCC;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;

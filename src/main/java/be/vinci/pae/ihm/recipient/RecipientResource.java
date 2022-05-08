@@ -1,6 +1,5 @@
 package be.vinci.pae.ihm.recipient;
 
-import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.biz.recipient.interfaces.RecipientDTO;
 import be.vinci.pae.biz.recipient.interfaces.RecipientUCC;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;

@@ -2,8 +2,6 @@ package be.vinci.pae.ihm.interest;
 
 import be.vinci.pae.biz.interest.interfaces.InterestDTO;
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
-import be.vinci.pae.biz.member.interfaces.MemberUCC;
-import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import jakarta.inject.Inject;
