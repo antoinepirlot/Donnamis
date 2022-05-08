@@ -2,7 +2,8 @@ import {isAdmin,} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
 import {
   getAllMembers,
-  setMemberAvailability
+  setMemberAvailability,
+  setRecipientUnavailable
 } from "../../../utils/BackEndRequests";
 import {showError} from "../../../utils/ShowError";
 
@@ -111,8 +112,14 @@ function showFilterMembers(members) {
         version: members.find(
             (m) => m.id == makeUnavailableButton.value).version
       };
+
+      const recipient = {
+        member: member
+      };
+
       try {
         await setMemberAvailability(member);
+        await setRecipientUnavailable(recipient);
         await SearchMembersPage();
         errorDiv = document.querySelector("#searchMemberPageError");
         showError("Modification réussie.", "success", errorDiv);
