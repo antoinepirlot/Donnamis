@@ -224,7 +224,7 @@ async function getGivenItems() {
   if (!response.ok) {
     throw new Error("Erreur lors du fetch");
   }
-  if (response.status == 204) {
+  if (response.status === 204) {
     return;
   }
   return await response.json();
