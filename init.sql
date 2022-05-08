@@ -27,7 +27,7 @@ CREATE TABLE project_pae.addresses
     id_address      SERIAL PRIMARY KEY,
     street          VARCHAR(150) NOT NULL,
     building_number VARCHAR(20)  NOT NULL,
-    unit_number     VARCHAR(10)  NULL,
+    unit_number     VARCHAR(10) NULL,
     postcode        VARCHAR(10)  NOT NULL,
     commune         VARCHAR(100) NOT NULL,
     id_member       INTEGER      NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE project_pae.items
     photo            VARCHAR(500) NULL,
     title            VARCHAR(50)  NOT NULL,
     offer_status     VARCHAR(10)  NOT NULL,
-    last_offer_date  TIMESTAMP    NULL,
+    last_offer_date  TIMESTAMP NULL,
     version_item     INT          NOT NULL,
     FOREIGN KEY (id_type) REFERENCES project_pae.items_types (id_type),
     FOREIGN KEY (id_member) REFERENCES project_pae.members (id_member)
@@ -414,13 +414,4 @@ GROUP BY m.last_name,
          i.item_description
 ORDER BY m.last_name,
          i.item_description;
-
-UPDATE project_pae.addresses
-SET street = 'Avenue de l''hélianthe',
-    building_number = 63,
-    unit_number = null,
-    postcode = 1180,
-    commune = 'Forest',
-    version_address = version_address+1
-WHERE id_member = 10;
 
