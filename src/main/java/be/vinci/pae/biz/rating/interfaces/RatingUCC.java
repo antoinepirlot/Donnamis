@@ -16,9 +16,8 @@ public interface RatingUCC {
    * Adds the evaluation of an item.
    *
    * @param ratingDTO the new rating
-   * @return true if correctly add into the DB or false if not
    */
-  boolean evaluate(RatingDTO ratingDTO);
+  void evaluate(RatingDTO ratingDTO);
 
   /**
    * Get all ratings of a specified member.

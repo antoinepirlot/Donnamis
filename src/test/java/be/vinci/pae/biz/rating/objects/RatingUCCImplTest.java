@@ -1,12 +1,17 @@
 package be.vinci.pae.biz.rating.objects;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import be.vinci.pae.biz.item.objects.ItemImpl;
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.member.objects.MemberImpl;
 import be.vinci.pae.biz.rating.interfaces.RatingDTO;
 import be.vinci.pae.biz.rating.interfaces.RatingUCC;
+import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.rating.interfaces.RatingDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.exceptions.FatalException;
@@ -27,6 +32,8 @@ class RatingUCCImplTest {
 
   private final RatingDAO ratingDAO = locator.getService(RatingDAO.class);
 
+  private final MemberDAO memberDAO = locator.getService(MemberDAO.class);
+
   private final DALServices dalServices = locator.getService(DALServices.class);
 
   private final RatingUCC ratingUCC = locator.getService(RatingUCC.class);
@@ -38,6 +45,11 @@ class RatingUCCImplTest {
 
   @BeforeEach
   void setUp() {
+    this.ratingDTO.setMember(new MemberImpl());
+    this.ratingDTO.setItem(new ItemImpl());
+    MemberDTO memberDTO = new MemberImpl();
+    memberDTO.setId(4);
+    this.ratingDTO.getItem().setMember(memberDTO);
     try {
       Mockito.doNothing().when(this.dalServices).start();
       Mockito.doNothing().when(this.dalServices).commit();
@@ -73,8 +85,10 @@ class RatingUCCImplTest {
   private void setGetAllRatingsOfMembre(int idMember) {
     if (idMember >= 1) {
       Mockito.when(this.ratingDAO.getAllRatingsOfMember(idMember)).thenReturn(this.ratingDTOList);
+      Mockito.when(this.memberDAO.memberExist(null, idMember)).thenReturn(true);
     } else {
       Mockito.when(this.ratingDAO.getAllRatingsOfMember(idMember)).thenReturn(null);
+      Mockito.when(this.memberDAO.memberExist(null, idMember)).thenReturn(false);
     }
   }
 
@@ -82,7 +96,7 @@ class RatingUCCImplTest {
   @Test
   void testEvaluateAdded() {
     this.setEvaluateReturnedValue(true);
-    assertTrue(this.ratingUCC.evaluate(this.ratingDTO));
+    assertDoesNotThrow(() -> this.ratingUCC.evaluate(this.ratingDTO));
   }
 
 
@@ -90,7 +104,7 @@ class RatingUCCImplTest {
   @Test
   void testEvaluateNotAdded() {
     this.setEvaluateReturnedValue(false);
-    assertFalse(this.ratingUCC.evaluate(this.ratingDTO));
+    assertThrows(FatalException.class, () -> this.ratingUCC.evaluate(this.ratingDTO));
   }
 
   @DisplayName("Test evaluate with start throwing SQL exception")
