@@ -75,7 +75,7 @@ public class RecipientDAOImpl implements RecipientDAO {
         + "WHERE id_member = ? AND received = 'waiting';";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, recipientDTO.getMember().getId());
-      return preparedStatement.executeUpdate() != 0;
+      return preparedStatement.executeUpdate() >= 0;
     } catch (SQLException e) {
       throw new FatalException(e);
     }
