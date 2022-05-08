@@ -49,6 +49,7 @@ public class ImageResource {
   @AuthorizeMember
   public void uploadFile(@PathParam("idItem") int idItem, @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDisposition) {
+    System.out.println("Hello World");
     String extension = FilenameUtils.getExtension(fileDisposition.getFileName());
     if (!checkExtension(extension)) {
       throw new WrongBodyDataException("The file extension is not correct.");
