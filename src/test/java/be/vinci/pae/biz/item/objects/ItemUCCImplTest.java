@@ -147,6 +147,8 @@ class ItemUCCImplTest {
       Mockito.when(this.itemDAO.countNumberOfReceivedOrNotReceivedItems(idMember, received))
           .thenReturn(result);
       Mockito.when(this.memberDAO.memberExist(null, idMember)).thenReturn(true);
+    } else {
+      Mockito.when(this.memberDAO.memberExist(null, idMember)).thenReturn(false);
     }
     return result;
   }
