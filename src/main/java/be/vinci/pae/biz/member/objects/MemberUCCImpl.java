@@ -7,7 +7,9 @@ import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.exceptions.FatalException;
+import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ForbiddenException;
+import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import jakarta.inject.Inject;
 import java.sql.SQLException;
 import java.util.List;
@@ -26,6 +28,9 @@ public class MemberUCCImpl implements MemberUCC {
       dalServices.start();
       List<MemberDTO> memberDTOList = memberDAO.getAllMembers();
       dalServices.commit();
+      if (memberDTOList == null) {
+        throw new ObjectNotFoundException("No member into the database");
+      }
       return memberDTOList;
     } catch (SQLException e) {
       dalServices.rollback();
@@ -34,10 +39,14 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public MemberDTO getOneMember(int id) {
+  public MemberDTO getOneMember(int idMember) {
+    if (!this.memberExist(null, idMember)) {
+      String message = "This member has not been found. Member's id: " + idMember;
+      throw new ObjectNotFoundException(message);
+    }
     try {
       dalServices.start();
-      MemberDTO memberDTO = memberDAO.getOne(id);
+      MemberDTO memberDTO = memberDAO.getOne(idMember);
       dalServices.commit();
       return memberDTO;
     } catch (SQLException e) {
@@ -60,14 +69,17 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public boolean modifyMember(MemberDTO memberDTO) {
+  public void modifyMember(MemberDTO memberDTO) {
+    this.checkVersion(memberDTO);
     Member member = (Member) memberDTO;
     member.hashPassword();
     try {
       dalServices.start();
       boolean modified = memberDAO.modifyMember(memberDTO);
       dalServices.commit();
-      return modified;
+      if (!modified) {
+        throw new FatalException("An error occured while modifying member");
+      }
     } catch (SQLException e) {
       dalServices.rollback();
       throw new FatalException(e);
@@ -75,12 +87,15 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public boolean confirmMember(MemberDTO memberDTO) {
+  public void confirmMember(MemberDTO memberDTO) {
+    this.checkVersion(memberDTO);
     try {
       dalServices.start();
       boolean isConfirmed = memberDAO.confirmMember(memberDTO);
       dalServices.commit();
-      return isConfirmed;
+      if (!isConfirmed) {
+        throw new FatalException("An unexpected error happened while confirming member.");
+      }
     } catch (SQLException e) {
       dalServices.rollback();
       throw new FatalException(e);
@@ -88,12 +103,15 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public boolean setMemberAvailability(MemberDTO memberDTO) {
+  public void setMemberAvailability(MemberDTO memberDTO) {
+    this.checkVersion(memberDTO);
     try {
       dalServices.start();
-      boolean isChange = memberDAO.setMemberAvailability(memberDTO);
+      boolean isChanged = memberDAO.setMemberAvailability(memberDTO);
       dalServices.commit();
-      return isChange;
+      if (!isChanged) {
+        throw new FatalException("An unexpected error happened while set member availability.");
+      }
     } catch (SQLException e) {
       dalServices.rollback();
       throw new FatalException(e);
@@ -101,12 +119,14 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public boolean denyMember(RefusalDTO refusalDTO) {
+  public void denyMember(RefusalDTO refusalDTO) {
     try {
       dalServices.start();
       boolean isDenied = memberDAO.denyMember(refusalDTO);
       dalServices.commit();
-      return isDenied;
+      if (!isDenied) {
+        throw new FatalException("An unexpected error happened while denying member.");
+      }
     } catch (SQLException e) {
       dalServices.rollback();
       throw new FatalException(e);
@@ -140,12 +160,13 @@ public class MemberUCCImpl implements MemberUCC {
               || !loggedMember.verifyState("confirmed") && !loggedMember.verifyState(
               "unavailable")
       ) {
-        if (loggedMember != null && loggedMember.verifyState("registered")
+        if (loggedMember != null && (loggedMember.verifyState("registered")
+            || loggedMember.verifyState("denied"))
             && loggedMember.checkPassword(memberToLogin.getPassword(),
             loggedMember.getPassword())) {
           throw new ForbiddenException("Username and password ok but registered");
         }
-        return null;
+        throw new ObjectNotFoundException("Member doesn't exist");
       }
       return loggedMember;
     } catch (SQLException e) {
@@ -155,14 +176,20 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public boolean register(MemberDTO memberDTO) {
+  public void register(MemberDTO memberDTO) {
+    if (this.memberExist(memberDTO, -1)) {
+      String message = "This member already exist in the database";
+      throw new ConflictException(message);
+    }
     Member member = (Member) memberDTO;
     member.hashPassword();
     try {
       dalServices.start();
       boolean isRegistered = memberDAO.register(member);
       dalServices.commit();
-      return isRegistered;
+      if (!isRegistered) {
+        throw new FatalException("An error occurs while registering");
+      }
     } catch (SQLException e) {
       dalServices.rollback();
       throw new FatalException(e);
@@ -179,6 +206,13 @@ public class MemberUCCImpl implements MemberUCC {
     } catch (SQLException e) {
       this.dalServices.rollback();
       throw new FatalException(e);
+    }
+  }
+
+  private void checkVersion(MemberDTO member) {
+    Member dbMember = (Member) this.getOneMember(member.getId());
+    if (member.getVersion() != dbMember.getVersion()) {
+      throw new FatalException("Error with version");
     }
   }
 

@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
@@ -671,7 +670,7 @@ class ItemUCCImplTest {
   void testAddPhotoWithAllWorkingGood() {
     this.setAddPhotoReturnedValue(5, "photo.png");
     Mockito.when(this.itemDAO.itemExists(5)).thenReturn(true);
-    assertTrue(this.itemUCC.addPhoto(5, "photo.png"));
+    assertDoesNotThrow(() -> this.itemUCC.addPhoto(5, "photo.png"));
   }
 
   @DisplayName("Test add photo with start throwing sql exception")

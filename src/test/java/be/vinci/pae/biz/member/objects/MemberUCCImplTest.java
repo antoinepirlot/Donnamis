@@ -1,5 +1,6 @@
 package be.vinci.pae.biz.member.objects;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -13,6 +14,8 @@ import be.vinci.pae.biz.refusal.objects.RefusalImpl;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.exceptions.FatalException;
+import be.vinci.pae.exceptions.webapplication.ForbiddenException;
+import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.utils.ApplicationBinder;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -40,6 +43,12 @@ class MemberUCCImplTest {
 
   @BeforeEach
   void setUp() {
+    Mockito.when(this.memberDAO.memberExist(this.memberDTO, -1)).thenReturn(true);
+    Mockito.when(this.memberDAO.memberExist(null, this.memberDTO.getId()))
+        .thenReturn(true);
+    Mockito.when(this.memberDAO.memberExist(null, -1)).thenReturn(false);
+    Mockito.when(this.memberDAO.getOne(this.memberDTO)).thenReturn(this.memberDTO);
+    Mockito.when(this.memberDAO.getOne(this.memberDTO.getId())).thenReturn(this.memberDTO);
     try {
       Mockito.doNothing().when(this.dalServices).start();
       Mockito.doNothing().when(this.dalServices).commit();
@@ -67,10 +76,9 @@ class MemberUCCImplTest {
 
   private void configureMemberDTOState(String state) {
     memberDTO.setActualState(state);
-    memberDTO.setId(99);
     Mockito.when(memberDAO.confirmMember(this.memberDTO)).thenReturn(true);
     Mockito.when(memberDAO.denyMember(this.refusalDTO)).thenReturn(true);
-    Mockito.when(memberDAO.getOne(99)).thenReturn(memberDTO);
+    Mockito.when(memberDAO.getOne(this.memberDTO.getId())).thenReturn(memberDTO);
   }
 
   private void setGetAllMembersReturnedValue() {
@@ -148,14 +156,14 @@ class MemberUCCImplTest {
   @Test
   void testGetOneMemberWorkingAsExpected() {
     this.setGetOneMemberReturnedValue(5);
-    assertEquals(this.memberDTO, this.memberUCC.getOneMember(5));
+    assertEquals(this.memberDTO, this.memberUCC.getOneMember(this.memberDTO.getId()));
   }
 
   @DisplayName("Test get one member with wrong id")
   @Test
   void testGetOneMemberWithWrongId() {
     this.setGetOneMemberReturnedValue(-1);
-    assertNull(this.memberUCC.getOneMember(-1));
+    assertThrows(ObjectNotFoundException.class, () -> this.memberUCC.getOneMember(-1));
   }
 
   @DisplayName("Test get one member with start throwing sql exception")
@@ -176,14 +184,14 @@ class MemberUCCImplTest {
   @Test
   void testModifyMemberAsExpected() {
     this.setModifyMemberReturnedValue(true);
-    assertTrue(this.memberUCC.modifyMember(this.memberDTO));
+    assertDoesNotThrow(() -> this.memberUCC.modifyMember(this.memberDTO));
   }
 
   @DisplayName("Test modify member as not modified")
   @Test
   void testModifyMemberAsNotModified() {
     this.setModifyMemberReturnedValue(false);
-    assertFalse(this.memberUCC.modifyMember(this.memberDTO));
+    assertThrows(FatalException.class, () -> this.memberUCC.modifyMember(this.memberDTO));
   }
 
   @DisplayName("Test modify member with start throwing sql exception")
@@ -206,21 +214,21 @@ class MemberUCCImplTest {
   @Test
   void testConfirmMemberWithStateRegistered() {
     configureMemberDTOState("registered");
-    assertTrue(memberUCC.confirmMember(this.memberDTO));
+    assertDoesNotThrow(() -> memberUCC.confirmMember(this.memberDTO));
   }
 
   @DisplayName("Test Confirm Member with the state denied")
   @Test
   void testConfirmMemberWithStateDenied() {
     configureMemberDTOState("denied");
-    assertTrue(memberUCC.confirmMember(this.memberDTO));
+    assertDoesNotThrow(() -> memberUCC.confirmMember(this.memberDTO));
   }
 
   @DisplayName("Test Confirm Member with the state confirmed")
   @Test
   void testConfirmMemberWithStateConfirmed() {
     configureMemberDTOState("confirmed");
-    assertTrue(memberUCC.confirmMember(this.memberDTO));
+    assertDoesNotThrow(() -> memberUCC.confirmMember(this.memberDTO));
   }
 
   @DisplayName("Test Confirm Member With commit throwing sql exception")
@@ -243,21 +251,21 @@ class MemberUCCImplTest {
   @Test
   void testDenyMemberWithStateConfirmed() {
     configureMemberDTOState("confirmed");
-    assertTrue(memberUCC.denyMember(this.refusalDTO));
+    assertDoesNotThrow(() -> memberUCC.denyMember(this.refusalDTO));
   }
 
   @DisplayName("Test Deny Member With the state registered")
   @Test
   void testDenyMemberWithStateRegistered() {
     configureMemberDTOState("registered");
-    assertTrue(this.memberUCC.denyMember(this.refusalDTO));
+    assertDoesNotThrow(() -> this.memberUCC.denyMember(this.refusalDTO));
   }
 
   @DisplayName("Test Deny Member With the state denied")
   @Test
   void testDenyMemberWithStateDenied() {
     configureMemberDTOState("denied");
-    assertTrue(memberUCC.denyMember(this.refusalDTO));
+    assertDoesNotThrow(() -> memberUCC.denyMember(this.refusalDTO));
   }
 
 
@@ -281,21 +289,21 @@ class MemberUCCImplTest {
   @Test
   void testConfirmAdminWithStateRefused() {
     configureMemberDTOState("denied");
-    assertTrue(this.memberUCC.confirmMember(this.memberDTO));
+    assertDoesNotThrow(() -> this.memberUCC.confirmMember(this.memberDTO));
   }
 
   @DisplayName("Test Confirm Admin With the state registered")
   @Test
   void testConfirmAdminWithStateRegistered() {
     configureMemberDTOState("registered");
-    assertTrue(memberUCC.confirmMember(this.memberDTO));
+    assertDoesNotThrow(() -> memberUCC.confirmMember(this.memberDTO));
   }
 
   @DisplayName("Test Confirm Admin With the state confirmed")
   @Test
   void testConfirmAdminWithStateConfirmed() {
     configureMemberDTOState("confirmed");
-    assertTrue(this.memberUCC.confirmMember(this.memberDTO));
+    assertDoesNotThrow(() -> this.memberUCC.confirmMember(this.memberDTO));
   }
 
   //Test member exists
@@ -347,35 +355,35 @@ class MemberUCCImplTest {
   @Test
   void testLoginDeniedMemberWithGoodPassword() {
     configureMemberDTO("denied", password);
-    assertNull(memberUCC.login(memberToLogIn));
+    assertThrows(ForbiddenException.class, () -> memberUCC.login(memberToLogIn));
   }
 
   @DisplayName("Test login with registered member and good password")
   @Test
   void testLoginRegisteredMemberWithGoodPassword() {
     configureMemberDTO("registered", password);
-    assertNull(memberUCC.login(memberToLogIn));
+    assertThrows(ForbiddenException.class, () -> memberUCC.login(memberToLogIn));
   }
 
   @DisplayName("Test login with confirmed member and wrong password")
   @Test
   void testLoginConfirmedMemberWithWrongPassword() {
     configureMemberDTO("confirmed", wrongPassword);
-    assertNull(memberUCC.login(memberToLogIn));
+    assertThrows(ObjectNotFoundException.class, () -> memberUCC.login(memberToLogIn));
   }
 
   @DisplayName("Test login with registered member and wrong password")
   @Test
   void testLoginRegisteredMemberWithWrongPassword() {
     configureMemberDTO("registered", wrongPassword);
-    assertNull(memberUCC.login(memberToLogIn));
+    assertThrows(ObjectNotFoundException.class, () -> memberUCC.login(memberToLogIn));
   }
 
   @DisplayName("Test login with denied member and wrong password")
   @Test
   void testLoginDeniedMemberWithWrongPassword() {
     configureMemberDTO("denied", wrongPassword);
-    assertNull(memberUCC.login(memberToLogIn));
+    assertThrows(ObjectNotFoundException.class, () -> memberUCC.login(memberToLogIn));
   }
 
   @DisplayName("Test login with start throwing sql exception")
@@ -398,14 +406,16 @@ class MemberUCCImplTest {
   @Test
   void testRegisterWorkingAsExpected() {
     this.setRegisterReturnedValue(true);
-    assertTrue(this.memberUCC.register(this.memberDTO));
+    Mockito.when(this.memberDAO.memberExist(this.memberDTO, -1)).thenReturn(false);
+    assertDoesNotThrow(() -> this.memberUCC.register(this.memberDTO));
   }
 
   @DisplayName("Test register failed")
   @Test
   void testRegisterFailed() {
     this.setRegisterReturnedValue(false);
-    assertFalse(this.memberUCC.register(this.memberDTO));
+    Mockito.when(this.memberDAO.memberExist(this.memberDTO, -1)).thenReturn(false);
+    assertThrows(FatalException.class, () -> this.memberUCC.register(this.memberDTO));
   }
 
   @DisplayName("Test register with start throwing sql exception")
