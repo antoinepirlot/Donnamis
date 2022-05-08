@@ -12,8 +12,6 @@ import be.vinci.pae.exceptions.FatalException;
 import be.vinci.pae.exceptions.webapplication.ForbiddenException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response.Status;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -34,7 +32,7 @@ public class ItemUCCImpl implements ItemUCC {
       dalServices.start();
       List<ItemDTO> listItemDTO = itemDAO.getAllItems(offerStatus);
       dalServices.commit();
-      if (listItemDTO == null || listItemDTO.isEmpty()) {
+      if (listItemDTO == null) {
         throw new ObjectNotFoundException(
             "There's no items matching with offer status: " + offerStatus + "."
         );
@@ -88,7 +86,7 @@ public class ItemUCCImpl implements ItemUCC {
       offerDTO.setIdItem(idItem);
       if (!this.offerUCC.createOffer(offerDTO)) {
         String message = "The offer can't be added to the db due to a unexpected error";
-        throw new WebApplicationException(message, Status.BAD_REQUEST);
+        throw new FatalException(message);
       }
       return idItem;
     } catch (SQLException e) {
@@ -135,7 +133,7 @@ public class ItemUCCImpl implements ItemUCC {
       dalServices.start();
       List<ItemDTO> listItemDTO = itemDAO.getAllItemsOfAMember(idMember);
       dalServices.commit();
-      if (listItemDTO == null || listItemDTO.isEmpty()) {
+      if (listItemDTO == null) {
         throw new ObjectNotFoundException(
             "There's no items matching with member's id: " + idMember + "."
         );

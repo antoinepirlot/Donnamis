@@ -1,5 +1,6 @@
 package be.vinci.pae.biz.interest.objects;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -7,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import be.vinci.pae.biz.interest.interfaces.InterestDTO;
 import be.vinci.pae.biz.interest.interfaces.InterestUCC;
 import be.vinci.pae.dal.interest.interfaces.InterestDAO;
+import be.vinci.pae.dal.member.interfaces.MemberDAO;
+import be.vinci.pae.dal.offer.interfaces.OfferDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.exceptions.FatalException;
 import be.vinci.pae.utils.ApplicationBinder;
@@ -24,6 +27,11 @@ class InterestUCCImplTest {
 
   private final InterestDAO interestDAO = locator.getService(InterestDAO.class);
 
+  private final OfferDAO offerDAO = locator.getService(OfferDAO.class);
+
+  private final MemberDAO memberDAO = locator.getService(MemberDAO.class);
+
+
   private final DALServices dalServices = locator.getService(DALServices.class);
 
   private final InterestUCC interestUCC = locator.getService(InterestUCC.class);
@@ -33,6 +41,9 @@ class InterestUCCImplTest {
 
   @BeforeEach
   void setUp() {
+    Mockito.when(this.offerDAO.offerExist(this.interestDTO.getOffer())).thenReturn(true);
+    Mockito.when(this.memberDAO.memberExist(this.interestDTO.getMember(), -1)).thenReturn(true);
+    Mockito.when(this.interestDAO.interestExist(this.interestDTO)).thenReturn(false);
     try {
       Mockito.doNothing().when(this.dalServices).start();
       Mockito.doNothing().when(this.dalServices).commit();
@@ -69,14 +80,14 @@ class InterestUCCImplTest {
   @Test
   void testMarkInterestWithInterestMarked() {
     this.setInterestDAOMarkInterestReturnValue(true);
-    assertTrue(interestUCC.markInterest(interestDTO));
+    assertDoesNotThrow(() -> interestUCC.markInterest(interestDTO));
   }
 
   @DisplayName("Test mark interest with interest not marked")
   @Test
   void testMarkInterestWithInterestNotMarked() {
     this.setInterestDAOMarkInterestReturnValue(false);
-    assertFalse(interestUCC.markInterest(interestDTO));
+    assertThrows(FatalException.class, () -> interestUCC.markInterest(interestDTO));
   }
 
   @DisplayName("Test mark interest with start throwing sql exception ")
