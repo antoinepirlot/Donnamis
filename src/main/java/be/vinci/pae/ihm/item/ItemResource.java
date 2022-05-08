@@ -48,7 +48,7 @@ public class ItemResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<ItemDTO> getAllItems() {
-    return itemUCC.getAllItems(null);
+    return this.jsonUtil.filterPublicJsonViewAsList(itemUCC.getAllItems(null));
   }
 
   /**
@@ -68,7 +68,7 @@ public class ItemResource {
     ) {
       throw new WrongBodyDataException("Offer status " + offerStatus + " is not valid.");
     }
-    return itemUCC.getAllItems(offerStatus);
+    return this.jsonUtil.filterPublicJsonViewAsList(itemUCC.getAllItems(offerStatus));
   }
 
   /**
@@ -80,7 +80,7 @@ public class ItemResource {
   @Path("all_items/public")
   @Produces(MediaType.APPLICATION_JSON)
   public List<ItemDTO> getAllPublicItems() {
-    return this.itemUCC.getAllPublicItems();
+    return this.jsonUtil.filterPublicJsonViewAsList(this.itemUCC.getAllPublicItems());
   }
 
   /**
@@ -97,7 +97,7 @@ public class ItemResource {
     if (idMember < 1) {
       throw new WrongBodyDataException("The idMember must be grater than 1");
     }
-    return this.itemUCC.getAllItemsOfAMember(idMember);
+    return this.jsonUtil.filterPublicJsonViewAsList(this.itemUCC.getAllItemsOfAMember(idMember));
   }
 
   /**

@@ -4,6 +4,7 @@ import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeUCC;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
+import be.vinci.pae.ihm.filter.utils.Json;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -19,6 +20,7 @@ import java.util.List;
 @AuthorizeMember
 public class ItemsTypeResource {
 
+  private final Json<ItemsTypeDTO> jsonUtil = new Json<>(ItemsTypeDTO.class);
   @Inject
   private ItemsTypeUCC itemsTypeUCC;
 
@@ -36,7 +38,7 @@ public class ItemsTypeResource {
   @Path("all")
   @Produces(MediaType.APPLICATION_JSON)
   public List<ItemsTypeDTO> getAll() {
-    return this.itemsTypeUCC.getAll();
+    return this.jsonUtil.filterPublicJsonViewAsList(this.itemsTypeUCC.getAll());
   }
 
   /////////////////////////////////////////////////////////
