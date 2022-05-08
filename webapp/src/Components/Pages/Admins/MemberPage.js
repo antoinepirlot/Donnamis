@@ -2,7 +2,8 @@ import {
   getAllItemsByMemberIdAndOfferStatus,
   getNumberOfItems,
   getNumberOfReceivedOrNotReceivedItems,
-  getOneMember
+  getOneMember,
+  setMemberAvailability
 } from "../../../utils/BackEndRequests";
 import {showError} from "../../../utils/ShowError";
 import {getShowItemsHtml} from "../../../utils/HtmlCode";
@@ -25,19 +26,22 @@ const memberPageHtml = `
 `;
 
 let idMember;
+let he = require('he');
 
 const MemberPage = async () => {
   if (!isAdmin()) {
     Redirect("/");
     return;
   }
+
   const page = document.querySelector("#page");
   page.innerHTML = memberPageHtml;
   idMember = new URLSearchParams(window.location.search).get("id");
   const member = await getOneMember(idMember);
   const profilUsernameDiv = document.querySelector(
       "#profilUsernameMemberPage");
-  profilUsernameDiv.innerText = `Profile de: ${member.username}`;
+  const username = he.decode(member.username);
+  profilUsernameDiv.innerText = `Profile de: ${he.decode(username)}`;
   await showMemberInformation(member);
   await showDonatedItems(member);
   await showReceivedItems(member);
@@ -46,6 +50,7 @@ const MemberPage = async () => {
 async function showDonatedItems(member) {
   const donatedItems = await getAllItemsByMemberIdAndOfferStatus(member.id,
       "donated");
+  console.log(donatedItems)
   if (!donatedItems) {
     const messageDiv = document.querySelector("#donatedItemsMemberPageMessage");
     showError("Ce membre n'a pas d'objet offerts", "info", messageDiv);
@@ -59,7 +64,8 @@ async function showReceivedItems(member) {
   const receivedItems = await getAllItemsByMemberIdAndOfferStatus(member.id,
       "given");
   if (!receivedItems) {
-    const messageDiv = document.querySelector("#receivedItemsMemberPageMessage");
+    const messageDiv = document.querySelector(
+        "#receivedItemsMemberPageMessage");
     showError("Ce membre n'a pas d'objet offerts", "info", messageDiv);
     return;
   }
@@ -71,20 +77,60 @@ async function showMemberInformation(member) {
   const content = document.querySelector("#memberPageContent");
   let contentHtml = `
     <p>
-      Prénom:${member.firstName}<br>
-      Nom: ${member.lastName}<br>
+      Prénom : ${he.decode(member.firstName)}<br>
+      Nom : ${he.decode(member.lastName)}<br>
       ${getAddressHtml(member.address)}<br>
-      Statut: ${getActualState(member)}<br>
-      Administrateur: ${member.isAdmin ? "Oui" : "Non"}<br>
-      Numéro de téléphone: ${member.phoneNumber ? member.phoneNumber : "Aucun"}<br>
-      Nombre d'objets offerts: ${await getNumberOfItems(member.id, "donated")}<br>
-      Nombre d'objets donnés: ${await getNumberOfItems(member.id, "given")}<br>
-      Nombre d'objets intéréssé mais non reçu: ${await getNumberOfReceivedOrNotReceivedItems(
+      Statut : ${getActualState(member)}<br>
+      Administrateur : ${member.isAdmin ? "Oui" : "Non"}<br>
+      Numéro de téléphone : ${member.phoneNumber ? member.phoneNumber : "Aucun"}<br>
+      Nombre d'objets offerts : ${await getNumberOfItems(member.id, "donated")}<br>
+      Nombre d'objets donnés : ${await getNumberOfItems(member.id, "given")}<br>
+      Nombre d'objets intéréssé mais non reçu : ${await getNumberOfReceivedOrNotReceivedItems(
       member.id, false)}<br>
-      Nombre d'objets reçus: ${await getNumberOfReceivedOrNotReceivedItems(
+      Nombre d'objets reçus : ${await getNumberOfReceivedOrNotReceivedItems(
       member.id, true)}<br>
   `;
   content.innerHTML += contentHtml;
+  const pageErrorDiv = document.querySelector("#errorMessage");
+  let button;
+
+  //Create button if member confirmed or unavailable
+  if (member.actualState === 'confirmed' || member.actualState
+      === 'unavailable') {
+    content.innerHTML += `<button id="markUnavailableButton"></button>`;
+    button = document.querySelector("#markUnavailableButton");
+
+    //Change the value of the button
+    if (member.actualState === 'confirmed') {
+      button.innerHTML = "Marquer Indisponible";
+    } else if (member.actualState === 'unavailable') {
+      button.innerHTML = "Marquer Disponible";
+    }
+
+    button.addEventListener("click", async function () {
+
+      const memberUnavailable = {
+        id: member.id,
+        actualState: member.actualState === "confirmed" ? "unavailable"
+            : "confirmed",
+        version: member.version
+      };
+
+      // const recipient = {
+      //   member: memberUnavailable
+      // };
+      try {
+        await setMemberAvailability(memberUnavailable);
+        // if (memberUnavailable.actualState === "unavailable") {
+        //   await setRecipientUnavailable(recipient);
+        // }
+        await MemberPage();
+      } catch (err) {
+        console.error(err);
+        showError("Une erreur est survenue.", "danger", pageErrorDiv);
+      }
+    });
+  }
 }
 
 function getActualState(member) {
@@ -95,14 +141,16 @@ function getActualState(member) {
       return "Confirmé";
     case "denied":
       return "Refusé";
+    case "unavailable":
+      return "Malade";
     default:
-      "Statut inconnu";
+      return "Statut inconnu";
   }
 }
 
 function getAddressHtml(address) {
   let addressHtml = `
-    Adresse: ${address.street} n°${address.buildingNumber}
+    Adresse : ${address.street} n°${address.buildingNumber}
   `;
   if (address.unitNumber) {
     addressHtml += `
@@ -113,7 +161,7 @@ function getAddressHtml(address) {
     ${address.postcode} ${address.commune}
     
   `;
-  return addressHtml;
+  return he.decode(addressHtml);
 }
 
 export default MemberPage

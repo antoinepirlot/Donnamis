@@ -2,11 +2,14 @@ import {checkToken, getObject, getPayload,} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
 import {showError} from "../../../utils/ShowError";
 import {
+  getAllPublicItems,
   getItem,
+  getNumberOfInterestedMembers,
   modifyTheItem,
   postInterest as postInterestBackEnd
 } from "../../../utils/BackEndRequests";
 import {closeModal, openModal} from "../../../utils/Modals";
+import {displayImage, getShowItemsHtml} from "../../../utils/HtmlCode";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3" xmlns="http://www.w3.org/1999/html">
@@ -18,6 +21,7 @@ const viewOfferHtml = `
         <h5 id="itemTypeViewItemPage" class="card-text"></h5>
         <h5 id="descriptionViewItemPage" class="card-text"></h5>
         <h5 id="availabilitiesViewItemPage" class="card-text"></h5>
+        <h5 id="numberOfInterestedMembersViewItemPage" class="card-text"></h5>
         <h5 id="pubDateViewItemPage" class="card-text"></h5>
         <h5 id="oldPubDateViewItemPage" class="card-text"></h5>
         <button id="interestButton" class="btn btn-primary">
@@ -29,6 +33,14 @@ const viewOfferHtml = `
   <div id="viewItemPageError"></div>
 </div>
 <!-- Modal Modify Item is in createModifyItemModal function-->
+
+<div id="suggestedItemsTitle">
+  <p class="display-4"> Voici des objets de la même catégorie : </p> 
+  <div id="suggestedItems">
+    
+  </div>
+</div>
+
 
 <!-- Modal Post Interest -->
 <div id="interestModal" class="modal">
@@ -52,6 +64,7 @@ const viewOfferHtml = `
 let lastOffer;
 let item;
 let errorMessageDiv;
+let he = require('he');
 
 /**
  * Render the OfferPage :
@@ -71,7 +84,7 @@ async function ViewItemPage() {
   try {
     item = await getItem(idItem);
     page.innerHTML += createModifyItemModal();
-    showItemInfo();
+    await showItemInfo();
     const modifyMember = getObject("memberDTO");
     const postInterestButton = document.querySelector("#interestButton");
     if (item.member.id === modifyMember.id) {
@@ -83,6 +96,12 @@ async function ViewItemPage() {
       //post an interest
       postInterestButton.addEventListener("click", showInterestForm);
     }
+    const suggestedItems = document.querySelector("#suggestedItems");
+    const items = await getAllPublicItems();
+    suggestedItems.innerHTML = getShowItemsHtml(
+        items.filter(
+            items => items.itemType.itemType == item.itemType.itemType
+                && items.id !== item.id));
   } catch (e) {
     console.error(e);
     showError("Une erreur est survenue.", "danger", errorMessageDiv);
@@ -90,7 +109,8 @@ async function ViewItemPage() {
 }
 
 function createModifyItemModal() {
-  let itemDescription = item.itemDescription ? item.itemDescription : "";
+  let itemDescription = item.itemDescription ? item.itemDescription
+      : "";
   let timeSlot = item.offerList[0].timeSlot ? item.offerList[0].timeSlot : "";
   return `
     <!-- Modal Modify Item -->
@@ -100,7 +120,7 @@ function createModifyItemModal() {
         <form id="modifyItemForm">
           <h5>Modifier votre objet<span id="asterisk">*</span>:</h5><br>
           <p>Description de l'objet<span id="asterisk">*</span>:</p>
-          <input id="itemDescriptionForm" type="text" value="${itemDescription}">
+          <textarea id="itemDescriptionForm" cols="30" rows="3">${itemDescription}</textarea>
           <p>Photo</p>
           <input id="photoForm" type="file"><br>
           <br>
@@ -115,7 +135,7 @@ function createModifyItemModal() {
   `;
 }
 
-function showItemInfo() {
+async function showItemInfo() {
   lastOffer = item.offerList[0];
   let date = new Date(lastOffer.date);
   date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
@@ -130,16 +150,17 @@ function showItemInfo() {
   }
 
   const titleDiv = document.querySelector("#titleViewItemPage");
-  titleDiv.innerHTML = item.title;
+  titleDiv.innerHTML = he.decode(item.title);
 
   const memberDiv = document.querySelector("#memberViewItemPage");
-  memberDiv.innerHTML = `Offre proposée par : ${item.member.firstName} ${item.member.lastName} `;
+  memberDiv.innerHTML = `Offre proposée par : ${he.decode(
+      item.member.firstName)} ${he.decode(item.member.lastName)} `;
 
   const itemType = document.querySelector("#itemTypeViewItemPage");
-  itemType.innerHTML = `Type : ${item.itemType.itemType}`;
+  itemType.innerHTML = `Type : ${he.decode(item.itemType.itemType)}`;
 
   const descriptionDiv = document.querySelector("#descriptionViewItemPage");
-  descriptionDiv.innerHTML = `Description : ${item.itemDescription}`;
+  descriptionDiv.innerHTML = `Description : ${he.decode(item.itemDescription)}`;
 
   const availabilitiesDiv = document.querySelector(
       "#availabilitiesViewItemPage");
@@ -149,9 +170,12 @@ function showItemInfo() {
   pubDateDiv.innerHTML = `Date de publication : ${date}`;
 
   const image = document.querySelector("#imageItem");
-  image.innerHTML = `
-      <img src="data:image/png;base64,${item.photo}" id="bigImageItem" alt="Card image cap" >
-  `;
+  image.innerHTML = displayImage(item, true);
+
+  const numberOfMemberInterested = document.querySelector(
+      "#numberOfInterestedMembersViewItemPage");
+  const count = await getNumberOfInterestedMembers(item.id);
+  numberOfMemberInterested.innerHTML = `Nombre de personnes intéressée(s) : ${count}`;
 }
 
 async function showInterestForm(e) {
@@ -208,9 +232,9 @@ async function postInterest(e) {
     member: memberInterested,
     date: date
   };
-  const pageErrorDiv = document.querySelector("#viewItemPageError");
+  let pageErrorDiv = document.querySelector("#viewItemPageError");
   try {
-    const status = await postInterestBackEnd(interest, errorMessageDiv);
+    const status = await postInterestBackEnd(interest);
     if (status === 409) {
       showError("Vous avez déjà marqué un intéret pour cette offre.", "danger",
           pageErrorDiv);
@@ -219,6 +243,8 @@ async function postInterest(e) {
     if (callWanted) {
       await checkToken();
     }
+    await ViewItemPage();
+    pageErrorDiv = document.querySelector("#viewItemPageError");
     showError("L'intérêt a bien été prit en compte.", "success", pageErrorDiv);
   } catch (err) {
     console.error(err);

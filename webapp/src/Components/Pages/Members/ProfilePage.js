@@ -1,43 +1,23 @@
-import {getObject, getPayload,} from "../../../utils/session";
+import {checkToken, getObject, getPayload,} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
 import {showError} from "../../../utils/ShowError";
 import {
-  getOneMember,
   modifyMember as modifyMemberBackEnd
 } from "../../../utils/BackEndRequests";
+import {getProfileFormHtml} from "../../../utils/HtmlCode";
+import Navbar from "../../Navbar/Navbar";
 
 const viewProfileHtml = `
-  <div class="bg-info d-inline-flex d-flex flex-column rounded w-50 p-3">
-    <h2 class="display-3">Mon profile</h2>
-    <div id="username"></div>
-    <div id="name"></div>
-    <div id="phone"></div>
-    <div id="address"></div>
-  </div>
-  <div class="bg-info d-inline-flex d-flex flex-column rounded w-50 p-3">
-    <h2 class="display-3">Modifier mon profile</h2>
-    <form id="modifyForm">
-      <p>Nom :</p>
-      <input id="nameForm" type = "text">
-      <p>Prénom :</p>
-      <input id="firstnameForm" type = "text">
-      <p>Pseudo :</p>
-      <input id="usernameForm" type = "password">
-      <p>Mot de passe :</p>
-      <input id="passwordForm" type = "password">
-      <p>Confirmez le mot de passe :</p>
-      <input id="passwordConfirmationForm" type = "password">
-      <p>Téléphone :</p>
-      <input id="phoneForm" type = "tel">
-      <p></p>
-      <input type= "submit" value = "Modifier">
-    </form> 
+  <h1 class="display-3" id="login_title">Mon Profile</h1>
+  <div class="form">
+      <form id="modifyForm" class="d-flex bd-highlight mb-3 shadow-lg p-3 mb-5 bg-white rounded">
+      </form> 
   </div>
   <div id="errorMessage"></div>
 `;
 
 async function ProfilePage() {
-  if (!await getPayload()) {
+  if (!getPayload()) {
     Redirect("/");
     return;
   }
@@ -45,75 +25,46 @@ async function ProfilePage() {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = "";
   pageDiv.innerHTML += viewProfileHtml;
-  showProfile();
   const modifyForm = document.querySelector("#modifyForm");
+  modifyForm.innerHTML = getProfileFormHtml();
   modifyForm.addEventListener("submit", await modifyProfile);
-}
-
-function showProfile() {
-  const member = getObject("memberDTO");
-  const address = member.address;
-  const phone = member.phoneNumber;
-
-  const usernameDiv = document.querySelector("#username");
-  const nameDiv = document.querySelector("#name");
-  const phoneDiv = document.querySelector("#phone");
-  const addressDiv = document.querySelector("#address");
-
-  usernameDiv.innerHTML += member.username;
-  nameDiv.innerHTML += member.lastName + " " + member.firstName;
-  if (phone == null) {
-    phoneDiv.innerHTML += "Aucun numéro de téléphone";
-  } else {
-    phoneDiv.innerHTML += phone;
-  }
-  addressDiv.innerHTML += address.street + " ";
-  addressDiv.innerHTML += address.buildingNumber + " ";
-  addressDiv.innerHTML += address.postcode + " ";
-  addressDiv.innerHTML += address.commune + " ";
 }
 
 async function modifyProfile(e) {
   e.preventDefault();
   const member = getObject("memberDTO");
-  const errorMessage = document.querySelector("#errorMessage");
+  const address = member.address;
+  let errorMessage = document.querySelector("#errorMessage");
   const password = document.querySelector("#passwordForm").value;
   const passwordConfirmation = document.querySelector(
       "#passwordConfirmationForm").value;
   if (password !== passwordConfirmation) {
-    const message = "Les mots de passes ne sont pas identiques. Les modification n'ont pas été acceptées?";
+    const message = "Les mots de passes ne sont pas identiques. Les modification n'ont pas été acceptées";
     showError(message, "danger", errorMessage);
   }
-  let lastName = document.querySelector("#nameForm").value;
-  if (!lastName) {
-    lastName = member.lastName;
-  }
-  let firstName = document.querySelector("#firstnameForm").value;
-  if (!firstName) {
-    firstName = member.firstName;
-  }
-  let username = document.querySelector("#usernameForm").value;
-  if (!username) {
-    username = member.username;
-  }
-  let phoneNumber = document.querySelector("#phoneForm").value;
-  if (!phoneNumber) {
-    phoneNumber = member.phoneNumber;
-  }
 
-  const memberModify = {
-    id: getPayload().id,
-    username: username,
-    password: password,
-    lastName: lastName,
-    firstName: firstName,
-    phoneNumber: phoneNumber,
-    version: member.version
-  };
+  member.id = getPayload().id;
+  member.lastName = document.querySelector("#nameForm").value;
+  member.firstName = document.querySelector("#firstnameForm").value;
+  member.username = document.querySelector("#usernameForm").value;
+  member.phoneNumber = document.querySelector("#phoneForm").value;
+  member.password = password;
+
+  address.street = document.querySelector("#streetFormProfilePage").value;
+  address.buildingNumber = document.querySelector("#buildingNumberFormProfilePage").value;
+  address.unitNumber = document.querySelector("#unitNumberFormProfilePage").value;
+  address.postcode = document.querySelector("#postCodeFormProfilePage").value;
+  address.commune = document.querySelector("#communeFormProfilePage").value;
+
   try {
-    await modifyMemberBackEnd(memberModify);
-    showError("Modification validé", "success", errorMessage);
+    await modifyMemberBackEnd(member);
+    await checkToken();
+    await Navbar();
+    await ProfilePage();
+    errorMessage = document.querySelector("#errorMessage");
+    showError("Modification validée", "success", errorMessage);
   } catch (error) {
+    showError("Un problème est survenue", "danger", errorMessage);
     console.error(error);
   }
 }

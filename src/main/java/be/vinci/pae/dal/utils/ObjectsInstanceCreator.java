@@ -32,6 +32,7 @@ public class ObjectsInstanceCreator {
     offerDTO.setDate(rs.getTimestamp("date"));
     offerDTO.setTimeSlot(rs.getString("time_slot"));
     offerDTO.setIdItem(rs.getInt("id_item"));
+    offerDTO.setNumberOfInterests(rs.getInt("number_of_interests"));
     offerDTO.setVersion(rs.getInt("version_offer"));
     return offerDTO;
   }

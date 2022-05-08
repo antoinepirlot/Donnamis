@@ -43,7 +43,8 @@ public class OfferDAOImpl implements OfferDAO {
     String query = "SELECT o.id_offer, "
         + "                o.date, "
         + "                o.time_slot, "
-        + "                o.id_item,"
+        + "                o.id_item, "
+        + "                o.number_of_interests, "
         + "                o.version_offer "
         + "FROM project_pae.offers o ";
     if (offerStatus != null) {
@@ -83,6 +84,7 @@ public class OfferDAOImpl implements OfferDAO {
         + "                o.id_offer, "
         + "                o.date, "
         + "                o.time_slot, "
+        + "                o.number_of_interests, "
         + "                o.version_offer, "
         + "                m.first_name, "
         + "                m.last_name, "
@@ -124,7 +126,7 @@ public class OfferDAOImpl implements OfferDAO {
 
   @Override
   public List<OfferDTO> getLastTwoOffersOf(ItemDTO itemDTO) {
-    String query = "SELECT id_offer, date, time_slot, id_item, version_offer "
+    String query = "SELECT id_offer, date, time_slot, id_item, number_of_interests, version_offer "
         + "FROM project_pae.offers "
         + "WHERE id_item = ? "
         + "ORDER BY date DESC "
@@ -143,6 +145,26 @@ public class OfferDAOImpl implements OfferDAO {
     }
   }
 
+  @Override
+  public int getNumberOfInterestedMemberOf(int idItem) {
+    String getLastOfferId = "(SELECT id_offer "
+        + "FROM project_pae.offers "
+        + "WHERE id_item = ? "
+        + "ORDER BY date DESC "
+        + "LIMIT 1)";
+    String query = "SELECT number_of_interests "
+        + "FROM project_pae.offers "
+        + "WHERE id_offer = " + getLastOfferId + "";
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setInt(1, idItem);
+      try (ResultSet rs = ps.executeQuery()) {
+        return rs.next() ? rs.getInt(1) : -1;
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
+  }
+
   //****************************** UTILS *******************************
 
   /**
@@ -152,8 +174,9 @@ public class OfferDAOImpl implements OfferDAO {
    * @return true if the offer has been added to the DB
    */
   private boolean addOne(OfferDTO offerDTO) throws SQLException {
-    String query = "INSERT INTO project_pae.offers (date, time_slot, id_item, version_offer) "
-        + "VALUES (?, ?, ?, 1); "
+    String query = "INSERT INTO project_pae.offers (date, time_slot, id_item, number_of_interests, "
+        + "version_offer) "
+        + "VALUES (?, ?, ?, 0, 1); "
         + "UPDATE project_pae.items SET offer_status = '" + DEFAULT_OFFER_STATUS + "', "
         + "last_offer_date  = ?, version_item = version_item + 1 "
         + "WHERE id_item = ?";

@@ -24,6 +24,8 @@ public class OfferImpl implements Offer {
   @JsonView(Views.Public.class)
   private Member member;
   @JsonView(Views.Public.class)
+  private int numberOfInterests;
+  @JsonView(Views.Public.class)
   private int version;
 
   public OfferImpl() {
@@ -78,6 +80,16 @@ public class OfferImpl implements Offer {
   @Override
   public void setMember(MemberDTO memberDTO) {
     this.member = (Member) memberDTO;
+  }
+
+  @Override
+  public int getNumberOfInterests() {
+    return numberOfInterests;
+  }
+
+  @Override
+  public void setNumberOfInterests(int numberOfInterests) {
+    this.numberOfInterests = numberOfInterests;
   }
 
   @Override

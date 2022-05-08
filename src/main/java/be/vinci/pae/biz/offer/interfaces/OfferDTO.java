@@ -29,6 +29,10 @@ public interface OfferDTO {
 
   void setMember(MemberDTO memberDTO);
 
+  int getNumberOfInterests();
+
+  void setNumberOfInterests(int numberOfInterests);
+
   int getVersion();
 
   void setVersion(int version);

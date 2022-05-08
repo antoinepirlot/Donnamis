@@ -83,4 +83,17 @@ public class OfferUCCImpl implements OfferUCC {
       throw new FatalException(e);
     }
   }
+
+  @Override
+  public int getNumberOfInterestedMemberOf(int idItem) {
+    try {
+      dalServices.start();
+      int count = this.offerDAO.getNumberOfInterestedMemberOf(idItem);
+      dalServices.commit();
+      return count;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw new FatalException(e);
+    }
+  }
 }

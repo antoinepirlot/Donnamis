@@ -1,7 +1,8 @@
 import {
   evaluateItemBackEnd,
   getAllRatings,
-  getAssignedItems
+  getAssignedItems,
+  getItem
 } from "../../../utils/BackEndRequests";
 import {getAssignedItemHtml, getGivenItemHtml} from "../../../utils/HtmlCode";
 import {getPayload} from "../../../utils/session";
@@ -14,13 +15,13 @@ let html = `
     <div>
       <h1 class="display-3">Mes objets attribués</h1>
       <h5 class="text-secondary">Voici vos objets attribués en attente de votre récupération</h5>
+      <div id="myAssignedItems"></div>
     </div>
-    <div id="myAssignedItems"></div>
-    <div id="">
+    <div>
       <h1 class="display-3">Mes objets reçus</h1>
       <h5 class="text-secondary">Voici vos objets reçus, vous pouvez les évaluers</h5>
+      <div id="myReceivedItems"></div>
     </div>
-    <div id="myReceivedItems"></div>
   </div>
   
   <!--Rating Modal-->
@@ -68,16 +69,8 @@ const MyAssignedItems = async () => {
     Redirect("/login");
     return;
   }
-  const pageDiv = document.querySelector("#page");
-  pageDiv.innerHTML = html;
   const items = await getAssignedItems();
-
-  //Show items
-  const myAssignedItems = document.querySelector("#myAssignedItems");
-  myAssignedItems.innerHTML = "";
-  const myReceivedItems = document.querySelector("#myReceivedItems");
-  myReceivedItems.innerHTML = "";
-  const ratings = await getAllRatings();
+  const pageDiv = document.querySelector("#page");
   if (!items) {
     pageDiv.innerHTML = `
       <h1 class="display-3">Aucun objets assignés</h1>
@@ -85,6 +78,15 @@ const MyAssignedItems = async () => {
     `;
     return;
   }
+  pageDiv.innerHTML = html;
+
+  //Show items
+  const myAssignedItems = document.querySelector("#myAssignedItems");
+  myAssignedItems.innerHTML = "";
+  const myReceivedItems = document.querySelector("#myReceivedItems");
+  myReceivedItems.innerHTML = "";
+  const ratings = await getAllRatings();
+
   items.forEach((item) => {
     if (item.offerStatus === "assigned") {
       myAssignedItems.innerHTML += getAssignedItemHtml(item);
@@ -126,9 +128,7 @@ async function evaluateItem(e) {
   const member = {
     id: getPayload().id
   };
-  const item = {
-    id: idItem
-  };
+  const item = await getItem(idItem);
 
   const rating = {
     item: item,

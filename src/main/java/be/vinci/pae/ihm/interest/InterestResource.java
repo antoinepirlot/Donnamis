@@ -15,11 +15,10 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Singleton
 @Path("interests")
+@AuthorizeMember
 public class InterestResource {
 
   @Inject
@@ -41,15 +40,12 @@ public class InterestResource {
   @POST
   @Path("")
   @Consumes(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
   public void markInterest(InterestDTO interestDTO) {
 
     //Verify the content of the request
     if (interestDTO == null
         || interestDTO.getOffer() == null || interestDTO.getOffer().getId() < 1
         || interestDTO.getMember() == null || interestDTO.getMember().getId() < 1
-        || interestDTO.getDate() == null
-        || interestDTO.getDate().before(Timestamp.valueOf(LocalDateTime.now()))
     ) {
       throw new WrongBodyDataException("Wrong body");
     }

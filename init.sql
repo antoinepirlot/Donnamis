@@ -4,22 +4,22 @@ CREATE SCHEMA project_pae;
 -------------------CREATE TABLES--------------------------
 CREATE TABLE project_pae.members
 (
-    id_member  SERIAL PRIMARY KEY,
-    username   VARCHAR(50)  NOT NULL,
-    password   CHAR(60)     NOT NULL,
-    last_name  VARCHAR(100) NOT NULL,
-    first_name VARCHAR(100) NOT NULL,
-    is_admin   BOOLEAN      NOT NULL,
-    state      VARCHAR(10)  NOT NULL,
-    phone      VARCHAR(15),
-    version_member INT NOT NULL
+    id_member      SERIAL PRIMARY KEY,
+    username       VARCHAR(50)  NOT NULL,
+    password       CHAR(60)     NOT NULL,
+    last_name      VARCHAR(100) NOT NULL,
+    first_name     VARCHAR(100) NOT NULL,
+    is_admin       BOOLEAN      NOT NULL,
+    state          VARCHAR(11)  NOT NULL,
+    phone          VARCHAR(15),
+    version_member INT          NOT NULL
 );
 
 CREATE TABLE project_pae.items_types
 (
-    id_type   SERIAL PRIMARY KEY,
-    item_type VARCHAR(50) NOT NULL,
-    version_items_type INT NOT NULL
+    id_type            SERIAL PRIMARY KEY,
+    item_type          VARCHAR(50) NOT NULL,
+    version_items_type INT         NOT NULL
 );
 
 CREATE TABLE project_pae.addresses
@@ -70,11 +70,12 @@ CREATE TABLE project_pae.ratings
 
 CREATE TABLE project_pae.offers
 (
-    id_offer      SERIAL PRIMARY KEY,
-    date          TIMESTAMP   NOT NULL,
-    time_slot     VARCHAR(50) NOT NULL,
-    id_item       INTEGER     NOT NULL,
-    version_offer INT         NOT NULL,
+    id_offer            SERIAL PRIMARY KEY,
+    date                TIMESTAMP   NOT NULL,
+    time_slot           VARCHAR(50) NOT NULL,
+    id_item             INTEGER     NOT NULL,
+    number_of_interests INT         NOT NULL,
+    version_offer       INT         NOT NULL,
     FOREIGN KEY (id_item) REFERENCES project_pae.items (id_item)
 );
 
@@ -252,7 +253,8 @@ VALUES ('Scie sur perche Gardena', 7, 5, NULL, 'Scie', 'donated', '28-03-2022', 
 
 INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title, offer_status,
                                last_offer_date, version_item)
-VALUES ('Table jardin et deux chaises en bois', 8, 5, 'Table-jardin.jpg', 'Scie', 'donated',
+VALUES ('Table jardin et deux chaises en bois', 8, 5, 'Table-jardin.jpg', 'Table de jardin',
+        'donated',
         '29-03-2022', 1);
 
 INSERT INTO project_pae.items (item_description, id_type, id_member, photo, title, offer_status,
@@ -289,44 +291,44 @@ VALUES ('Pots en grès pour petites plantes', 9, 1, 'pots-plants-6520443_640.jpg
         '21-04-2022', 1);
 
 -- OFFERS TABLE
-INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
-VALUES ('21-03-22', 'Mardi de 17h à 22h', 1, 1);
+INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
+VALUES ('21-03-22', 'Mardi de 17h à 22h', 1, 0, 1);
 
-INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
-VALUES ('25-03-22', 'Lundi de 18h à 22h', 2, 1);
+INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
+VALUES ('25-03-22', 'Lundi de 18h à 22h', 2, 0, 1);
 
-INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
-VALUES ('25-03-22', 'Tous les jours de 15h à 18h', 3, 1);
+INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
+VALUES ('25-03-22', 'Tous les jours de 15h à 18h', 3, 2, 1);
 
-INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
-VALUES ('28-03-22', 'Tous les matins avant 11h30', 4, 1);
+INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
+VALUES ('28-03-22', 'Tous les matins avant 11h30', 4, 3, 1);
 
-INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
-VALUES ('29-03-22', 'Tous les matins avant 11h30', 5, 1);
+INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
+VALUES ('29-03-22', 'Tous les matins avant 11h30', 5, 0, 1);
 
-INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
-VALUES ('29-03-22', 'En semaine, de 20h à 21h', 6, 1);
+INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
+VALUES ('29-03-22', 'En semaine, de 20h à 21h', 6, 0, 1);
 
-INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
-VALUES ('30-03-22', 'Lundi de 18h à 20h', 7, 1);
+INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
+VALUES ('30-03-22', 'Lundi de 18h à 20h', 7, 0, 1);
 
-INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
-VALUES ('14-04-22', 'Samedi en journée', 8, 1);
+INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
+VALUES ('14-04-22', 'Samedi en journée', 8, 2, 1);
 
-INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
-VALUES ('14-04-22', 'Lundi de 18h à 20h', 9, 1);
+INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
+VALUES ('14-04-22', 'Lundi de 18h à 20h', 9, 1, 1);
 
-INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
-VALUES ('21-04-22', 'Lundi de 18h30 à 20h', 10, 1);
+INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
+VALUES ('21-04-22', 'Lundi de 18h30 à 20h', 10, 3, 1);
 
-INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
-VALUES ('21-04-22', 'En semaine, de 20h à 21h', 11, 1);
+INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
+VALUES ('21-04-22', 'En semaine, de 20h à 21h', 11, 2, 1);
 
-INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
-VALUES ('21-04-22', 'Lundi de 16h à 17h', 12, 1);
+INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
+VALUES ('21-04-22', 'Lundi de 16h à 17h', 12, 1, 1);
 
-INSERT INTO project_pae.offers ("date", time_slot, id_item, version_offer)
-VALUES ('21-04-22', 'Lundi de 16h à 17h', 13, 1);
+INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
+VALUES ('21-04-22', 'Lundi de 16h à 17h', 13, 0, 1);
 
 -- INTEREST TABLE
 INSERT INTO project_pae.interests (call_wanted, id_offer, id_member, date, version_interest)
@@ -373,7 +375,7 @@ VALUES (false, 12, 3, '16-05-2022', 1);
 
 -- RECIPIENTS TABLE
 INSERT INTO project_pae.recipients (id_item, id_member, received, version_recipient)
-VALUES (9, 1, false, 1);
+VALUES (9, 1, 'waiting', 1);
 
 -- SELECT
 SELECT m.id_member,
@@ -412,3 +414,13 @@ GROUP BY m.last_name,
          i.item_description
 ORDER BY m.last_name,
          i.item_description;
+
+UPDATE project_pae.addresses
+SET street = 'Avenue de l''hélianthe',
+    building_number = 63,
+    unit_number = null,
+    postcode = 1180,
+    commune = 'Forest',
+    version_address = version_address+1
+WHERE id_member = 10;
+

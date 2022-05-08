@@ -58,6 +58,14 @@ public interface ItemUCC {
   List<ItemDTO> getAssignedItems(int idMember);
 
   /**
+   * This method asks DAO to get given items of the member identified by its id.
+   *
+   * @param idMember the member's id
+   * @return the list of given items
+   */
+  List<ItemDTO> getGivenItems(int idMember);
+
+  /**
    * Mark item,identified by its id, as given.
    *
    * @param itemDTO the item to update
@@ -120,4 +128,11 @@ public interface ItemUCC {
    * @return true if the photo has been added otherwise false
    */
   boolean addPhoto(int idItem, String photoName);
+
+  /**
+   * Get all donated and assigned items.
+   *
+   * @return the list of assigned and donated items
+   */
+  List<ItemDTO> getAllPublicItems();
 }

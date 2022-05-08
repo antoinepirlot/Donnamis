@@ -41,12 +41,20 @@ public interface MemberDAO {
   boolean confirmMember(MemberDTO memberDTO);
 
   /**
+   * Switch the state of the member between confirmed and unavailable.
+   *
+   * @param memberDTO the member to modify state
+   * @return true if the member's state is change, otherwise false
+   */
+  boolean setMemberAvailability(MemberDTO memberDTO);
+
+  /**
    * Modify the member's information.
    *
    * @param memberDTO the member to modify
-   * @return the modified member
+   * @return true if the member has been modified, else false
    */
-  MemberDTO modifyMember(MemberDTO memberDTO);
+  boolean modifyMember(MemberDTO memberDTO);
 
   /**
    * Change the state of the member to denied.
@@ -72,4 +80,5 @@ public interface MemberDAO {
    * @return the list of interested members
    */
   List<MemberDTO> getInterestedMembers(int idOffer);
+
 }

@@ -86,8 +86,8 @@ class MemberUCCImplTest {
     Mockito.when(this.memberDAO.getOne(memberDTO)).thenReturn(memberDTO);
   }
 
-  private void setModifyMemberReturnedValue() {
-    Mockito.when(this.memberDAO.modifyMember(this.memberDTO)).thenReturn(this.memberDTO);
+  private void setModifyMemberReturnedValue(boolean modified) {
+    Mockito.when(this.memberDAO.modifyMember(this.memberDTO)).thenReturn(modified);
   }
 
   private void setMemberExistsReturnedValue(boolean exists, int idMember) {
@@ -175,8 +175,15 @@ class MemberUCCImplTest {
   @DisplayName("Test modify member as expected")
   @Test
   void testModifyMemberAsExpected() {
-    this.setModifyMemberReturnedValue();
-    assertEquals(this.memberDTO, this.memberUCC.modifyMember(this.memberDTO));
+    this.setModifyMemberReturnedValue(true);
+    assertTrue(this.memberUCC.modifyMember(this.memberDTO));
+  }
+
+  @DisplayName("Test modify member as not modified")
+  @Test
+  void testModifyMemberAsNotModified() {
+    this.setModifyMemberReturnedValue(false);
+    assertFalse(this.memberUCC.modifyMember(this.memberDTO));
   }
 
   @DisplayName("Test modify member with start throwing sql exception")

@@ -1,16 +1,22 @@
-import {getAllItemsByOfferStatus} from "../../../utils/BackEndRequests";
+import {getAllPublicItems} from "../../../utils/BackEndRequests";
 import {checkIfMemberLoggedIn, getShowItemsHtml} from "../../../utils/HtmlCode";
 import {getPayload} from "../../../utils/session";
 import {createItemsSearchBar} from "../../../utils/Search";
+import {
+  filterItemsByDate as filterItemsByDateUtil
+} from "../../../utils/Filter";
 
 const tableHtml = `
   <div>
+    <div id="errorHomePage"></div>
     <div id="all_latest_items_title">
       <h1 class="display-3">Bienvenue sur Donnamis</h1>
       <h5 class="text-secondary">Voici les derniers objets mis en ligne</h5>
     </div>
      <div id="searchBarHomePage">
      </div> 
+     <div id="dateFormHomePage">
+     </div>
     <div class="row" id="all_offered_items">
     </div>
   </div>
@@ -26,10 +32,20 @@ const tableHtml = `
   </div>
 `;
 
+const formHtml = `
+  <form>
+    Entre le <input id="formStartDateHomePage" type="date">
+    et le <input id="formEndDateHomePage" type="date">
+    <button id="dateFormButtonHomePage" class="btn btn-primary">Rechercher</button>
+  </form>
+`;
+
+let items;
+
 const HomePage = async () => {
   const pageDiv = document.querySelector("#page");
   pageDiv.innerHTML = tableHtml;
-  const items = await getAllItemsByOfferStatus("donated");
+  items = await getAllPublicItems();
   const tbody = document.querySelector("#all_offered_items");
   tbody.innerHTML = getShowItemsHtml(items);
   checkIfMemberLoggedIn("#homePageModal", "#homePageModalCloseButton");
@@ -37,8 +53,18 @@ const HomePage = async () => {
   //Searching an item
   //Listener pour chaque frappe au clavier
   if (getPayload()) {
-    createItemsSearchBar(items, "#searchBarHomePage", "#all_offered_items");
+    const formDiv = document.querySelector("#dateFormHomePage");
+    formDiv.innerHTML = formHtml;
+    createItemsSearchBar(items, "#searchBarHomePage", "#all_offered_items",
+        "homePage");
+    const dateForm = document.querySelector("#dateFormButtonHomePage");
+    dateForm.addEventListener("click", filterItemsByDate);
   }
+}
+
+function filterItemsByDate(e) {
+  e.preventDefault();
+  filterItemsByDateUtil("#all_offered_items", items);
 }
 
 //function setSeeItemEvent(itemButtons) {

@@ -46,14 +46,27 @@ public class MemberUCCImpl implements MemberUCC {
   }
 
   @Override
-  public MemberDTO modifyMember(MemberDTO memberDTO) {
+  public MemberDTO getOneMember(MemberDTO memberDTO) {
+    try {
+      dalServices.start();
+      MemberDTO memberDTOFound = memberDAO.getOne(memberDTO);
+      dalServices.commit();
+      return memberDTOFound;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw new FatalException(e);
+    }
+  }
+
+  @Override
+  public boolean modifyMember(MemberDTO memberDTO) {
     Member member = (Member) memberDTO;
     member.hashPassword();
     try {
       dalServices.start();
-      MemberDTO modifyMember = memberDAO.modifyMember(memberDTO);
+      boolean modified = memberDAO.modifyMember(memberDTO);
       dalServices.commit();
-      return modifyMember;
+      return modified;
     } catch (SQLException e) {
       dalServices.rollback();
       throw new FatalException(e);
@@ -67,6 +80,19 @@ public class MemberUCCImpl implements MemberUCC {
       boolean isConfirmed = memberDAO.confirmMember(memberDTO);
       dalServices.commit();
       return isConfirmed;
+    } catch (SQLException e) {
+      dalServices.rollback();
+      throw new FatalException(e);
+    }
+  }
+
+  @Override
+  public boolean setMemberAvailability(MemberDTO memberDTO) {
+    try {
+      dalServices.start();
+      boolean isChange = memberDAO.setMemberAvailability(memberDTO);
+      dalServices.commit();
+      return isChange;
     } catch (SQLException e) {
       dalServices.rollback();
       throw new FatalException(e);
@@ -110,7 +136,8 @@ public class MemberUCCImpl implements MemberUCC {
           loggedMember == null
               || !loggedMember.checkPassword(memberToLogin.getPassword(),
               loggedMember.getPassword())
-              || !loggedMember.verifyState("confirmed")
+              || !loggedMember.verifyState("confirmed") && !loggedMember.verifyState(
+              "unavailable")
       ) {
         return null;
       }
@@ -148,4 +175,5 @@ public class MemberUCCImpl implements MemberUCC {
       throw new FatalException(e);
     }
   }
+
 }

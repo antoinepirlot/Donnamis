@@ -18,6 +18,7 @@ public class ItemDAOImpl implements ItemDAO {
 
 
   private static final String DEFAULT_OFFER_STATUS = "donated";
+  private static final String ASSIGNED_OFFER_STATUS = "assigned";
   private static final String GIVEN_OFFER_STATUS = "given";
   private static final String WAITING_RECIPIENT_STATUS = "waiting";
   private static final String RECEIVED_RECIPIENT_STATUS = "received";
@@ -244,18 +245,19 @@ public class ItemDAOImpl implements ItemDAO {
         + "  AND r.id_member = m.id_member "
         + "  AND r.id_item = i.id_item "
         + "  AND m.id_member = ?;";
-    List<ItemDTO> listItemDTO = new ArrayList<>();
-    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
-      ps.setInt(1, idMember);
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          listItemDTO.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
-        }
-        return listItemDTO.isEmpty() ? null : listItemDTO;
-      }
-    } catch (SQLException e) {
-      throw new FatalException(e);
-    }
+    return getItemDTOList(idMember, query);
+  }
+
+  @Override
+  public List<ItemDTO> getGivenItems(int idMember) {
+    String query = "SELECT DISTINCT i.id_item, i.item_description, i.id_type, i.id_member, "
+        + "i.photo, i.title, i.offer_status, i.last_offer_date, i.version_item, it.id_type, "
+        + "it.item_type, it.version_items_type, m.id_member, m.username, m.last_name, "
+        + "m.first_name, m.version_member "
+        + "FROM project_pae.items i, project_pae.members m, project_pae.items_types it "
+        + "WHERE i.id_type = it.id_type AND i.id_member = m.id_member AND "
+        + "m.id_member = ? AND i.offer_status = 'given';";
+    return getItemDTOList(idMember, query);
   }
 
   @Override
@@ -376,14 +378,55 @@ public class ItemDAOImpl implements ItemDAO {
         + "  AND r.id_member = ? "
         + "  AND r.id_item = i.id_item "
         + "  AND i.id_type = it.id_type;";
+    return getItemDTOList(idMember, query);
+  }
+
+  @Override
+  public boolean addPhoto(int idItem, String photoName) {
+    String query = "UPDATE project_pae.items "
+        + "SET photo = ?, version_item = version_item + 1 "
+        + "WHERE id_item = ?;";
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
-      ps.setInt(1, idMember);
+      ps.setString(1, photoName);
+      ps.setInt(2, idItem);
+      return ps.executeUpdate() != 0;
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
+  }
+
+  @Override
+  public List<ItemDTO> getAllPublicItems() {
+    String query = "SELECT i.id_item, "
+        + "                i.item_description, "
+        + "                i.photo, "
+        + "                i.title, "
+        + "                i.version_item, "
+        + "                i.offer_status, "
+        + "                i.last_offer_date, "
+        + "                it.id_type, "
+        + "                it.item_type,"
+        + "                it.version_items_type, "
+        + "                m.id_member, "
+        + "                m.username, "
+        + "                m.last_name, "
+        + "                m.first_name, "
+        + "                m.version_member "
+        + "FROM project_pae.items i, "
+        + "     project_pae.items_types it, "
+        + "     project_pae.members m "
+        + "WHERE i.id_type = it.id_type "
+        + "  AND i.id_member = m.id_member "
+        + "  AND (i.offer_status = '" + DEFAULT_OFFER_STATUS + "' "
+        + "       OR i.offer_status = '" + ASSIGNED_OFFER_STATUS + "'"
+        + "  );";
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
       try (ResultSet rs = ps.executeQuery()) {
-        List<ItemDTO> itemDTOList = new ArrayList<>();
+        List<ItemDTO> itemsDTOList = new ArrayList<>();
         while (rs.next()) {
-          itemDTOList.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
+          itemsDTOList.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
         }
-        return itemDTOList.isEmpty() ? null : itemDTOList;
+        return itemsDTOList.isEmpty() ? null : itemsDTOList;
       }
     } catch (SQLException e) {
       throw new FatalException(e);
@@ -432,17 +475,26 @@ public class ItemDAOImpl implements ItemDAO {
     }
   }
 
-  @Override
-  public boolean addPhoto(int idItem, String photoName) {
-    String query = "UPDATE project_pae.items "
-        + "SET photo = ?, version_item = version_item + 1 "
-        + "WHERE id_item = ?;";
+  /**
+   * Set id member to the query and create an item dto list.
+   *
+   * @param idMember the member's id to set into the query
+   * @param query    the query of the sql request
+   * @return the list of items
+   */
+  private List<ItemDTO> getItemDTOList(int idMember, String query) {
     try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
-      ps.setString(1, photoName);
-      ps.setInt(2, idItem);
-      return ps.executeUpdate() != 0;
+      ps.setInt(1, idMember);
+      try (ResultSet rs = ps.executeQuery()) {
+        List<ItemDTO> listItemDTO = new ArrayList<>();
+        while (rs.next()) {
+          listItemDTO.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
+        }
+        return listItemDTO.isEmpty() ? null : listItemDTO;
+      }
     } catch (SQLException e) {
       throw new FatalException(e);
     }
   }
+
 }

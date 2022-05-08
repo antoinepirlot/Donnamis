@@ -120,9 +120,6 @@ public class MemberResource {
       throw new WrongBodyDataException("The idOffer is less than 1");
     }
     List<MemberDTO> memberDTO = this.memberUCC.getInterestedMembers(idOffer);
-    if (memberDTO == null) {
-      throw new ObjectNotFoundException("Member not found with idOffer: " + idOffer);
-    }
     return this.jsonUtil.filterPublicJsonViewAsList(memberDTO);
   }
 
@@ -226,6 +223,32 @@ public class MemberResource {
   }
 
   /**
+   * Asks UCC to set the state of the member to unavailable or confirmed.
+   *
+   * @param memberDTO the member to set unavailable
+   */
+  @PUT
+  @Path("availability")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public void setMemberAvailability(MemberDTO memberDTO) {
+    if (memberDTO == null || memberDTO.getId() < 1 || memberDTO.getActualState() == null
+        || memberDTO.getActualState().isBlank() || !memberDTO.getActualState().equals("confirmed")
+        && !memberDTO.getActualState().equals("unavailable")) {
+      throw new WrongBodyDataException("Error Member Sent");
+    }
+    MemberDTO dbMemberDTO = this.memberUCC.getOneMember(memberDTO.getId());
+    if (dbMemberDTO == null) {
+      throw new ObjectNotFoundException("No member with the id: " + memberDTO.getId());
+    }
+    if (memberDTO.getVersion() != dbMemberDTO.getVersion()) {
+      throw new WrongBodyDataException("Error with version");
+    }
+    if (!memberUCC.setMemberAvailability(memberDTO)) {
+      throw new FatalException("An unexpected error happened while set member availability.");
+    }
+  }
+
+  /**
    * Asks UCC to deny the member's inscription.
    *
    * @param refusalDTO the refusal information
@@ -249,17 +272,26 @@ public class MemberResource {
    * Modify the member identified by its id.
    *
    * @param memberDTO the new member
-   * @return the member or null if there's no member with the id
    */
   @PUT
   @Path("modify")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public MemberDTO modifyMember(MemberDTO memberDTO) {
+  public void modifyMember(MemberDTO memberDTO) {
+    System.out.println("**********************************************");
     if (memberDTO == null
         || memberDTO.getUsername() == null || memberDTO.getUsername().isBlank()
         || memberDTO.getFirstName() == null || memberDTO.getFirstName().isBlank()
+        || memberDTO.getAddress() == null
+        || memberDTO.getAddress().getStreet() == null
+        || memberDTO.getAddress().getStreet().isBlank()
+        || memberDTO.getAddress().getBuildingNumber() == null
+        || memberDTO.getAddress().getBuildingNumber().isBlank()
+        || memberDTO.getAddress().getCommune() == null
+        || memberDTO.getAddress().getCommune().isBlank()
+        || memberDTO.getAddress().getPostcode() == null
+        || memberDTO.getAddress().getPostcode().isBlank()
     ) {
       throw new WrongBodyDataException("Member incomplete");
     }
@@ -268,11 +300,9 @@ public class MemberResource {
       throw new FatalException("Error with version");
     }
 
-    MemberDTO modifyMember = memberUCC.modifyMember(memberDTO);
-    if (modifyMember == null) {
+    if (!memberUCC.modifyMember(memberDTO)) {
       throw new ObjectNotFoundException("Member not found");
     }
-    return modifyMember;
   }
 
   /////////////////////////////////////////////////////////

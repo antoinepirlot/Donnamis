@@ -5,29 +5,33 @@
   margin-top: auto;
 }
 
+#asterisk {
+  color: red;
+}
+
 #usernameNavbar {
   margin-right: 1rem;
 }
 
-.nav-link{
+.nav-link {
   font-size: small;
 }
 
-.nav-item{
+.nav-item {
   background-color: #bbd7f6;
   border-radius: 5px;
   margin-left: 5px;
 }
 
-#admin-page{
- background-color: #e1b3f6;
+#admin-page {
+  background-color: #e1b3f6;
 }
 
 .message {
   margin: 1rem;
 }
 
-#all-item-cards{
+#all-item-cards {
   margin-left: auto;
   margin-right: auto;
   width: 75%;
@@ -38,7 +42,7 @@
   width: 250px;
   margin-left: 1rem;
   float: left;
-  display:inline;
+  display: inline;
 }
 
 #item-card {
@@ -59,19 +63,21 @@
   text-overflow: ellipsis;
 }
 
-#offerCard{
+#offerCard {
+  padding: 1rem;
   margin: 1rem;
 }
 
-#smallItemImage{
+#smallItemImage {
   height: 150px;
   width: 100%;
 }
 
-#bigImageItem{
+#bigImageItem {
   margin: 1rem;
   width: 350px;
 }
+
 .card-text {
   white-space: nowrap;
   width: 100%;
@@ -97,22 +103,41 @@
   position: absolute;
 }
 
+#left, #right {
+  margin-left: fill;
+}
+
+#itemCancelled, #offerAgainButton, #markReceivedButton, #chooseRecipientButton, #markNotGivenButton {
+  margin: 1% 1% 1% 1%;
+}
 
 body {
   color: #1a202c;
   text-align: left;
   /*Couleur 1*/
-  background: linear-gradient(lightblue, lightpink);
+  /*background: linear-gradient(lightblue, lightpink);*/
 
   /*Couleur 2*/
   /*background: rgb(34, 193, 195);*/
   /*background: linear-gradient(0deg, rgba(34, 193, 195, 1) 0%, rgba(45, 203, 253, 1) 100%);*/
 
   /*Couleur 3*/
-  /*background-image: url("../img/tumblr2.jpg");*/
-  /*background-size: cover;*/
+  background: url("../img/5.png") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
   /*background-repeat: repeat-y;*/
+}
 
+#MyItemsPageItemsFilter {
+  float: left;
+  margin-left: 2%;
+  padding-right: 20px;
+}
+
+#searchDateMyItemsPage {
+  display: flex;
 }
 
 #nav {
@@ -121,11 +146,28 @@ body {
   padding: 0.8rem;
 }
 
-#loginForm, #registerForm, #tbody_registered_members, #tbody_denied_members, #tbody_all_members {
+#loginForm, #registerForm, #modifyForm, #offerItemForm, #tbody_registered_members, #tbody_denied_members, #tbody_all_members {
   background-color: white;
   border-radius: 5px;
   padding: 10% 10% 10% 10%;
 }
+
+#registerForm, #modifyForm {
+  min-height: 570px;
+  max-height: 570px;
+  height: 570px;
+  width: max-content;
+  margin-left: -50%;
+}
+
+#offerItemForm {
+  min-height: 570px;
+  max-height: 570px;
+  height: 570px;
+  width: max-content;
+  margin-left: -88%;
+}
+
 
 .table {
   border-radius: 10px;

@@ -66,9 +66,15 @@ const offerAnItemLinkHtml = `
 
 const myItemsLinkHtml = `
           <li class="nav-item">
-            <a class="nav-link" href="#" data-uri="/my_items">Mes objets</a>
+            <a class="nav-link" href="#" data-uri="/my_items">Mes objets offerts</a>
           </li>
 `;
+
+const myGivenItemsLinkHtml = `
+  <li class="nav-item">
+    <a class="nav-link" href="#" data-uri="/given_items">Mes objets donnés</a>
+  </li>
+`
 
 const profilLinkHtml = `
   <a id="memberUsername" class="nav-link" href="#" data-uri="/profil"></a>`;
@@ -101,7 +107,6 @@ const allItemsLinkHtml = `
           </li>
 `;
 
-
 const Navbar = async () => {
   const navbarWrapper = document.querySelector("#navbarWrapper");
   navbarWrapper.innerHTML = navBarHtml;
@@ -115,6 +120,7 @@ const Navbar = async () => {
 
     links.innerHTML += offerAnItemLinkHtml;
     links.innerHTML += myItemsLinkHtml;
+    links.innerHTML += myGivenItemsLinkHtml;
     links.innerHTML += myAssignedItemsLinkHtml
     if (isAdmin()) {
       links.innerHTML += listMemberLinkHtml;

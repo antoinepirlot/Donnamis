@@ -66,7 +66,7 @@ POST {{baseUrl}}/members/login
 Content-Type: application/json
 
 {
-  "username": "bri ",
+  "username": "bri",
   "password": "Rad;293"
 }
 
@@ -74,6 +74,16 @@ Content-Type: application/json
   client.global.set("token", response.body.token);
 %}
 
+### Set the state of the member to unavailable
+PUT {{baseUrl}}/members/availability
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "id": 3,
+  "actualState": "unavailable",
+  "version": 3
+}
 
 ### Modify Member
 PUT {{baseUrl}}/members/modify

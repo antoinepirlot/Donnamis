@@ -10,10 +10,12 @@ import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.MediaType;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -27,7 +29,6 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 @Singleton
 @Path("images")
-@AuthorizeMember
 public class ImageResource {
 
   private final Logger logger = LoggerHandler.getLogger();
@@ -54,10 +55,10 @@ public class ImageResource {
     }
     String path = Config.getPhotoPath();
     UUID uuid = UUID.randomUUID();
-    String photoPath = path + "\\" + uuid + ".png";
+    String photoPath = path + uuid + "." + extension;
     try {
       Files.copy(file, Paths.get(photoPath));
-      if (!this.itemUCC.addPhoto(idItem, uuid + ".png")) {
+      if (!this.itemUCC.addPhoto(idItem, uuid + "." + extension)) {
         throw new FatalException("The image hasn't been added into the database");
       }
     } catch (IOException e) {
@@ -66,29 +67,21 @@ public class ImageResource {
     this.logger.log(Level.INFO, "An image has been copied.");
   }
 
-  // @GET
-  // @Path("{idItem}")
-  // @Produces(MediaType.APPLICATION_JSON)
-  // //@AuthorizeMember
-  // public String getImage(@PathParam("idItem") int idItem) throws IOException {
-  //   System.out.println("****************");
-  //   if (idItem < 1) {
-  //     throw new WrongBodyDataException("idItem is lower than 1");
-  //   }
-  //   ItemDTO itemDTO = itemUCC.getOneItem(idItem);
-  //   if(itemDTO.getPhoto() == null){
-  //     return null;
-  //   }
-  //   String photoSignature = itemDTO.getPhoto();
-  //   String path = Config.getPhotoPath();
-  //   String photoPath = path + "\\" + photoSignature;
-  //   System.out.println("Photo path :  " + photoPath);
-  //   byte[] fileContent = FileUtils.readFileToByteArray(new File(photoPath));
-  //   Base64.getEncoder().encodeToString(fileContent);
-  //   System.out.println("**********************************");
-  //   System.out.println("**********************************");
-  //   return Base64.getEncoder().encodeToString(fileContent);
-  // }
+  /**
+   * Get the image matching with the photoPath.
+   *
+   * @param photoPath the image's path
+   * @return the photo
+   */
+  @GET
+  @Path("{photoPath}")
+  public File getImage(@PathParam("photoPath") String photoPath) {
+    System.out.println("****************");
+    String path = Config.getPhotoPath();
+    File file = new File(path + photoPath);
+    System.out.println("FILE : " + file);
+    return file;
+  }
 
   private boolean checkExtension(String fileExtension) {
     for (String ext : ALLOWED_EXTENSIONS) {

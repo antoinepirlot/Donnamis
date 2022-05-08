@@ -7,14 +7,33 @@ import {
   markItemAs as markItemAsaBackEnd,
   offerAgain as offerAgainBackEnd
 } from "../../../utils/BackEndRequests";
+import {
+  filterItemsByDate as filterItemsByDateUtil
+} from "../../../utils/Filter";
 import {getObject, getPayload} from "../../../utils/session";
 import {showError} from "../../../utils/ShowError";
 import {openModal} from "../../../utils/Modals";
 import {Redirect} from "../../Router/Router";
+import {createItemsSearchBar} from "../../../utils/Search";
+import {getMyItemsHtml} from "../../../utils/HtmlCode";
 
 const myItemsPageHtml = `
   <div>
-    <h1 class="display-3" id="all_items_title">Mes objets</h1>
+    <h1 class="display-3" id="all_items_title">Mes objets offerts</h1>
+    <div id="searchBarMyItemsPage">
+    </div>
+    <div id="searchDateMyItemsPage">
+    <div id="MyItemsPageItemsFilter">
+       <button id="MyItemsPageItemsAllButton" type="button" class="btn btn-primary">Afficher tous les objets</button>
+       <button id="MyItemsPageItemsInterestedButton" type="button" class="btn btn-outline-primary">Afficher objets intéressé</button>
+    </div>
+      <form>
+      Entre le <input id="formStartDateMyItemsPage" type="date">
+      et le <input id="formEndDateMyItemsPage" type="date">
+      <button id="dateFormButtonMyItemsPage" class="btn btn-primary">Rechercher</button>
+      </form>
+    </div>
+    
     <div class="row" id="myItems">
     </div>
   </div>
@@ -53,71 +72,79 @@ const myItemsPageHtml = `
 `;
 
 let idItem;
+let items;
 
 const MyItemsPage = async () => {
   if (!getPayload()) {
     Redirect("/");
     return;
   }
+  items = await getMyItems();
+
   const pageDiv = document.querySelector("#page");
-  pageDiv.innerHTML = myItemsPageHtml;
-  const items = await getMyItems();
   if (items.length === 0) {
-    const message = "Vous n'avez aucune offre.";
-    const errorMessageMyItemsPage = document.querySelector(
-        "#errorMessageMyItemsPage");
-    showError(message, "info", errorMessageMyItemsPage);
+    pageDiv.innerHTML = `
+      <h1 class="display-3">Aucun objets</h1>
+      <h5 class="text-secondary">Vous n'avez offert encore aucun objet.</h5>
+    `;
     return;
   }
-  await showButtons(items);
-};
 
-async function showButtons(items) {
+  pageDiv.innerHTML = myItemsPageHtml;
   const myItemsDiv = document.querySelector("#myItems");
-  myItemsDiv.innerHTML = "";
+  myItemsDiv.innerHTML = getMyItemsHtml(items);
+  await showMyItemsButtons();
+  createItemsSearchBar(items, "#searchBarMyItemsPage", "#myItems",
+      "myItemsPage");
+  const dateForm = document.querySelector("#dateFormButtonMyItemsPage");
+  dateForm.addEventListener("click", filterItemsByDate);
+
+  const filterInterestedItemsButton = document.querySelector(
+      "#MyItemsPageItemsInterestedButton");
+  filterInterestedItemsButton.addEventListener("click",
+      filterItemsByInterested);
+
+  const filterAllItems = document.querySelector("#MyItemsPageItemsAllButton");
+  filterAllItems.addEventListener("click", filterItemsByAll);
+}
+
+async function filterItemsByAll() {
+  const filterInterestedItemsButton = document.querySelector(
+      "#MyItemsPageItemsInterestedButton");
+  filterInterestedItemsButton.className = "btn btn-outline-primary";
+
+  const filterAllItemsButton = document.querySelector(
+      "#MyItemsPageItemsAllButton")
+  filterAllItemsButton.className = "btn btn-primary";
+
+  const myItemsDiv = document.querySelector("#myItems");
+  myItemsDiv.innerHTML = await getMyItemsHtml(items);
+  await showMyItemsButtons();
+}
+
+//Rajouter systeme de filter on/off
+async function filterItemsByInterested() {
+  const filterItems = [];
   for (const item of items) {
-    let html = `
-      <div class="col-sm-3" id="item-card" >
-        <div class="card">
-        <img src="data:image/png;base64,${item.photo}" class="card-img-top" alt="Card image cap">
-          <div class="card-body">
-            <h5 class="card-title">${item.title}</h5>
-            <p class="card-text">${item.itemDescription}</p>
-            <div id="itemButtons">
-              <a href="/item?id=${item.id}" type="button" class="btn btn-primary">Voir les détails</a>
-
-    `;
-    const cancelButtonHtml = `<td><button id="itemCancelled" class="btn btn-danger" value="${item.id}">Annuler l'offre</button></td>`;
-    const offerAgainButtonHtml = `<td><button id="offerAgainButton" class="btn btn-primary" value="${item.id}">Offrir à nouveau</button></td>`;
-    const markReceivedButtonHtml = `<td><button id="markReceivedButton" class="btn btn-primary" value="${item.id}">Objet donné</button></td>`;
-    const chooseRecipientButtonHtml = `<td><button id="chooseRecipientButton" class="btn btn-primary" value="${item.id}">Choisir un receveur</button></td>`;
-    const markNotGivenButtonHtml = `<td><button id="markNotGivenButton" class="btn btn-primary" value="${item.id}">Objet non récupéré</button></td>`;
-    if (item.offerStatus === "donated") {
-      html += `
-        ${offerAgainButtonHtml}
-        ${chooseRecipientButtonHtml}
-        ${cancelButtonHtml}
-      `;
-    } else if (item.offerStatus === "cancelled") {
-      html += `
-        ${offerAgainButtonHtml}  
-      `;
-    } else if (item.offerStatus === "assigned") {
-      html += `
-        ${markReceivedButtonHtml}
-        ${markNotGivenButtonHtml}
-        ${cancelButtonHtml}
-      `;
+    const members = await getInterestedMembers(item.offerList[0].id);
+    if (members !== null) {
+      filterItems.push(item);
     }
-    html += `
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-    myItemsDiv.innerHTML += html;
   }
+  const filterInterestedItemsButton = document.querySelector(
+      "#MyItemsPageItemsInterestedButton");
+  filterInterestedItemsButton.className = "btn btn-primary";
 
+  const filterAllItemsButton = document.querySelector(
+      "#MyItemsPageItemsAllButton")
+  filterAllItemsButton.className = "btn btn-outline-primary";
+
+  const myItemsDiv = document.querySelector("#myItems");
+  myItemsDiv.innerHTML = getMyItemsHtml(filterItems);
+  await showMyItemsButtons();
+}
+
+async function showMyItemsButtons() {
   /*************/
   /*Offer again*/
   /*************/
@@ -127,7 +154,8 @@ async function showButtons(items) {
       idItem = offerAgainButton.value;
       openModal("#myItemsPageModal", "#myItemsPageModalCloseButton");
       const item = await getItem(idItem);
-      const timeSlotTextArea = document.querySelector("#timeSlotFormOfferAgain");
+      const timeSlotTextArea = document.querySelector(
+          "#timeSlotFormOfferAgain");
       timeSlotTextArea.innerHTML = item.offerList[0].timeSlot;
       const offerAgainForm = document.querySelector("#offerAgainForm");
       offerAgainForm.addEventListener("submit", await offerAgain);
@@ -137,33 +165,33 @@ async function showButtons(items) {
   /*********************************/
   /*Choose a recipient for the item*/
   /*********************************/
+  // Mettre cette fonction dans HtmlCode.js
   const chooseRecipientButtons = document.querySelectorAll(
       "#chooseRecipientButton");
-  chooseRecipientButtons.forEach((chooseRecipientButton) => {
+
+  for (const chooseRecipientButton of chooseRecipientButtons) {
     chooseRecipientButton.addEventListener("click", async () => {
       idItem = chooseRecipientButton.value;
-      const item = items.find((item) => item.id == idItem);
+      const item = items.find((item) => item.id == idItem); // == because idItem is a string and item.id an int === will return false even we expect true
       const members = await getInterestedMembers(item.offerList[0].id);
-      if (!members) {
-        const errorDiv = document.querySelector("#errorMessageMyItemsPage");
-        showError("Aucun membre n'est intéressé par votre offre pour l'instant",
-            "danger", errorDiv);
-        return;
-      }
       openModal("#chooseRecipientModal", "#chooseRecipientModalCloseButton");
       const memberList = document.querySelector(
           "#chooseRecipientMembersList");
       memberList.innerHTML = ""; //empties the datalist of old members
       members.forEach((member) => {
-        memberList.innerHTML += `
+
+        //unavailable can't be assigned
+        if (member.actualState === "confirmed") {
+          memberList.innerHTML += `
           <option value="${member.username}">
         `;
+        }
       });
       const chooseRecipientModal = document.querySelector(
           "#chooseRecipientModal");
       chooseRecipientModal.addEventListener("submit", await chooseRecipient);
     });
-  });
+  }
 
   /********************/
   /*Mark item as given*/
@@ -229,19 +257,18 @@ async function chooseRecipient(e) {
     }
   }
   try {
-    await chooseRecpientBackEnd(recipient)
+    await chooseRecpientBackEnd(recipient, errorDiv);
     showError("Vous avez choisi l'utilisateur " + recipientUsername
         + " comme receveur.", "success", errorDiv);
     await MyItemsPage();
   } catch (e) {
-    showError("Impossible de choisir le receveur.", "danger", errorDiv);
+    showError("Impossible de choisir ce receveur.", "danger", errorDiv);
   }
 }
 
 async function markItemAs(given) {
   const errorDiv = document.querySelector("#errorMessageMyItemsPage");
   showError("Le changement est en cours...", "info", errorDiv);
-
   const item = await getItem(idItem);
   const itemMark = {
     id: idItem,
@@ -260,4 +287,16 @@ async function markItemAs(given) {
   }
 }
 
-export default MyItemsPage;
+async function filterItemsByDate(e) {
+  e.preventDefault();
+  const filterInterestedItemsButton = document.querySelector(
+      "#MyItemsPageItemsInterestedButton");
+  filterInterestedItemsButton.className = "btn btn-outline-primary";
+
+  const filterAllItemsButton = document.querySelector(
+      "#MyItemsPageItemsAllButton")
+  filterAllItemsButton.className = "btn btn-outline-primary";
+  filterItemsByDateUtil("#myItems", items);
+}
+
+export {MyItemsPage, showMyItemsButtons};

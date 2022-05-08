@@ -21,12 +21,20 @@ public interface MemberUCC {
   MemberDTO getOneMember(int id);
 
   /**
+   * Get one member by his username.
+   *
+   * @param memberDTO the member with the username
+   * @return the member found or null
+   */
+  MemberDTO getOneMember(MemberDTO memberDTO);
+
+  /**
    * Modify the member identified by its id.
    *
    * @param memberDTO the new member
-   * @return the member or null if there's no member with the id
+   * @return true if the member has been modified, else false
    */
-  MemberDTO modifyMember(MemberDTO memberDTO);
+  boolean modifyMember(MemberDTO memberDTO);
 
   /**
    * Confirm the inscription of a member.
@@ -35,6 +43,14 @@ public interface MemberUCC {
    * @return True if success
    */
   boolean confirmMember(MemberDTO memberDTO);
+
+  /**
+   * Switch the state of the member between confirmed and unavailable.
+   *
+   * @param memberDTO the member to modify state
+   * @return True if success
+   */
+  boolean setMemberAvailability(MemberDTO memberDTO);
 
   /**
    * Verify the state of the member and then change the state of the member to denied.

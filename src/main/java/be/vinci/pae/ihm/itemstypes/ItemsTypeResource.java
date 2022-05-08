@@ -19,6 +19,7 @@ import java.util.List;
 
 @Singleton
 @Path("items_types")
+@AuthorizeMember
 public class ItemsTypeResource {
 
   @Inject
@@ -37,7 +38,6 @@ public class ItemsTypeResource {
   @GET
   @Path("all")
   @Produces(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
   public List<ItemsTypeDTO> getAll() {
     List<ItemsTypeDTO> itemsTypeDTOList = this.itemsTypeUCC.getAll();
     if (itemsTypeDTOList == null) {
@@ -59,7 +59,6 @@ public class ItemsTypeResource {
   @POST
   @Path("")
   @Consumes(MediaType.APPLICATION_JSON)
-  @AuthorizeMember
   public void addItemsType(ItemsTypeDTO itemsTypeDTO) {
     if (itemsTypeDTO == null
         || itemsTypeDTO.getItemType() == null || itemsTypeDTO.getItemType().isBlank()
