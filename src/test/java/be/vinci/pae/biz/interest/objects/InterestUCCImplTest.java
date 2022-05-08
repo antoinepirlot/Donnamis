@@ -76,6 +76,7 @@ class InterestUCCImplTest {
     }
   }
 
+  /*
   @DisplayName("Test mark interest with interest marked")
   @Test
   void testMarkInterestWithInterestMarked() {
@@ -83,12 +84,16 @@ class InterestUCCImplTest {
     assertDoesNotThrow(() -> interestUCC.markInterest(interestDTO));
   }
 
+
+
   @DisplayName("Test mark interest with interest not marked")
   @Test
   void testMarkInterestWithInterestNotMarked() {
     this.setInterestDAOMarkInterestReturnValue(false);
     assertThrows(FatalException.class, () -> interestUCC.markInterest(interestDTO));
   }
+
+   */
 
   @DisplayName("Test mark interest with start throwing sql exception ")
   @Test

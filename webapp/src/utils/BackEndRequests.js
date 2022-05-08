@@ -140,6 +140,9 @@ async function getAllItemsByMemberIdAndOfferStatus(idMember, offerStatus) {
   if (!response.ok) {
     throw new Error("Error while fetching member's items");
   }
+  if (response.status === 204) {
+    return;
+  }
   return await response.json();
 }
 
