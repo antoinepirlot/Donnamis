@@ -21,8 +21,6 @@ public class RecipientResource {
 
   @Inject
   private RecipientUCC recipientUCC;
-  @Inject
-  private MemberUCC memberUCC;
 
   /**
    * Add a recipient into the database.

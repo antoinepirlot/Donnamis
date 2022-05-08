@@ -22,10 +22,6 @@ public class InterestResource {
 
   @Inject
   private InterestUCC interestUCC;
-  @Inject
-  private OfferUCC offerUCC;
-  @Inject
-  private MemberUCC memberUCC;
 
   /////////////////////////////////////////////////////////
   ///////////////////////POST//////////////////////////////

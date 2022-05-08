@@ -25,9 +25,6 @@ public class RatingResource {
   @Inject
   private RatingUCC ratingUCC;
 
-  @Inject
-  private MemberUCC memberUCC;
-
   private final Json<RatingDTO> json = new Json<>(RatingDTO.class);
 
   /////////////////////////////////////////////////////////
