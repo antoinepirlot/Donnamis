@@ -6,9 +6,8 @@ public interface RecipientUCC {
    * add the recipient into the database.
    *
    * @param recipientDTO the recipient to add
-   * @return true if it's added otherwise false
    */
-  boolean chooseRecipient(RecipientDTO recipientDTO);
+  void chooseRecipient(RecipientDTO recipientDTO);
 
   /**
    * Checks if the recipient already exists for the current offer.
@@ -23,7 +22,6 @@ public interface RecipientUCC {
    * "waiting".
    *
    * @param recipientDTO the recipient to change
-   * @return true if success otherwise false
    */
-  boolean setRecipientUnavailable(RecipientDTO recipientDTO);
+  void setRecipientUnavailable(RecipientDTO recipientDTO);
 }

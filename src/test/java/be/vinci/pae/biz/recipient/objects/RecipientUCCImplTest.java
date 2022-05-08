@@ -1,11 +1,15 @@
 package be.vinci.pae.biz.recipient.objects;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
+import be.vinci.pae.biz.member.objects.MemberImpl;
 import be.vinci.pae.biz.recipient.interfaces.RecipientDTO;
 import be.vinci.pae.biz.recipient.interfaces.RecipientUCC;
+import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.recipient.interfaces.RecipientDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.exceptions.FatalException;
@@ -26,6 +30,8 @@ class RecipientUCCImplTest {
 
   private final RecipientDAO recipientDAO = locator.getService(RecipientDAO.class);
 
+  private final MemberDAO memberDAO = locator.getService(MemberDAO.class);
+
   private final DALServices dalServices = locator.getService(DALServices.class);
 
   private final RecipientUCC recipientUCC = locator.getService(RecipientUCC.class);
@@ -37,6 +43,8 @@ class RecipientUCCImplTest {
 
   @BeforeEach
   void setUp() {
+    MemberDTO memberDTO = new MemberImpl();
+    this.recipientDTO.setMember(memberDTO);
     try {
       Mockito.doNothing().when(this.dalServices).start();
       Mockito.doNothing().when(this.dalServices).commit();
@@ -46,6 +54,11 @@ class RecipientUCCImplTest {
   }
 
   private void setChooseRecipientReturnedValue(boolean chosen) {
+    Mockito.when(
+        this.memberDAO.memberExist(this.recipientDTO.getMember(), -1)
+    ).thenReturn(true);
+    Mockito.when(this.memberDAO.getOne(this.recipientDTO.getMember().getId()))
+        .thenReturn(this.recipientDTO.getMember());
     Mockito.when(this.recipientDAO.chooseRecipient(this.recipientDTO)).thenReturn(chosen);
   }
 
@@ -73,14 +86,20 @@ class RecipientUCCImplTest {
   @Test
   void testChooseRecipientWorkingAsExpected() {
     this.setChooseRecipientReturnedValue(true);
-    assertTrue(this.recipientUCC.chooseRecipient(this.recipientDTO));
+    Mockito.when(this.memberDAO.getOne(this.recipientDTO.getMember()))
+        .thenReturn(this.recipientDTO.getMember());
+    this.recipientDTO.getMember().setActualState("confirmed");
+    assertDoesNotThrow(() -> this.recipientUCC.chooseRecipient(this.recipientDTO));
   }
 
   @DisplayName("Test choose recipient not chosen")
   @Test
   void testChooseRecipientNotChosen() {
     this.setChooseRecipientReturnedValue(false);
-    assertFalse(this.recipientUCC.chooseRecipient(this.recipientDTO));
+    Mockito.when(this.memberDAO.getOne(this.recipientDTO.getMember()))
+        .thenReturn(this.recipientDTO.getMember());
+    this.recipientDTO.getMember().setActualState("confirmed");
+    assertThrows(FatalException.class, () -> this.recipientUCC.chooseRecipient(this.recipientDTO));
   }
 
   @DisplayName("Test choose recipient with start throwing sql exception")
