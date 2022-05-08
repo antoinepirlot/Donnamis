@@ -53,7 +53,7 @@ async function showDonatedItems(member) {
       "donated");
   if (!donatedItems) {
     const messageDiv = document.querySelector("#donatedItemsMemberPageMessage");
-    showError("Ce membre n'a pas d'objet offerts", "info", messageDiv);
+    messageDiv.innerHTML = `<h1 class="display-6" id="donatedItemsMemberPageMessage">Il n'y a aucun résultat pour cette recherche</h1>`;
     return;
   }
   const donatedItemsDiv = document.querySelector("#donatedItemsMemberPage");
@@ -66,7 +66,7 @@ async function showReceivedItems(member) {
   if (!receivedItems) {
     const messageDiv = document.querySelector(
         "#receivedItemsMemberPageMessage");
-    showError("Ce membre n'a pas d'objet reçus", "info", messageDiv);
+    messageDiv.innerHTML = `<h1 class="display-6" id="receivedItemsMemberPageMessage">Il n'y a aucun résultat pour cette recherche</h1>`;
     return;
   }
   const receivedItemsDiv = document.querySelector("#receivedItemsMemberPage");
