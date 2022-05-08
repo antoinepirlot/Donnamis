@@ -2,7 +2,6 @@ package be.vinci.pae.ihm.offer;
 
 import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
-import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeAdmin;
@@ -56,9 +55,6 @@ public class OfferResource {
   @AuthorizeAdmin
   public List<OfferDTO> getAllOffers(@PathParam("offer_status") String offerStatus) {
     List<OfferDTO> listOfferDTO = offerUCC.getAllOffers(offerStatus);
-    if (listOfferDTO == null) {
-      throw new ObjectNotFoundException("No offers into the database.");
-    }
     return this.jsonUtil.filterPublicJsonViewAsList(listOfferDTO);
   }
 
@@ -74,9 +70,6 @@ public class OfferResource {
   @AuthorizeMember
   public OfferDTO getOneOffer(@PathParam("id") int id) {
     OfferDTO offerDTO = offerUCC.getOneOffer(id);
-    if (offerDTO == null) {
-      throw new ObjectNotFoundException("No offers into the database.");
-    }
     return this.jsonUtil.filterPublicJsonView(offerDTO);
   }
 
@@ -105,9 +98,6 @@ public class OfferResource {
       throw new WrongBodyDataException(message);
     }
     //Try to create an offer
-    if (!offerUCC.createOffer(offerDTO)) {
-      String message = "Add an existing offer.";
-      throw new ConflictException(message);
-    }
+    offerUCC.createOffer(offerDTO);
   }
 }

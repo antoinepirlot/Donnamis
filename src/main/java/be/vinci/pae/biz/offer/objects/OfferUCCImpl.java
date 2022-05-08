@@ -7,6 +7,7 @@ import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.dal.offer.interfaces.OfferDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.exceptions.FatalException;
+import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import jakarta.inject.Inject;
 import java.sql.SQLException;
 import java.util.List;
@@ -24,7 +25,11 @@ public class OfferUCCImpl implements OfferUCC {
       dalServices.start();
       boolean isCreated = this.offerDAO.createOffer(offerDTO);
       dalServices.commit();
-      return isCreated;
+      if (!isCreated) {
+        String message = "Error while creating new offer.";
+        throw new FatalException(message);
+      }
+      return true;
     } catch (SQLException e) {
       dalServices.rollback();
       throw new FatalException(e);
@@ -37,6 +42,9 @@ public class OfferUCCImpl implements OfferUCC {
       dalServices.start();
       List<OfferDTO> listOfferDTO = offerDAO.getAllOffers(offerStatus);
       dalServices.commit();
+      if (listOfferDTO == null) {
+        throw new ObjectNotFoundException("No offers into the database.");
+      }
       return listOfferDTO;
     } catch (SQLException e) {
       dalServices.rollback();
@@ -50,6 +58,9 @@ public class OfferUCCImpl implements OfferUCC {
       dalServices.start();
       OfferDTO offerDTO = offerDAO.getOne(id);
       dalServices.commit();
+      if (offerDTO == null) {
+        throw new ObjectNotFoundException("No offers into the database.");
+      }
       return offerDTO;
     } catch (SQLException e) {
       dalServices.rollback();
