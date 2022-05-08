@@ -82,7 +82,7 @@ function showFilterMembers(members) {
     } else if (member.actualState == "denied") {
       html += `<td><button id="deniedRegisteredButtons" class="btn btn-danger" value="${member.id}">Refusé</button></td>`;
     } else if (member.actualState == "registered") {
-      html += `<td><button id="deniedRegisteredButtons" class="btn btn-warning" value="${member.id}">Inscris</button></td>`;
+      html += `<td><button id="deniedRegisteredButtons" class="btn btn-warning" value="${member.id}">Inscrit</button></td>`;
     } else {
       html += "<td></td>"
     }

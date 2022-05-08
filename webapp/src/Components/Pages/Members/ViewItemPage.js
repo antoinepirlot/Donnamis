@@ -245,7 +245,7 @@ async function postInterest(e) {
     }
     await ViewItemPage();
     pageErrorDiv = document.querySelector("#viewItemPageError");
-    showError("L'intérêt a bien été prit en compte.", "success", pageErrorDiv);
+    showError("L'intérêt a bien été pris en compte.", "success", pageErrorDiv);
   } catch (err) {
     console.error(err);
   } finally {
