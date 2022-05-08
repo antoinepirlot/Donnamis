@@ -17,10 +17,8 @@ const memberPageHtml = `
     </div>
   </div>
   <div id="donatedItemsMemberPageMessage">
-    <h4>Objets offerts par ce membre</h4>
   </div>
   <div id="receivedItemsMemberPage">
-    <h4>Objets reçus par ce membre</h4>
   <div id="receivedItemsMemberPageMessage"></div>
   <div id="errorMessage"></div>
   
