@@ -62,8 +62,8 @@ public class ItemUCCImpl implements ItemUCC {
       if (dbItemDTO == null) {
         throw new ObjectNotFoundException("No item matching id: " + idItem);
       }
-      if (dbItemDTO.getOfferStatus().equals("given")) {
-        throw new ForbiddenException("The item " + idItem + " is already given.");
+      if (!dbItemDTO.getOfferStatus().equals("given")) {
+        throw new ForbiddenException("The item " + idItem + " is not given.");
       }
       return dbItemDTO;
     } catch (SQLException e) {
