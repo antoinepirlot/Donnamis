@@ -15,14 +15,13 @@ const memberPageHtml = `
   <div class="whiteCard">
     <div id="memberPageContent" ><!--class="d-flex bd-highlight mb-3 shadow-lg p-3 mb-5 bg-white rounded" -->
     </div>
-    <div id="donatedItemsMemberPage">
+  </div>
+  <div id="donatedItemsMemberPageMessage">
     <h4>Objets offerts par ce membre</h4>
-    <div id="donatedItemsMemberPageMessage"></div>
   </div>
   <div id="receivedItemsMemberPage">
     <h4>Objets reçus par ce membre</h4>
   <div id="receivedItemsMemberPageMessage"></div>
-  </div>
   <div id="errorMessage"></div>
   
 `;
@@ -75,33 +74,149 @@ async function showReceivedItems(member) {
 async function showMemberInformation(member) {
   const content = document.querySelector("#memberPageContent");
   let contentHtml = `
-    <h3>Infos de ${he.decode(member.username)}</h3>
-    <p>Prénom : <span id="firstnameMemberPage" >${he.decode(member.lastName)}</span> </p>
-    <p >Nom : <span id="lastnameMemberPage">${he.decode(member.lastName)}</span></p>
-    <p >Statut : <span id="statusMemberPage">${getActualState(member)}</span> </p>
-    <p>Administrateur : <span id="adminMemberPage">${member.isAdmin ? "Oui" : "Non"}</span></p>
-    <h3>Adresse de ${he.decode(member.username)}</h3>
-  `
-  //  <div id="left" class="" xmlns="http://www.w3.org/1999/html">
-  //    <h3>Infos de ${he.decode(member.username)}</h3>
-  //    <label>Prénom: </label>
-  //    <p class="">${he.decode(member.firstName)}</p>
-  //    Nom : ${he.decode(member.lastName)}<br>
-  //    Statut : ${getActualState(member)}<br>
-  //    Administrateur : ${member.isAdmin ? "Oui" : "Non"}<br>
-  //  </div>
-  //  <div id="right" class="p-2 bd-highlight">
-  //    <h3>Adresse de ${he.decode(member.username)}</h3>
-  //    ${getAddressHtml(member.address)}<br>
-  //  </div>
-  //    Numéro de téléphone : ${member.phoneNumber ? member.phoneNumber : "Aucun"}<br>
-  //    Nombre d'objets offerts : ${await getNumberOfItems(member.id, "donated")}<br>
-  //    Nombre d'objets donnés : ${await getNumberOfItems(member.id, "given")}<br>
-  //    Nombre d'objets intéréssé mais non reçu : ${await getNumberOfReceivedOrNotReceivedItems(
-  //    member.id, false)}<br>
-  //    Nombre d'objets reçus : ${await getNumberOfReceivedOrNotReceivedItems(
-  //    member.id, true)}<br>
-  //`;
+      <div>
+          <div class="profile-head">
+            <h5>
+                ${he.decode(member.firstName)+ " " + he.decode(member.lastName)}
+            </h5>
+          </div>
+      </div>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        
+          <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" 
+          data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" 
+          aria-selected="true">Profile</button> 
+          
+          <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" 
+          data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" 
+          aria-selected="false">Adresse</button> 
+        </div>
+      </nav>
+      <div class="tab-content" id="myTabContent">
+        <div class="col-md-8">
+          <div class="tab-content profile-tab" id="myTabContent">
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+        <!-- USER'S INFO -->
+          <div class="row">
+            <div class="col-md-11">
+              <label>Prénom</label>
+            </div>
+            <div class="col-md-1">
+              <p>${he.decode(member.firstName)}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-11">
+              <label>Nom</label>
+            </div>
+            <div class="col-md-1">
+              <p>${he.decode(member.lastName)}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-11">
+              <label>Statut</label>
+            </div>
+            <div class="col-md-1">
+              <p>${getActualState(member)}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-11">
+              <label>Admin</label>
+            </div>
+            <div class="col-md-1">
+              <p>${member.isAdmin ? "Oui" : "Non"}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-11">
+              <label>Numéro de téléphone</label>
+            </div>
+            <div class="col-md-1">
+              <p>${member.phoneNumber ? member.phoneNumber : "Aucun"}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-11">
+              <label>Nombre d'objets offerts</label>
+            </div>
+            <div class="col-md-1">
+              <p>${await getNumberOfItems(member.id, "donated")}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-11">
+              <label>Nombre d'objets donnés</label>
+            </div>
+            <div class="col-md-1">
+              <p>${await getNumberOfItems(member.id, "given")}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-11">
+              <label>Nombre de marque d'intérets</label>
+            </div>
+            <div class="col-md-1">
+              <p>${await getNumberOfReceivedOrNotReceivedItems(member.id, false)}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-11">
+              <label>Nombre d'objets reçus</label>
+            </div>
+            <div class="col-md-1">
+              <p>${await getNumberOfReceivedOrNotReceivedItems(member.id, true)}</p>
+            </div>
+          </div>
+        </div>
+            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+              <!-- ADDRESS'S USER INFO  -->
+              <div class="row">
+                <div class="col-md-6">
+                  <label>Rue </label>
+                </div>
+                <div class="col-md-6">
+                  <p>${member.address.street}</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label>Numéro </label>
+                </div>
+                <div class="col-md-6">
+                  <p>${member.address.buildingNumber}</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label>Numéro de boite </label>
+                </div>
+                <div class="col-md-6">
+                  <p>${member.address.unitNumber ? member.address.unitNumber : "Aucun" }</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label>Code postal </label>
+                </div>
+                <div class="col-md-6">
+                  <p>${member.address.postcode}</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label>Commune </label>
+                </div>
+                <div class="col-md-6">
+                  <p>${member.address.commune}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>  
+      `
   content.innerHTML += contentHtml;
   const pageErrorDiv = document.querySelector("#errorMessage");
   let button;
