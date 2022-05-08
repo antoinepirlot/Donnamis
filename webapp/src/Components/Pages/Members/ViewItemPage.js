@@ -175,7 +175,7 @@ async function showItemInfo() {
   const numberOfMemberInterested = document.querySelector(
       "#numberOfInterestedMembersViewItemPage");
   const count = await getNumberOfInterestedMembers(item.id);
-  numberOfMemberInterested.innerHTML = `Nombre de personnes intéressée ${count}`;
+  numberOfMemberInterested.innerHTML = `Nombre de personnes intéressée(s) : ${count}`;
 }
 
 async function showInterestForm(e) {
