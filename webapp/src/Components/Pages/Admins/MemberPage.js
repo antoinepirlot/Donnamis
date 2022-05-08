@@ -225,7 +225,7 @@ async function showMemberInformation(member) {
   //Create button if member confirmed or unavailable
   if (member.actualState === 'confirmed' || member.actualState
       === 'unavailable') {
-    content.innerHTML += `<button id="markUnavailableButton"></button>`;
+    content.innerHTML += `<button id="markUnavailableButton" class="btn btn-primary"></button>`;
     button = document.querySelector("#markUnavailableButton");
 
     //Change the value of the button
