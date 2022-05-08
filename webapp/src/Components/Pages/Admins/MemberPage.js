@@ -19,6 +19,7 @@ const memberPageHtml = `
   <div id="donatedItemsMemberPageMessage">
   </div>
   <div id="receivedItemsMemberPage">
+  </div>
   <div id="receivedItemsMemberPageMessage"></div>
   <div id="errorMessage"></div>
   
@@ -48,7 +49,7 @@ async function showDonatedItems(member) {
       "donated");
   if (!donatedItems) {
     const messageDiv = document.querySelector("#donatedItemsMemberPageMessage");
-    messageDiv.innerHTML = `<h1 class="display-6" id="donatedItemsMemberPageMessage">Il n'y a aucun résultat pour cette recherche</h1>`;
+    messageDiv.innerHTML = `<h1 class="display-6" id="donatedItemsMemberPageMessage">${member.username} n'a donné aucun objet</h1>`;
     return;
   }
   const donatedItemsDiv = document.querySelector("#donatedItemsMemberPage");
@@ -61,7 +62,7 @@ async function showReceivedItems(member) {
   if (!receivedItems) {
     const messageDiv = document.querySelector(
         "#receivedItemsMemberPageMessage");
-    messageDiv.innerHTML = `<h1 class="display-6" id="receivedItemsMemberPageMessage">Il n'y a aucun résultat pour cette recherche</h1>`;
+    messageDiv.innerHTML = `<h1 class="display-6" id="receivedItemsMemberPageMessage">${member.username} n'a reçus aucun objet</h1>`;
     return;
   }
   const receivedItemsDiv = document.querySelector("#receivedItemsMemberPage");
