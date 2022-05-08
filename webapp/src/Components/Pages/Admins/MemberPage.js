@@ -65,7 +65,7 @@ async function showReceivedItems(member) {
   if (!receivedItems) {
     const messageDiv = document.querySelector(
         "#receivedItemsMemberPageMessage");
-    messageDiv.innerHTML = `<h1 class="display-6">${member.username} n'a reçus aucun objet</h1>`;
+    messageDiv.innerHTML = `<h2 class="display-6">${member.username} n'a reçus aucun objet</h2>`;
     return;
   }
   const receivedItemsDiv = document.querySelector("#receivedItemsMemberPage");
