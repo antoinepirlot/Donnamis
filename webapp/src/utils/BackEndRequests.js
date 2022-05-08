@@ -392,6 +392,9 @@ async function login(username, password) {
   };
   const response = await fetch("api/members/login", request);
   if (!response.ok) {
+    if (response.status === 403) {
+      return 403;
+    }
     if (response.status === 404) {
       return false;
     }

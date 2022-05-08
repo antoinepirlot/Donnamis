@@ -7,6 +7,7 @@ import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import be.vinci.pae.dal.member.interfaces.MemberDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.exceptions.FatalException;
+import be.vinci.pae.exceptions.webapplication.ForbiddenException;
 import jakarta.inject.Inject;
 import java.sql.SQLException;
 import java.util.List;
@@ -139,6 +140,11 @@ public class MemberUCCImpl implements MemberUCC {
               || !loggedMember.verifyState("confirmed") && !loggedMember.verifyState(
               "unavailable")
       ) {
+        if (loggedMember != null && loggedMember.verifyState("registered")
+            && loggedMember.checkPassword(memberToLogin.getPassword(),
+            loggedMember.getPassword())) {
+          throw new ForbiddenException("Username and password ok but registered");
+        }
         return null;
       }
       return loggedMember;
