@@ -9,7 +9,6 @@ import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.exceptions.FatalException;
-import be.vinci.pae.exceptions.webapplication.ForbiddenException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import jakarta.inject.Inject;
 import java.sql.SQLException;
@@ -61,9 +60,6 @@ public class ItemUCCImpl implements ItemUCC {
       dalServices.commit();
       if (dbItemDTO == null) {
         throw new ObjectNotFoundException("No item matching id: " + idItem);
-      }
-      if (dbItemDTO.getOfferStatus().equals("given")) {
-        throw new ForbiddenException("The item " + idItem + " is already given.");
       }
       return dbItemDTO;
     } catch (SQLException e) {
