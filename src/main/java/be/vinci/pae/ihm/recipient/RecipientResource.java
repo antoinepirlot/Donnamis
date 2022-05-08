@@ -46,6 +46,11 @@ public class RecipientResource {
     this.recipientUCC.chooseRecipient(recipientDTO);
   }
 
+  /**
+   * Set the recipient received attribute to not received.
+   *
+   * @param recipientDTO the recipient to modify
+   */
   @PUT
   @Path("unavailable")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -58,6 +63,4 @@ public class RecipientResource {
     //Change the state of the recipient
     recipientUCC.setRecipientUnavailable(recipientDTO);
   }
-
-
 }
