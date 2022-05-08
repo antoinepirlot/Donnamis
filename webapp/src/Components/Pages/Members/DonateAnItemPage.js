@@ -1,13 +1,13 @@
 import {
   addNewItemsType,
   getItemsTypes,
-  offerAnItem,
-  sendPicture
+  offerAnItem
 } from "../../../utils/BackEndRequests";
 import {showError} from "../../../utils/ShowError";
 import {getPayload} from "../../../utils/session";
 import {Redirect} from "../../Router/Router";
 import {showItemsTypes} from "../../../utils/HtmlCode";
+import {sendFile} from "../../../utils/File";
 
 const htmlForm = `
   <h1 class="display-3">Offrir un objet</h1>
@@ -35,7 +35,7 @@ const htmlForm = `
           </div>
           <div class="mb-3">
             <label class="form-label">Ajouter une photo</label>
-            <input id="photoName" class="form-control" name="file" type= "file" /> <br><br>
+            <input id="photoName" class="form-control" name="newItemFile" type= "file" /> <br><br>
           </div>
           <input class="btn btn-primary" type="submit" value="Offrir"><br>
           <span id="asterisk">* Champs obligatoires</span>
@@ -103,27 +103,13 @@ async function offerItem(e) {
 
     }
     const idItem = await offerAnItem(item);
-    await sendFile(idItem);
+    await sendFile(idItem, "newItemFile");
     const message = "Ajout réussi!";
     await DonateAnItemPage();
     showError(message, "success", errorMessageOfferAnItemPage);
   } catch (error) {
     console.error(error);
     showError("Une erreur est survenue.", "danger",
-        errorMessageOfferAnItemPage);
-  }
-}
-
-async function sendFile(idItem) {
-  const fileInput = document.querySelector('input[name=file]');
-  const formData = new FormData();
-  formData.append('file', fileInput.files[0]);
-  try {
-    await sendPicture(idItem, formData)
-    showError("L'iùage à été uploadé.", "success", errorMessageOfferAnItemPage);
-  } catch (e) {
-    console.error(e);
-    showError("Problème lors de l'upload de l'image.", "danger",
         errorMessageOfferAnItemPage);
   }
 }
