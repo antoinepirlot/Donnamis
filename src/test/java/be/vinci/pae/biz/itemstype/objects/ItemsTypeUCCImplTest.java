@@ -1,5 +1,6 @@
 package be.vinci.pae.biz.itemstype.objects;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -125,14 +126,14 @@ class ItemsTypeUCCImplTest {
   @Test
   void testAddItemsTypeWorkingAsExpected() {
     this.setAddItemsTypeReturnedValue(true);
-    assertTrue(this.itemsTypeUCC.addItemsType(this.itemsTypeDTO));
+    assertDoesNotThrow(() -> this.itemsTypeUCC.addItemsType(this.itemsTypeDTO));
   }
 
   @DisplayName("Test add items type don't add")
   @Test
   void testAddItemsTypeNotAdded() {
     this.setAddItemsTypeReturnedValue(false);
-    assertFalse(this.itemsTypeUCC.addItemsType(this.itemsTypeDTO));
+    assertThrows(FatalException.class, () -> this.itemsTypeUCC.addItemsType(this.itemsTypeDTO));
   }
 
   @DisplayName("Test add items type with start throwing sql exception")
