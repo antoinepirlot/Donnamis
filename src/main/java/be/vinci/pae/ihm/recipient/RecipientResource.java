@@ -9,11 +9,13 @@ import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ForbiddenException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
+import be.vinci.pae.ihm.filter.AuthorizeAdmin;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
 
@@ -68,28 +70,28 @@ public class RecipientResource {
     }
   }
 
-  //  @PUT
-  //  @Path("unavailable")
-  //  @Consumes(MediaType.APPLICATION_JSON)
-  //  @AuthorizeAdmin
-  //  public void setRecipientUnavailable(RecipientDTO recipientDTO) {
-  //
-  //    //Verify the content of the body of the request
-  //    if (recipientDTO == null || recipientDTO.getMember().getId() < 1) {
-  //      throw new WrongBodyDataException("Recipient is null or wrong id");
-  //    }
-  //
-  //    //Verify if the member exist
-  //    if (memberUCC.getOneMember(recipientDTO.getMember()) == null) {
-  //      throw new ObjectNotFoundException("Member doesn't exist");
-  //    }
-  //
-  //    //Change the state of the recipient
-  //    if (!recipientUCC.setRecipientUnavailable(recipientDTO)) {
-  //      throw new FatalException("An unexpected error happened while set recipient unavailable");
-  //    }
-  //
-  //  }
+  @PUT
+  @Path("unavailable")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeAdmin
+  public void setRecipientUnavailable(RecipientDTO recipientDTO) {
+
+    //Verify the content of the body of the request
+    if (recipientDTO == null || recipientDTO.getMember().getId() < 1) {
+      throw new WrongBodyDataException("Recipient is null or wrong id");
+    }
+
+    //Verify if the member exist
+    if (memberUCC.getOneMember(recipientDTO.getMember()) == null) {
+      throw new ObjectNotFoundException("Member doesn't exist");
+    }
+
+    //Change the state of the recipient
+    if (!recipientUCC.setRecipientUnavailable(recipientDTO)) {
+      throw new FatalException("An unexpected error happened while set recipient unavailable");
+    }
+
+  }
 
 
 }

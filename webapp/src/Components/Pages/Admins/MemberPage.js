@@ -3,7 +3,8 @@ import {
   getNumberOfItems,
   getNumberOfReceivedOrNotReceivedItems,
   getOneMember,
-  setMemberAvailability
+  setMemberAvailability,
+  setRecipientUnavailable
 } from "../../../utils/BackEndRequests";
 import {showError} from "../../../utils/ShowError";
 import {getShowItemsHtml} from "../../../utils/HtmlCode";
@@ -116,14 +117,14 @@ async function showMemberInformation(member) {
         version: member.version
       };
 
-      // const recipient = {
-      //   member: memberUnavailable
-      // };
+      const recipient = {
+        member: memberUnavailable
+      };
       try {
         await setMemberAvailability(memberUnavailable);
-        // if (memberUnavailable.actualState === "unavailable") {
-        //   await setRecipientUnavailable(recipient);
-        // }
+        if (memberUnavailable.actualState === "unavailable") {
+          await setRecipientUnavailable(recipient);
+        }
         await MemberPage();
       } catch (err) {
         console.error(err);
