@@ -75,7 +75,13 @@ function showFilterMembers(members) {
         <td>${he.decode(member.address.commune)}</td>
     `;
     if (member.actualState === "confirmed") {
-      html += `<td><button id="makeUnavailableButtons" class="btn btn-dark" value="${member.id}">Indiquer comme malade</button></td>`;
+      html += `<td><button id="makeUnavailableButtons" class="btn btn-dark" value="${member.id}">Indiquer comme indisponible</button></td>`;
+    } else if (member.actualState == "unavailable") {
+      html += `<td><button id="makeAvailableButtons" class="btn btn-success" value="${member.id}">Indiquer comme disponible</button></td>`;
+    } else if (member.actualState == "denied") {
+      html += `<td><button id="deniedRegisteredButtons" class="btn btn-danger" value="${member.id}">Refusé</button></td>`;
+    } else if (member.actualState == "registered") {
+      html += `<td><button id="deniedRegisteredButtons" class="btn btn-warning" value="${member.id}">Inscris</button></td>`;
     } else {
       html += "<td></td>"
     }
@@ -85,12 +91,20 @@ function showFilterMembers(members) {
     `;
     tbody.innerHTML += html;
   });
+  const deniedRegisteredButtons = document.querySelectorAll(
+      "#deniedRegisteredButtons");
+  deniedRegisteredButtons.forEach(deniedRegisteredButtons => {
+    deniedRegisteredButtons.addEventListener("click", () => {
+      Redirect("/list_member");
+    })
+  });
+
   const makeUnavailableButtons = document.querySelectorAll(
       "#makeUnavailableButtons");
   makeUnavailableButtons.forEach(makeUnavailableButton => {
     makeUnavailableButton.addEventListener("click", async () => {
       let errorDiv = document.querySelector("#searchMemberPageError");
-      showError("Modification en cours...", "info", errorDiv);
+      showError("Modification en cours ...", "info", errorDiv);
       const member = {
         id: makeUnavailableButton.value,
         actualState: "unavailable",
@@ -105,7 +119,32 @@ function showFilterMembers(members) {
       } catch (e) {
         console.error(e);
         showError(
-            "Une erreur est survenue, l'utilisateur n'a pas été marqué comme malade.",
+            "Une erreur est survenue, l'utilisateur n'a pas été marqué comme indisponible.",
+            "danger", errorDiv);
+      }
+    });
+  });
+  const makeAvailableButtons = document.querySelectorAll(
+      "#makeAvailableButtons");
+  makeAvailableButtons.forEach(makeAvailableButton => {
+    makeAvailableButton.addEventListener("click", async () => {
+      let errorDiv = document.querySelector("#searchMemberPageError");
+      showError("Modification en cours ...", "info", errorDiv);
+      const member = {
+        id: makeAvailableButton.value,
+        actualState: "confirmed",
+        version: members.find(
+            (m) => m.id == makeAvailableButton.value).version
+      };
+      try {
+        await setMemberAvailability(member);
+        await SearchMembersPage();
+        errorDiv = document.querySelector("#searchMemberPageError");
+        showError("Modification réussie.", "success", errorDiv);
+      } catch (e) {
+        console.error(e);
+        showError(
+            "Une erreur est survenue, l'utilisateur n'a pas été marqué comme disponible.",
             "danger", errorDiv);
       }
     });
