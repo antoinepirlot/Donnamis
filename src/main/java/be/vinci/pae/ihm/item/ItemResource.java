@@ -2,11 +2,8 @@ package be.vinci.pae.ihm.item;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
-import be.vinci.pae.biz.member.interfaces.MemberUCC;
-import be.vinci.pae.biz.offer.interfaces.OfferDTO;
 import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.exceptions.FatalException;
-import be.vinci.pae.exceptions.webapplication.ForbiddenException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeAdmin;
@@ -25,7 +22,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response.Status;
-import java.sql.SQLException;
 import java.util.List;
 
 @Singleton
@@ -37,8 +33,6 @@ public class ItemResource {
   private ItemUCC itemUCC;
   @Inject
   private OfferUCC offerUCC;
-  @Inject
-  private MemberUCC memberUCC;
 
   /////////////////////////////////////////////////////////
   ///////////////////////GET///////////////////////////////
@@ -54,11 +48,7 @@ public class ItemResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeAdmin
   public List<ItemDTO> getAllItems() {
-    try {
-      return this.getAllItemsByOfferStatusOrIdMember(null, -1);
-    } catch (SQLException e) {
-      throw new FatalException("Can't get all items");
-    }
+    return itemUCC.getAllItems(null);
   }
 
   /**
@@ -78,11 +68,7 @@ public class ItemResource {
     ) {
       throw new WrongBodyDataException("Offer status " + offerStatus + " is not valid.");
     }
-    try {
-      return this.getAllItemsByOfferStatusOrIdMember(offerStatus, -1);
-    } catch (SQLException  e) {
-      throw new FatalException("Can't get all items by offer status: " + offerStatus);
-    }
+    return itemUCC.getAllItems(offerStatus);
   }
 
   /**
@@ -111,14 +97,7 @@ public class ItemResource {
     if (idMember < 1) {
       throw new WrongBodyDataException("The idMember must be grater than 1");
     }
-    if (!this.memberUCC.memberExist(null, idMember)) {
-      throw new ObjectNotFoundException("This member doesn't exists.");
-    }
-    try {
-      return this.getAllItemsByOfferStatusOrIdMember(null, idMember);
-    } catch (SQLException e) {
-      throw new FatalException("Can't get all items by member id: " + idMember);
-    }
+    return this.itemUCC.getAllItemsOfAMember(idMember);
   }
 
   /**
@@ -148,27 +127,24 @@ public class ItemResource {
           .filterPublicJsonViewAsList(itemUCC.getMemberItemsByOfferStatus(idMember, offerStatus));
     }
     List<ItemDTO> itemDTOList = this.itemUCC.getMemberReceivedItems(idMember);
-    if (itemDTOList == null) {
-      return null;
-    }
     return this.jsonUtil.filterPublicJsonViewAsList(itemDTOList);
   }
 
   /**
    * Asks UCC to get one offer identified by its id.
    *
-   * @param id the item's id
+   * @param idItem the item's id
    * @return the offer if it exists, otherwise throws a web application exception
    */
   @GET
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public ItemDTO getItem(@PathParam("id") int id) {
-    ItemDTO itemDTO = itemUCC.getOneItem(id);
-    if (itemDTO == null) {
-      throw new ObjectNotFoundException("No item matching id: " + id);
+  public ItemDTO getItem(@PathParam("id") int idItem) {
+    if (idItem < 1) {
+      throw new WrongBodyDataException("Item's id is lower than 1");
     }
+    ItemDTO itemDTO = itemUCC.getOneItem(null, idItem);
     this.offerUCC.getLastTwoOffersOf(itemDTO);
     return this.jsonUtil.filterPublicJsonView(itemDTO);
   }
@@ -184,8 +160,8 @@ public class ItemResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public List<ItemDTO> getAssignedItems(@PathParam("id") int idMember) {
-    if (idMember < 0) {
-      throw new WrongBodyDataException("idMember < 0 for get assigned items");
+    if (idMember < 1) {
+      throw new WrongBodyDataException("idMember < 1 for get assigned items");
     }
     List<ItemDTO> itemDTOList = this.itemUCC.getAssignedItems(idMember);
     return this.jsonUtil.filterPublicJsonViewAsList(itemDTOList);
@@ -202,9 +178,8 @@ public class ItemResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public List<ItemDTO> getGivenItems(@PathParam("id") int idMember) {
-
-    if (idMember < 0) {
-      throw new WrongBodyDataException("id member can't be negative");
+    if (idMember < 1) {
+      throw new WrongBodyDataException("idMember < 1 for get assigned items");
     }
     List<ItemDTO> itemDTOList = this.itemUCC.getGivenItems(idMember);
     return this.jsonUtil.filterPublicJsonViewAsList(itemDTOList);
@@ -217,7 +192,6 @@ public class ItemResource {
    * @param offerStatus the offer status can only be "donated" or "given"
    * @return the number of items that match offer status
    * @throws WrongBodyDataException  if the offer status is invalid
-   * @throws ObjectNotFoundException if the member doesn't exist
    */
   @GET
   @Path("count/{idMember}/{offer_status}")
@@ -231,14 +205,7 @@ public class ItemResource {
     ) {
       throw new WrongBodyDataException("Wrong offerStatus is invalid.");
     }
-    if (!this.memberUCC.memberExist(null, idMember)) {
-      throw new ObjectNotFoundException("The member " + idMember + " doesn't exist.");
-    }
-    int count = this.itemUCC.countNumberOfItemsByOfferStatus(idMember, offerStatus);
-    if (count == -1) {
-      throw new FatalException("count number of items returned -1.");
-    }
-    return count;
+    return this.itemUCC.countNumberOfItemsByOfferStatus(idMember, offerStatus);
   }
 
   /**
@@ -252,7 +219,6 @@ public class ItemResource {
    *                 its interest but never take the item.
    * @return the number of the number of items received or not received
    * @throws WrongBodyDataException  if the id member is lower than 1
-   * @throws ObjectNotFoundException if the member doesn't exist in the database
    */
   @GET
   @Path("count_assigned_items/{idMember}/{received}")
@@ -262,14 +228,8 @@ public class ItemResource {
     if (idMember < 1) {
       throw new WrongBodyDataException("idMember is lower than 1");
     }
-    if (!this.memberUCC.memberExist(null, idMember)) {
-      throw new ObjectNotFoundException("The member " + idMember + " doesn't exist.");
-    }
-    int count = this.itemUCC.countNumberOfReceivedOrNotReceivedItems(idMember, received);
-    if (count == -1) {
-      throw new FatalException("Count number returned -1");
-    }
-    return count;
+
+    return this.itemUCC.countNumberOfReceivedOrNotReceivedItems(idMember, received);
   }
 
   /**
@@ -286,9 +246,6 @@ public class ItemResource {
   public int countNumberOfInterestedMember(@PathParam("idItem") int idItem) {
     if (idItem < 1) {
       throw new WrongBodyDataException("The idItem is lower than 1");
-    }
-    if (this.itemUCC.getOneItem(idItem) == null) {
-      throw new ObjectNotFoundException("The item with id " + idItem + " doesn't exists");
     }
     return this.offerUCC.getNumberOfInterestedMemberOf(idItem);
   }
@@ -313,21 +270,11 @@ public class ItemResource {
         || itemDTO.getItemType().getItemType().isBlank() || itemDTO.getMember() == null
         || itemDTO.getMember().getId() < 1 || itemDTO.getTitle() == null || itemDTO.getTitle()
         .isBlank() || itemDTO.getLastOffer() == null
-        || itemDTO.getOfferList().get(0) == null) {
+        || itemDTO.getOfferList().get(0) == null
+    ) {
       throw new WebApplicationException("Wrong item body", Status.BAD_REQUEST);
     }
-    int idItem = this.itemUCC.addItem(itemDTO);
-    if (idItem == -1) {
-      String message = "The items can't be added to the db due to a unexpected error";
-      throw new WebApplicationException(message, Status.BAD_REQUEST);
-    }
-    OfferDTO offerDTO = itemDTO.getOfferList().get(0);
-    offerDTO.setIdItem(idItem);
-    if (!this.offerUCC.createOffer(offerDTO)) {
-      String message = "The offer can't be added to the db due to a unexpected error";
-      throw new WebApplicationException(message, Status.BAD_REQUEST);
-    }
-    return idItem;
+    return this.itemUCC.addItem(itemDTO);
   }
 
   /////////////////////////////////////////////////////////
@@ -344,11 +291,11 @@ public class ItemResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public void markItemAsGiven(ItemDTO itemDTO) {
-    this.checkMarkItem(itemDTO);
-
-    if (!this.itemUCC.markItemAsGiven(itemDTO)) {
-      throw new FatalException("marking item " + itemDTO.getId() + " as given failed.");
+    if (itemDTO == null
+        || itemDTO.getId() < 1) {
+      throw new WrongBodyDataException("Missing information to mark item as given");
     }
+    this.itemUCC.markItemAsGiven(itemDTO);
   }
 
   /**
@@ -361,10 +308,7 @@ public class ItemResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public void markItemAsNotGiven(ItemDTO itemDTO) {
-    this.checkMarkItem(itemDTO);
-    if (!this.itemUCC.markItemAsNotGiven(itemDTO)) {
-      throw new FatalException("marking item " + itemDTO.getId() + " as not given failed.");
-    }
+    this.itemUCC.markItemAsNotGiven(itemDTO);
   }
 
   /////////////////////////////////////////////////////////
@@ -374,18 +318,18 @@ public class ItemResource {
   /**
    * Asks the UCC to cancel the item's offer.
    *
-   * @param id the item's id
+   * @param idItem the item's id
    * @return the canceled item
    */
   @DELETE
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
-  public ItemDTO cancelOffer(@PathParam("id") int id) {
-    if (itemUCC.getOneItem(id) == null) {
+  public ItemDTO cancelOffer(@PathParam("id") int idItem) {
+    if (itemUCC.getOneItem(null, idItem) == null) {
       throw new ObjectNotFoundException("Item not found");
     }
-    ItemDTO itemDTO = itemUCC.cancelItem(id);
+    ItemDTO itemDTO = itemUCC.cancelItem(idItem);
     if (itemDTO == null) {
       throw new FatalException("Canceling item returned null");
     }
@@ -413,64 +357,6 @@ public class ItemResource {
         || itemDTO.getLastOffer().getTimeSlot().isBlank()) {
       throw new WrongBodyDataException("itemDTO not complete.");
     }
-    if (itemDTO.getVersion() != itemUCC.getOneItem(itemDTO.getId()).getVersion()) {
-      throw new FatalException("Error with version");
-    }
-    if (this.itemUCC.getOneItem(itemDTO.getId()) == null) {
-      throw new ObjectNotFoundException("No item with the id : " + itemDTO.getId());
-    }
-    if (!itemUCC.modifyItem(itemDTO)) {
-      throw new FatalException("Unexpected error");
-    }
-  }
-
-  /////////////////////////////////////////////////////////
-  ///////////////////////UTILS/////////////////////////////
-  /////////////////////////////////////////////////////////
-
-  private List<ItemDTO> getAllItemsByOfferStatusOrIdMember(String offerStatus, int idMember)
-      throws SQLException {
-    List<ItemDTO> listItemDTO;
-    if (idMember > 0) {
-      listItemDTO = itemUCC.getAllItemsOfAMember(idMember);
-    } else {
-      listItemDTO = itemUCC.getAllItems(offerStatus);
-    }
-    if (listItemDTO == null) {
-      throw new WebApplicationException("Ressource not found", Status.NOT_FOUND);
-    }
-    for (ItemDTO itemDTO : listItemDTO) {
-      this.offerUCC.getLastTwoOffersOf(itemDTO);
-    }
-    return listItemDTO;
-  }
-
-  /**
-   * Check itemDTO for mark item as {offerStatus}.
-   *
-   * @param itemDTO the item to check
-   */
-  private void checkMarkItem(ItemDTO itemDTO) {
-    if (itemDTO == null
-        || itemDTO.getId() < 1
-        || itemDTO.getMember() == null || itemDTO.getMember().getId() < 1
-    ) {
-      throw new WrongBodyDataException("idItm is lower than 1.");
-    }
-    ItemDTO existingItem = this.itemUCC.getOneItem(itemDTO.getId());
-    if (existingItem == null) {
-      throw new ObjectNotFoundException("The item " + itemDTO.getId() + " doesn't exist.");
-    }
-    if (existingItem.getMember().getId() != itemDTO.getMember().getId()) {
-      throw new WrongBodyDataException(
-          "The member's id and item's member's id are not associated");
-    }
-    if (existingItem.getOfferStatus().equals("given")) {
-      throw new ForbiddenException("The item " + itemDTO.getId() + " is already given.");
-    }
-
-    if (itemDTO.getVersion() != itemUCC.getOneItem(itemDTO.getId()).getVersion()) {
-      throw new FatalException("Error with version");
-    }
+    itemUCC.modifyItem(itemDTO);
   }
 }

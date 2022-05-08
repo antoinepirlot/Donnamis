@@ -433,6 +433,21 @@ public class ItemDAOImpl implements ItemDAO {
     }
   }
 
+  @Override
+  public boolean itemExists(int idItem) {
+    String query = "SELECT id_item "
+        + "FROM project_pae.items "
+        + "WHERE id_item = ?;";
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setInt(1, idItem);
+      try (ResultSet rs = ps.executeQuery()) {
+        return rs.next();
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
+  }
+
   /////////////////////////////////////////////////////////
   ///////////////////////UTILS/////////////////////////////
   /////////////////////////////////////////////////////////

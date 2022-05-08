@@ -16,9 +16,11 @@ public interface ItemUCC {
   /**
    * Ask itemDAO to get one item identified by its id.
    *
+   * @param itemDTO the itemDTO that contains the id or null
+   * @param idItem  the item's id if itemDTO is null
    * @return the item associated by the id
    */
-  ItemDTO getOneItem(int id);
+  ItemDTO getOneItem(ItemDTO itemDTO, int idItem);
 
   /**
    * Ask itemDAO to add the item.
@@ -38,9 +40,8 @@ public interface ItemUCC {
    * Modify the item.
    *
    * @param itemDTO the new item
-   * @return true if the modification was done otherwise false
    */
-  boolean modifyItem(ItemDTO itemDTO);
+  void modifyItem(ItemDTO itemDTO);
 
   /**
    * Ask itemDAO to get all the items identified by the member id.
@@ -69,17 +70,15 @@ public interface ItemUCC {
    * Mark item,identified by its id, as given.
    *
    * @param itemDTO the item to update
-   * @return true if the operation worked as expected otherwise false
    */
-  boolean markItemAsGiven(ItemDTO itemDTO);
+  void markItemAsGiven(ItemDTO itemDTO);
 
   /**
    * Mark item, identified by its id, as donated and update recipient to not received.
    *
    * @param itemDTO the item to update
-   * @return true if the operation worked as expected otherwise false
    */
-  boolean markItemAsNotGiven(ItemDTO itemDTO);
+  void markItemAsNotGiven(ItemDTO itemDTO);
 
   /**
    * Count the number of items with the specified offer status for the member with the idMember.
@@ -128,6 +127,14 @@ public interface ItemUCC {
    * @return true if the photo has been added otherwise false
    */
   boolean addPhoto(int idItem, String photoName);
+
+  /**
+   * Checks if the item exists into the database.
+   *
+   * @param idItem the item's id
+   * @return true if it exists otherwise false
+   */
+  boolean itemExists(int idItem);
 
   /**
    * Get all donated and assigned items.

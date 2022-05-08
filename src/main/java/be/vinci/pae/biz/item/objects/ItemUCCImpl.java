@@ -1,11 +1,19 @@
 package be.vinci.pae.biz.item.objects;
 
+import be.vinci.pae.biz.item.interfaces.Item;
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
+import be.vinci.pae.biz.member.interfaces.MemberUCC;
+import be.vinci.pae.biz.offer.interfaces.Offer;
+import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.exceptions.FatalException;
+import be.vinci.pae.exceptions.webapplication.ForbiddenException;
+import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response.Status;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -13,6 +21,10 @@ public class ItemUCCImpl implements ItemUCC {
 
   @Inject
   private ItemDAO itemDAO;
+  @Inject
+  private OfferUCC offerUCC;
+  @Inject
+  private MemberUCC memberUCC;
   @Inject
   private DALServices dalServices;
 
@@ -22,6 +34,14 @@ public class ItemUCCImpl implements ItemUCC {
       dalServices.start();
       List<ItemDTO> listItemDTO = itemDAO.getAllItems(offerStatus);
       dalServices.commit();
+      if (listItemDTO == null || listItemDTO.isEmpty()) {
+        throw new ObjectNotFoundException(
+            "There's no items matching with offer status: " + offerStatus + "."
+        );
+      }
+      for (ItemDTO itemDTO : listItemDTO) {
+        this.offerUCC.getLastTwoOffersOf(itemDTO);
+      }
       return listItemDTO;
     } catch (SQLException e) {
       dalServices.rollback();
@@ -30,12 +50,24 @@ public class ItemUCCImpl implements ItemUCC {
   }
 
   @Override
-  public ItemDTO getOneItem(int id) {
+  public ItemDTO getOneItem(ItemDTO itemDTO, int idItem) {
+    if (itemDTO != null) {
+      idItem = itemDTO.getId();
+    }
+    if (!this.itemExists(idItem)) {
+      throw new ObjectNotFoundException("The item " + idItem + " doesn't exist.");
+    }
     try {
       dalServices.start();
-      ItemDTO itemDTO = itemDAO.getOneItem(id);
+      ItemDTO dbItemDTO = itemDAO.getOneItem(idItem);
       dalServices.commit();
-      return itemDTO;
+      if (dbItemDTO == null) {
+        throw new ObjectNotFoundException("No item matching id: " + idItem);
+      }
+      if (dbItemDTO.getOfferStatus().equals("given")) {
+        throw new ForbiddenException("The item " + idItem + " is already given.");
+      }
+      return dbItemDTO;
     } catch (SQLException e) {
       dalServices.rollback();
       throw new FatalException(e);
@@ -48,6 +80,16 @@ public class ItemUCCImpl implements ItemUCC {
       dalServices.start();
       int idItem = itemDAO.addItem(itemDTO);
       dalServices.commit();
+      if (idItem == -1) {
+        String message = "The items can't be added to the db due to a unexpected error";
+        throw new FatalException(message);
+      }
+      Offer offerDTO = (Offer) itemDTO.getOfferList().get(0);
+      offerDTO.setIdItem(idItem);
+      if (!this.offerUCC.createOffer(offerDTO)) {
+        String message = "The offer can't be added to the db due to a unexpected error";
+        throw new WebApplicationException(message, Status.BAD_REQUEST);
+      }
       return idItem;
     } catch (SQLException e) {
       dalServices.rollback();
@@ -69,12 +111,15 @@ public class ItemUCCImpl implements ItemUCC {
   }
 
   @Override
-  public boolean modifyItem(ItemDTO itemDTO) {
+  public void modifyItem(ItemDTO itemDTO) {
+    this.checkVersion(itemDTO);
     try {
       dalServices.start();
       boolean modified = itemDAO.modifyItem(itemDTO);
       dalServices.commit();
-      return modified;
+      if (!modified) {
+        throw new FatalException("Item " + itemDTO.getId() + "not modified");
+      }
     } catch (SQLException e) {
       dalServices.rollback();
       throw new FatalException(e);
@@ -83,10 +128,21 @@ public class ItemUCCImpl implements ItemUCC {
 
   @Override
   public List<ItemDTO> getAllItemsOfAMember(int idMember) {
+    if (!this.memberUCC.memberExist(null, idMember)) {
+      throw new ObjectNotFoundException("This member doesn't exists.");
+    }
     try {
       dalServices.start();
       List<ItemDTO> listItemDTO = itemDAO.getAllItemsOfAMember(idMember);
       dalServices.commit();
+      if (listItemDTO == null || listItemDTO.isEmpty()) {
+        throw new ObjectNotFoundException(
+            "There's no items matching with member's id: " + idMember + "."
+        );
+      }
+      for (ItemDTO itemDTO : listItemDTO) {
+        this.offerUCC.getLastTwoOffersOf(itemDTO);
+      }
       return listItemDTO;
     } catch (SQLException e) {
       dalServices.rollback();
@@ -96,6 +152,9 @@ public class ItemUCCImpl implements ItemUCC {
 
   @Override
   public List<ItemDTO> getAssignedItems(int idMember) {
+    if (!this.memberUCC.memberExist(null, idMember)) {
+      throw new ObjectNotFoundException("No member matching with id " + idMember);
+    }
     try {
       this.dalServices.start();
       List<ItemDTO> listItemDTO = this.itemDAO.getAssignedItems(idMember);
@@ -109,6 +168,9 @@ public class ItemUCCImpl implements ItemUCC {
 
   @Override
   public List<ItemDTO> getGivenItems(int idMember) {
+    if (!this.memberUCC.memberExist(null, idMember)) {
+      throw new ObjectNotFoundException("No member matching with id " + idMember);
+    }
     try {
       this.dalServices.start();
       List<ItemDTO> listItemDTO = this.itemDAO.getGivenItems(idMember);
@@ -121,22 +183,28 @@ public class ItemUCCImpl implements ItemUCC {
   }
 
   @Override
-  public boolean markItemAsGiven(ItemDTO itemDTO) {
-    return this.markItemAs(true, itemDTO);
+  public void markItemAsGiven(ItemDTO itemDTO) {
+    this.markItemAs(true, itemDTO);
   }
 
   @Override
-  public boolean markItemAsNotGiven(ItemDTO itemDTO) {
-    return this.markItemAs(false, itemDTO);
+  public void markItemAsNotGiven(ItemDTO itemDTO) {
+    this.markItemAs(false, itemDTO);
   }
 
   @Override
   public int countNumberOfItemsByOfferStatus(int idMember, String offerStatus) {
+    if (!this.memberUCC.memberExist(null, idMember)) {
+      throw new ObjectNotFoundException("The member " + idMember + " doesn't exist.");
+    }
     try {
       this.dalServices.start();
-      int itemsNumber = this.itemDAO.countNumberOfItemsByOfferStatus(idMember, offerStatus);
+      int count = this.itemDAO.countNumberOfItemsByOfferStatus(idMember, offerStatus);
       this.dalServices.commit();
-      return itemsNumber;
+      if (count == -1) {
+        throw new FatalException("count number of items returned -1.");
+      }
+      return count;
     } catch (SQLException e) {
       this.dalServices.rollback();
       throw new FatalException(e);
@@ -145,11 +213,17 @@ public class ItemUCCImpl implements ItemUCC {
 
   @Override
   public int countNumberOfReceivedOrNotReceivedItems(int idMember, boolean received) {
+    if (!this.memberUCC.memberExist(null, idMember)) {
+      throw new ObjectNotFoundException("The member " + idMember + " doesn't exist.");
+    }
     try {
       this.dalServices.start();
-      int numberOfItems = this.itemDAO.countNumberOfReceivedOrNotReceivedItems(idMember, received);
+      int count = this.itemDAO.countNumberOfReceivedOrNotReceivedItems(idMember, received);
       this.dalServices.commit();
-      return numberOfItems;
+      if (count == -1) {
+        throw new FatalException("Count number returned -1");
+      }
+      return count;
     } catch (SQLException e) {
       this.dalServices.rollback();
       throw new FatalException(e);
@@ -158,6 +232,9 @@ public class ItemUCCImpl implements ItemUCC {
 
   @Override
   public List<ItemDTO> getMemberItemsByOfferStatus(int idMember, String offerStatus) {
+    if (!this.memberUCC.memberExist(null, idMember)) {
+      throw new ObjectNotFoundException("No member matching the id: " + idMember);
+    }
     try {
       this.dalServices.start();
       List<ItemDTO> itemDTOList = this.itemDAO.getMemberItemsByOfferStatus(idMember, offerStatus);
@@ -171,6 +248,9 @@ public class ItemUCCImpl implements ItemUCC {
 
   @Override
   public List<ItemDTO> getMemberReceivedItems(int idMember) {
+    if (!this.memberUCC.memberExist(null, idMember)) {
+      throw new ObjectNotFoundException("No member matching the id: " + idMember);
+    }
     try {
       this.dalServices.start();
       List<ItemDTO> itemDTOList = this.itemDAO.getMemberReceivedItems(idMember);
@@ -184,11 +264,27 @@ public class ItemUCCImpl implements ItemUCC {
 
   @Override
   public boolean addPhoto(int idItem, String photoName) {
+    if (!this.itemExists(idItem)) {
+      throw new ObjectNotFoundException("No item matching the id: " + idItem);
+    }
     try {
       this.dalServices.start();
       boolean added = this.itemDAO.addPhoto(idItem, photoName);
       this.dalServices.commit();
       return added;
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw new FatalException(e);
+    }
+  }
+
+  @Override
+  public boolean itemExists(int idItem) {
+    try {
+      this.dalServices.start();
+      boolean exists = this.itemDAO.itemExists(idItem);
+      this.dalServices.commit();
+      return exists;
     } catch (SQLException e) {
       this.dalServices.rollback();
       throw new FatalException(e);
@@ -208,6 +304,24 @@ public class ItemUCCImpl implements ItemUCC {
     }
   }
 
+  /**
+   * Check the version of item.
+   *
+   * @param itemDTO the item to check
+   */
+  private void checkVersion(ItemDTO itemDTO) {
+    try {
+      this.dalServices.start();
+      Item dbItem = (Item) this.getOneItem(itemDTO, -1);
+      if (itemDTO.getVersion() != dbItem.getVersion()) {
+        throw new FatalException("Wrong version");
+      }
+    } catch (SQLException e) {
+      this.dalServices.rollback();
+      throw new FatalException(e);
+    }
+  }
+
   /////////////////////////////////////////////////////////
   ///////////////////////UTILS/////////////////////////////
   /////////////////////////////////////////////////////////
@@ -217,9 +331,12 @@ public class ItemUCCImpl implements ItemUCC {
    *
    * @param given   true if it marks item as given or false to mark item as not given
    * @param itemDTO the item to update
-   * @return true if the operation worked as expected otherwise false
    */
-  private boolean markItemAs(boolean given, ItemDTO itemDTO) {
+  private void markItemAs(boolean given, ItemDTO itemDTO) {
+    if (!this.itemExists(itemDTO.getId())) {
+      throw new ObjectNotFoundException("No item matching the id: " + itemDTO.getId());
+    }
+    this.checkVersion(itemDTO);
     try {
       boolean done;
       this.dalServices.start();
@@ -229,7 +346,13 @@ public class ItemUCCImpl implements ItemUCC {
         done = this.itemDAO.markItemAsNotGiven(itemDTO);
       }
       this.dalServices.commit();
-      return done;
+      if (!done) {
+        if (given) {
+          throw new FatalException("marking item " + itemDTO.getId() + " as given failed.");
+        } else {
+          throw new FatalException("marking item " + itemDTO.getId() + " as not given failed.");
+        }
+      }
     } catch (SQLException e) {
       this.dalServices.rollback();
       throw new FatalException(e);
