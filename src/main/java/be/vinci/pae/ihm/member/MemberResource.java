@@ -4,8 +4,6 @@ import be.vinci.pae.biz.address.interfaces.AddressDTO;
 import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
-import be.vinci.pae.exceptions.FatalException;
-import be.vinci.pae.exceptions.webapplication.ConflictException;
 import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeAdmin;
@@ -61,9 +59,6 @@ public class MemberResource {
   @AuthorizeAdmin
   public List<MemberDTO> getAllMembers() {
     List<MemberDTO> listMemberDTO = memberUCC.getAllMembers();
-    if (listMemberDTO == null) {
-      throw new ObjectNotFoundException("No member into the database");
-    }
     return this.jsonUtil.filterPublicJsonViewAsList(listMemberDTO);
   }
 
@@ -79,10 +74,6 @@ public class MemberResource {
   public ObjectNode refreshToken(@Context ContainerRequestContext request) {
     DecodedJWT decodedJWT = TokenDecoder.decodeToken(request);
     MemberDTO memberDTO = this.memberUCC.getOneMember(decodedJWT.getClaim("id").asInt());
-    if (memberDTO == null) {
-      String message = "This member has not been found.";
-      throw new ObjectNotFoundException(message);
-    }
     String token = this.createToken(memberDTO.getId());
     return this.createObjectNode(token, memberDTO);
   }
@@ -98,11 +89,7 @@ public class MemberResource {
   @Produces(MediaType.APPLICATION_JSON)
   @AuthorizeMember
   public MemberDTO getMemberById(@PathParam("id") int id) {
-    MemberDTO memberDTO = memberUCC.getOneMember(id);
-    if (memberDTO == null) {
-      throw new ObjectNotFoundException("Member not found");
-    }
-    return this.jsonUtil.filterPublicJsonView(memberDTO);
+    return this.jsonUtil.filterPublicJsonView(this.memberUCC.getOneMember(id));
   }
 
   /**
@@ -120,9 +107,6 @@ public class MemberResource {
       throw new WrongBodyDataException("The idOffer is less than 1");
     }
     List<MemberDTO> memberDTO = this.memberUCC.getInterestedMembers(idOffer);
-    if (memberDTO == null) {
-      throw new ObjectNotFoundException("Member not found with idOffer: " + idOffer);
-    }
     return this.jsonUtil.filterPublicJsonViewAsList(memberDTO);
   }
 
@@ -150,9 +134,6 @@ public class MemberResource {
       throw new WrongBodyDataException(message);
     }
     memberDTO = memberUCC.login(memberDTO);
-    if (memberDTO == null) {
-      throw new ObjectNotFoundException("Member is null");
-    }
     String token = createToken(memberDTO.getId());
     return createObjectNode(token, memberDTO);
   }
@@ -189,10 +170,7 @@ public class MemberResource {
       throw new WrongBodyDataException(message);
     }
     // Get and check credentials
-    if (!memberUCC.register(memberDTO)) {
-      String message = "This member already exist in the database";
-      throw new ConflictException(message);
-    }
+    memberUCC.register(memberDTO);
   }
 
   /////////////////////////////////////////////////////////
@@ -212,17 +190,7 @@ public class MemberResource {
     if (memberDTO == null || memberDTO.getId() < 1) {
       throw new WrongBodyDataException("Confirmation of a incomplete member's information.");
     }
-    if (memberUCC.getOneMember(memberDTO.getId()) == null) {
-      throw new ObjectNotFoundException("No member with the id: " + memberDTO.getId());
-    }
-
-    if (memberDTO.getVersion() != memberUCC.getOneMember(memberDTO.getId()).getVersion()) {
-      throw new FatalException("Error with version");
-    }
-
-    if (!memberUCC.confirmMember(memberDTO)) {
-      throw new FatalException("An unexpected error happened while confirming member.");
-    }
+    this.memberUCC.confirmMember(memberDTO);
   }
 
   /**
@@ -234,20 +202,12 @@ public class MemberResource {
   @Path("availability")
   @Consumes(MediaType.APPLICATION_JSON)
   public void setMemberAvailability(MemberDTO memberDTO) {
-    if (memberDTO == null || memberDTO.getId() < 1) {
+    if (memberDTO == null || memberDTO.getId() < 1 || memberDTO.getActualState() == null
+        || memberDTO.getActualState().isBlank() || !memberDTO.getActualState().equals("confirmed")
+        && !memberDTO.getActualState().equals("unavailable")) {
       throw new WrongBodyDataException("Error Member Sent");
     }
-    if (memberUCC.getOneMember(memberDTO.getId()) == null) {
-      throw new ObjectNotFoundException("Any member with the id: " + memberDTO.getId());
-    }
-
-    if (memberDTO.getVersion() != memberUCC.getOneMember(memberDTO.getId()).getVersion()) {
-      throw new FatalException("Error with version");
-    }
-
-    if (!memberUCC.setMemberAvailability(memberDTO)) {
-      throw new FatalException("An unexpected error happened while set member availability.");
-    }
+    memberUCC.setMemberAvailability(memberDTO);
   }
 
   /**
@@ -264,10 +224,7 @@ public class MemberResource {
     if (!memberUCC.memberExist(refusalDTO.getMember(), -1)) {
       throw new ObjectNotFoundException("No member with the id: " + refusalDTO.getMember().getId());
     }
-
-    if (!memberUCC.denyMember(refusalDTO)) {
-      throw new FatalException("An unexpected error happened while denying member.");
-    }
+    memberUCC.denyMember(refusalDTO);
   }
 
   /**
@@ -297,14 +254,7 @@ public class MemberResource {
     ) {
       throw new WrongBodyDataException("Member incomplete");
     }
-
-    if (memberDTO.getVersion() != memberUCC.getOneMember(memberDTO.getId()).getVersion()) {
-      throw new FatalException("Error with version");
-    }
-
-    if (!memberUCC.modifyMember(memberDTO)) {
-      throw new ObjectNotFoundException("Member not found");
-    }
+    memberUCC.modifyMember(memberDTO);
   }
 
   /////////////////////////////////////////////////////////

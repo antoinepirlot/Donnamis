@@ -108,4 +108,12 @@ public interface ItemDAO {
    * @return the list of assigned and donated items
    */
   List<ItemDTO> getAllPublicItems();
+
+  /**
+   * Checks if the item exists into the database.
+   *
+   * @param idItem the item's id
+   * @return true if it exists otherwise false
+   */
+  boolean itemExists(int idItem);
 }

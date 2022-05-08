@@ -4,6 +4,7 @@ import {showError} from "../../../utils/ShowError";
 import {
   getAllPublicItems,
   getItem,
+  getNumberOfInterestedMembers,
   modifyTheItem,
   postInterest as postInterestBackEnd
 } from "../../../utils/BackEndRequests";
@@ -20,6 +21,7 @@ const viewOfferHtml = `
         <h5 id="itemTypeViewItemPage" class="card-text"></h5>
         <h5 id="descriptionViewItemPage" class="card-text"></h5>
         <h5 id="availabilitiesViewItemPage" class="card-text"></h5>
+        <h5 id="numberOfInterestedMembersViewItemPage" class="card-text"></h5>
         <h5 id="pubDateViewItemPage" class="card-text"></h5>
         <h5 id="oldPubDateViewItemPage" class="card-text"></h5>
         <button id="interestButton" class="btn btn-primary">
@@ -82,7 +84,7 @@ async function ViewItemPage() {
   try {
     item = await getItem(idItem);
     page.innerHTML += createModifyItemModal();
-    showItemInfo();
+    await showItemInfo();
     const modifyMember = getObject("memberDTO");
     const postInterestButton = document.querySelector("#interestButton");
     if (item.member.id === modifyMember.id) {
@@ -118,7 +120,7 @@ function createModifyItemModal() {
         <form id="modifyItemForm">
           <h5>Modifier votre objet<span id="asterisk">*</span>:</h5><br>
           <p>Description de l'objet<span id="asterisk">*</span>:</p>
-          <input id="itemDescriptionForm" type="text" value="${itemDescription}">
+          <textarea id="itemDescriptionForm" cols="30" rows="3">${itemDescription}</textarea>
           <p>Photo</p>
           <input id="photoForm" type="file"><br>
           <br>
@@ -133,7 +135,7 @@ function createModifyItemModal() {
   `;
 }
 
-function showItemInfo() {
+async function showItemInfo() {
   lastOffer = item.offerList[0];
   let date = new Date(lastOffer.date);
   date = date.getDate() + "/" + (date.getMonth() + 1) + "/"
@@ -169,6 +171,11 @@ function showItemInfo() {
 
   const image = document.querySelector("#imageItem");
   image.innerHTML = displayImage(item, true);
+
+  const numberOfMemberInterested = document.querySelector(
+      "#numberOfInterestedMembersViewItemPage");
+  const count = await getNumberOfInterestedMembers(item.id);
+  numberOfMemberInterested.innerHTML = `Nombre de personnes intéressée(s) : ${count}`;
 }
 
 async function showInterestForm(e) {
@@ -225,9 +232,9 @@ async function postInterest(e) {
     member: memberInterested,
     date: date
   };
-  const pageErrorDiv = document.querySelector("#viewItemPageError");
+  let pageErrorDiv = document.querySelector("#viewItemPageError");
   try {
-    const status = await postInterestBackEnd(interest, errorMessageDiv);
+    const status = await postInterestBackEnd(interest);
     if (status === 409) {
       showError("Vous avez déjà marqué un intéret pour cette offre.", "danger",
           pageErrorDiv);
@@ -236,7 +243,9 @@ async function postInterest(e) {
     if (callWanted) {
       await checkToken();
     }
-    showError("L'intérêt a bien été prit en compte.", "success", pageErrorDiv);
+    await ViewItemPage();
+    pageErrorDiv = document.querySelector("#viewItemPageError");
+    showError("L'intérêt a bien été pris en compte.", "success", pageErrorDiv);
   } catch (err) {
     console.error(err);
   } finally {

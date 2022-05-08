@@ -37,4 +37,12 @@ public interface OfferUCC {
    * @return true if exist in the DB false if not
    */
   boolean offerExist(OfferDTO offerDTO);
+
+  /**
+   * Count the number of interested member for the last offer of the item identified by its id.
+   *
+   * @param idItem the item's id
+   * @return the number of interested member of the item's last offer
+   */
+  int getNumberOfInterestedMemberOf(int idItem);
 }

@@ -245,18 +245,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "  AND r.id_member = m.id_member "
         + "  AND r.id_item = i.id_item "
         + "  AND m.id_member = ?;";
-    List<ItemDTO> listItemDTO = new ArrayList<>();
-    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
-      ps.setInt(1, idMember);
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          listItemDTO.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
-        }
-        return listItemDTO.isEmpty() ? null : listItemDTO;
-      }
-    } catch (SQLException e) {
-      throw new FatalException(e);
-    }
+    return getItemDTOList(idMember, query);
   }
 
   @Override
@@ -268,18 +257,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "FROM project_pae.items i, project_pae.members m, project_pae.items_types it "
         + "WHERE i.id_type = it.id_type AND i.id_member = m.id_member AND "
         + "m.id_member = ? AND i.offer_status = 'given';";
-    List<ItemDTO> listItemDTO = new ArrayList<>();
-    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
-      ps.setInt(1, idMember);
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          listItemDTO.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
-        }
-        return listItemDTO.isEmpty() ? null : listItemDTO;
-      }
-    } catch (SQLException e) {
-      throw new FatalException(e);
-    }
+    return getItemDTOList(idMember, query);
   }
 
   @Override
@@ -400,18 +378,7 @@ public class ItemDAOImpl implements ItemDAO {
         + "  AND r.id_member = ? "
         + "  AND r.id_item = i.id_item "
         + "  AND i.id_type = it.id_type;";
-    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
-      ps.setInt(1, idMember);
-      try (ResultSet rs = ps.executeQuery()) {
-        List<ItemDTO> itemDTOList = new ArrayList<>();
-        while (rs.next()) {
-          itemDTOList.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
-        }
-        return itemDTOList.isEmpty() ? null : itemDTOList;
-      }
-    } catch (SQLException e) {
-      throw new FatalException(e);
-    }
+    return getItemDTOList(idMember, query);
   }
 
   @Override
@@ -466,6 +433,21 @@ public class ItemDAOImpl implements ItemDAO {
     }
   }
 
+  @Override
+  public boolean itemExists(int idItem) {
+    String query = "SELECT id_item "
+        + "FROM project_pae.items "
+        + "WHERE id_item = ?;";
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setInt(1, idItem);
+      try (ResultSet rs = ps.executeQuery()) {
+        return rs.next();
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
+  }
+
   /////////////////////////////////////////////////////////
   ///////////////////////UTILS/////////////////////////////
   /////////////////////////////////////////////////////////
@@ -507,4 +489,27 @@ public class ItemDAOImpl implements ItemDAO {
       return ps.executeUpdate() != 0;
     }
   }
+
+  /**
+   * Set id member to the query and create an item dto list.
+   *
+   * @param idMember the member's id to set into the query
+   * @param query    the query of the sql request
+   * @return the list of items
+   */
+  private List<ItemDTO> getItemDTOList(int idMember, String query) {
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setInt(1, idMember);
+      try (ResultSet rs = ps.executeQuery()) {
+        List<ItemDTO> listItemDTO = new ArrayList<>();
+        while (rs.next()) {
+          listItemDTO.add(ObjectsInstanceCreator.createItemInstance(this.factory, rs));
+        }
+        return listItemDTO.isEmpty() ? null : listItemDTO;
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
+  }
+
 }

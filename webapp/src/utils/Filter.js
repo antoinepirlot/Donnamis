@@ -1,7 +1,6 @@
 import {getMyItemsHtml, getShowItemsHtml} from "./HtmlCode";
-import {showError} from "./ShowError";
 
-function filterItemsByDate(itemsId, errorId, items) {
+function filterItemsByDate(itemsId, items) {
   let startDate;
   let endDate;
   if (itemsId === "#myItems") {
@@ -15,19 +14,26 @@ function filterItemsByDate(itemsId, errorId, items) {
     return;
   }
   startDate = new Date(startDate);
+  startDate.setSeconds(59);
+  startDate.setMinutes(59);
+  startDate.setHours(23);
+
   endDate = new Date(endDate);
+  endDate.setSeconds(59);
+  endDate.setMinutes(59);
+  endDate.setHours(23);
+
   const itemsDiv = document.querySelector(itemsId);
   const filteredItems = items.filter(item =>
-      new Date(item.lastOffer.date).getDate() >= startDate.getDate()
-      && new Date(item.lastOffer.date).getDate() <= endDate.getDate()
-      && new Date(item.lastOffer.date).getMonth() >= startDate.getMonth()
-      && new Date(item.lastOffer.date).getMonth() <= endDate.getMonth()
-      && new Date(item.lastOffer.date).getFullYear() >= startDate.getFullYear()
-      && new Date(item.lastOffer.date).getFullYear() <= endDate.getFullYear()
+      new Date(item.lastOffer.date) >= startDate
+      && new Date(item.lastOffer.date) <= endDate
   );
-  if (!filteredItems) {
-    const errorDiv = document.querySelector(errorId);
-    showError("Aucun objet pour ces dates.", "info", errorDiv);
+  if (filteredItems.length === 0) {
+    itemsDiv.innerHTML = `
+      <h1 class="display-3">Aucun objets trouvé</h1>
+      <h5 class="text-secondary">Aucun objet offert entre le ${startDate.toLocaleDateString()} et le ${endDate.toLocaleDateString()}.</h5>
+    `;
+    return;
   }
   if (itemsId === "#myItems") {
     itemsDiv.innerHTML = getMyItemsHtml(filteredItems);

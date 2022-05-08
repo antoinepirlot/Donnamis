@@ -48,10 +48,9 @@ const MemberPage = async () => {
 async function showDonatedItems(member) {
   const donatedItems = await getAllItemsByMemberIdAndOfferStatus(member.id,
       "donated");
-  console.log(donatedItems)
   if (!donatedItems) {
     const messageDiv = document.querySelector("#donatedItemsMemberPageMessage");
-    showError("Ce membre n'a pas d'objet offerts", "info", messageDiv);
+    messageDiv.innerHTML = `<h1 class="display-6" id="donatedItemsMemberPageMessage">Il n'y a aucun résultat pour cette recherche</h1>`;
     return;
   }
   const donatedItemsDiv = document.querySelector("#donatedItemsMemberPage");
@@ -64,7 +63,7 @@ async function showReceivedItems(member) {
   if (!receivedItems) {
     const messageDiv = document.querySelector(
         "#receivedItemsMemberPageMessage");
-    showError("Ce membre n'a pas d'objet offerts", "info", messageDiv);
+    messageDiv.innerHTML = `<h1 class="display-6" id="receivedItemsMemberPageMessage">Il n'y a aucun résultat pour cette recherche</h1>`;
     return;
   }
   const receivedItemsDiv = document.querySelector("#receivedItemsMemberPage");
@@ -238,22 +237,23 @@ async function showMemberInformation(member) {
 
       const memberUnavailable = {
         id: member.id,
-        actualState: member.actualState,
+        actualState: member.actualState === "confirmed" ? "unavailable"
+            : "confirmed",
         version: member.version
       };
 
       const recipient = {
         member: memberUnavailable
       };
-
       try {
-        await setMemberAvailability(memberUnavailable, pageErrorDiv);
-        if (memberUnavailable.actualState === "confirmed") {
+        await setMemberAvailability(memberUnavailable);
+        if (memberUnavailable.actualState === "unavailable") {
           await setRecipientUnavailable(recipient);
         }
         await MemberPage();
       } catch (err) {
         console.error(err);
+        showError("Une erreur est survenue.", "danger", pageErrorDiv);
       }
     });
   }
@@ -267,8 +267,10 @@ function getActualState(member) {
       return "Confirmé";
     case "denied":
       return "Refusé";
+    case "unavailable":
+      return "Malade";
     default:
-      "Statut inconnu";
+      return "Statut inconnu";
   }
 }
 

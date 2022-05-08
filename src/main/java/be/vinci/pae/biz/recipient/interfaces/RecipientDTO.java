@@ -1,7 +1,7 @@
 package be.vinci.pae.biz.recipient.interfaces;
 
-import be.vinci.pae.biz.item.interfaces.Item;
-import be.vinci.pae.biz.member.interfaces.Member;
+import be.vinci.pae.biz.item.interfaces.ItemDTO;
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.recipient.objects.RecipientImpl;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -12,13 +12,13 @@ public interface RecipientDTO {
 
   void setId(int id);
 
-  Item getItem();
+  ItemDTO getItem();
 
-  void setItem(Item item);
+  void setItem(ItemDTO itemDTO);
 
-  Member getMember();
+  MemberDTO getMember();
 
-  void setMember(Member member);
+  void setMember(MemberDTO memberDTO);
 
   String getReceived();
 

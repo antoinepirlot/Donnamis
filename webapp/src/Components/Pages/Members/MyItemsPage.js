@@ -19,7 +19,7 @@ import {getMyItemsHtml} from "../../../utils/HtmlCode";
 
 const myItemsPageHtml = `
   <div>
-    <h1 class="display-3" id="all_items_title">Mes objets</h1>
+    <h1 class="display-3" id="all_items_title">Mes objets offerts</h1>
     <div id="searchBarMyItemsPage">
     </div>
     <div id="searchDateMyItemsPage">
@@ -105,7 +105,7 @@ const MyItemsPage = async () => {
       filterItemsByInterested);
 
   const filterAllItems = document.querySelector("#MyItemsPageItemsAllButton");
-  filterAllItems.addEventListener("click", filterItemsByAll)
+  filterAllItems.addEventListener("click", filterItemsByAll);
 }
 
 async function filterItemsByAll() {
@@ -140,7 +140,7 @@ async function filterItemsByInterested() {
   filterAllItemsButton.className = "btn btn-outline-primary";
 
   const myItemsDiv = document.querySelector("#myItems");
-  myItemsDiv.innerHTML = await getMyItemsHtml(filterItems);
+  myItemsDiv.innerHTML = getMyItemsHtml(filterItems);
   await showMyItemsButtons();
 }
 
@@ -170,12 +170,10 @@ async function showMyItemsButtons() {
       "#chooseRecipientButton");
 
   for (const chooseRecipientButton of chooseRecipientButtons) {
-
-    idItem = chooseRecipientButton.value;
-    const item = items.find((item) => item.id == idItem); // == because idItem is a string and item.id an int === will return false even we expect true
-    const members = await getInterestedMembers(item.offerList[0].id);
     chooseRecipientButton.addEventListener("click", async () => {
-
+      idItem = chooseRecipientButton.value;
+      const item = items.find((item) => item.id == idItem); // == because idItem is a string and item.id an int === will return false even we expect true
+      const members = await getInterestedMembers(item.offerList[0].id);
       openModal("#chooseRecipientModal", "#chooseRecipientModalCloseButton");
       const memberList = document.querySelector(
           "#chooseRecipientMembersList");
@@ -271,7 +269,6 @@ async function chooseRecipient(e) {
 async function markItemAs(given) {
   const errorDiv = document.querySelector("#errorMessageMyItemsPage");
   showError("Le changement est en cours...", "info", errorDiv);
-
   const item = await getItem(idItem);
   const itemMark = {
     id: idItem,
@@ -299,7 +296,7 @@ async function filterItemsByDate(e) {
   const filterAllItemsButton = document.querySelector(
       "#MyItemsPageItemsAllButton")
   filterAllItemsButton.className = "btn btn-outline-primary";
-  filterItemsByDateUtil("#myItems", "#errorMessageMyItemsPage", items);
+  filterItemsByDateUtil("#myItems", items);
 }
 
 export {MyItemsPage, showMyItemsButtons};

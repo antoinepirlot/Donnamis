@@ -21,7 +21,8 @@ public class InterestDAOImpl implements InterestDAO {
         + "version_interest) "
         + "VALUES (?, ?, ?, ?, 1); "
         + "UPDATE project_pae.offers "
-        + "SET number_of_interests = number_of_interests + 1"
+        + "SET number_of_interests = number_of_interests + 1, "
+        + "    version_offer = version_offer + 1 "
         + "WHERE id_offer = ?;";
     if (interestDTO.isCallWanted()) {
       query += "UPDATE project_pae.members "

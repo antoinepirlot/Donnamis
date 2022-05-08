@@ -1,7 +1,9 @@
 package be.vinci.pae.biz.recipient.objects;
 
 import be.vinci.pae.biz.item.interfaces.Item;
+import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.member.interfaces.Member;
+import be.vinci.pae.biz.member.interfaces.MemberDTO;
 import be.vinci.pae.biz.recipient.interfaces.Recipient;
 import be.vinci.pae.views.Views;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -34,23 +36,23 @@ public class RecipientImpl implements Recipient {
   }
 
   @Override
-  public Item getItem() {
+  public ItemDTO getItem() {
     return item;
   }
 
   @Override
-  public void setItem(Item item) {
-    this.item = item;
+  public void setItem(ItemDTO item) {
+    this.item = (Item) item;
   }
 
   @Override
-  public Member getMember() {
+  public MemberDTO getMember() {
     return member;
   }
 
   @Override
-  public void setMember(Member member) {
-    this.member = member;
+  public void setMember(MemberDTO memberDTO) {
+    this.member = (Member) memberDTO;
   }
 
   @Override

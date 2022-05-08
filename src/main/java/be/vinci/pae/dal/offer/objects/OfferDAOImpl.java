@@ -145,6 +145,26 @@ public class OfferDAOImpl implements OfferDAO {
     }
   }
 
+  @Override
+  public int getNumberOfInterestedMemberOf(int idItem) {
+    String getLastOfferId = "(SELECT id_offer "
+        + "FROM project_pae.offers "
+        + "WHERE id_item = ? "
+        + "ORDER BY date DESC "
+        + "LIMIT 1)";
+    String query = "SELECT number_of_interests "
+        + "FROM project_pae.offers "
+        + "WHERE id_offer = " + getLastOfferId + "";
+    try (PreparedStatement ps = this.dalBackendService.getPreparedStatement(query)) {
+      ps.setInt(1, idItem);
+      try (ResultSet rs = ps.executeQuery()) {
+        return rs.next() ? rs.getInt(1) : -1;
+      }
+    } catch (SQLException e) {
+      throw new FatalException(e);
+    }
+  }
+
   //****************************** UTILS *******************************
 
   /**

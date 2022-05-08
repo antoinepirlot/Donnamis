@@ -4,10 +4,8 @@ public interface InterestUCC {
 
   /**
    * Mark the interest in an offer.
-   *
-   * @param interestDTO the interest to add
    */
-  boolean markInterest(InterestDTO interestDTO);
+  void markInterest(InterestDTO interestDTO);
 
   /**
    * Verify if the interest exist in the DB.

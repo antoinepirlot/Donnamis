@@ -3,10 +3,6 @@ package be.vinci.pae.ihm.rating;
 import be.vinci.pae.biz.member.interfaces.MemberUCC;
 import be.vinci.pae.biz.rating.interfaces.RatingDTO;
 import be.vinci.pae.biz.rating.interfaces.RatingUCC;
-import be.vinci.pae.exceptions.FatalException;
-import be.vinci.pae.exceptions.webapplication.ConflictException;
-import be.vinci.pae.exceptions.webapplication.ForbiddenException;
-import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import be.vinci.pae.ihm.filter.utils.Json;
@@ -50,13 +46,7 @@ public class RatingResource {
     if (idMember < 1) {
       throw new WrongBodyDataException("idMember is lower than 1");
     }
-    if (!this.memberUCC.memberExist(null, idMember)) {
-      throw new WrongBodyDataException("The member : " + idMember + " doesn't exist");
-    }
     List<RatingDTO> ratingDTOList = this.ratingUCC.getAllRatingsOfMember(idMember);
-    if (ratingDTOList == null) {
-      throw new ObjectNotFoundException("No ratings for the member " + idMember);
-    }
     return this.json.filterPublicJsonViewAsList(ratingDTOList);
   }
 
@@ -82,15 +72,6 @@ public class RatingResource {
         || ratingDTO.getText() == null || ratingDTO.getText().isBlank()) {
       throw new WrongBodyDataException("Wrong Body Request");
     }
-    if (ratingDTO.getItem().getMember().getId() == ratingDTO.getMember().getId()) {
-      throw new ForbiddenException("This user can't add a rating for his own item");
-    }
-    if (this.ratingUCC.ratingExist(ratingDTO)) {
-      throw new ConflictException("Rating already exist");
-    }
-
-    if (!ratingUCC.evaluate(ratingDTO)) {
-      throw new FatalException("Rating not add");
-    }
+    ratingUCC.evaluate(ratingDTO);
   }
 }

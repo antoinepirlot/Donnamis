@@ -140,7 +140,6 @@ public class MemberImpl implements Member {
   @Override
   public boolean verifyState(String expectedState) {
     return this.actualState.equals(expectedState);
-
   }
 
   @Override

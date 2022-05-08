@@ -21,7 +21,6 @@ public class MemberDAOImpl implements MemberDAO {
   private static final String DEFAULT_STATE = "registered";
   private static final String CONFIRMED_STATE = "confirmed";
   private static final String DENIED_STATE = "denied";
-  private static final String UNAVAILABLE_STATE = "unavailable";
   private static final boolean DEFAULT_IS_ADMIN = false;
   @Inject
   private DALBackendService dalBackendService;
@@ -153,7 +152,7 @@ public class MemberDAOImpl implements MemberDAO {
         ps.setString(10, StringEscapeUtils.escapeHtml4(memberDTO.getAddress().getPostcode()));
         ps.setString(11, StringEscapeUtils.escapeHtml4(memberDTO.getAddress().getCommune()));
         ps.setInt(12, memberDTO.getId());
-      }else{
+      } else {
         ps.setString(9, StringEscapeUtils.escapeHtml4(memberDTO.getAddress().getPostcode()));
         ps.setString(10, StringEscapeUtils.escapeHtml4(memberDTO.getAddress().getCommune()));
         ps.setInt(11, memberDTO.getId());
@@ -164,6 +163,12 @@ public class MemberDAOImpl implements MemberDAO {
     }
   }
 
+  /**
+   * Confirm the member.
+   *
+   * @param memberDTO the member to confirm
+   * @return true if the member has been confirmed, otherwise false
+   */
   public boolean confirmMember(MemberDTO memberDTO) {
     String query = "UPDATE project_pae.members "
         + "SET state = '" + CONFIRMED_STATE
@@ -178,17 +183,18 @@ public class MemberDAOImpl implements MemberDAO {
     }
   }
 
+  /**
+   * Switch the state of the member between confirmed and unavailable.
+   *
+   * @param memberDTO the member to modify state
+   * @return true if the member's state is change, otherwise false
+   */
   public boolean setMemberAvailability(MemberDTO memberDTO) {
-    String query;
-    if (memberDTO.getActualState().equals("unavailable")) {
-      query = "UPDATE project_pae.members SET state = '" + CONFIRMED_STATE + "', "
-          + "version_member = version_member + 1 WHERE id_member = ?;";
-    } else {
-      query = "UPDATE project_pae.members SET state = '" + UNAVAILABLE_STATE + "', "
-          + "version_member = version_member + 1 WHERE id_member = ?;";
-    }
+    String query = "UPDATE project_pae.members SET state = ?, "
+        + "version_member = version_member + 1 WHERE id_member = ?;";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
-      preparedStatement.setInt(1, memberDTO.getId());
+      preparedStatement.setString(1, memberDTO.getActualState());
+      preparedStatement.setInt(2, memberDTO.getId());
       return preparedStatement.executeUpdate() != 0;
     } catch (SQLException e) {
       throw new FatalException(e);

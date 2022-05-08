@@ -2,9 +2,6 @@ package be.vinci.pae.ihm.itemstypes;
 
 import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeDTO;
 import be.vinci.pae.biz.itemstype.interfaces.ItemsTypeUCC;
-import be.vinci.pae.exceptions.FatalException;
-import be.vinci.pae.exceptions.webapplication.ConflictException;
-import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.AuthorizeMember;
 import jakarta.inject.Inject;
@@ -39,12 +36,7 @@ public class ItemsTypeResource {
   @Path("all")
   @Produces(MediaType.APPLICATION_JSON)
   public List<ItemsTypeDTO> getAll() {
-    List<ItemsTypeDTO> itemsTypeDTOList = this.itemsTypeUCC.getAll();
-    if (itemsTypeDTOList == null) {
-      String message = "No items type found.";
-      throw new ObjectNotFoundException(message);
-    }
-    return itemsTypeDTOList;
+    return this.itemsTypeUCC.getAll();
   }
 
   /////////////////////////////////////////////////////////
@@ -65,12 +57,6 @@ public class ItemsTypeResource {
     ) {
       throw new WrongBodyDataException("ItemsType is incomplete.");
     }
-    if (this.itemsTypeUCC.exists(itemsTypeDTO)) {
-      String message = "The items type " + itemsTypeDTO.getItemType() + " already exist";
-      throw new ConflictException(message);
-    }
-    if (!this.itemsTypeUCC.addItemsType(itemsTypeDTO)) {
-      throw new FatalException("Unexpected exception while adding new itemsType");
-    }
+    this.itemsTypeUCC.addItemsType(itemsTypeDTO);
   }
 }

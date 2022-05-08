@@ -1,16 +1,21 @@
 package be.vinci.pae.biz.item.objects;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import be.vinci.pae.biz.item.interfaces.ItemDTO;
 import be.vinci.pae.biz.item.interfaces.ItemUCC;
+import be.vinci.pae.biz.member.objects.MemberImpl;
+import be.vinci.pae.biz.offer.interfaces.OfferDTO;
+import be.vinci.pae.biz.offer.objects.OfferImpl;
 import be.vinci.pae.dal.item.interfaces.ItemDAO;
+import be.vinci.pae.dal.member.interfaces.MemberDAO;
+import be.vinci.pae.dal.offer.interfaces.OfferDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.exceptions.FatalException;
+import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.utils.ApplicationBinder;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -32,6 +37,11 @@ class ItemUCCImplTest {
 
   private final ItemUCC itemUCC = locator.getService(ItemUCC.class);
 
+  private final MemberDAO memberDAO = locator.getService(MemberDAO.class);
+
+  private final OfferDAO offerDAO = locator.getService(OfferDAO.class);
+
+
   private final ItemDTO itemDTO = new ItemImpl();
 
   private final String goodOfferStatus = "donated";
@@ -40,6 +50,11 @@ class ItemUCCImplTest {
 
   @BeforeEach
   void setUp() {
+    this.itemDTO.setMember(new MemberImpl());
+    Mockito.when(this.itemDAO.itemExists(this.itemDTO.getId())).thenReturn(true);
+    Mockito.when(this.itemDAO.getOneItem(this.itemDTO.getId())).thenReturn(this.itemDTO);
+
+    this.itemDTO.setOfferStatus("");
     try {
       Mockito.doNothing().when(this.dalServices).start();
       Mockito.doNothing().when(this.dalServices).commit();
@@ -61,6 +76,7 @@ class ItemUCCImplTest {
 
   private void setGetOneItemReturnedValue(int idItem) {
     if (idItem >= 1) {
+      Mockito.when(this.itemDAO.itemExists(idItem)).thenReturn(true);
       Mockito.when(this.itemDAO.getOneItem(idItem)).thenReturn(this.itemDTO);
     } else {
       Mockito.when(this.itemDAO.getOneItem(idItem)).thenReturn(null);
@@ -80,7 +96,10 @@ class ItemUCCImplTest {
   }
 
   private void setModifyItemReturnedValue(boolean modifyReturnedValue) {
+    Mockito.when(this.itemDAO.getOneItem(0)).thenReturn(itemDTO);
     Mockito.when(this.itemDAO.modifyItem(this.itemDTO)).thenReturn(modifyReturnedValue);
+    Mockito.when(this.itemDAO.getOneItem(this.itemDTO.getId())).thenReturn(this.itemDTO);
+    Mockito.when(this.itemDAO.itemExists(this.itemDTO.getId())).thenReturn(true);
   }
 
   private void setGetOneItemOfAMemberReturnedValue(int idMember) {
@@ -94,17 +113,17 @@ class ItemUCCImplTest {
   private void setGetAssignedItems(int idMember) {
     if (idMember >= 1) {
       Mockito.when(this.itemDAO.getAssignedItems(idMember)).thenReturn(this.itemDTOList);
+      Mockito.when(this.memberDAO.memberExist(null, idMember)).thenReturn(true);
     } else {
       Mockito.when(this.itemDAO.getAssignedItems(idMember)).thenReturn(null);
+      Mockito.when(this.memberDAO.memberExist(null, idMember)).thenReturn(false);
     }
   }
 
   private void setMarkItemAsrReturnedValue(boolean given) {
-    if (given) {
-      Mockito.when(this.itemDAO.markItemAsGiven(this.itemDTO)).thenReturn(true);
-    } else {
-      Mockito.when(this.itemDAO.markItemAsNotGiven(this.itemDTO)).thenReturn(true);
-    }
+    Mockito.when(this.itemDAO.markItemAsGiven(this.itemDTO)).thenReturn(true);
+    Mockito.when(this.itemDAO.markItemAsNotGiven(this.itemDTO)).thenReturn(true);
+    Mockito.when(this.itemDAO.getOneItem(this.itemDTO.getId())).thenReturn(this.itemDTO);
   }
 
   private int setCountNumberOfItemsByOfferStatusReturnedValue(int idMember, String offerStatus) {
@@ -127,6 +146,7 @@ class ItemUCCImplTest {
     if (idMember >= 1) {
       Mockito.when(this.itemDAO.countNumberOfReceivedOrNotReceivedItems(idMember, received))
           .thenReturn(result);
+      Mockito.when(this.memberDAO.memberExist(null, idMember)).thenReturn(true);
     }
     return result;
   }
@@ -213,13 +233,6 @@ class ItemUCCImplTest {
     assertEquals(this.itemDTOList, this.itemUCC.getAllItems("given"));
   }
 
-  @DisplayName("Test get all items with not valid offer status")
-  @Test
-  void testGetAllItemsWithNotValidStatus() {
-    this.setGetAllItemsReturnedValue("not valid status");
-    assertNull(this.itemUCC.getAllItems("not valid status"));
-  }
-
   @DisplayName("Test get all items with start throwing sql exception")
   @Test
   void testGetAllItemsWithStartThrowingSQLException() {
@@ -238,28 +251,28 @@ class ItemUCCImplTest {
   @Test
   void testGetOneItemWithGoodId() {
     this.setGetOneItemReturnedValue(4);
-    assertEquals(this.itemDTO, this.itemUCC.getOneItem(4));
+    assertEquals(this.itemDTO, this.itemUCC.getOneItem(null, 4));
   }
 
   @DisplayName("Test get one item with not existing id")
   @Test
   void testGetOneItemWithNotExistingId() {
     this.setGetOneItemReturnedValue(-1);
-    assertNull(this.itemUCC.getOneItem(-1));
+    assertThrows(ObjectNotFoundException.class, () -> this.itemUCC.getOneItem(null, -1));
   }
 
   @DisplayName("Test get one item with start throwing sql exception")
   @Test
   void testGetOneItemWithStartThrowingSQLException() {
     this.setErrorDALServiceStart();
-    assertThrows(FatalException.class, () -> this.itemUCC.getOneItem(4));
+    assertThrows(FatalException.class, () -> this.itemUCC.getOneItem(null, 4));
   }
 
   @DisplayName("Test get one item with commit throwing sql exception")
   @Test
   void testGetOneItemWithCommitThrowingSQLException() {
     this.setErrorDALServiceCommit();
-    assertThrows(FatalException.class, () -> this.itemUCC.getOneItem(4));
+    assertThrows(FatalException.class, () -> this.itemUCC.getOneItem(null, 4));
   }
 
   @DisplayName("Test add item with good item DTO")
@@ -267,6 +280,10 @@ class ItemUCCImplTest {
   void testAddItemWithGoodItemDTO() {
     int newIdItem = 5;
     this.setAddItemReturnedValue(newIdItem);
+    List<OfferDTO> list = new ArrayList<>();
+    list.add(new OfferImpl());
+    this.itemDTO.setOfferList(list);
+    Mockito.when(this.offerDAO.createOffer(this.itemDTO.getOfferList().get(0))).thenReturn(true);
     assertEquals(newIdItem, this.itemUCC.addItem(this.itemDTO));
   }
 
@@ -316,14 +333,14 @@ class ItemUCCImplTest {
   @Test
   void testModifyItemWithGoodItem() {
     this.setModifyItemReturnedValue(true);
-    assertTrue(this.itemUCC.modifyItem(this.itemDTO));
+    assertDoesNotThrow(() -> this.itemUCC.modifyItem(this.itemDTO));
   }
 
   @DisplayName("Test modify item with wrong item")
   @Test
   void testModifyItemWithWrongItem() {
     this.setModifyItemReturnedValue(false);
-    assertFalse(this.itemUCC.modifyItem(this.itemDTO));
+    assertThrows(FatalException.class, () -> this.itemUCC.modifyItem(this.itemDTO));
   }
 
   @DisplayName("Test modify item with start throwing sql exception")
@@ -344,6 +361,8 @@ class ItemUCCImplTest {
   @Test
   void testGetAllItemsOfAMemberWithGoodId() {
     this.setGetOneItemOfAMemberReturnedValue(5);
+    Mockito.when(this.memberDAO.memberExist(null, 5)).thenReturn(true);
+    Mockito.when(this.itemDAO.itemExists(this.itemDTO.getId())).thenReturn(true);
     assertEquals(this.itemDTOList, this.itemUCC.getAllItemsOfAMember(5));
   }
 
@@ -351,7 +370,7 @@ class ItemUCCImplTest {
   @Test
   void testGetAllItemsOfAMemberWithWrongId() {
     this.setGetOneItemOfAMemberReturnedValue(-1);
-    assertNull(this.itemUCC.getAllItemsOfAMember(-1));
+    assertThrows(ObjectNotFoundException.class, () -> this.itemUCC.getAllItemsOfAMember(-1));
   }
 
   @DisplayName("Test get all items of a member with start throwing sql exception")
@@ -379,7 +398,7 @@ class ItemUCCImplTest {
   @Test
   void testGetAssignedItemsWithWrongId() {
     this.setGetAssignedItems(-1);
-    assertNull(this.itemUCC.getAssignedItems(-1));
+    assertThrows(ObjectNotFoundException.class, () -> this.itemUCC.getAssignedItems(-1));
   }
 
   @DisplayName("Test get assigned items of a member with start throwing sql exception")
@@ -400,14 +419,15 @@ class ItemUCCImplTest {
   @Test
   void testMarkItemAsGivenWithGoodItem() {
     this.setMarkItemAsrReturnedValue(true);
-    assertTrue(this.itemUCC.markItemAsGiven(this.itemDTO));
+    assertDoesNotThrow(() -> this.itemUCC.markItemAsGiven(this.itemDTO));
   }
 
   @DisplayName("Test mark item as given with wrong item")
   @Test
   void testMarkItemAsGivenWithWrongItem() {
-    this.setMarkItemAsrReturnedValue(true);
-    assertFalse(this.itemUCC.markItemAsGiven(null));
+    this.setMarkItemAsrReturnedValue(false);
+    Mockito.when(this.itemDAO.itemExists(this.itemDTO.getId())).thenReturn(false);
+    assertThrows(ObjectNotFoundException.class, () -> this.itemUCC.markItemAsGiven(this.itemDTO));
   }
 
   @DisplayName("Test mark item as given with start throwing sql exception")
@@ -420,22 +440,28 @@ class ItemUCCImplTest {
   @DisplayName("Test mark item as given with commit throwing sql exception")
   @Test
   void testMarkItemAsGivenWithCommitThrowingSQLException() {
+    this.setErrorDALServiceCommit();
     this.setMarkItemAsrReturnedValue(true);
-    assertFalse(this.itemUCC.markItemAsGiven(null));
+    Mockito.when(this.itemDAO.itemExists(this.itemDTO.getId())).thenReturn(true);
+    assertThrows(FatalException.class, () -> this.itemUCC.markItemAsGiven(this.itemDTO));
   }
 
   @DisplayName("Test mark item as not given with good item")
   @Test
   void testMarkItemAsNotGivenWithGoodItem() {
     this.setMarkItemAsrReturnedValue(false);
-    assertTrue(this.itemUCC.markItemAsNotGiven(this.itemDTO));
+    Mockito.when(this.itemDAO.itemExists(this.itemDTO.getId())).thenReturn(true);
+    Mockito.when(this.itemDAO.getOneItem(this.itemDTO.getId())).thenReturn(this.itemDTO);
+    assertDoesNotThrow(() -> this.itemUCC.markItemAsNotGiven(this.itemDTO));
   }
 
   @DisplayName("Test mark item as not given with wrong item")
   @Test
   void testMarkItemAsNotGivenWithWrongItem() {
     this.setMarkItemAsrReturnedValue(false);
-    assertFalse(this.itemUCC.markItemAsNotGiven(null));
+    Mockito.when(this.itemDAO.itemExists(this.itemDTO.getId())).thenReturn(false);
+    assertThrows(ObjectNotFoundException.class,
+        () -> this.itemUCC.markItemAsNotGiven(this.itemDTO));
   }
 
   @DisplayName("Test mark item as not given with start throwing sql exception")
@@ -466,8 +492,8 @@ class ItemUCCImplTest {
   void testCountNumberOfItemsByOfferStatusWithWrongIdMember() {
     int result =
         this.setCountNumberOfItemsByOfferStatusReturnedValue(-1, "donated");
-    assertEquals(0,
-        this.itemUCC.countNumberOfItemsByOfferStatus(-1, "donated"));
+    assertThrows(ObjectNotFoundException.class,
+        () -> this.itemUCC.countNumberOfItemsByOfferStatus(-1, "donated"));
   }
 
   @DisplayName("Test count number of items by offer status with assigned offer status")
@@ -524,14 +550,17 @@ class ItemUCCImplTest {
   @Test
   void testCountNumberOfReceivedOrNotReceivedItemsWithNotReceivedItems() {
     int result = this.setCountNumberOfReceivedOrNotReceivedItemsReturnedValue(5, false);
-    assertEquals(result, this.itemUCC.countNumberOfReceivedOrNotReceivedItems(5, false));
+    assertDoesNotThrow(() -> this.itemUCC.countNumberOfReceivedOrNotReceivedItems(5, false));
   }
 
   @DisplayName("Test count number of received or not received items with wrong id member")
   @Test
   void testCountNumberOfReceivedOrNotReceivedItemsWithWrongIdMember() {
     this.setCountNumberOfReceivedOrNotReceivedItemsReturnedValue(-1, true);
-    assertEquals(0, this.itemUCC.countNumberOfReceivedOrNotReceivedItems(-1, true));
+    assertThrows(
+        ObjectNotFoundException.class,
+        () -> this.itemUCC.countNumberOfReceivedOrNotReceivedItems(-1, true)
+    );
   }
 
   @DisplayName("Test count number of received or not received items "
@@ -588,7 +617,8 @@ class ItemUCCImplTest {
   @Test
   void getMemberItemsByOfferStatusWithWrongIdMember() {
     this.setGetMemberItemsByOfferStatusReturnedValue(-1, "donated");
-    assertNull(this.itemUCC.getMemberItemsByOfferStatus(-1, "donated"));
+    assertThrows(ObjectNotFoundException.class,
+        () -> this.itemUCC.getMemberItemsByOfferStatus(-1, "donated"));
   }
 
   @DisplayName("Test get member items by offer status with start throwing sql exception")
@@ -618,7 +648,7 @@ class ItemUCCImplTest {
   @Test
   void testGetMemberReceivedItemsWithWrongId() {
     this.setGetMemberReceivedItemsReturnedValue(-1);
-    assertNull(this.itemUCC.getMemberReceivedItems(-1));
+    assertThrows(ObjectNotFoundException.class, () -> this.itemUCC.getMemberReceivedItems(-1));
   }
 
   @DisplayName("Test get member's received items with start throwing sql exception")
@@ -639,7 +669,8 @@ class ItemUCCImplTest {
   @Test
   void testAddPhotoWithAllWorkingGood() {
     this.setAddPhotoReturnedValue(5, "photo.png");
-    assertTrue(this.itemUCC.addPhoto(5, "photo.png"));
+    Mockito.when(this.itemDAO.itemExists(5)).thenReturn(true);
+    assertDoesNotThrow(() -> this.itemUCC.addPhoto(5, "photo.png"));
   }
 
   @DisplayName("Test add photo with start throwing sql exception")

@@ -298,10 +298,10 @@ INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests,
 VALUES ('25-03-22', 'Lundi de 18h à 22h', 2, 0, 1);
 
 INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
-VALUES ('25-03-22', 'Tous les jours de 15h à 18h', 3, 0, 1);
+VALUES ('25-03-22', 'Tous les jours de 15h à 18h', 3, 2, 1);
 
 INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
-VALUES ('28-03-22', 'Tous les matins avant 11h30', 4, 0, 1);
+VALUES ('28-03-22', 'Tous les matins avant 11h30', 4, 3, 1);
 
 INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
 VALUES ('29-03-22', 'Tous les matins avant 11h30', 5, 0, 1);
@@ -313,19 +313,19 @@ INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests,
 VALUES ('30-03-22', 'Lundi de 18h à 20h', 7, 0, 1);
 
 INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
-VALUES ('14-04-22', 'Samedi en journée', 8, 0, 1);
+VALUES ('14-04-22', 'Samedi en journée', 8, 2, 1);
 
 INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
-VALUES ('14-04-22', 'Lundi de 18h à 20h', 9, 0, 1);
+VALUES ('14-04-22', 'Lundi de 18h à 20h', 9, 1, 1);
 
 INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
-VALUES ('21-04-22', 'Lundi de 18h30 à 20h', 10, 0, 1);
+VALUES ('21-04-22', 'Lundi de 18h30 à 20h', 10, 3, 1);
 
 INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
-VALUES ('21-04-22', 'En semaine, de 20h à 21h', 11, 0, 1);
+VALUES ('21-04-22', 'En semaine, de 20h à 21h', 11, 2, 1);
 
 INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
-VALUES ('21-04-22', 'Lundi de 16h à 17h', 12, 0, 1);
+VALUES ('21-04-22', 'Lundi de 16h à 17h', 12, 1, 1);
 
 INSERT INTO project_pae.offers ("date", time_slot, id_item, number_of_interests, version_offer)
 VALUES ('21-04-22', 'Lundi de 16h à 17h', 13, 0, 1);
@@ -375,7 +375,7 @@ VALUES (false, 12, 3, '16-05-2022', 1);
 
 -- RECIPIENTS TABLE
 INSERT INTO project_pae.recipients (id_item, id_member, received, version_recipient)
-VALUES (9, 1, false, 1);
+VALUES (9, 1, 'waiting', 1);
 
 -- SELECT
 SELECT m.id_member,

@@ -29,4 +29,12 @@ public interface OfferDAO {
    */
   @JsonIgnore
   List<OfferDTO> getLastTwoOffersOf(ItemDTO itemDTO);
+
+  /**
+   * Count the number of interested member for the last offer of the item identified by its id.
+   *
+   * @param idItem the item's id
+   * @return the number of interested member of the item's last offer
+   */
+  int getNumberOfInterestedMemberOf(int idItem);
 }

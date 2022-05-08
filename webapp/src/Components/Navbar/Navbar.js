@@ -66,7 +66,7 @@ const offerAnItemLinkHtml = `
 
 const myItemsLinkHtml = `
           <li class="nav-item">
-            <a class="nav-link" href="#" data-uri="/my_items">Mes objets</a>
+            <a class="nav-link" href="#" data-uri="/my_items">Mes objets offerts</a>
           </li>
 `;
 

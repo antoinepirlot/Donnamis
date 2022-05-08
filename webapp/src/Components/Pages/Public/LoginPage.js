@@ -76,7 +76,6 @@ async function login(e) {
   try {
     content = await loginBackEndRequest(username, password);
     if (!content) {
-
       const refusal = await getRefusal(username);
       if (refusal) {
         const refusalMessage = refusal.text;
@@ -85,8 +84,13 @@ async function login(e) {
         showError("Aucun utilisateur pour ce username et ce mot de passe",
             "danger", loginMessage);
       }
-
     } else {
+      if (content === 403) {
+        showError(
+            "Vous êtes inscrit mais devez patienter que un administrateur vous accepte.",
+            "danger", loginMessage);
+        return;
+      }
       if (content.memberDTO.actualState === "unavailable") {
         await showUnavailableModal();
       } else if (rememberMe) {
@@ -129,10 +133,9 @@ async function loginUnavailable(e) {
   e.preventDefault();
 
   const pageErrorDiv = document.querySelector("#unavailableError");
-
   const memberUnavailable = {
     id: content.memberDTO.id,
-    actualState: content.memberDTO.actualState,
+    actualState: "confirmed",
     version: content.memberDTO.version
   };
 
