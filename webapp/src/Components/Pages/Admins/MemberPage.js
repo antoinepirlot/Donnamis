@@ -51,7 +51,6 @@ const MemberPage = async () => {
 async function showDonatedItems(member) {
   const donatedItems = await getAllItemsByMemberIdAndOfferStatus(member.id,
       "donated");
-  console.log(donatedItems)
   if (!donatedItems) {
     const messageDiv = document.querySelector("#donatedItemsMemberPageMessage");
     showError("Ce membre n'a pas d'objet offerts", "info", messageDiv);
@@ -67,7 +66,7 @@ async function showReceivedItems(member) {
   if (!receivedItems) {
     const messageDiv = document.querySelector(
         "#receivedItemsMemberPageMessage");
-    showError("Ce membre n'a pas d'objet offerts", "info", messageDiv);
+    showError("Ce membre n'a pas d'objet reçus", "info", messageDiv);
     return;
   }
   const receivedItemsDiv = document.querySelector("#receivedItemsMemberPage");
