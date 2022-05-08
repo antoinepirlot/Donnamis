@@ -124,9 +124,8 @@ public interface ItemUCC {
    *
    * @param idItem    the item's id
    * @param photoName the photo's name
-   * @return true if the photo has been added otherwise false
    */
-  boolean addPhoto(int idItem, String photoName);
+  void addPhoto(int idItem, String photoName);
 
   /**
    * Checks if the item exists into the database.

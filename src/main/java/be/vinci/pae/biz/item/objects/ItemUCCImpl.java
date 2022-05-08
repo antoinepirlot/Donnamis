@@ -261,7 +261,7 @@ public class ItemUCCImpl implements ItemUCC {
   }
 
   @Override
-  public boolean addPhoto(int idItem, String photoName) {
+  public void addPhoto(int idItem, String photoName) {
     if (!this.itemExists(idItem)) {
       throw new ObjectNotFoundException("No item matching the id: " + idItem);
     }
@@ -269,7 +269,9 @@ public class ItemUCCImpl implements ItemUCC {
       this.dalServices.start();
       boolean added = this.itemDAO.addPhoto(idItem, photoName);
       this.dalServices.commit();
-      return added;
+      if (!added) {
+        throw new FatalException("The image hasn't been added into the database");
+      }
     } catch (SQLException e) {
       this.dalServices.rollback();
       throw new FatalException(e);
