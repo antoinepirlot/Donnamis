@@ -2,7 +2,6 @@ package be.vinci.pae.ihm.refusal;
 
 import be.vinci.pae.biz.refusal.interfaces.RefusalDTO;
 import be.vinci.pae.biz.refusal.interfaces.RefusalUCC;
-import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.exceptions.webapplication.WrongBodyDataException;
 import be.vinci.pae.ihm.filter.utils.Json;
 import jakarta.inject.Inject;
@@ -36,13 +35,7 @@ public class RefusalResource {
     if (username == null || username.isBlank()) {
       throw new WrongBodyDataException("username is lower than 1.");
     }
-    RefusalDTO refusalDTO = this.refusalUCC.getRefusal(username);
-    System.out.println(refusalDTO);
-    if (refusalDTO == null) {
-      String message = "Refusal information for the member " + username + " not found.";
-      throw new ObjectNotFoundException(message);
-    }
-    return this.json.filterPublicJsonView(refusalDTO);
+    return this.json.filterPublicJsonView(this.refusalUCC.getRefusal(username));
   }
 
 }

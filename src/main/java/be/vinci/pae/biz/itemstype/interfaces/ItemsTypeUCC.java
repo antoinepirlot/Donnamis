@@ -18,7 +18,6 @@ public interface ItemsTypeUCC {
    * Add a new items type into the database.
    *
    * @param itemsTypeDTO the items type to add
-   * @return true if the itemsTypeDTO has been added false otherwise
    */
-  boolean addItemsType(ItemsTypeDTO itemsTypeDTO);
+  void addItemsType(ItemsTypeDTO itemsTypeDTO);
 }

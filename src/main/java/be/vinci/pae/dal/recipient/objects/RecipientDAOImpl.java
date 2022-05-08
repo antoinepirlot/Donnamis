@@ -72,16 +72,10 @@ public class RecipientDAOImpl implements RecipientDAO {
     String query = "UPDATE project_pae.recipients "
         + "SET received = 'not received', "
         + "version_recipient = version_recipient + 1 "
-        + "WHERE id_member = ? AND received = 'waiting' RETURNING *;";
+        + "WHERE id_member = ? AND received = 'waiting';";
     try (PreparedStatement preparedStatement = dalBackendService.getPreparedStatement(query)) {
       preparedStatement.setInt(1, recipientDTO.getMember().getId());
-
-      try (ResultSet rs = preparedStatement.executeQuery()) {
-        if (rs.next()) {
-          return true;
-        }
-        return true;
-      }
+      return preparedStatement.executeUpdate() >= 0;
     } catch (SQLException e) {
       throw new FatalException(e);
     }

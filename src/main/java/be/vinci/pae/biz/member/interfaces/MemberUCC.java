@@ -15,10 +15,10 @@ public interface MemberUCC {
   /**
    * Asks the UCC to get the member identified by its id.
    *
-   * @param id the member's id
+   * @param idMember the member's id
    * @return the member or null if there's no member with the id
    */
-  MemberDTO getOneMember(int id);
+  MemberDTO getOneMember(int idMember);
 
   /**
    * Get one member by his username.
@@ -32,33 +32,29 @@ public interface MemberUCC {
    * Modify the member identified by its id.
    *
    * @param memberDTO the new member
-   * @return true if the member has been modified, else false
    */
-  boolean modifyMember(MemberDTO memberDTO);
+  void modifyMember(MemberDTO memberDTO);
 
   /**
    * Confirm the inscription of a member.
    *
    * @param memberDTO the member to confirm
-   * @return True if success
    */
-  boolean confirmMember(MemberDTO memberDTO);
+  void confirmMember(MemberDTO memberDTO);
 
   /**
    * Switch the state of the member between confirmed and unavailable.
    *
    * @param memberDTO the member to modify state
-   * @return True if success
    */
-  boolean setMemberAvailability(MemberDTO memberDTO);
+  void setMemberAvailability(MemberDTO memberDTO);
 
   /**
    * Verify the state of the member and then change the state of the member to denied.
    *
    * @param refusalDTO the refusal information
-   * @return true if deny is complete, otherwise false
    */
-  boolean denyMember(RefusalDTO refusalDTO);
+  void denyMember(RefusalDTO refusalDTO);
 
   /**
    * Verify if the member exist in the DB.
@@ -79,9 +75,8 @@ public interface MemberUCC {
    * Ask DAO to insert the member into the db.
    *
    * @param memberDTO member to add in the db
-   * @return true if the member has been  registered
    */
-  boolean register(MemberDTO memberDTO);
+  void register(MemberDTO memberDTO);
 
   /**
    * Get the list of interested member of the item and returns it.

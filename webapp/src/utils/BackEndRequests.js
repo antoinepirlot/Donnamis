@@ -140,6 +140,9 @@ async function getAllItemsByMemberIdAndOfferStatus(idMember, offerStatus) {
   if (!response.ok) {
     throw new Error("Error while fetching member's items");
   }
+  if (response.status === 204) {
+    return;
+  }
   return await response.json();
 }
 
@@ -224,7 +227,7 @@ async function getGivenItems() {
   if (!response.ok) {
     throw new Error("Erreur lors du fetch");
   }
-  if (response.status == 204) {
+  if (response.status === 204) {
     return;
   }
   return await response.json();
@@ -392,6 +395,9 @@ async function login(username, password) {
   };
   const response = await fetch("api/members/login", request);
   if (!response.ok) {
+    if (response.status === 403) {
+      return 403;
+    }
     if (response.status === 404) {
       return false;
     }

@@ -49,6 +49,7 @@ public class ImageResource {
   @AuthorizeMember
   public void uploadFile(@PathParam("idItem") int idItem, @FormDataParam("file") InputStream file,
       @FormDataParam("file") FormDataContentDisposition fileDisposition) {
+    System.out.println("Hello World");
     String extension = FilenameUtils.getExtension(fileDisposition.getFileName());
     if (!checkExtension(extension)) {
       throw new WrongBodyDataException("The file extension is not correct.");
@@ -58,9 +59,7 @@ public class ImageResource {
     String photoPath = path + uuid + "." + extension;
     try {
       Files.copy(file, Paths.get(photoPath));
-      if (!this.itemUCC.addPhoto(idItem, uuid + "." + extension)) {
-        throw new FatalException("The image hasn't been added into the database");
-      }
+      this.itemUCC.addPhoto(idItem, uuid + "." + extension);
     } catch (IOException e) {
       throw new FatalException(e);
     }

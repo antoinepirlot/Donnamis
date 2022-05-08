@@ -10,6 +10,7 @@ import {
 } from "../../../utils/BackEndRequests";
 import {closeModal, openModal} from "../../../utils/Modals";
 import {displayImage, getShowItemsHtml} from "../../../utils/HtmlCode";
+import {sendFile} from "../../../utils/File";
 
 const viewOfferHtml = `
 <div id="offerCard" class="card mb-3" xmlns="http://www.w3.org/1999/html">
@@ -122,7 +123,7 @@ function createModifyItemModal() {
           <p>Description de l'objet<span id="asterisk">*</span>:</p>
           <textarea id="itemDescriptionForm" cols="30" rows="3">${itemDescription}</textarea>
           <p>Photo</p>
-          <input id="photoForm" type="file"><br>
+          <input id="photoForm" name="changePhoto" type="file"><br>
           <br>
           <p>Disponibilités horaire<span id="asterisk">*</span>:</p>
           <textarea id="timeSlotModifyForm" cols="30" rows="3">${timeSlot}</textarea>
@@ -245,7 +246,7 @@ async function postInterest(e) {
     }
     await ViewItemPage();
     pageErrorDiv = document.querySelector("#viewItemPageError");
-    showError("L'intérêt a bien été prit en compte.", "success", pageErrorDiv);
+    showError("L'intérêt a bien été pris en compte.", "success", pageErrorDiv);
   } catch (err) {
     console.error(err);
   } finally {
@@ -276,9 +277,10 @@ async function modifyItem(e) {
   }
   try {
     await modifyTheItem(newItem);
-    const errorMessage = document.querySelector("#modifyItemMessage");
-    showError("Modification validé", "success", errorMessage);
+    await sendFile(newItem.id, "changePhoto");
     await ViewItemPage();
+    const errorMessage = document.querySelector("#modifyItemMessage");
+    showError("Modification validées", "success", errorMessage);
   } catch (error) {
     console.error(error);
     closeModal("#modifyItemModal");

@@ -3,7 +3,8 @@ import {
   getNumberOfItems,
   getNumberOfReceivedOrNotReceivedItems,
   getOneMember,
-  setMemberAvailability
+  setMemberAvailability,
+  setRecipientUnavailable
 } from "../../../utils/BackEndRequests";
 import {showError} from "../../../utils/ShowError";
 import {getShowItemsHtml} from "../../../utils/HtmlCode";
@@ -11,18 +12,20 @@ import {Redirect} from "../../Router/Router";
 import {isAdmin} from "../../../utils/session";
 
 const memberPageHtml = `
-  <div id="memberPageContent" class="bg-info d-inline-flex d-flex flex-column rounded w-50 p-3">
-    <h2 id="profilUsernameMemberPage" class="display-3"></h2>
+  <div class="whiteCard">
+    <div id="memberPageContent" ><!--class="d-flex bd-highlight mb-3 shadow-lg p-3 mb-5 bg-white rounded" -->
+    </div>
   </div>
-  <div id="errorMessage"></div>
   <div id="donatedItemsMemberPage">
-    <h4>Objets offerts par ce membre</h4>
-    <div id="donatedItemsMemberPageMessage"></div>
+  
+  </div>
+  <div id="donatedItemsMemberPageMessage">
   </div>
   <div id="receivedItemsMemberPage">
-    <h4>Objets reçus par ce membre</h4>
-    <div id="receivedItemsMemberPageMessage"></div>
   </div>
+  <div id="receivedItemsMemberPageMessage"></div>
+  <div id="errorMessage"></div>
+  
 `;
 
 let idMember;
@@ -33,15 +36,12 @@ const MemberPage = async () => {
     Redirect("/");
     return;
   }
-
-  const page = document.querySelector("#page");
-  page.innerHTML = memberPageHtml;
   idMember = new URLSearchParams(window.location.search).get("id");
   const member = await getOneMember(idMember);
-  const profilUsernameDiv = document.querySelector(
-      "#profilUsernameMemberPage");
-  const username = he.decode(member.username);
-  profilUsernameDiv.innerText = `Profile de: ${he.decode(username)}`;
+  const page = document.querySelector("#page");
+  page.innerHTML = `<h1 class="display-3" id="login_title">Profile de ${he.decode(
+      member.username)}</h1>`;
+  page.innerHTML += memberPageHtml;
   await showMemberInformation(member);
   await showDonatedItems(member);
   await showReceivedItems(member);
@@ -50,10 +50,9 @@ const MemberPage = async () => {
 async function showDonatedItems(member) {
   const donatedItems = await getAllItemsByMemberIdAndOfferStatus(member.id,
       "donated");
-  console.log(donatedItems)
   if (!donatedItems) {
     const messageDiv = document.querySelector("#donatedItemsMemberPageMessage");
-    showError("Ce membre n'a pas d'objet offerts", "info", messageDiv);
+    messageDiv.innerHTML = `<h1 class="display-6">${member.username} n'a donné aucun objet</h1>`;
     return;
   }
   const donatedItemsDiv = document.querySelector("#donatedItemsMemberPage");
@@ -66,7 +65,7 @@ async function showReceivedItems(member) {
   if (!receivedItems) {
     const messageDiv = document.querySelector(
         "#receivedItemsMemberPageMessage");
-    showError("Ce membre n'a pas d'objet offerts", "info", messageDiv);
+    messageDiv.innerHTML = `<h2 class="display-6">${member.username} n'a reçus aucun objet</h2>`;
     return;
   }
   const receivedItemsDiv = document.querySelector("#receivedItemsMemberPage");
@@ -76,20 +75,149 @@ async function showReceivedItems(member) {
 async function showMemberInformation(member) {
   const content = document.querySelector("#memberPageContent");
   let contentHtml = `
-    <p>
-      Prénom : ${he.decode(member.firstName)}<br>
-      Nom : ${he.decode(member.lastName)}<br>
-      ${getAddressHtml(member.address)}<br>
-      Statut : ${getActualState(member)}<br>
-      Administrateur : ${member.isAdmin ? "Oui" : "Non"}<br>
-      Numéro de téléphone : ${member.phoneNumber ? member.phoneNumber : "Aucun"}<br>
-      Nombre d'objets offerts : ${await getNumberOfItems(member.id, "donated")}<br>
-      Nombre d'objets donnés : ${await getNumberOfItems(member.id, "given")}<br>
-      Nombre d'objets intéréssé mais non reçu : ${await getNumberOfReceivedOrNotReceivedItems(
-      member.id, false)}<br>
-      Nombre d'objets reçus : ${await getNumberOfReceivedOrNotReceivedItems(
-      member.id, true)}<br>
-  `;
+      <div>
+          <div class="profile-head">
+            <h5>
+                ${he.decode(member.firstName)+ " " + he.decode(member.lastName)}
+            </h5>
+          </div>
+      </div>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        
+          <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" 
+          data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" 
+          aria-selected="true">Profile</button> 
+          
+          <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" 
+          data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" 
+          aria-selected="false">Adresse</button> 
+        </div>
+      </nav>
+      <div class="tab-content" id="myTabContent">
+        <div class="col-md-8">
+          <div class="tab-content profile-tab" id="myTabContent">
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+        <!-- USER'S INFO -->
+          <div class="row">
+            <div class="col-md-11">
+              <label>Prénom</label>
+            </div>
+            <div class="col-md-1">
+              <p>${he.decode(member.firstName)}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-11">
+              <label>Nom</label>
+            </div>
+            <div class="col-md-1">
+              <p>${he.decode(member.lastName)}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-11">
+              <label>Statut</label>
+            </div>
+            <div class="col-md-1">
+              <p>${getActualState(member)}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-11">
+              <label>Admin</label>
+            </div>
+            <div class="col-md-1">
+              <p>${member.isAdmin ? "Oui" : "Non"}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-11">
+              <label>Numéro de téléphone</label>
+            </div>
+            <div class="col-md-1">
+              <p>${member.phoneNumber ? member.phoneNumber : "Aucun"}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-11">
+              <label>Nombre d'objets offerts</label>
+            </div>
+            <div class="col-md-1">
+              <p>${await getNumberOfItems(member.id, "donated")}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-11">
+              <label>Nombre d'objets donnés</label>
+            </div>
+            <div class="col-md-1">
+              <p>${await getNumberOfItems(member.id, "given")}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-11">
+              <label>Nombre de marque d'intérets</label>
+            </div>
+            <div class="col-md-1">
+              <p>${await getNumberOfReceivedOrNotReceivedItems(member.id, false)}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-11">
+              <label>Nombre d'objets reçus</label>
+            </div>
+            <div class="col-md-1">
+              <p>${await getNumberOfReceivedOrNotReceivedItems(member.id, true)}</p>
+            </div>
+          </div>
+        </div>
+            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+              <!-- ADDRESS'S USER INFO  -->
+              <div class="row">
+                <div class="col-md-6">
+                  <label>Rue </label>
+                </div>
+                <div class="col-md-6">
+                  <p>${member.address.street}</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label>Numéro </label>
+                </div>
+                <div class="col-md-6">
+                  <p>${member.address.buildingNumber}</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label>Numéro de boite </label>
+                </div>
+                <div class="col-md-6">
+                  <p>${member.address.unitNumber ? member.address.unitNumber : "Aucun" }</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label>Code postal </label>
+                </div>
+                <div class="col-md-6">
+                  <p>${member.address.postcode}</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label>Commune </label>
+                </div>
+                <div class="col-md-6">
+                  <p>${member.address.commune}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>  
+      `
   content.innerHTML += contentHtml;
   const pageErrorDiv = document.querySelector("#errorMessage");
   let button;
@@ -97,7 +225,7 @@ async function showMemberInformation(member) {
   //Create button if member confirmed or unavailable
   if (member.actualState === 'confirmed' || member.actualState
       === 'unavailable') {
-    content.innerHTML += `<button id="markUnavailableButton"></button>`;
+    content.innerHTML += `<button id="markUnavailableButton" class="btn btn-primary"></button>`;
     button = document.querySelector("#markUnavailableButton");
 
     //Change the value of the button
@@ -116,14 +244,14 @@ async function showMemberInformation(member) {
         version: member.version
       };
 
-      // const recipient = {
-      //   member: memberUnavailable
-      // };
+      const recipient = {
+        member: memberUnavailable
+      };
       try {
         await setMemberAvailability(memberUnavailable);
-        // if (memberUnavailable.actualState === "unavailable") {
-        //   await setRecipientUnavailable(recipient);
-        // }
+        if (memberUnavailable.actualState === "unavailable") {
+          await setRecipientUnavailable(recipient);
+        }
         await MemberPage();
       } catch (err) {
         console.error(err);

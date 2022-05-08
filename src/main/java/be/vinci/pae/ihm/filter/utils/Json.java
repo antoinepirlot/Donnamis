@@ -22,6 +22,9 @@ public class Json<T> {
    * @return the filtered object's attributes list
    */
   public List<T> filterPublicJsonViewAsList(List<T> list) {
+    if (list == null) {
+      return null;
+    }
     try {
       JavaType type = jsonMapper.getTypeFactory().constructCollectionType(List.class, this.type);
       // serialize using JSON Views : public view (all fields not required in the

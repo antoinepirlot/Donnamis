@@ -3,7 +3,6 @@ package be.vinci.pae.biz.offer.objects;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -14,6 +13,7 @@ import be.vinci.pae.biz.offer.interfaces.OfferUCC;
 import be.vinci.pae.dal.offer.interfaces.OfferDAO;
 import be.vinci.pae.dal.services.interfaces.DALServices;
 import be.vinci.pae.exceptions.FatalException;
+import be.vinci.pae.exceptions.webapplication.ObjectNotFoundException;
 import be.vinci.pae.utils.ApplicationBinder;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -106,31 +106,21 @@ class OfferUCCImplTest {
   @DisplayName("Test create offer with good offer and not existing item")
   @Test
   void testCreateOfferWithGoodOfferAndNotExistingItem() {
-    assertFalse(this.offerUCC.createOffer(this.goodOfferNotExistingItem));
+    assertThrows(FatalException.class,
+        () -> this.offerUCC.createOffer(this.goodOfferNotExistingItem));
   }
 
   @DisplayName("Test create offer with wrong offer and existing item")
   @Test
   void testCreateOfferWithWrongOfferAndExistingItem() {
-    assertFalse(this.offerUCC.createOffer(this.wrongOfferWithExistingItem));
+    assertThrows(FatalException.class,
+        () -> this.offerUCC.createOffer(this.wrongOfferWithExistingItem));
   }
 
-  @DisplayName("Test create offer with wrong offer and not existing item")
+  @DisplayName("Test create offer with not existing item")
   @Test
   void testCreateOfferWithWrongOfferAndNotExistingItem() {
-    assertFalse(this.offerUCC.createOffer(this.wrongOfferWithNotExistingItem));
-  }
-
-  @DisplayName("Test create offer with empty offer")
-  @Test
-  void testCreateOfferWithEmptyOffer() {
-    assertFalse(this.offerUCC.createOffer(this.emptyOffer));
-  }
-
-  @DisplayName("Test create offer with null offer")
-  @Test
-  void testCreateOfferWithNullOffer() {
-    assertFalse(this.offerUCC.createOffer(null));
+    assertThrows(FatalException.class, () -> this.offerUCC.createOffer(this.emptyOffer));
   }
 
   @DisplayName("Test create offer with start throwing sql exception")
@@ -185,7 +175,8 @@ class OfferUCCImplTest {
   @DisplayName("Test get one offer with not existing id offer")
   @Test
   void testGetOneOfferWithNotExistingIdOffer() {
-    assertNull(this.offerUCC.getOneOffer(this.notExistingIdOffer));
+    assertThrows(ObjectNotFoundException.class,
+        () -> this.offerUCC.getOneOffer(this.notExistingIdOffer));
   }
 
   @DisplayName("Test get one offer with start throwing sql exception")
